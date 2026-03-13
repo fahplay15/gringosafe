@@ -60,8 +60,15 @@
         .btn-action { border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; }
         .btn-action:active { transform: scale(0.9); }
         .btn-action svg { fill: currentColor; }
+        
+        /* BOTÃO ADICIONAR (AVALIADOR) */
         .btn-adicionar { width: 70px; height: 70px; background: linear-gradient(135deg, #00e676, #00c853); color: white; box-shadow: 0px 8px 25px rgba(0, 200, 83, 0.4); }
         .btn-adicionar svg { width: 36px; height: 36px; }
+        
+        /* BOTÃO PERGUNTAR (TURISTA) */
+        .btn-perguntar { width: 70px; height: 70px; background: linear-gradient(135deg, #9c27b0, #6a1b9a); color: white; box-shadow: 0px 8px 25px rgba(156, 39, 176, 0.4); display: none; }
+        .btn-perguntar svg { width: 34px; height: 34px; }
+
         .btn-pesquisa { width: 60px; height: 60px; background: white; color: #004d40; box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.15); position: relative; }
         .btn-pesquisa svg { width: 26px; height: 26px; }
         .badge-buscas { position: absolute; top: -5px; right: -5px; background: #c62828; color: white; font-size: 11px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: none; }
@@ -81,6 +88,8 @@
         .btn-add-foto { background-color: #e0f2f1; color: #004d40; border: 1px dashed #004d40; padding: 12px; width: 100%; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
         .btn-salvar { background-color: #004d40; color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-top: 10px; cursor: pointer; }
         .btn-cancelar { background-color: transparent; color: #757575; border: none; padding: 10px; width: 100%; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; }
+        
+        .btn-roxo { background-color: #9c27b0; color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-top: 10px; cursor: pointer; }
 
         .popup-info { font-family: 'Poppins', sans-serif; min-width: 250px; }
         .popup-info h3 { margin: 0 0 5px 0; font-size: 18px; color: #1a1a1a; border-bottom: 2px solid #eee; padding-bottom: 5px;}
@@ -93,8 +102,8 @@
         .item-acoes { display: flex; gap: 5px; justify-content: flex-end; margin-top: 8px; }
         .btn-voto { border: none; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: 600; cursor: pointer; color: white; }
         
-        #imagemPreview { max-width: 100%; max-height: 120px; border-radius: 10px; display: none; margin: 10px auto; object-fit: cover; }
-        #iaStatus { font-size: 12px; color: #004d40; font-weight: 600; display: none; margin: 5px 0; background: #e0f2f1; padding: 5px; border-radius: 8px; }
+        .imagem-preview { max-width: 100%; max-height: 120px; border-radius: 10px; display: none; margin: 10px auto; object-fit: cover; }
+        .ia-status { font-size: 12px; color: #004d40; font-weight: 600; display: none; margin: 5px 0; background: #e0f2f1; padding: 5px; border-radius: 8px; }
 
         #modalPaywall .modal-content { background: linear-gradient(180deg, #ffffff 0%, #f0f2f5 100%); }
         .pw-icon { font-size: 40px; margin-bottom: 10px; }
@@ -109,11 +118,16 @@
         .btn-apple-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-google-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: "Product Sans", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
 
-        /* ESCONDE FERRAMENTAS SE FOR TURISTA */
+        /* MODO TURISTA: Esconde ferramentas do avaliador e mostra o botão Roxo */
         body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista .user-status { display: none !important; }
         body.modo-turista .item-acoes { display: none !important; }
         body.modo-turista .badge-buscas { display: flex !important; }
+        body.modo-turista .btn-perguntar { display: flex !important; }
+        
+        /* PIN ROXO NO MAPA (Animação Pulsante) */
+        @keyframes pulsePurple { 0% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(156, 39, 176, 0); } 100% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0); } }
+        .marker-pergunta { background-color: #9c27b0; border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 16px; border: 2px solid white; animation: pulsePurple 1.5s infinite; }
     </style>
 </head>
 <body class="modo-turista"> 
@@ -132,11 +146,11 @@
         <h2 id="t_roleTitle">Como você quer usar o App?</h2>
         <button class="btn-perfil" id="btnPerfilTurista">
             📸 <strong id="t_roleTourist">Sou Turista</strong>
-            <span id="t_roleTouristSub">Quero apenas pesquisar lugares seguros e ver preços.</span>
+            <span id="t_roleTouristSub">Quero pesquisar lugares seguros e perguntar preços.</span>
         </button>
         <button class="btn-perfil avaliador" id="btnPerfilAvaliador">
             ⭐ <strong id="t_roleLocal">Sou Avaliador Local</strong>
-            <span id="t_roleLocalSub">Quero registrar preços, votar e ajudar a comunidade.</span>
+            <span id="t_roleLocalSub">Quero registrar preços, responder turistas e ganhar dinheiro.</span>
         </button>
     </div>
 
@@ -182,11 +196,15 @@
     
     <div id="mapa"></div>
     <input type="file" id="cameraInput" accept="image/*" style="display: none;">
+    <input type="file" id="cameraInputPergunta" accept="image/*" style="display: none;">
     
     <div class="bottom-actions">
         <button class="btn-action btn-pesquisa" id="btnAbrirBusca">
             <span class="badge-buscas" id="badgeBuscas">3</span>
             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        </button>
+        <button class="btn-action btn-perguntar" id="btnPerguntar">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
         </button>
         <button class="btn-action btn-adicionar" id="btnAdicionar"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
     </div>
@@ -198,22 +216,11 @@
             <div class="pw-icon">💎</div>
             <h3 class="pw-title" id="t_pwTitle">Acesso Premium</h3>
             <p class="pw-sub" id="t_pwSub">Buscas ilimitadas e Roteiros Seguros.</p>
-            
             <div class="plan-options">
-                <div class="plan-card active" id="btnPlan1">
-                    <span class="plan-days" id="t_pwPlan1">Pass de 7 Dias</span>
-                    <span class="plan-price" id="precoPlan1">R$ 24,90</span>
-                </div>
-                <div class="plan-card" id="btnPlan2">
-                    <span class="plan-days" id="t_pwPlan2">Pass de 15 Dias</span>
-                    <span class="plan-price" id="precoPlan2">R$ 39,90</span>
-                </div>
-                <div class="plan-card" id="btnPlan3">
-                    <span class="plan-days" id="t_pwPlan3">Pass de 30 Dias</span>
-                    <span class="plan-price" id="precoPlan3">R$ 64,90</span>
-                </div>
+                <div class="plan-card active" id="btnPlan1"><span class="plan-days" id="t_pwPlan1">Pass de 7 Dias</span><span class="plan-price" id="precoPlan1">R$ 24,90</span></div>
+                <div class="plan-card" id="btnPlan2"><span class="plan-days" id="t_pwPlan2">Pass de 15 Dias</span><span class="plan-price" id="precoPlan2">R$ 39,90</span></div>
+                <div class="plan-card" id="btnPlan3"><span class="plan-days" id="t_pwPlan3">Pass de 30 Dias</span><span class="plan-price" id="precoPlan3">R$ 64,90</span></div>
             </div>
-
             <div class="payment-methods">
                 <button class="btn-apple-pay" id="btnApplePay"><span style="font-size: 24px; margin-bottom: 4px;"></span> Pay</button>
                 <button class="btn-google-pay" id="btnGooglePay"><span style="font-weight: 700; font-size: 22px;">G</span> Pay</button>
@@ -222,23 +229,54 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="modalBusca"><div class="modal-content" style="max-height: 80vh;"><h3 id="t_searchTitle">Buscar Local ou Produto</h3><input type="text" id="inputBusca" class="input-form" placeholder="Ex: Quiosque, Água..."><div class="resultados-busca" id="resultadosBusca"></div><button class="btn-cancelar" id="btnFecharBusca" style="margin-top:15px;"><span id="t_searchClose">Fechar</span></button></div></div>
+    <div class="modal-overlay" id="modalBusca"><div class="modal-content" style="max-height: 80vh;"><h3 id="t_searchTitle">Buscar Local</h3><input type="text" id="inputBusca" class="input-form" placeholder="Ex: Quiosque, Água..."><div class="resultados-busca" id="resultadosBusca"></div><button class="btn-cancelar" id="btnFecharBusca" style="margin-top:15px;"><span id="t_searchClose">Fechar</span></button></div></div>
     
     <div class="modal-overlay" id="modalForm">
         <div class="modal-content">
             <h3 id="t_formTitle">Novo Registro</h3>
             <button class="btn-add-foto" id="btnEscolherFoto"><span id="t_btnAddPhoto">📸 Adicionar Foto</span></button>
-            <img id="imagemPreview" alt="Sua foto">
-            <p id="iaStatus">🤖 IA analisando a foto...</p>
+            <img id="imagemPreview" class="imagem-preview" alt="Foto">
+            <p id="iaStatus" class="ia-status">🤖 IA...</p>
             <select id="selectLocal" class="input-form"><option value="NEW" id="t_optNewPlace">➕ Adicionar Novo Local</option></select>
             <input type="text" id="nomeLocalInput" class="input-form" placeholder="Nome do Novo Local">
-            <input type="text" id="nomeProduto" class="input-form" placeholder="O que é? (Ex: Água de Coco)">
-            <input type="number" id="precoProduto" class="input-form" placeholder="Preço Cobrado (R$)">
+            <input type="text" id="nomeProduto" class="input-form" placeholder="O que é?">
+            <input type="number" id="precoProduto" class="input-form" placeholder="Preço Cobrado">
             <select id="categoriaProduto" class="input-form">
-                <option value="Bebida" id="t_catDrink">Bebida</option><option value="Comida" id="t_catFood">Comida / Lanche</option><option value="Serviço" id="t_catService">Transporte / Serviço</option><option value="Ingresso" id="t_catTicket">Ingresso / Passeio</option>
+                <option value="Bebida" id="t_catDrink">Bebida</option><option value="Comida" id="t_catFood">Comida</option><option value="Serviço" id="t_catService">Serviço</option><option value="Ingresso" id="t_catTicket">Ingresso</option>
             </select>
             <button class="btn-salvar" id="btnSalvar"><span id="t_btnSave">Salvar (+R$ 0,25)</span></button>
             <button class="btn-cancelar" id="btnCancelar"><span id="t_btnCancel">Cancelar</span></button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalPergunta">
+        <div class="modal-content">
+            <h3 id="t_askTitle" style="color:#9c27b0;">O que você quer comprar?</h3>
+            <p style="font-size: 13px; color: #555; margin-bottom: 15px;" id="t_askSub">A comunidade local vai te dizer se o preço está justo.</p>
+            
+            <button class="btn-add-foto" id="btnEscolherFotoPergunta" style="border-color:#9c27b0; color:#9c27b0;"><span id="t_btnAskPhoto">📸 Foto (Opcional)</span></button>
+            <img id="imagemPreviewPergunta" class="imagem-preview" alt="Foto">
+            <p id="iaStatusPergunta" class="ia-status">🤖 IA...</p>
+            
+            <input type="text" id="nomeProdutoPergunta" class="input-form" placeholder="Nome do Item (Ex: Cadeira de Praia)">
+            
+            <button class="btn-roxo" id="btnEnviarPergunta"><span id="t_btnSendAsk">Enviar Pergunta</span></button>
+            <button class="btn-cancelar" id="btnCancelarPergunta"><span id="t_btnCancelAsk">Cancelar</span></button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalResposta">
+        <div class="modal-content">
+            <h3 style="color:#2e7d32;" id="t_ansTitle">Responder Turista</h3>
+            <p style="font-size: 13px; color: #555; margin-bottom: 15px;">Item: <strong id="respItemNome" style="color:#000;"></strong></p>
+            
+            <select id="selectLocalResposta" class="input-form"><option value="NEW">➕ Adicionar Novo Local</option></select>
+            <input type="text" id="nomeLocalInputResposta" class="input-form" placeholder="Nome do Local">
+            
+            <input type="number" id="precoProdutoResposta" class="input-form" placeholder="Qual o preço real/justo?">
+            
+            <input type="hidden" id="idPerguntaAtual"> <button class="btn-salvar" id="btnEnviarResposta" style="background:#2e7d32;"><span id="t_btnSendAns">Responder (+R$ 1,00)</span></button>
+            <button class="btn-cancelar" id="btnCancelarResposta"><span>Cancelar</span></button>
         </div>
     </div>
 
@@ -247,141 +285,78 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // VARIÁVEIS DE ESTADO
-        let estadoApp = {
-            moeda: 'BRL',
-            idioma: 'pt',
-            perfil: 'turista',
-            buscasRestantes: 3,
-            planoPrecoUSD: 4.99,
-            saldo: 0.00,
-            usuario: null,
-            dadosHospedados: {},
-            mediaPrecos: {},
-            contagemPrecos: {}
-        };
-
+        // 1. ESTADO GLOBAL
+        let estadoApp = { moeda: 'BRL', idioma: 'pt', perfil: 'turista', buscasRestantes: 3, planoPrecoUSD: 4.99, saldo: 0.00, usuario: null, dadosHospedados: {}, mediaPrecos: {}, contagemPrecos: {}, perguntasAbertas: {} };
         const taxasCambio = { 'BRL': { sim: 'R$', taxa: 1 }, 'USD': { sim: 'US$', taxa: 0.20 }, 'EUR': { sim: '€', taxa: 0.18 }, 'ARS': { sim: '$', taxa: 170.0 } };
         
+        // 2. DICIONÁRIO E TEXTOS
         const dicionario = {
-            pt: { splashSub: "Preço Justo em Qualquer Lugar", menuRoute: "🗺️ Roteiro Premium Seguro", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Trocar de Perfil", level: "⭐ Nvl 1", formTitle: "Novo Registro", optNewPlace: "➕ Adicionar Novo Local", placeNewLocal: "Nome do Novo Local", placeName: "Produto (Ex: Água)", placePrice: "Preço", catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Salvar", btnCancel: "Cancelar", alertaSalvo: "Salvo com sucesso!", alertaFalta: "Preencha todos os campos!", alertaDuplicado: "Este produto já está cadastrado!", statusGreen: "✅ Confiável", statusYellow: "⏳ Em Análise", statusRed: "🚨 Alerta de Golpe", btnYes: "👍 Sim", btnNo: "👎 Não", searchTitle: "Buscar Local ou Produto", searchPlaceholder: "Ex: Quiosque, Água...", searchClose: "Fechar", roleTitle: "Como você quer usar o App?", roleTourist: "Sou Turista", roleTouristSub: "Pesquisar lugares e ver preços.", roleLocal: "Sou Avaliador Local", roleLocalSub: "Registrar preços e ganhar.", btnAddPhoto: "📸 Adicionar Foto", btnLogin: "Entrar com Google", btnLogout: "Sair da Conta", pwTitle: "Acesso Premium", pwSub: "Buscas ilimitadas e Roteiros Seguros.", pwPlan1: "Pass de 7 Dias", pwPlan2: "Pass de 15 Dias", pwPlan3: "Pass de 30 Dias", pwCancel: "Talvez depois", badgeMedia: "⚖️ Preço na Média", badgeCaro: "📈 Acima da Média", badgeBom: "✨ Melhor Preço" },
-            en: { splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Premium Safe Route", menuLang: "🌐 Languages", menuChangeRole: "👤 Change Role", level: "⭐ Lvl 1", formTitle: "New Record", optNewPlace: "➕ Add New Place", placeNewLocal: "New Place Name", placeName: "Product (Ex: Water)", placePrice: "Price", catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save", btnCancel: "Cancel", alertaSalvo: "Saved successfully!", alertaFalta: "Fill in all fields!", alertaDuplicado: "Product already exists!", statusGreen: "✅ Trusted", statusYellow: "⏳ Under Review", statusRed: "🚨 Scam Alert", btnYes: "👍 Yes", btnNo: "👎 No", searchTitle: "Search Place or Product", searchPlaceholder: "Ex: Kiosk, Water...", searchClose: "Close", roleTitle: "How do you want to use the App?", roleTourist: "I'm a Tourist", roleTouristSub: "Search safe places and see prices.", roleLocal: "I'm a Local Evaluator", roleLocalSub: "Register prices and earn.", btnAddPhoto: "📸 Add Photo", btnLogin: "Sign in with Google", btnLogout: "Sign Out", pwTitle: "Premium Access", pwSub: "Unlimited searches and Safe Routes.", pwPlan1: "7-Day Pass", pwPlan2: "15-Day Pass", pwPlan3: "30-Day Pass", pwCancel: "Maybe later", badgeMedia: "⚖️ Average Price", badgeCaro: "📈 Above Average", badgeBom: "✨ Best Price" },
-            es: { splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Ruta Premium Segura", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Cambiar Perfil", level: "⭐ Nvl 1", formTitle: "Nuevo Registro", optNewPlace: "➕ Añadir Nuevo Lugar", placeNewLocal: "Nombre del Nuevo Lugar", placeName: "Producto (Ej: Agua)", placePrice: "Precio", catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa todos los campos!", alertaDuplicado: "¡Producto ya existe!", statusGreen: "✅ Confiable", statusYellow: "⏳ En Revisión", statusRed: "🚨 Alerta de Estafa", btnYes: "👍 Sí", btnNo: "👎 No", searchTitle: "Buscar Lugar o Producto", searchPlaceholder: "Ej: Kiosco, Agua...", searchClose: "Cerrar", roleTitle: "¿Cómo quieres usar la App?", roleTourist: "Soy Turista", roleTouristSub: "Buscar lugares seguros y precios.", roleLocal: "Soy Evaluador Local", roleLocalSub: "Registrar precios y ganar.", btnAddPhoto: "📸 Añadir Foto", btnLogin: "Entrar con Google", btnLogout: "Cerrar Sesión", pwTitle: "Acceso Premium", pwSub: "Búsquedas ilimitadas y Rutas Seguras.", pwPlan1: "Pase de 7 Días", pwPlan2: "Pase de 15 Días", pwPlan3: "Pase de 30 Días", pwCancel: "Quizás después", badgeMedia: "⚖️ Precio Promedio", badgeCaro: "📈 Por Encima de Media", badgeBom: "✨ Mejor Precio" }
+            pt: { splashSub: "Preço Justo em Qualquer Lugar", menuRoute: "🗺️ Roteiro Premium Seguro", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Trocar de Perfil", level: "⭐ Nvl 1", formTitle: "Novo Registro", optNewPlace: "➕ Adicionar Novo Local", placeNewLocal: "Nome do Novo Local", placeName: "Produto (Ex: Água)", placePrice: "Preço", catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Salvar", btnCancel: "Cancelar", alertaSalvo: "Salvo com sucesso!", alertaFalta: "Preencha todos os campos!", alertaDuplicado: "Este produto já está cadastrado!", statusGreen: "✅ Confiável", statusYellow: "⏳ Em Análise", statusRed: "🚨 Alerta de Golpe", btnYes: "👍 Sim", btnNo: "👎 Não", searchTitle: "Buscar Local ou Produto", searchPlaceholder: "Ex: Quiosque, Água...", searchClose: "Fechar", roleTitle: "Como você quer usar o App?", roleTourist: "Sou Turista", roleTouristSub: "Pesquisar lugares e perguntar preços.", roleLocal: "Sou Avaliador Local", roleLocalSub: "Registrar preços e responder turistas.", btnAddPhoto: "📸 Adicionar Foto", btnLogin: "Entrar com Google", btnLogout: "Sair da Conta", pwTitle: "Acesso Premium", pwSub: "Buscas ilimitadas e Roteiros Seguros.", pwPlan1: "Pass de 7 Dias", pwPlan2: "Pass de 15 Dias", pwPlan3: "Pass de 30 Dias", pwCancel: "Talvez depois", badgeMedia: "⚖️ Preço na Média", badgeCaro: "📈 Acima da Média", badgeBom: "✨ Melhor Preço", 
+                  askTitle: "O que você quer comprar?", askSub: "A comunidade local vai te dizer se o preço está justo.", btnAskPhoto: "📸 Foto (Opcional)", btnSendAsk: "Enviar Pergunta", btnCancelAsk: "Cancelar", ansTitle: "Responder Turista", btnSendAns: "Responder" },
+            en: { splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Premium Safe Route", menuLang: "🌐 Languages", menuChangeRole: "👤 Change Role", level: "⭐ Lvl 1", formTitle: "New Record", optNewPlace: "➕ Add New Place", placeNewLocal: "New Place Name", placeName: "Product (Ex: Water)", placePrice: "Price", catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save", btnCancel: "Cancel", alertaSalvo: "Saved successfully!", alertaFalta: "Fill in all fields!", alertaDuplicado: "Product already exists!", statusGreen: "✅ Trusted", statusYellow: "⏳ Under Review", statusRed: "🚨 Scam Alert", btnYes: "👍 Yes", btnNo: "👎 No", searchTitle: "Search Place or Product", searchPlaceholder: "Ex: Kiosk, Water...", searchClose: "Close", roleTitle: "How do you want to use the App?", roleTourist: "I'm a Tourist", roleTouristSub: "Search safe places and ask prices.", roleLocal: "I'm a Local Evaluator", roleLocalSub: "Register prices and answer tourists.", btnAddPhoto: "📸 Add Photo", btnLogin: "Sign in with Google", btnLogout: "Sign Out", pwTitle: "Premium Access", pwSub: "Unlimited searches and Safe Routes.", pwPlan1: "7-Day Pass", pwPlan2: "15-Day Pass", pwPlan3: "30-Day Pass", pwCancel: "Maybe later", badgeMedia: "⚖️ Average Price", badgeCaro: "📈 Above Average", badgeBom: "✨ Best Price",
+                  askTitle: "What do you want to buy?", askSub: "The local community will tell you the fair price.", btnAskPhoto: "📸 Photo (Optional)", btnSendAsk: "Send Question", btnCancelAsk: "Cancel", ansTitle: "Answer Tourist", btnSendAns: "Answer" },
+            es: { splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Ruta Premium Segura", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Cambiar Perfil", level: "⭐ Nvl 1", formTitle: "Nuevo Registro", optNewPlace: "➕ Añadir Nuevo Lugar", placeNewLocal: "Nombre del Nuevo Lugar", placeName: "Producto (Ej: Agua)", placePrice: "Precio", catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa todos los campos!", alertaDuplicado: "¡Producto ya existe!", statusGreen: "✅ Confiable", statusYellow: "⏳ En Revisión", statusRed: "🚨 Alerta de Estafa", btnYes: "👍 Sí", btnNo: "👎 No", searchTitle: "Buscar Lugar o Producto", searchPlaceholder: "Ej: Kiosco, Agua...", searchClose: "Cerrar", roleTitle: "¿Cómo quieres usar la App?", roleTourist: "Soy Turista", roleTouristSub: "Buscar lugares seguros y preguntar precios.", roleLocal: "Soy Evaluador Local", roleLocalSub: "Registrar precios y responder turistas.", btnAddPhoto: "📸 Añadir Foto", btnLogin: "Entrar con Google", btnLogout: "Cerrar Sesión", pwTitle: "Acceso Premium", pwSub: "Búsquedas ilimitadas y Rutas Seguras.", pwPlan1: "Pase de 7 Días", pwPlan2: "Pase de 15 Días", pwPlan3: "Pase de 30 Días", pwCancel: "Quizás después", badgeMedia: "⚖️ Precio Promedio", badgeCaro: "📈 Por Encima de Media", badgeBom: "✨ Mejor Precio",
+                  askTitle: "¿Qué quieres comprar?", askSub: "La comunidad local te dirá el precio justo.", btnAskPhoto: "📸 Foto (Opcional)", btnSendAsk: "Enviar Pregunta", btnCancelAsk: "Cancelar", ansTitle: "Responder al Turista", btnSendAns: "Responder" }
         };
 
-        // FUNÇÕES UTILITÁRIAS DOM
         const getEl = (id) => document.getElementById(id);
         const setTxt = (id, txt) => { const e = getEl(id); if(e) e.innerText = txt; };
         const setPlc = (id, txt) => { const e = getEl(id); if(e) e.placeholder = txt; };
 
-        // APLICAR IDIOMA
         function aplicarIdioma(lang) {
             estadoApp.idioma = lang; const t = dicionario[lang];
-            
             document.querySelectorAll('.sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; });
             const opt = getEl('lang_' + lang); if(opt) { opt.classList.add('ativo-option'); opt.querySelector('.check').style.display = 'inline'; }
 
             setTxt('t_splashSub', t.splashSub); setTxt('t_menuRoute', t.menuRoute); setTxt('t_menuLang', t.menuLang); setTxt('t_menuChangeRole', t.menuChangeRole); setTxt('t_level', t.level); setTxt('t_formTitle', t.formTitle); setTxt('t_catDrink', t.catDrink); setTxt('t_catFood', t.catFood); setTxt('t_catService', t.catService); setTxt('t_catTicket', t.catTicket); setTxt('t_btnCancel', t.btnCancel); setTxt('t_optNewPlace', t.optNewPlace); setTxt('t_searchTitle', t.searchTitle); setTxt('t_searchClose', t.searchClose); setTxt('t_roleTitle', t.roleTitle); setTxt('t_roleTourist', t.roleTourist); setTxt('t_roleTouristSub', t.roleTouristSub); setTxt('t_roleLocal', t.roleLocal); setTxt('t_roleLocalSub', t.roleLocalSub); setTxt('t_btnAddPhoto', t.btnAddPhoto); setTxt('t_btnLogin', t.btnLogin); setTxt('t_btnLogout', t.btnLogout); setTxt('t_pwTitle', t.pwTitle); setTxt('t_pwSub', t.pwSub); setTxt('t_pwPlan1', t.pwPlan1); setTxt('t_pwPlan2', t.pwPlan2); setTxt('t_pwPlan3', t.pwPlan3); setTxt('t_pwCancel', t.pwCancel);
+            setTxt('t_askTitle', t.askTitle); setTxt('t_askSub', t.askSub); setTxt('t_btnAskPhoto', t.btnAskPhoto); setTxt('t_btnSendAsk', t.btnSendAsk); setTxt('t_btnCancelAsk', t.btnCancelAsk); setTxt('t_ansTitle', t.ansTitle);
+            
             setPlc('nomeLocalInput', t.placeNewLocal); setPlc('nomeProduto', t.placeName); setPlc('precoProduto', t.placePrice); setPlc('inputBusca', t.searchPlaceholder);
 
-            const m1 = getEl('langSubMenu'); if(m1) m1.classList.remove('open');
-            const m2 = getEl('sideMenu'); if(m2) m2.classList.remove('open');
-            const mo = getEl('menuOverlay'); if(mo) mo.style.display = 'none';
-            
+            getEl('langSubMenu')?.classList.remove('open'); getEl('sideMenu')?.classList.remove('open'); if(getEl('menuOverlay')) getEl('menuOverlay').style.display = 'none';
             desenharPinos(); 
         }
 
-        // APLICAR MOEDA
         function aplicarMoeda(moeda) {
             estadoApp.moeda = moeda;
             document.querySelectorAll('#currencySubMenu .sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; });
             const opt = getEl('cur_' + moeda); if(opt) { opt.classList.add('ativo-option'); opt.querySelector('.check').style.display = 'inline'; }
             
-            const m1 = getEl('currencySubMenu'); if(m1) m1.classList.remove('open');
-            const m2 = getEl('sideMenu'); if(m2) m2.classList.remove('open');
-            const mo = getEl('menuOverlay'); if(mo) mo.style.display = 'none';
-            
+            getEl('currencySubMenu')?.classList.remove('open'); getEl('sideMenu')?.classList.remove('open'); if(getEl('menuOverlay')) getEl('menuOverlay').style.display = 'none';
             desenharPinos(); atualizarPrecosPaywall();
         }
 
         function atualizarPrecosPaywall() {
-            const usdRates = [4.99, 7.99, 12.99]; 
-            const taxa = taxasCambio[estadoApp.moeda].taxa / taxasCambio['USD'].taxa; 
-            setTxt('precoPlan1', `${taxasCambio[estadoApp.moeda].sim} ${(usdRates[0] * taxa).toFixed(2)}`);
-            setTxt('precoPlan2', `${taxasCambio[estadoApp.moeda].sim} ${(usdRates[1] * taxa).toFixed(2)}`);
-            setTxt('precoPlan3', `${taxasCambio[estadoApp.moeda].sim} ${(usdRates[2] * taxa).toFixed(2)}`);
+            const usd = [4.99, 7.99, 12.99]; const taxa = taxasCambio[estadoApp.moeda].taxa / taxasCambio['USD'].taxa; 
+            setTxt('precoPlan1', `${taxasCambio[estadoApp.moeda].sim} ${(usd[0] * taxa).toFixed(2)}`); setTxt('precoPlan2', `${taxasCambio[estadoApp.moeda].sim} ${(usd[1] * taxa).toFixed(2)}`); setTxt('precoPlan3', `${taxasCambio[estadoApp.moeda].sim} ${(usd[2] * taxa).toFixed(2)}`);
         }
 
-        // APLICAR PERFIL
         function definirPerfil(tipo) {
             estadoApp.perfil = tipo; document.body.className = 'modo-' + tipo;
             localStorage.setItem('gringosafe_perfil', tipo);
-            const tp = getEl('telaPerfil'); if(tp) tp.style.display = 'none';
+            if(getEl('telaPerfil')) getEl('telaPerfil').style.display = 'none';
             desenharPinos();
             if(tipo === 'turista') { const b = getEl('badgeBuscas'); if(b) b.innerText = estadoApp.buscasRestantes; }
         }
 
-        // INIT DADOS LOCAIS
-        const perfilSalvo = localStorage.getItem('gringosafe_perfil');
-        if(perfilSalvo) estadoApp.perfil = perfilSalvo;
-        const buscasSalvas = parseInt(localStorage.getItem('gringosafe_buscas_restantes'));
-        if(!isNaN(buscasSalvas)) estadoApp.buscasRestantes = buscasSalvas;
+        const perfilSalvo = localStorage.getItem('gringosafe_perfil'); if(perfilSalvo) estadoApp.perfil = perfilSalvo;
+        const bSalvas = parseInt(localStorage.getItem('gringosafe_buscas_restantes')); if(!isNaN(bSalvas)) estadoApp.buscasRestantes = bSalvas;
+        setTimeout(() => { if(!localStorage.getItem('gringosafe_perfil')) { if(getEl('telaPerfil')) getEl('telaPerfil').style.display = 'flex'; } else { definirPerfil(estadoApp.perfil); } }, 2500);
 
-        setTimeout(() => {
-            if(!localStorage.getItem('gringosafe_perfil')) { const tp = getEl('telaPerfil'); if(tp) tp.style.display = 'flex'; } 
-            else { definirPerfil(estadoApp.perfil); }
-        }, 2500);
+        getEl('btnLangPtInicio')?.addEventListener('click', () => aplicarIdioma('pt')); getEl('btnLangEnInicio')?.addEventListener('click', () => aplicarIdioma('en')); getEl('btnLangEsInicio')?.addEventListener('click', () => aplicarIdioma('es'));
+        getEl('lang_pt')?.addEventListener('click', () => aplicarIdioma('pt')); getEl('lang_en')?.addEventListener('click', () => aplicarIdioma('en')); getEl('lang_es')?.addEventListener('click', () => aplicarIdioma('es'));
+        getEl('cur_BRL')?.addEventListener('click', () => aplicarMoeda('BRL')); getEl('cur_USD')?.addEventListener('click', () => aplicarMoeda('USD')); getEl('cur_EUR')?.addEventListener('click', () => aplicarMoeda('EUR')); getEl('cur_ARS')?.addEventListener('click', () => aplicarMoeda('ARS'));
+        getEl('btnPerfilTurista')?.addEventListener('click', () => definirPerfil('turista')); getEl('btnPerfilAvaliador')?.addEventListener('click', () => definirPerfil('avaliador'));
+        getEl('btnTrocarPerfil')?.addEventListener('click', () => { getEl('sideMenu')?.classList.remove('open'); getEl('menuOverlay').style.display = 'none'; getEl('telaPerfil').style.display = 'flex'; });
+        getEl('btnLangToggle')?.addEventListener('click', () => getEl('langSubMenu')?.classList.toggle('open')); getEl('btnCurrencyToggle')?.addEventListener('click', () => getEl('currencySubMenu')?.classList.toggle('open'));
+        getEl('btnAbrirMenu')?.addEventListener('click', () => { getEl('sideMenu')?.classList.add('open'); getEl('menuOverlay').style.display = 'block'; }); getEl('menuOverlay')?.addEventListener('click', () => { getEl('sideMenu')?.classList.remove('open'); getEl('menuOverlay').style.display = 'none'; });
 
-        // VÍNCULO DE EVENTOS DE CLIQUE MANUAIS (Evita bugs do onclick do HTML)
-        getEl('btnLangPtInicio')?.addEventListener('click', () => aplicarIdioma('pt'));
-        getEl('btnLangEnInicio')?.addEventListener('click', () => aplicarIdioma('en'));
-        getEl('btnLangEsInicio')?.addEventListener('click', () => aplicarIdioma('es'));
-        
-        getEl('lang_pt')?.addEventListener('click', () => aplicarIdioma('pt'));
-        getEl('lang_en')?.addEventListener('click', () => aplicarIdioma('en'));
-        getEl('lang_es')?.addEventListener('click', () => aplicarIdioma('es'));
+        const planos = [getEl('btnPlan1'), getEl('btnPlan2'), getEl('btnPlan3')]; const precos = [4.99, 7.99, 12.99];
+        planos.forEach((p, i) => { p?.addEventListener('click', () => { planos.forEach(pl => pl?.classList.remove('active')); p.classList.add('active'); estadoApp.planoPrecoUSD = precos[i]; }); });
+        const processarPgto = (m) => { alert(`✅ Simulação: ${m}\n\nAcesso Premium liberado!`); estadoApp.buscasRestantes = 999; localStorage.setItem('gringosafe_buscas_restantes', 999); const b = getEl('badgeBuscas'); if(b) b.innerText = 999; getEl('modalPaywall').style.display = 'none'; };
+        getEl('btnApplePay')?.addEventListener('click', () => processarPgto('Apple Pay')); getEl('btnGooglePay')?.addEventListener('click', () => processarPgto('Google Pay')); getEl('btnFecharPaywall')?.addEventListener('click', () => getEl('modalPaywall').style.display = 'none');
 
-        getEl('cur_BRL')?.addEventListener('click', () => aplicarMoeda('BRL'));
-        getEl('cur_USD')?.addEventListener('click', () => aplicarMoeda('USD'));
-        getEl('cur_EUR')?.addEventListener('click', () => aplicarMoeda('EUR'));
-        getEl('cur_ARS')?.addEventListener('click', () => aplicarMoeda('ARS'));
-
-        getEl('btnPerfilTurista')?.addEventListener('click', () => definirPerfil('turista'));
-        getEl('btnPerfilAvaliador')?.addEventListener('click', () => definirPerfil('avaliador'));
-        
-        getEl('btnTrocarPerfil')?.addEventListener('click', () => {
-            getEl('sideMenu')?.classList.remove('open'); getEl('menuOverlay').style.display = 'none';
-            getEl('telaPerfil').style.display = 'flex';
-        });
-
-        getEl('btnLangToggle')?.addEventListener('click', () => getEl('langSubMenu')?.classList.toggle('open'));
-        getEl('btnCurrencyToggle')?.addEventListener('click', () => getEl('currencySubMenu')?.classList.toggle('open'));
-        
-        getEl('btnAbrirMenu')?.addEventListener('click', () => { getEl('sideMenu')?.classList.add('open'); getEl('menuOverlay').style.display = 'block'; });
-        getEl('menuOverlay')?.addEventListener('click', () => { getEl('sideMenu')?.classList.remove('open'); getEl('menuOverlay').style.display = 'none'; });
-
-        // EVENTOS PAYWALL
-        const planos = [getEl('btnPlan1'), getEl('btnPlan2'), getEl('btnPlan3')];
-        const precos = [4.99, 7.99, 12.99];
-        planos.forEach((plano, index) => {
-            plano?.addEventListener('click', () => {
-                planos.forEach(p => p?.classList.remove('active')); plano.classList.add('active');
-                estadoApp.planoPrecoUSD = precos[index];
-            });
-        });
-
-        const processarPagamento = (metodo) => {
-            alert(`✅ Simulação: ${metodo}\n\nO cartão seria debitado em US$ ${estadoApp.planoPrecoUSD}.\n\nAcesso Premium liberado!`);
-            estadoApp.buscasRestantes = 999; localStorage.setItem('gringosafe_buscas_restantes', 999);
-            const b = getEl('badgeBuscas'); if(b) b.innerText = 999;
-            getEl('modalPaywall').style.display = 'none';
-        };
-
-        getEl('btnApplePay')?.addEventListener('click', () => processarPagamento('Apple Pay'));
-        getEl('btnGooglePay')?.addEventListener('click', () => processarPagamento('Google Pay'));
-        getEl('btnFecharPaywall')?.addEventListener('click', () => getEl('modalPaywall').style.display = 'none');
-
-        // FIREBASE E AUTENTICAÇÃO
+        // FIREBASE
         const firebaseConfig = { apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs", authDomain: "gringosafe-1f434.firebaseapp.com", projectId: "gringosafe-1f434", storageBucket: "gringosafe-1f434.firebasestorage.app", messagingSenderId: "949745647794", appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); const provider = new GoogleAuthProvider();
 
@@ -390,49 +365,35 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                estadoApp.usuario = user;
-                getEl('menuAvatar').innerHTML = `<img src="${user.photoURL}" alt="Foto">`; setTxt('menuNome', user.displayName.split(" ")[0]); 
-                getEl('btnLoginGoogle').style.display = 'none'; getEl('btnLogout').style.display = 'block';
-                
+                estadoApp.usuario = user; getEl('menuAvatar').innerHTML = `<img src="${user.photoURL}" alt="Foto">`; setTxt('menuNome', user.displayName.split(" ")[0]); getEl('btnLoginGoogle').style.display = 'none'; getEl('btnLogout').style.display = 'block';
                 const docSnap = await getDoc(doc(db, "usuarios", user.uid));
-                if (docSnap.exists()) { estadoApp.saldo = docSnap.data().saldo || 0.00; } 
-                else { estadoApp.saldo = 0.00; await setDoc(doc(db, "usuarios", user.uid), { nome: user.displayName, email: user.email, saldo: 0, dataCadastro: new Date() }); }
+                if (docSnap.exists()) { estadoApp.saldo = docSnap.data().saldo || 0.00; } else { estadoApp.saldo = 0.00; await setDoc(doc(db, "usuarios", user.uid), { nome: user.displayName, email: user.email, saldo: 0, dataCadastro: new Date() }); }
                 setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
             } else {
-                estadoApp.usuario = null; estadoApp.saldo = 0.00; 
-                setTxt('saldoDisplay', `R$ 0,00`); setTxt('menuNome', `Visitante`);
-                getEl('menuAvatar').innerHTML = `👤`; getEl('btnLoginGoogle').style.display = 'flex'; getEl('btnLogout').style.display = 'none';
+                estadoApp.usuario = null; estadoApp.saldo = 0.00; setTxt('saldoDisplay', `R$ 0,00`); setTxt('menuNome', `Visitante`); getEl('menuAvatar').innerHTML = `👤`; getEl('btnLoginGoogle').style.display = 'flex'; getEl('btnLogout').style.display = 'none';
             }
         });
 
-        // MAPA, IA E INICIALIZAÇÃO
         window.addEventListener('load', () => { setTimeout(() => { getEl('splashScreen').style.opacity = '0'; setTimeout(() => { getEl('splashScreen').style.display = 'none'; atualizarPrecosPaywall(); }, 600); }, 2000); });
         
         let modeloIA = null; mobilenet.load().then(m => modeloIA = m);
         const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapa);
         let pinoUsuario = null; const camadaDePinos = L.layerGroup().addTo(mapa); let marcadoresNoMapa = {};
         
-        const buscarLoc = () => mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 });
-        buscarLoc(); getEl('btnMira')?.addEventListener('click', buscarLoc);
+        const buscarLoc = () => mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 }); buscarLoc(); getEl('btnMira')?.addEventListener('click', buscarLoc);
         mapa.on('locationfound', (e) => { if(pinoUsuario) mapa.removeLayer(pinoUsuario); pinoUsuario = L.marker(e.latlng).addTo(mapa).bindPopup("📍 Você está aqui!"); });
 
         const iYellow = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iGreen = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iRed = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
+        
+        // NOVO: ÍCONE ROXO PARA PERGUNTAS
+        const iPurple = L.divIcon({ className: 'marker-pergunta', html: '❓', iconSize: [30, 30], iconAnchor: [15, 15] });
 
-        // EVENTOS DE BUSCA E ROTA
-        getEl('btnCarregarRoteiro')?.addEventListener('click', () => {
-            getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none';
-            if(estadoApp.perfil === 'turista' && estadoApp.buscasRestantes !== 999) { getEl('modalPaywall').style.display = 'flex'; return; }
-            alert("Acesso Premium Liberado. Mostrando Rotas...");
-        });
+        getEl('btnCarregarRoteiro')?.addEventListener('click', () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; if(estadoApp.perfil === 'turista' && estadoApp.buscasRestantes !== 999) { getEl('modalPaywall').style.display = 'flex'; return; } alert("Acesso Premium Liberado. Mostrando Rotas..."); });
 
         getEl('btnAbrirBusca')?.addEventListener('click', () => {
-            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes !== 999) {
-                if (estadoApp.buscasRestantes <= 0) { getEl('modalPaywall').style.display = 'flex'; return; }
-                estadoApp.buscasRestantes--; localStorage.setItem('gringosafe_buscas_restantes', estadoApp.buscasRestantes);
-                const bg = getEl('badgeBuscas'); if(bg) bg.innerText = estadoApp.buscasRestantes;
-            }
+            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes !== 999) { if (estadoApp.buscasRestantes <= 0) { getEl('modalPaywall').style.display = 'flex'; return; } estadoApp.buscasRestantes--; localStorage.setItem('gringosafe_buscas_restantes', estadoApp.buscasRestantes); const bg = getEl('badgeBuscas'); if(bg) bg.innerText = estadoApp.buscasRestantes; }
             getEl('modalBusca').style.display = 'flex'; getEl('inputBusca').value = ''; getEl('resultadosBusca').innerHTML = ''; getEl('inputBusca').focus();
         });
         
@@ -451,28 +412,21 @@
             }
         });
 
-        // FORMULÁRIO DE ADICIONAR
+        // -----------------------------------------------------
+        // FLUXO 1: AVALIADOR (ADICIONAR PREÇO NORMAL)
+        // -----------------------------------------------------
         getEl('selectLocal')?.addEventListener('change', (e) => getEl('nomeLocalInput').style.display = (e.target.value === 'NEW') ? 'block' : 'none');
-        getEl('btnAdicionar')?.addEventListener('click', () => { 
-            getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; getEl('cameraInput').value = ''; getEl('modalForm').style.display = 'flex'; 
-        });
+        getEl('btnAdicionar')?.addEventListener('click', () => { getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; getEl('cameraInput').value = ''; getEl('modalForm').style.display = 'flex'; });
         getEl('btnEscolherFoto')?.addEventListener('click', () => getEl('cameraInput').click());
         getEl('btnCancelar')?.addEventListener('click', () => { getEl('modalForm').style.display = 'none'; getEl('cameraInput').value = ''; });
         
         getEl('cameraInput')?.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
-                const leitor = new FileReader();
-                leitor.onload = (evento) => {
+                const leitor = new FileReader(); leitor.onload = (evento) => {
                     getEl('imagemPreview').src = evento.target.result; getEl('imagemPreview').style.display = 'block'; getEl('nomeProduto').value = '';
                     if (modeloIA) {
                         getEl('iaStatus').style.display = 'block'; setTxt('iaStatus', '🤖 IA...');
-                        getEl('imagemPreview').onload = () => {
-                            modeloIA.classify(getEl('imagemPreview')).then(prev => {
-                                getEl('iaStatus').style.display = 'none'; const tIngles = prev[0].className.split(',')[0].toLowerCase().trim();
-                                if(estadoApp.idioma === 'en') { getEl('nomeProduto').value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } 
-                                else { const tTrad = dicionario['pt'][tIngles]; getEl('nomeProduto').value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); }
-                            });
-                        }
+                        getEl('imagemPreview').onload = () => { modeloIA.classify(getEl('imagemPreview')).then(prev => { getEl('iaStatus').style.display = 'none'; const tIngles = prev[0].className.split(',')[0].toLowerCase().trim(); if(estadoApp.idioma === 'en') { getEl('nomeProduto').value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } else { const tTrad = dicionario['pt'][tIngles]; getEl('nomeProduto').value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } }); }
                     }
                 }; leitor.readAsDataURL(e.target.files[0]);
             }
@@ -488,16 +442,111 @@
 
             await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: centro.lat, lng: centro.lng, status: "pendente", autor: aMail, data: new Date() });
             
-            if (estadoApp.usuario) {
-                await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(0.25) });
-                estadoApp.saldo += 0.25; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
-            }
+            if (estadoApp.usuario) { await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(0.25) }); estadoApp.saldo += 0.25; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`); }
             getEl('modalForm').style.display = 'none'; alert(t.alertaSalvo);
         });
 
-        // BANCO DE DADOS EM TEMPO REAL E ALGORITMOS
+        // -----------------------------------------------------
+        // FLUXO 2: TURISTA (FAZER PERGUNTA)
+        // -----------------------------------------------------
+        getEl('btnPerguntar')?.addEventListener('click', () => {
+            getEl('nomeProdutoPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; getEl('cameraInputPergunta').value = '';
+            getEl('modalPergunta').style.display = 'flex';
+        });
+
+        getEl('btnEscolherFotoPergunta')?.addEventListener('click', () => getEl('cameraInputPergunta').click());
+        getEl('btnCancelarPergunta')?.addEventListener('click', () => getEl('modalPergunta').style.display = 'none');
+
+        getEl('cameraInputPergunta')?.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const leitor = new FileReader(); leitor.onload = (evento) => {
+                    getEl('imagemPreviewPergunta').src = evento.target.result; getEl('imagemPreviewPergunta').style.display = 'block'; getEl('nomeProdutoPergunta').value = '';
+                    if (modeloIA) {
+                        getEl('iaStatusPergunta').style.display = 'block'; setTxt('iaStatusPergunta', '🤖 IA...');
+                        getEl('imagemPreviewPergunta').onload = () => { modeloIA.classify(getEl('imagemPreviewPergunta')).then(prev => { getEl('iaStatusPergunta').style.display = 'none'; const tIngles = prev[0].className.split(',')[0].toLowerCase().trim(); if(estadoApp.idioma === 'en') { getEl('nomeProdutoPergunta').value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } else { const tTrad = dicionario['pt'][tIngles]; getEl('nomeProdutoPergunta').value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } }); }
+                    }
+                }; leitor.readAsDataURL(e.target.files[0]);
+            }
+        });
+
+        getEl('btnEnviarPergunta')?.addEventListener('click', async () => {
+            const itemDesejado = getEl('nomeProdutoPergunta').value.trim();
+            if(!itemDesejado) return alert("Digite o nome do item!");
+            
+            const centro = mapa.getCenter();
+            // Cria a Missão no banco de dados
+            await addDoc(collection(db, "perguntas"), { nomeItem: itemDesejado, lat: centro.lat, lng: centro.lng, status: "aberta", data: new Date() });
+            
+            getEl('modalPergunta').style.display = 'none';
+            alert("Pergunta enviada no mapa! Avaliadores locais foram notificados.");
+        });
+
+        // -----------------------------------------------------
+        // FLUXO 3: AVALIADOR (RESPONDER A PERGUNTA)
+        // -----------------------------------------------------
+        window.abrirModalResposta = function(idPergunta, nomeItem) {
+            // Se for Turista, ele não pode responder, ele só vê.
+            if(estadoApp.perfil === 'turista') {
+                alert("Aguardando um Avaliador Local responder o preço deste item!");
+                return;
+            }
+            // Se for Avaliador, abre o form VIP
+            setTxt('respItemNome', nomeItem);
+            getEl('idPerguntaAtual').value = idPergunta;
+            getEl('precoProdutoResposta').value = '';
+            
+            // Popula os locais (igual no form normal)
+            let h = `<option value="NEW">➕ Adicionar Novo Local</option>`;
+            Object.keys(estadoApp.dadosHospedados).sort().forEach(n => { if(n !== "Desconhecido") h += `<option value="${n}">${n}</option>`; });
+            getEl('selectLocalResposta').innerHTML = h;
+            getEl('nomeLocalInputResposta').style.display = 'block'; getEl('nomeLocalInputResposta').value = '';
+
+            getEl('modalResposta').style.display = 'flex';
+        };
+
+        getEl('selectLocalResposta')?.addEventListener('change', (e) => getEl('nomeLocalInputResposta').style.display = (e.target.value === 'NEW') ? 'block' : 'none');
+        getEl('btnCancelarResposta')?.addEventListener('click', () => getEl('modalResposta').style.display = 'none');
+
+        getEl('btnEnviarResposta')?.addEventListener('click', async () => {
+            const idPergunta = getEl('idPerguntaAtual').value;
+            const nomeItem = getEl('respItemNome').innerText;
+            const vSel = getEl('selectLocalResposta').value; 
+            const localFinal = (vSel === 'NEW') ? getEl('nomeLocalInputResposta').value.trim() : vSel; 
+            const prc = getEl('precoProdutoResposta').value;
+
+            if(!localFinal || !prc) return alert("Preencha o local e o preço!");
+
+            // Converte preço pra BRL
+            const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc);
+            const aMail = estadoApp.usuario ? estadoApp.usuario.email : "Avaliador VIP";
+
+            try {
+                // 1. Fechar a pergunta no banco
+                await updateDoc(doc(db, "perguntas", idPergunta), { status: "respondida" });
+                
+                // 2. Criar o pino real no mapa
+                const centro = mapa.getCenter();
+                await addDoc(collection(db, "precos"), { local: localFinal, nome: nomeItem, preco: prcReal, categoria: "Serviço", lat: centro.lat, lng: centro.lng, status: "pendente", autor: aMail, data: new Date() });
+                
+                // 3. Pagar a Super Recompensa de 1 REAL
+                if (estadoApp.usuario) { 
+                    await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(1.00) }); 
+                    estadoApp.saldo += 1.00; 
+                    setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`); 
+                }
+
+                getEl('modalResposta').style.display = 'none';
+                alert("Missão concluída! Você ganhou +R$ 1,00.");
+            } catch(e) { alert("Erro ao enviar resposta."); }
+        });
+
+
+        // -----------------------------------------------------
+        // RENDERIZANDO TUDO (Pinos de Preço + Pinos de Dúvida)
+        // -----------------------------------------------------
         window.votarItem = async (id, status) => { await updateDoc(doc(db, "precos", id), { status: status }); };
 
+        // Ouve Preços normais
         onSnapshot(collection(db, "precos"), (snapshot) => {
             estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
             snapshot.forEach((doc) => {
@@ -509,17 +558,26 @@
                 if(!estadoApp.mediaPrecos[nl]) { estadoApp.mediaPrecos[nl] = 0; estadoApp.contagemPrecos[nl] = 0; }
                 estadoApp.mediaPrecos[nl] += item.preco; estadoApp.contagemPrecos[nl]++;
             });
-            
-            let h = `<option value="NEW" id="t_optNewPlace">${dicionario[estadoApp.idioma].optNewPlace}</option>`;
-            Object.keys(estadoApp.dadosHospedados).sort().forEach(n => { if(n !== "Desconhecido") h += `<option value="${n}">${n}</option>`; });
-            getEl('selectLocal').innerHTML = h;
             desenharPinos();
+        });
+
+        // Ouve Perguntas/Missões
+        onSnapshot(collection(db, "perguntas"), (snapshot) => {
+            estadoApp.perguntasAbertas = {};
+            snapshot.forEach((doc) => {
+                const p = doc.data();
+                if(p.status === "aberta") {
+                    estadoApp.perguntasAbertas[doc.id] = p;
+                }
+            });
+            desenharPinos(); // Redesenha para colocar os pinos roxos
         });
 
         function desenharPinos() {
             camadaDePinos.clearLayers(); marcadoresNoMapa = {}; const t = dicionario[estadoApp.idioma];
             const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
 
+            // DESENHA PINOS REAIS (BARRACAS)
             for (const nomeL in estadoApp.dadosHospedados) {
                 const dadosL = estadoApp.dadosHospedados[nomeL]; let tItens = dadosL.itens.length; let qAb = 0; let qAp = 0; let htmlLista = '';
                 
@@ -546,7 +604,26 @@
                 const pino = L.marker([dadosL.lat, dadosL.lng], {icon: icP}); pino.bindPopup(`<div class="popup-info"><h3>🏪 ${nomeL}</h3>${st}<div class="lista-itens">${htmlLista}</div></div>`);
                 camadaDePinos.addLayer(pino); marcadoresNoMapa[nomeL] = pino;
             }
+
+            // DESENHA PINOS ROXOS (MISSÕES / PERGUNTAS)
+            for (const idPerg in estadoApp.perguntasAbertas) {
+                const perg = estadoApp.perguntasAbertas[idPerg];
+                const pinoRoxo = L.marker([perg.lat, perg.lng], {icon: iPurple});
+                
+                // O HTML do balão muda dependendo se é turista ou avaliador
+                let htmlBalao = `
+                    <div style="text-align:center; font-family:'Poppins', sans-serif;">
+                        <h3 style="margin:0 0 5px 0; color:#9c27b0;">Dúvida de Turista</h3>
+                        <p style="margin:0 0 10px 0; font-size:14px;">Preço justo para: <strong>${perg.nomeItem}</strong>?</p>
+                        <button onclick="window.abrirModalResposta('${idPerg}', '${perg.nomeItem}')" style="background:#9c27b0; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Responder e Ganhar</button>
+                    </div>
+                `;
+                pinoRoxo.bindPopup(htmlBalao);
+                camadaDePinos.addLayer(pinoRoxo);
+            }
+
             setTxt('t_btnSave', `${t.btnSave} (+${sim} ${(0.25 * cotacao).toFixed(2)})`);
+            setTxt('t_btnSendAns', `${t.ansTitle} (+${sim} ${(1.00 * cotacao).toFixed(2)})`);
             if(estadoApp.usuario) setTxt('saldoDisplay', `${sim} ${(estadoApp.saldo * cotacao).toFixed(2)}`);
         }
     </script>
