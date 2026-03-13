@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -67,6 +67,7 @@
         .btn-adicionar svg { width: 36px; height: 36px; }
         .btn-pesquisa { width: 60px; height: 60px; background: white; color: #004d40; box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.15); position: relative; }
         .btn-pesquisa svg { width: 26px; height: 26px; }
+        
         .badge-buscas { position: absolute; top: -5px; right: -5px; background: #c62828; color: white; font-size: 11px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: none; }
 
         .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.15); z-index: 1000; cursor: pointer; }
@@ -98,7 +99,7 @@
         #imagemPreview { max-width: 100%; max-height: 120px; border-radius: 10px; display: none; margin: 10px auto; object-fit: cover; }
         #iaStatus { font-size: 12px; color: #004d40; font-weight: 600; display: none; margin: 5px 0; background: #e0f2f1; padding: 5px; border-radius: 8px; }
 
-        /* --- ESTILOS DO PAYWALL (GOOGLE & APPLE PAY) --- */
+        /* --- ESTILOS DO PAYWALL CORRIGIDO --- */
         #modalPaywall .modal-content { background: linear-gradient(180deg, #ffffff 0%, #f0f2f5 100%); }
         .pw-icon { font-size: 40px; margin-bottom: 10px; }
         .pw-title { font-size: 22px; color: #004d40; font-weight: 700; margin: 0 0 10px 0; }
@@ -112,13 +113,10 @@
         
         .payment-methods { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
         
-        /* Botão Apple Pay */
-        .btn-apple-pay { background-color: #000; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-apple-pay svg { width: 40px; height: 16px; fill: white; }
-        
-        /* Botão Google Pay */
-        .btn-google-pay { background-color: #fff; color: #3c4043; border: 1px solid #dadce0; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: 600; font-family: "Product Sans", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .btn-google-pay svg { width: 40px; height: 16px; }
+        /* Botões Limpos de Pagamento Nativo */
+        .btn-apple-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
+        .btn-google-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: "Product Sans", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
+        .btn-apple-pay:active, .btn-google-pay:active { transform: scale(0.98); }
 
         body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista .user-status { display: none !important; }
@@ -135,6 +133,11 @@
     </div>
 
     <div id="telaPerfil">
+        <div class="lang-selector-inicial">
+            <div onclick="mudarIdioma('pt')">🇧🇷 PT</div>
+            <div onclick="mudarIdioma('en')">🇺🇸 EN</div>
+            <div onclick="mudarIdioma('es')">🇪🇸 ES</div>
+        </div>
         <h2 id="t_roleTitle">Como você quer usar o App?</h2>
         <button class="btn-perfil" onclick="escolherPerfil('turista')">
             📸 <strong id="t_roleTourist">Sou Turista</strong>
@@ -148,7 +151,6 @@
 
     <div class="menu-overlay" id="menuOverlay"></div>
     <div class="side-menu" id="sideMenu">
-        
         <div class="user-card">
             <div class="user-info">
                 <div class="user-avatar" id="menuAvatar">👤</div>
@@ -222,10 +224,10 @@
 
             <div class="payment-methods">
                 <button class="btn-apple-pay" onclick="simularNativo('Apple Pay')">
-                    <svg viewBox="0 0 38 16" xmlns="http://www.w3.org/2000/svg"><path d="M16.89 15.65c-1.39 0-2.11-.8-3.55-.8-1.4 0-2.22.82-3.56.82-1.43 0-2.65-1.12-3.41-2.48-1.57-2.82-2.1-7.22-.38-9.48.97-1.28 2.37-1.95 3.8-1.95 1.34 0 2.45.82 3.44.82 1.01 0 2.37-.9 3.89-.9 1.63 0 2.92.68 3.75 1.83-3.15 1.77-2.6 6.13.43 7.37-.73 1.9-1.94 3.78-3.3 4.77h-.01c-.34.33-.7.54-1.11.54zM14.65 1.64c-.3.8-.88 1.58-1.58 2.05-.6.41-1.36.65-2.09.73-.13-1.02.3-2.07.97-2.82.68-.78 1.64-1.29 2.56-1.42.09 1.02-.32 2.05-.98 2.82L14.65 1.64zM24.78 1.48v14.04h-2.31v-4.83h-3.49v4.83h-2.31V1.48h4.63c1.78 0 2.93.42 3.74 1.25.79.83 1.18 1.92 1.18 3.32 0 1.39-.4 2.49-1.18 3.3-.81.82-1.96 1.24-3.74 1.24h-2.33v-3.73h2.33c1.07 0 1.8-.23 2.19-.68.41-.45.62-1.14.62-2.1 0-.96-.2-1.63-.61-2.07-.39-.43-1.11-.66-2.19-.66h-2.33v-1.1h2.33v.01zM36.98 10.9l-5.32-9.42h2.51l3.01 5.6 1.01 2.03.97-2.03 2.96-5.6h2.46L39.26 10.9v4.61h-2.28V10.9z"/></svg>
+                    <span style="font-size: 24px; margin-bottom: 4px;"></span> Pay
                 </button>
                 <button class="btn-google-pay" onclick="simularNativo('Google Pay')">
-                    <svg viewBox="0 0 40 16" xmlns="http://www.w3.org/2000/svg"><path fill="#5f6368" d="M14.7 6.46l-4.72 10.9H7.6l1.64-3.55L3.9 6.46h2.51l3.86 5.56h.04l3.8-5.56zM6.02 0l-1.55 3.51H2V5.1h2.51v7.69c0 .66.17 1.16.51 1.5.34.34.78.51 1.32.51.46 0 .86-.08 1.2-.23v-1.46c-.23.1-.53.15-.89.15-.31 0-.54-.08-.7-.25-.16-.16-.24-.44-.24-.84V5.1h2.4V3.5h-2.4V.94H6.02z"/></svg>
+                    <span style="font-weight: 700; font-size: 22px;">G</span> Pay
                 </button>
             </div>
 
@@ -242,35 +244,26 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         // --- SISTEMA MULTI-MOEDAS (CÂMBIO) ---
-        // O banco salva em BRL. A tela converte baseado nessas taxas (Ajustáveis)
         const taxasCâmbio = {
             'BRL': { simbolo: 'R$', taxa: 1 },
-            'USD': { simbolo: 'US$', taxa: 0.20 }, // Ex: 1 real = 0.20 dolares (dolar a R$ 5,00)
+            'USD': { simbolo: 'US$', taxa: 0.20 },
             'EUR': { simbolo: '€', taxa: 0.18 },
-            'ARS': { simbolo: '$', taxa: 170.0 }  // Ex: 1 real = 170 pesos
+            'ARS': { simbolo: '$', taxa: 170.0 }
         };
         let moedaAtual = 'BRL';
-        let planoBasePrecoUSD = 4.99; // Preço do plano selecionado para a API de Pagamento
+        let planoBasePrecoUSD = 4.99; 
 
         window.mudarMoeda = function(moeda) {
             moedaAtual = moeda;
             document.querySelectorAll('#currencySubMenu .sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); el.querySelector('.check').style.display = 'none'; });
             document.getElementById('cur_' + moeda).classList.add('ativo-option'); document.getElementById('cur_' + moeda).querySelector('.check').style.display = 'inline';
-            
-            // Fecha menu
             document.getElementById('currencySubMenu').classList.remove('open'); document.getElementById('sideMenu').classList.remove('open'); document.getElementById('menuOverlay').style.display = 'none';
-            
-            // Recarrega o mapa (para mudar a moeda dos balões)
-            renderizarPinosAgrupados();
-            // Atualiza preços do Paywall
-            atualizarPrecosPaywall();
+            renderizarPinosAgrupados(); atualizarPrecosPaywall();
         }
 
         function atualizarPrecosPaywall() {
-            const planosUSD = [4.99, 7.99, 12.99]; // Preços fixos base em Dólar (padrão SaaS)
-            // Como a base é BRL no app, o USD é inverso. R$ 25 = $5.
+            const planosUSD = [4.99, 7.99, 12.99]; 
             const taxaParaMostrar = taxasCâmbio[moedaAtual].taxa / taxasCâmbio['USD'].taxa; 
-
             document.getElementById('precoPlan1').innerText = `${taxasCâmbio[moedaAtual].simbolo} ${(planosUSD[0] * taxaParaMostrar).toFixed(2)}`;
             document.getElementById('precoPlan2').innerText = `${taxasCâmbio[moedaAtual].simbolo} ${(planosUSD[1] * taxaParaMostrar).toFixed(2)}`;
             document.getElementById('precoPlan3').innerText = `${taxasCâmbio[moedaAtual].simbolo} ${(planosUSD[2] * taxaParaMostrar).toFixed(2)}`;
@@ -284,7 +277,6 @@
             es: { splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Ruta Premium Segura", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Cambiar Perfil", level: "⭐ Nvl 1", formTitle: "Nuevo Registro", optNewPlace: "➕ Añadir Nuevo Lugar", placeNewLocal: "Nombre del Nuevo Lugar", placeName: "Producto (Ej: Agua)", placePrice: "Precio", catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa todos los campos!", alertaDuplicado: "¡Producto ya existe!", statusGreen: "✅ Lugar Confiable", statusYellow: "⏳ Verificando...", statusRed: "🚨 Alerta de Abuso", btnYes: "👍 Confirmo", btnNo: "👎 Estafa", searchTitle: "Buscar Lugar o Producto", searchPlaceholder: "Ej: Kiosco, Agua...", searchClose: "Cerrar", roleTitle: "¿Cómo quieres usar la App?", roleTourist: "Soy Turista", roleTouristSub: "Buscar lugares seguros y precios.", roleLocal: "Soy Evaluador Local", roleLocalSub: "Registrar precios y ganar.", btnAddPhoto: "📸 Añadir Foto", btnLogin: "Entrar con Google", btnLogout: "Cerrar Sesión", pwTitle: "Acceso Premium", pwSub: "Búsquedas ilimitadas y Rutas Seguras.", pwPlan1: "Pase de 7 Días", pwPlan2: "Pase de 15 Días", pwPlan3: "Pase de 30 Días", pwCancel: "Quizás después" }
         };
 
-        let idiomaAtual = 'pt';
         window.mudarIdioma = function(idioma) {
             idiomaAtual = idioma; const t = dicionarioIdiomas[idioma];
             document.querySelectorAll('#langSubMenu .sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); el.querySelector('.check').style.display = 'none'; });
@@ -312,7 +304,7 @@
         function aplicarPerfil(perfil) { perfilAtual = perfil; document.body.className = 'modo-' + perfil; renderizarPinosAgrupados(); atualizarBadgeBuscas(); }
         function atualizarBadgeBuscas() { if(perfilAtual === 'turista') { document.getElementById('badgeBuscas').innerText = buscasRestantes; } }
 
-        // --- PAGAMENTO NATIVO (APPLE/GOOGLE PAY) ---
+        // --- LÓGICA DE PAGAMENTO 100% BLINDADA PARA MVP ---
         window.selecionarPlano = function(elemento, precoDolar) {
             document.querySelectorAll('.plan-card').forEach(el => el.classList.remove('active'));
             elemento.classList.add('active');
@@ -320,36 +312,16 @@
         };
 
         window.simularNativo = function(metodo) {
-            // Se o navegador suportar a API de pagamento real, ele invoca a carteira do celular.
-            if (window.PaymentRequest) {
-                const supportedInstruments = [{ supportedMethods: 'https://google.com/pay' }, { supportedMethods: 'https://apple.com/apple-pay' }];
-                const details = {
-                    total: { label: 'GringoSafe Premium', amount: { currency: 'USD', value: planoBasePrecoUSD.toString() } }
-                };
-                try {
-                    const request = new PaymentRequest(supportedInstruments, details);
-                    request.show().then(function(paymentResponse) {
-                        paymentResponse.complete('success');
-                        // Sucesso: Libera buscas ilimitadas
-                        buscasRestantes = 999; localStorage.setItem('gringosafe_buscas_restantes', buscasRestantes);
-                        atualizarBadgeBuscas(); document.getElementById('modalPaywall').style.display = 'none';
-                        alert(`Pagamento de US$ ${planoBasePrecoUSD} via ${metodo} aprovado! Roteiros liberados.`);
-                    }).catch(function(err) {
-                        alert(`Erro ou cancelamento no ${metodo}.`);
-                    });
-                } catch(e) { simularAlert(metodo); }
-            } else {
-                simularAlert(metodo);
-            }
+            // Para o MVP (sem Stripe backend rodando), forçamos direto a simulação visual elegante.
+            // Evita totalmente os erros de "PaymentRequest API Not Supported" nos navegadores mobile.
+            alert(`✅ Simulação de Pagamento (${metodo})\n\nNa versão oficial de produção, o cartão do usuário seria debitado em US$ ${planoBasePrecoUSD}.\n\nPara fins deste MVP, seu acesso Premium foi liberado com sucesso!`);
+            
+            buscasRestantes = 999; 
+            localStorage.setItem('gringosafe_buscas_restantes', buscasRestantes);
+            atualizarBadgeBuscas(); 
+            document.getElementById('modalPaywall').style.display = 'none';
         };
 
-        function simularAlert(metodo) {
-            alert(`Integração Real do ${metodo} no MVP: O valor de US$ ${planoBasePrecoUSD} seria cobrado aqui. Para efeitos de teste, seu acesso Premium foi liberado!`);
-            buscasRestantes = 999; localStorage.setItem('gringosafe_buscas_restantes', buscasRestantes);
-            atualizarBadgeBuscas(); document.getElementById('modalPaywall').style.display = 'none';
-        }
-
-        // --- FIREBASE CONFIG ---
         const firebaseConfig = { apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs", authDomain: "gringosafe-1f434.firebaseapp.com", projectId: "gringosafe-1f434", storageBucket: "gringosafe-1f434.firebasestorage.app", messagingSenderId: "949745647794", appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
         
@@ -453,12 +425,8 @@
             let centro = mapa.getCenter(); const autorEmail = usuarioLogado ? usuarioLogado.email : "Anônimo";
 
             try {
-                // Banco de dados sempre salva em REAIS (BRL) puro
                 let precoEmReais = parseFloat(preco);
-                // Mas se o cara digitou em dólar no formulário, a gente converte pra Real antes de salvar!
-                if(moedaAtual !== 'BRL') {
-                    precoEmReais = parseFloat(preco) / taxasCâmbio[moedaAtual].taxa;
-                }
+                if(moedaAtual !== 'BRL') { precoEmReais = parseFloat(preco) / taxasCâmbio[moedaAtual].taxa; }
 
                 await addDoc(collection(db, "precos"), { local: localFinal, nome: nome, preco: precoEmReais, categoria: categoria, lat: centro.lat, lng: centro.lng, status: "pendente", autor: autorEmail, data: new Date() });
                 
@@ -489,8 +457,7 @@
 
         function renderizarPinosAgrupados() {
             camadaDePinos.clearLayers(); marcadoresFisicosNoMapa = {}; const t = dicionarioIdiomas[idiomaAtual];
-            const cotacao = taxasCâmbio[moedaAtual].taxa;
-            const simbolo = taxasCâmbio[moedaAtual].simbolo;
+            const cotacao = taxasCâmbio[moedaAtual].taxa; const simbolo = taxasCâmbio[moedaAtual].simbolo;
 
             for (const nomeEstabelecimento in dadosAgrupados) {
                 const dadosLugar = dadosAgrupados[nomeEstabelecimento]; let temAbusivo = false; let temPendente = false; let htmlListaDeItens = '';
@@ -499,9 +466,7 @@
                     let iconeItem = item.status === 'aprovado' ? '✅' : (item.status === 'abusivo' ? '🚨' : '⏳'); let botoes = '';
                     if (item.status === 'pendente') { botoes = `<div class="item-acoes"><button class="btn-voto" style="background:#2e7d32;" onclick="window.votar('${item.id}', 'aprovado')">${t.btnYes}</button><button class="btn-voto" style="background:#c62828;" onclick="window.votar('${item.id}', 'abusivo')">${t.btnNo}</button></div>`; }
                     
-                    // CONVERSÃO DE MOEDA NO CARDÁPIO
                     let precoConvertido = (item.preco * cotacao).toFixed(2);
-
                     htmlListaDeItens += `<div class="item-card"><div class="item-row"><span class="item-nome">${iconeItem} ${item.nome}</span><span class="item-preco">${simbolo} ${precoConvertido}</span></div>${botoes}</div>`;
                 });
 
@@ -512,11 +477,7 @@
                 let htmlFinal = `<div class="popup-info"><h3>🏪 ${nomeEstabelecimento}</h3>${statusGeral}<div class="lista-itens">${htmlListaDeItens}</div></div>`;
                 let novoPino = L.marker([dadosLugar.lat, dadosLugar.lng], {icon: iconePino}); novoPino.bindPopup(htmlFinal); camadaDePinos.addLayer(novoPino); marcadoresFisicosNoMapa[nomeEstabelecimento] = novoPino;
             }
-            
-            // Atualiza botões
-            if(document.getElementById('t_btnSave')) {
-                document.getElementById('t_btnSave').innerText = `${t.btnSave.split(' (+')[0]} (+${simbolo} ${(0.25 * cotacao).toFixed(2)})`;
-            }
+            if(document.getElementById('t_btnSave')) { document.getElementById('t_btnSave').innerText = `${t.btnSave.split(' (+')[0]} (+${simbolo} ${(0.25 * cotacao).toFixed(2)})`; }
             if(usuarioLogado) document.getElementById('saldoDisplay').innerText = `${simbolo} ${(saldoUsuarioLocal * cotacao).toFixed(2)}`;
         }
         window.votar = async function(idDocumento, novoStatus) { const docRef = doc(db, "precos", idDocumento); try { await updateDoc(docRef, { status: novoStatus }); } catch (error) {} };
