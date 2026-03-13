@@ -23,7 +23,13 @@
         
         /* TELA DE ESCOLHA DE PERFIL */
         #telaPerfil { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 77, 64, 0.95); backdrop-filter: blur(10px); z-index: 9000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; padding: 20px; box-sizing: border-box; }
-        #telaPerfil h2 { font-size: 28px; margin-bottom: 30px; }
+        
+        /* NOVO: SELETOR DE IDIOMAS NA TELA INICIAL */
+        .lang-selector-inicial { display: flex; gap: 15px; margin-bottom: 30px; background: rgba(255,255,255,0.15); padding: 10px 20px; border-radius: 30px; }
+        .lang-selector-inicial div { cursor: pointer; font-size: 16px; font-weight: 600; padding: 5px 10px; border-radius: 15px; transition: 0.2s; }
+        .lang-selector-inicial div:hover { background: rgba(255,255,255,0.3); }
+
+        #telaPerfil h2 { font-size: 26px; margin-bottom: 30px; }
         .btn-perfil { background: white; color: #004d40; border: none; padding: 20px; width: 100%; max-width: 320px; border-radius: 15px; font-size: 18px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-bottom: 15px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.2); transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .btn-perfil span { font-size: 13px; font-weight: 400; color: #555; }
         .btn-perfil:active { transform: scale(0.95); }
@@ -84,19 +90,28 @@
         #imagemPreview { max-width: 100%; max-height: 120px; border-radius: 10px; display: none; margin: 10px auto; object-fit: cover; }
         #iaStatus { font-size: 12px; color: #004d40; font-weight: 600; display: none; margin: 5px 0; background: #e0f2f1; padding: 5px; border-radius: 8px; }
 
-        /* MÁGICA DO CSS PARA ESCONDER COISAS DO TURISTA */
+        /* ESCONDENDO ITENS DO TURISTA */
         body.modo-turista .btn-camera { display: none !important; }
         body.modo-turista .user-status { display: none !important; }
         body.modo-turista .item-acoes { display: none !important; }
     </style>
 </head>
-<body class="modo-turista"> <div id="splashScreen">
+<body class="modo-turista"> 
+
+    <div id="splashScreen">
         <h1>🛡️ GringoSafe</h1>
         <p id="t_splashSub">Preço Justo em Qualquer Lugar</p>
         <div class="spinner"></div>
     </div>
 
     <div id="telaPerfil">
+        
+        <div class="lang-selector-inicial">
+            <div onclick="mudarIdioma('pt')">🇧🇷 PT</div>
+            <div onclick="mudarIdioma('en')">🇺🇸 EN</div>
+            <div onclick="mudarIdioma('es')">🇪🇸 ES</div>
+        </div>
+
         <h2 id="t_roleTitle">Como você quer usar o App?</h2>
         
         <button class="btn-perfil" onclick="escolherPerfil('turista')">
@@ -223,7 +238,7 @@
             document.getElementById('nomeLocalInput').placeholder = t.placeNewLocal; document.getElementById('nomeProduto').placeholder = t.placeName; document.getElementById('precoProduto').placeholder = t.placePrice;
             document.getElementById('t_searchTitle').innerText = t.searchTitle; document.getElementById('inputBusca').placeholder = t.searchPlaceholder; document.getElementById('t_searchClose').innerText = t.searchClose;
             
-            // Textos da Tela de Perfil
+            // Textos da Tela de Perfil Inicial
             document.getElementById('t_roleTitle').innerText = t.roleTitle; document.getElementById('t_roleTourist').innerText = t.roleTourist; document.getElementById('t_roleTouristSub').innerText = t.roleTouristSub; document.getElementById('t_roleLocal').innerText = t.roleLocal; document.getElementById('t_roleLocalSub').innerText = t.roleLocalSub;
 
             document.getElementById('langSubMenu').classList.remove('open'); document.getElementById('sideMenu').classList.remove('open'); document.getElementById('menuOverlay').style.display = 'none';
@@ -235,32 +250,21 @@
         // --- SISTEMA DE PERFIL (Turista x Avaliador) ---
         let perfilAtual = localStorage.getItem('gringosafe_perfil');
         
-        // Verifica assim que o app liga (logo após o splash screen)
         setTimeout(() => {
-            if (!perfilAtual) {
-                document.getElementById('telaPerfil').style.display = 'flex';
-            } else {
-                aplicarPerfil(perfilAtual);
-            }
+            if (!perfilAtual) { document.getElementById('telaPerfil').style.display = 'flex'; } 
+            else { aplicarPerfil(perfilAtual); }
         }, 2500);
 
         window.escolherPerfil = function(perfil) {
-            localStorage.setItem('gringosafe_perfil', perfil);
-            aplicarPerfil(perfil);
-            document.getElementById('telaPerfil').style.display = 'none';
+            localStorage.setItem('gringosafe_perfil', perfil); aplicarPerfil(perfil); document.getElementById('telaPerfil').style.display = 'none';
         };
 
         window.mostrarTelaPerfil = function() {
-            document.getElementById('sideMenu').classList.remove('open');
-            document.getElementById('menuOverlay').style.display = 'none';
-            document.getElementById('telaPerfil').style.display = 'flex';
+            document.getElementById('sideMenu').classList.remove('open'); document.getElementById('menuOverlay').style.display = 'none'; document.getElementById('telaPerfil').style.display = 'flex';
         }
 
         function aplicarPerfil(perfil) {
-            perfilAtual = perfil;
-            // A mágica acontece aqui: A classe no "body" esconde os botões e os dinheiros!
-            document.body.className = 'modo-' + perfil;
-            renderizarPinosAgrupados(); // Atualiza o mapa para sumir ou aparecer os botões de votar
+            perfilAtual = perfil; document.body.className = 'modo-' + perfil; renderizarPinosAgrupados(); 
         }
 
         // --- FIREBASE CONFIG ---
@@ -390,9 +394,6 @@
                     if (item.status === "abusivo") temAbusivo = true; if (item.status === "pendente") temPendente = true;
                     let iconeItem = item.status === 'aprovado' ? '✅' : (item.status === 'abusivo' ? '🚨' : '⏳');
                     let botoes = '';
-                    
-                    // Os botões de voto só existem no HTML se a pessoa NÃO for turista. 
-                    // Mas para garantir, o CSS também esconde eles de forma absoluta.
                     if (item.status === 'pendente') {
                         botoes = `<div class="item-acoes"><button class="btn-voto" style="background:#2e7d32;" onclick="window.votar('${item.id}', 'aprovado')">${t.btnYes}</button><button class="btn-voto" style="background:#c62828;" onclick="window.votar('${item.id}', 'abusivo')">${t.btnNo}</button></div>`;
                     }
