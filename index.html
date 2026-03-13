@@ -12,7 +12,7 @@
         /* Estilos Globais */
         body, html { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; background-color: #f4f4f4; }
         
-        /* Barra Superior - Gamificação */
+        /* Barra Superior */
         .top-bar {
             position: absolute; top: 0; left: 0; width: 100%; height: 60px;
             background-color: #004d40; color: white; display: flex;
@@ -27,7 +27,7 @@
         /* Mapa */
         #mapa { height: 100vh; width: 100vw; z-index: 1; padding-top: 60px; } 
 
-        /* Botão Flutuante de Câmera */
+        /* Botão Flutuante */
         .btn-flutuante {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background-color: #00c853; color: white; border: none; border-radius: 30px;
@@ -37,7 +37,7 @@
         }
         .btn-flutuante:active { background-color: #009624; transform: translateX(-50%) scale(0.95); }
 
-        /* Formulário de Registro (Modal Escondido) */
+        /* Modal Formulário */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center;
@@ -51,10 +51,7 @@
         .btn-salvar { background-color: #004d40; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 10px; cursor: pointer; }
         .btn-cancelar { background-color: #e0e0e0; color: #333; border: none; padding: 10px; width: 100%; border-radius: 8px; font-size: 14px; margin-top: 10px; cursor: pointer; }
 
-        /* Estilos do Popup do Mapa */
         .popup-info h3 { margin: 0 0 5px 0; font-size: 16px; }
-        .selo-verde { color: #2e7d32; font-weight: bold; }
-        .alerta-vermelho { color: #c62828; font-weight: bold; }
         .aguardando { color: #f57c00; font-weight: bold; }
     </style>
 </head>
@@ -76,7 +73,7 @@
     <div class="modal-overlay" id="modalForm">
         <div class="modal-content">
             <h3>Novo Registro</h3>
-            <p style="font-size: 13px; color: #666;">A foto foi capturada! Preencha os dados abaixo.</p>
+            <p style="font-size: 13px; color: #666;">Preencha os dados do produto.</p>
             
             <input type="text" id="nomeProduto" class="input-form" placeholder="O que é? (Ex: Água de Coco)">
             <input type="number" id="precoProduto" class="input-form" placeholder="Preço Cobrado (R$)">
@@ -93,36 +90,39 @@
         </div>
     </div>
 
-    <script>
-        // 1. Variável de Saldo do Usuário
+    <script type="module">
+        // 1. Importando o Firebase diretamente para o navegador
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // 2. A sua Chave do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs",
+            authDomain: "gringosafe-1f434.firebaseapp.com",
+            projectId: "gringosafe-1f434",
+            storageBucket: "gringosafe-1f434.firebasestorage.app",
+            messagingSenderId: "949745647794",
+            appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab"
+        };
+
+        // 3. Inicializando o App e o Banco de Dados
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- LÓGICA DO MAPA ---
         let saldoUsuario = 15.00;
+        const mapa = L.map('mapa').setView([-22.9121, -43.2302], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapa);
 
-        // 2. Inicialização do Mapa (Começa no RJ como padrão)
-        var map = L.map('mapa').setView([-22.9121, -43.2302], 14);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-
-        // 3. Tentar pegar o GPS real do usuário!
-        map.locate({setView: true, maxZoom: 16});
-        
-        map.on('locationfound', function(e) {
-            // Se achar o GPS, coloca um pino azul dizendo "Você está aqui"
-            L.marker(e.latlng).addTo(map).bindPopup("📍 Você está aqui!").openPopup();
-        });
-        
-        map.on('locationerror', function(e) {
-            console.log("GPS não autorizado ou indisponível. Usando mapa padrão.");
+        // Pega o GPS do usuário
+        mapa.locate({setView: true, maxZoom: 16});
+        mapa.on('locationfound', function(e) {
+            L.marker(e.latlng).addTo(mapa).bindPopup("📍 Você está aqui!").openPopup();
         });
 
-        // 4. Ícones Personalizados
-        var iconeVerde = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
-        var iconeVermelho = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         var iconeAmarelo = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
 
-        // 5. Adicionando Pinos Falsos (Apenas para demonstração visual)
-        L.marker([-22.9125, -43.2290], {icon: iconeVerde}).addTo(map).bindPopup(`<div class="popup-info"><h3>🍢 Churrasquinho do Zé</h3><p class="selo-verde">✅ Preço Justo</p><p>⭐ 4.9</p></div>`);
-        L.marker([-22.9110, -43.2315], {icon: iconeVermelho}).addTo(map).bindPopup(`<div class="popup-info"><h3>⚠️ Carrinho Sem Nome</h3><p class="alerta-vermelho">🚨 Preço Abusivo</p><p>Evite comprar aqui.</p></div>`);
-
-        // 6. Lógica de Interação: Câmera e Formulário
+        // --- LÓGICA DA INTERFACE ---
         const btnCamera = document.getElementById('btnCamera');
         const cameraInput = document.getElementById('cameraInput');
         const modalForm = document.getElementById('modalForm');
@@ -130,59 +130,78 @@
         const btnCancelar = document.getElementById('btnCancelar');
         const saldoDisplay = document.getElementById('saldoDisplay');
 
-        // Abre a câmera
         btnCamera.addEventListener('click', () => { cameraInput.click(); });
-
-        // Quando tira a foto, abre o formulário
-        cameraInput.addEventListener('change', (event) => {
-            if (event.target.files.length > 0) {
-                modalForm.style.display = 'flex'; // Mostra a tela de cadastro
-            }
+        cameraInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) modalForm.style.display = 'flex';
         });
-
-        // Fecha o formulário se cancelar
         btnCancelar.addEventListener('click', () => { 
-            modalForm.style.display = 'none'; 
-            cameraInput.value = ''; // Reseta a câmera
+            modalForm.style.display = 'none'; cameraInput.value = ''; 
         });
 
-        // Quando clica em SALVAR
-        btnSalvar.addEventListener('click', () => {
+        // --- SALVANDO NO BANCO DE DADOS ---
+        btnSalvar.addEventListener('click', async () => {
             const nome = document.getElementById('nomeProduto').value;
             const preco = document.getElementById('precoProduto').value;
             const categoria = document.getElementById('categoriaProduto').value;
 
             if(!nome || !preco) {
-                alert("Por favor, preencha o nome e o preço!");
+                alert("Preencha o nome e o preço!");
                 return;
             }
 
-            // Aumenta o saldo do usuário (Gamificação)
-            saldoUsuario += 2.00;
-            saldoDisplay.innerText = `R$ ${saldoUsuario.toFixed(2).replace('.', ',')}`;
+            // Pega a posição central do mapa (onde o usuário está olhando)
+            let centro = mapa.getCenter();
 
-            // Pega o centro atual da tela para criar o pino
-            let centro = map.getCenter();
-            
-            // Cria o Pino Amarelo no mapa
-            let novoPino = L.marker([centro.lat, centro.lng], {icon: iconeAmarelo}).addTo(map);
-            novoPino.bindPopup(`
-                <div class="popup-info">
-                    <h3>🛒 ${nome}</h3>
-                    <p><strong>Categoria:</strong> ${categoria}</p>
-                    <p><strong>Preço Registrado:</strong> R$ ${preco}</p>
-                    <p class="aguardando">⏳ Em verificação...</p>
-                </div>
-            `).openPopup();
+            try {
+                // Envia os dados para a coleção "precos" no Firebase
+                await addDoc(collection(db, "precos"), {
+                    nome: nome,
+                    preco: parseFloat(preco),
+                    categoria: categoria,
+                    lat: centro.lat,
+                    lng: centro.lng,
+                    data: new Date()
+                });
 
-            // Limpa o formulário e fecha
-            document.getElementById('nomeProduto').value = '';
-            document.getElementById('precoProduto').value = '';
-            modalForm.style.display = 'none';
-            cameraInput.value = '';
+                // Atualiza o saldo localmente
+                saldoUsuario += 2.00;
+                saldoDisplay.innerText = `R$ ${saldoUsuario.toFixed(2).replace('.', ',')}`;
 
-            alert("Missão Concluída! Você ganhou R$ 2,00 por ajudar a comunidade.");
+                document.getElementById('nomeProduto').value = '';
+                document.getElementById('precoProduto').value = '';
+                modalForm.style.display = 'none';
+                cameraInput.value = '';
+                
+                alert("Missão Concluída! Registro salvo na nuvem com sucesso.");
+
+            } catch (error) {
+                console.error("Erro ao salvar: ", error);
+                alert("Erro ao salvar. Verifique sua conexão.");
+            }
         });
+
+        // --- LENDO DO BANCO DE DADOS EM TEMPO REAL ---
+        // O onSnapshot fica "escutando" o banco de dados. Qualquer pino novo aparece na hora!
+        onSnapshot(collection(db, "precos"), (snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added") {
+                    const dados = change.doc.data();
+                    
+                    // Cria o pino no mapa com as coordenadas vindas do Firebase
+                    let novoPino = L.marker([dados.lat, dados.lng], {icon: iconeAmarelo}).addTo(mapa);
+                    
+                    novoPino.bindPopup(`
+                        <div class="popup-info">
+                            <h3>🛒 ${dados.nome}</h3>
+                            <p><strong>Categoria:</strong> ${dados.categoria}</p>
+                            <p><strong>Preço Registrado:</strong> R$ ${dados.preco.toFixed(2).replace('.', ',')}</p>
+                            <p class="aguardando">⏳ Aguardando validação...</p>
+                        </div>
+                    `);
+                }
+            });
+        });
+
     </script>
 </body>
 </html>
