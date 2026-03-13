@@ -21,10 +21,7 @@
         #splashScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #004d40; color: white; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s ease-out; }
         #splashScreen h1 { font-size: 36px; margin: 0; display: flex; align-items: center; gap: 10px; }
         
-        /* TELA DE ESCOLHA DE PERFIL */
         #telaPerfil { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 77, 64, 0.95); backdrop-filter: blur(10px); z-index: 9000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; padding: 20px; box-sizing: border-box; }
-        
-        /* NOVO: SELETOR DE IDIOMAS NA TELA INICIAL */
         .lang-selector-inicial { display: flex; gap: 15px; margin-bottom: 30px; background: rgba(255,255,255,0.15); padding: 10px 20px; border-radius: 30px; }
         .lang-selector-inicial div { cursor: pointer; font-size: 16px; font-weight: 600; padding: 5px 10px; border-radius: 15px; transition: 0.2s; }
         .lang-selector-inicial div:hover { background: rgba(255,255,255,0.3); }
@@ -58,8 +55,11 @@
         .btn-action { border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; }
         .btn-action:active { transform: scale(0.9); }
         .btn-action svg { fill: currentColor; }
-        .btn-camera { width: 70px; height: 70px; background: linear-gradient(135deg, #00e676, #00c853); color: white; box-shadow: 0px 8px 25px rgba(0, 200, 83, 0.4); }
-        .btn-camera svg { width: 32px; height: 32px; }
+        
+        /* BOTÃO ADICIONAR (Substituiu a Câmera) */
+        .btn-adicionar { width: 70px; height: 70px; background: linear-gradient(135deg, #00e676, #00c853); color: white; box-shadow: 0px 8px 25px rgba(0, 200, 83, 0.4); }
+        .btn-adicionar svg { width: 36px; height: 36px; }
+        
         .btn-pesquisa { width: 60px; height: 60px; background: white; color: #004d40; box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.15); }
         .btn-pesquisa svg { width: 26px; height: 26px; }
 
@@ -74,6 +74,10 @@
         .resultado-item:hover { background: #f9f9f9; }
 
         .input-form { width: 100%; padding: 12px; margin: 8px 0; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Poppins', sans-serif; box-sizing: border-box; }
+        
+        .btn-add-foto { background-color: #e0f2f1; color: #004d40; border: 1px dashed #004d40; padding: 12px; width: 100%; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+        .btn-add-foto:hover { background-color: #b2dfdb; }
+
         .btn-salvar { background-color: #004d40; color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-top: 10px; cursor: pointer; }
         .btn-cancelar { background-color: transparent; color: #757575; border: none; padding: 10px; width: 100%; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; }
 
@@ -90,8 +94,8 @@
         #imagemPreview { max-width: 100%; max-height: 120px; border-radius: 10px; display: none; margin: 10px auto; object-fit: cover; }
         #iaStatus { font-size: 12px; color: #004d40; font-weight: 600; display: none; margin: 5px 0; background: #e0f2f1; padding: 5px; border-radius: 8px; }
 
-        /* ESCONDENDO ITENS DO TURISTA */
-        body.modo-turista .btn-camera { display: none !important; }
+        /* ESCONDENDO BOTÕES DO TURISTA (Agora esconde o btn-adicionar) */
+        body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista .user-status { display: none !important; }
         body.modo-turista .item-acoes { display: none !important; }
     </style>
@@ -105,20 +109,16 @@
     </div>
 
     <div id="telaPerfil">
-        
         <div class="lang-selector-inicial">
             <div onclick="mudarIdioma('pt')">🇧🇷 PT</div>
             <div onclick="mudarIdioma('en')">🇺🇸 EN</div>
             <div onclick="mudarIdioma('es')">🇪🇸 ES</div>
         </div>
-
         <h2 id="t_roleTitle">Como você quer usar o App?</h2>
-        
         <button class="btn-perfil" onclick="escolherPerfil('turista')">
             📸 <strong id="t_roleTourist">Sou Turista</strong>
             <span id="t_roleTouristSub">Quero apenas pesquisar lugares seguros e ver preços.</span>
         </button>
-        
         <button class="btn-perfil avaliador" onclick="escolherPerfil('avaliador')">
             ⭐ <strong id="t_roleLocal">Sou Avaliador Local</strong>
             <span id="t_roleLocalSub">Quero registrar preços, votar e ajudar a comunidade.</span>
@@ -129,14 +129,12 @@
     <div class="side-menu" id="sideMenu">
         <div class="menu-header">🛡️ GringoSafe</div>
         <div class="menu-item" id="btnCarregarRoteiro"><span id="t_menuRoute">🗺️ Roteiro Premium Seguro</span></div>
-        
         <div class="menu-item" id="btnLangToggle"><span id="t_menuLang">🌐 Idiomas</span><span>▼</span></div>
         <div class="sub-menu" id="langSubMenu">
             <div class="sub-menu-item ativo-lang" id="lang_pt" onclick="mudarIdioma('pt')"><span>🇧🇷 Português</span><span class="check">✔️</span></div>
             <div class="sub-menu-item" id="lang_en" onclick="mudarIdioma('en')"><span>🇺🇸 English</span><span class="check" style="display:none;">✔️</span></div>
             <div class="sub-menu-item" id="lang_es" onclick="mudarIdioma('es')"><span>🇪🇸 Español</span><span class="check" style="display:none;">✔️</span></div>
         </div>
-
         <div class="menu-item" onclick="mostrarTelaPerfil()"><span id="t_menuChangeRole">👤 Trocar de Perfil</span></div>
     </div>
 
@@ -147,14 +145,14 @@
 
     <div id="mapa"></div>
 
-    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+    <input type="file" id="cameraInput" accept="image/*" style="display: none;">
     
     <div class="bottom-actions">
         <button class="btn-action btn-pesquisa" id="btnAbrirBusca">
             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
         </button>
-        <button class="btn-action btn-camera" id="btnCamera">
-            <svg viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
+        <button class="btn-action btn-adicionar" id="btnAdicionar">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
         </button>
     </div>
 
@@ -172,6 +170,9 @@
     <div class="modal-overlay" id="modalForm">
         <div class="modal-content">
             <h3 id="t_formTitle">Novo Registro</h3>
+            
+            <button class="btn-add-foto" id="btnEscolherFoto"><span id="t_btnAddPhoto">📸 Adicionar Foto (Opcional)</span></button>
+            
             <img id="imagemPreview" alt="Sua foto">
             <p id="iaStatus">🤖 IA analisando a foto...</p>
             
@@ -206,7 +207,8 @@
                 catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Salvar Produto", btnCancel: "Cancelar", alertaSalvo: "Salvo com sucesso!", alertaFalta: "Preencha todos os campos!", alertaDuplicado: "Este produto já está cadastrado! Vote (👍/👎) no mapa.",
                 statusGreen: "✅ Local Confiável", statusYellow: "⏳ Analisando itens...", statusRed: "🚨 Alerta de Abuso", btnYes: "👍 Confirmo", btnNo: "👎 Golpe",
                 searchTitle: "Buscar Local ou Produto", searchPlaceholder: "Ex: Quiosque, Água...", searchClose: "Fechar",
-                roleTitle: "Como você quer usar o App?", roleTourist: "Sou Turista", roleTouristSub: "Quero apenas pesquisar lugares seguros e ver preços.", roleLocal: "Sou Avaliador Local", roleLocalSub: "Quero registrar preços, votar e ajudar a comunidade."
+                roleTitle: "Como você quer usar o App?", roleTourist: "Sou Turista", roleTouristSub: "Quero apenas pesquisar lugares seguros e ver preços.", roleLocal: "Sou Avaliador Local", roleLocalSub: "Quero registrar preços, votar e ajudar a comunidade.",
+                btnAddPhoto: "📸 Adicionar Foto (Opcional)"
             },
             en: {
                 splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Premium Safe Route", menuLang: "🌐 Languages", menuChangeRole: "👤 Change Role", level: "⭐ Lvl 3", 
@@ -214,7 +216,8 @@
                 catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save Product", btnCancel: "Cancel", alertaSalvo: "Saved successfully!", alertaFalta: "Fill in all fields!", alertaDuplicado: "Product already exists! Vote on the map.",
                 statusGreen: "✅ Trusted Place", statusYellow: "⏳ Verifying items...", statusRed: "🚨 Scam Alert", btnYes: "👍 Confirm", btnNo: "👎 Scam",
                 searchTitle: "Search Place or Product", searchPlaceholder: "Ex: Kiosk, Water...", searchClose: "Close",
-                roleTitle: "How do you want to use the App?", roleTourist: "I'm a Tourist", roleTouristSub: "I just want to search for safe places and see prices.", roleLocal: "I'm a Local Evaluator", roleLocalSub: "I want to register prices, vote and help the community."
+                roleTitle: "How do you want to use the App?", roleTourist: "I'm a Tourist", roleTouristSub: "I just want to search for safe places and see prices.", roleLocal: "I'm a Local Evaluator", roleLocalSub: "I want to register prices, vote and help the community.",
+                btnAddPhoto: "📸 Add Photo (Optional)"
             },
             es: {
                 splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Ruta Premium Segura", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Cambiar Perfil", level: "⭐ Nvl 3", 
@@ -222,7 +225,8 @@
                 catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar Producto", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa todos los campos!", alertaDuplicado: "¡Producto ya existe! Vota en el mapa.",
                 statusGreen: "✅ Lugar Confiable", statusYellow: "⏳ Verificando...", statusRed: "🚨 Alerta de Abuso", btnYes: "👍 Confirmo", btnNo: "👎 Estafa",
                 searchTitle: "Buscar Lugar o Producto", searchPlaceholder: "Ej: Kiosco, Agua...", searchClose: "Cerrar",
-                roleTitle: "¿Cómo quieres usar la App?", roleTourist: "Soy Turista", roleTouristSub: "Solo quiero buscar lugares seguros y ver precios.", roleLocal: "Soy Evaluador Local", roleLocalSub: "Quiero registrar precios, votar y ayudar a la comunidad."
+                roleTitle: "¿Cómo quieres usar la App?", roleTourist: "Soy Turista", roleTouristSub: "Solo quiero buscar lugares seguros y ver precios.", roleLocal: "Soy Evaluador Local", roleLocalSub: "Quiero registrar precios, votar y ayudar a la comunidad.",
+                btnAddPhoto: "📸 Añadir Foto (Opcional)"
             }
         };
 
@@ -238,8 +242,8 @@
             document.getElementById('nomeLocalInput').placeholder = t.placeNewLocal; document.getElementById('nomeProduto').placeholder = t.placeName; document.getElementById('precoProduto').placeholder = t.placePrice;
             document.getElementById('t_searchTitle').innerText = t.searchTitle; document.getElementById('inputBusca').placeholder = t.searchPlaceholder; document.getElementById('t_searchClose').innerText = t.searchClose;
             
-            // Textos da Tela de Perfil Inicial
             document.getElementById('t_roleTitle').innerText = t.roleTitle; document.getElementById('t_roleTourist').innerText = t.roleTourist; document.getElementById('t_roleTouristSub').innerText = t.roleTouristSub; document.getElementById('t_roleLocal').innerText = t.roleLocal; document.getElementById('t_roleLocalSub').innerText = t.roleLocalSub;
+            document.getElementById('t_btnAddPhoto').innerText = t.btnAddPhoto;
 
             document.getElementById('langSubMenu').classList.remove('open'); document.getElementById('sideMenu').classList.remove('open'); document.getElementById('menuOverlay').style.display = 'none';
             renderizarPinosAgrupados(); 
@@ -247,9 +251,8 @@
 
         document.getElementById('btnLangToggle').addEventListener('click', () => { document.getElementById('langSubMenu').classList.toggle('open'); });
 
-        // --- SISTEMA DE PERFIL (Turista x Avaliador) ---
+        // --- SISTEMA DE PERFIL ---
         let perfilAtual = localStorage.getItem('gringosafe_perfil');
-        
         setTimeout(() => {
             if (!perfilAtual) { document.getElementById('telaPerfil').style.display = 'flex'; } 
             else { aplicarPerfil(perfilAtual); }
@@ -292,7 +295,7 @@
         var iconeVerde = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         var iconeVermelho = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
 
-        // --- LÓGICA DE BUSCA INTELIGENTE ---
+        // --- BUSCA INTELIGENTE ---
         const btnAbrirBusca = document.getElementById('btnAbrirBusca'); const modalBusca = document.getElementById('modalBusca'); const inputBusca = document.getElementById('inputBusca'); const resultadosBusca = document.getElementById('resultadosBusca');
         btnAbrirBusca.addEventListener('click', () => { modalBusca.style.display = 'flex'; inputBusca.value = ''; resultadosBusca.innerHTML = ''; inputBusca.focus(); });
         document.getElementById('btnFecharBusca').addEventListener('click', () => { modalBusca.style.display = 'none'; });
@@ -319,17 +322,40 @@
             }
         });
 
-        // --- FORMULÁRIO E BANCO ---
-        const btnCamera = document.getElementById('btnCamera'); const cameraInput = document.getElementById('cameraInput'); const modalForm = document.getElementById('modalForm'); const imagemPreview = document.getElementById('imagemPreview'); const iaStatus = document.getElementById('iaStatus'); const nomeProduto = document.getElementById('nomeProduto'); const selectLocal = document.getElementById('selectLocal'); const nomeLocalInput = document.getElementById('nomeLocalInput');
+        // --- NOVO FLUXO DO FORMULÁRIO (Botão +, Foto Opcional) ---
+        const btnAdicionar = document.getElementById('btnAdicionar'); 
+        const btnEscolherFoto = document.getElementById('btnEscolherFoto');
+        const cameraInput = document.getElementById('cameraInput'); 
+        const modalForm = document.getElementById('modalForm'); 
+        const imagemPreview = document.getElementById('imagemPreview'); 
+        const iaStatus = document.getElementById('iaStatus'); 
+        const nomeProduto = document.getElementById('nomeProduto'); 
+        const selectLocal = document.getElementById('selectLocal'); 
+        const nomeLocalInput = document.getElementById('nomeLocalInput');
         
         selectLocal.addEventListener('change', (e) => { if(e.target.value === 'NEW') { nomeLocalInput.style.display = 'block'; } else { nomeLocalInput.style.display = 'none'; } });
-        btnCamera.addEventListener('click', () => { cameraInput.click(); });
+        
+        // Clicou no "+", abre o form limpo na hora, sem forçar câmera
+        btnAdicionar.addEventListener('click', () => { 
+            selectLocal.value = 'NEW'; 
+            nomeLocalInput.style.display = 'block'; 
+            nomeLocalInput.value = '';
+            nomeProduto.value = '';
+            document.getElementById('precoProduto').value = '';
+            imagemPreview.style.display = 'none';
+            iaStatus.style.display = 'none';
+            cameraInput.value = '';
+            modalForm.style.display = 'flex'; 
+        });
+
+        // Dentro do form, clicou em "Adicionar Foto", aí sim chama o Input (Galeria/Câmera)
+        btnEscolherFoto.addEventListener('click', () => { cameraInput.click(); });
+
         document.getElementById('btnCancelar').addEventListener('click', () => { modalForm.style.display = 'none'; cameraInput.value = ''; imagemPreview.style.display = 'none'; });
 
         cameraInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
-                selectLocal.value = 'NEW'; nomeLocalInput.style.display = 'block'; nomeLocalInput.value = '';
-                modalForm.style.display = 'flex'; const arquivo = e.target.files[0]; const leitor = new FileReader();
+                const arquivo = e.target.files[0]; const leitor = new FileReader();
                 leitor.onload = function(evento) {
                     imagemPreview.src = evento.target.result; imagemPreview.style.display = 'block'; nomeProduto.value = '';
                     if (modeloIA) {
