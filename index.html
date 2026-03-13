@@ -24,11 +24,22 @@
         .spinner { margin-top: 20px; width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* Estilos da Barra Superior e Botão do Menu */
         .top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 65px; background-color: #004d40; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
-        .top-bar-logo { font-weight: 700; font-size: 20px; margin-left: 20px; display: flex; align-items: center; gap: 5px; }
-        .user-status { display: flex; align-items: center; margin-right: 20px; font-size: 13px; font-weight: 600; }
+        .top-bar-logo { font-weight: 700; font-size: 20px; margin-left: 15px; display: flex; align-items: center; gap: 8px; }
+        .btn-menu { background: transparent; border: none; color: white; font-size: 26px; cursor: pointer; padding: 0 5px; line-height: 1; }
+        .user-status { display: flex; align-items: center; margin-right: 15px; font-size: 13px; font-weight: 600; }
         .user-level { background-color: #ffc107; color: #333; padding: 5px 10px; border-radius: 20px; margin-right: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .user-balance { background-color: #1b5e20; padding: 5px 12px; border-radius: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+        /* Estilos do Menu Lateral */
+        .side-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 3000; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1); box-shadow: 4px 0 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; }
+        .side-menu.open { left: 0; }
+        .menu-header { background: #004d40; color: white; padding: 25px 20px; font-size: 22px; font-weight: bold; border-bottom-right-radius: 20px; }
+        .menu-item { padding: 18px 20px; border-bottom: 1px solid #f0f0f0; color: #333; text-decoration: none; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s; }
+        .menu-item:hover { background: #f9f9f9; }
+        .menu-item.destaque { color: #004d40; background-color: #e0f2f1; }
+        .menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); z-index: 2500; }
 
         #mapa { height: 100vh; width: 100vw; z-index: 1; padding-top: 65px; } 
 
@@ -63,8 +74,21 @@
         <div class="spinner"></div>
     </div>
 
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">🛡️ GringoSafe</div>
+        <div class="menu-item destaque" id="btnCarregarRoteiro">🗺️ Roteiro Premium Seguro</div>
+        <div class="menu-item">⭐ Meu Ranking</div>
+        <div class="menu-item">🌐 Idioma: Português <span style="font-size: 10px; color: #999;">(Mudar)</span></div>
+        <div class="menu-item">⚙️ Configurações</div>
+    </div>
+
     <div class="top-bar">
-        <div class="top-bar-logo">🛡️ GringoSafe</div>
+        <div class="top-bar-logo">
+            <button class="btn-menu" id="btnAbrirMenu">☰</button> 
+            GringoSafe
+        </div>
         <div class="user-status">
             <span class="user-level">⭐ Nvl 3</span>
             <span class="user-balance" id="saldoDisplay">R$ 15,00</span>
@@ -134,27 +158,28 @@
             }, 2000); 
         });
 
-        // --- DICIONÁRIO DE TRADUÇÃO DA IA ---
-        // Você pode adicionar novas palavras aqui depois!
+        // --- LÓGICA DO MENU LATERAL ---
+        const sideMenu = document.getElementById('sideMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const btnAbrirMenu = document.getElementById('btnAbrirMenu');
+
+        btnAbrirMenu.addEventListener('click', () => {
+            sideMenu.classList.add('open');
+            menuOverlay.style.display = 'block';
+        });
+
+        menuOverlay.addEventListener('click', () => {
+            sideMenu.classList.remove('open');
+            menuOverlay.style.display = 'none';
+        });
+
         const dicionarioIA = {
-            "water bottle": "Garrafa de Água",
-            "beer glass": "Copo de Cerveja",
-            "coffee mug": "Caneca de Café",
-            "espresso": "Café Expresso",
-            "sunglasses": "Óculos de Sol",
-            "cellular telephone": "Celular",
-            "mouse": "Mouse",
-            "laptop": "Notebook",
-            "backpack": "Mochila",
-            "umbrella": "Guarda-chuva",
-            "pop bottle": "Garrafa de Refrigerante",
-            "water jug": "Galão de Água",
-            "cup": "Copo",
-            "menu": "Cardápio",
-            "street sign": "Placa de Rua",
-            "dining table": "Mesa de Restaurante",
-            "plate": "Prato de Comida",
-            "ice lolly": "Picolé / Sorvete"
+            "water bottle": "Garrafa de Água", "beer glass": "Copo de Cerveja", "coffee mug": "Caneca de Café",
+            "espresso": "Café Expresso", "sunglasses": "Óculos de Sol", "cellular telephone": "Celular",
+            "mouse": "Mouse", "laptop": "Notebook", "backpack": "Mochila", "umbrella": "Guarda-chuva",
+            "pop bottle": "Garrafa de Refrigerante", "water jug": "Galão de Água", "cup": "Copo",
+            "menu": "Cardápio", "street sign": "Placa de Rua", "dining table": "Mesa de Restaurante",
+            "plate": "Prato de Comida", "ice lolly": "Picolé / Sorvete"
         };
 
         let modeloIA = null;
@@ -171,7 +196,6 @@
         }
 
         buscarLocalizacao();
-
         document.getElementById('btnMira').addEventListener('click', () => { buscarLocalizacao(); });
 
         mapa.on('locationfound', function(e) { 
@@ -182,7 +206,42 @@
         var iconeAmarelo = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         var iconeVerde = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         var iconeVermelho = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
+        
+        // NOVO ÍCONE PARA COMERCIANTES PATROCINADOS (ROXO)
+        var iconePatrocinado = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
 
+        // --- LÓGICA DE ROTEIROS PATROCINADOS ---
+        let rotaAtiva = null; // Guarda a linha da rota para podermos apagar depois
+
+        document.getElementById('btnCarregarRoteiro').addEventListener('click', () => {
+            // Fecha o menu
+            sideMenu.classList.remove('open');
+            menuOverlay.style.display = 'none';
+
+            // Pega o centro atual da tela onde o usuário está olhando
+            let centro = mapa.getCenter();
+
+            // Cria 3 pontos turísticos baseados na localização do usuário
+            let ponto1 = [centro.lat + 0.002, centro.lng + 0.002];
+            let ponto2 = [centro.lat - 0.001, centro.lng + 0.004];
+            let ponto3 = [centro.lat - 0.003, centro.lng + 0.001];
+
+            // Pinos Falsos (Apenas visuais para o Roteiro)
+            L.marker(ponto1, {icon: iconePatrocinado}).addTo(mapa).bindPopup("<div class='popup-info'><h3>💎 Quiosque Premium</h3><p>Patrocinador Oficial. 10% de desconto com o GringoSafe.</p></div>");
+            L.marker(ponto2, {icon: iconePatrocinado}).addTo(mapa).bindPopup("<div class='popup-info'><h3>💎 Restaurante Seguro</h3><p>Cardápio com preços tabelados.</p></div>");
+            L.marker(ponto3, {icon: iconePatrocinado}).addTo(mapa).bindPopup("<div class='popup-info'><h3>💎 Loja de Lembranças</h3><p>Preço justo garantido pela comunidade.</p></div>");
+
+            // Desenha a linha roxa conectando os pontos no mapa
+            if(rotaAtiva) { mapa.removeLayer(rotaAtiva); }
+            rotaAtiva = L.polyline([ponto1, ponto2, ponto3], {color: '#9c27b0', weight: 5, dashArray: '10, 10'}).addTo(mapa);
+            
+            // Foca o mapa para mostrar a rota inteira
+            mapa.fitBounds(rotaAtiva.getBounds(), {padding: [50, 50]});
+            
+            alert("Roteiro Premium ativado! Siga a linha roxa no mapa para encontrar os comerciantes patrocinadores.");
+        });
+
+        // --- RESTO DA LÓGICA DA CÂMERA E FIREBASE ---
         const btnCamera = document.getElementById('btnCamera');
         const cameraInput = document.getElementById('cameraInput');
         const modalForm = document.getElementById('modalForm');
@@ -213,20 +272,10 @@
                         imagemPreview.onload = () => {
                             modeloIA.classify(imagemPreview).then(previsoes => {
                                 iaStatus.style.display = 'none';
-                                
-                                // Pega a melhor aposta da IA e converte para minúsculo
                                 const termoIngles = previsoes[0].className.split(',')[0].toLowerCase().trim();
-                                
-                                // Procura no nosso dicionário
                                 const termoTraduzido = dicionarioIA[termoIngles];
-
-                                if (termoTraduzido) {
-                                    // Se achou no dicionário, coloca a palavra em Português
-                                    nomeProduto.value = termoTraduzido;
-                                } else {
-                                    // Se não achou, coloca o original com um aviso
-                                    nomeProduto.value = termoIngles.charAt(0).toUpperCase() + termoIngles.slice(1) + " (Em inglês)";
-                                }
+                                if (termoTraduzido) { nomeProduto.value = termoTraduzido; } 
+                                else { nomeProduto.value = termoIngles.charAt(0).toUpperCase() + termoIngles.slice(1) + " (Em inglês)"; }
                             });
                         }
                     } else {
