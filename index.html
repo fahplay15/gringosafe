@@ -51,7 +51,6 @@
         .btn-salvar { background-color: #004d40; color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-top: 10px; cursor: pointer; }
         .btn-cancelar { background-color: transparent; color: #757575; border: none; padding: 10px; width: 100%; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; }
 
-        /* Estilo do Popup dos Estabelecimentos */
         .popup-info { font-family: 'Poppins', sans-serif; min-width: 220px; }
         .popup-info h3 { margin: 0 0 5px 0; font-size: 18px; color: #1a1a1a; border-bottom: 2px solid #eee; padding-bottom: 5px;}
         .lista-itens { max-height: 180px; overflow-y: auto; margin-top: 10px; }
@@ -103,7 +102,10 @@
             <img id="imagemPreview" alt="Sua foto">
             <p id="iaStatus">🤖 IA analisando a foto...</p>
             
-            <input type="text" id="nomeLocal" class="input-form" placeholder="Nome do Local (Ex: Barraca do Zé)">
+            <select id="selectLocal" class="input-form">
+                <option value="NEW" id="t_optNewPlace">➕ Adicionar Novo Local</option>
+            </select>
+            <input type="text" id="nomeLocalInput" class="input-form" placeholder="Nome do Novo Local (Ex: Barraca)">
             
             <input type="text" id="nomeProduto" class="input-form" placeholder="O que é? (Ex: Água de Coco)">
             <input type="number" id="precoProduto" class="input-form" placeholder="Preço Cobrado (R$)">
@@ -128,29 +130,26 @@
         const dicionarioIdiomas = {
             pt: {
                 splashSub: "Preço Justo em Qualquer Lugar", menuRoute: "🗺️ Roteiro Premium Seguro", menuLang: "🌐 Idiomas", level: "⭐ Nvl 3", 
-                formTitle: "Novo Registro", placeLocal: "Nome do Local (Ex: Barraca do Zé)", placeName: "Produto (Ex: Água)", placePrice: "Preço (R$)", 
-                catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Salvar Produto", btnCancel: "Cancelar", alertaSalvo: "Salvo com sucesso!", alertaFalta: "Preencha o local, nome e preço!",
-                // Mapa
+                formTitle: "Novo Registro", optNewPlace: "➕ Adicionar Novo Local", placeNewLocal: "Nome do Novo Local (Ex: Barraca)", placeName: "Produto (Ex: Água)", placePrice: "Preço (R$)", 
+                catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Salvar Produto", btnCancel: "Cancelar", alertaSalvo: "Salvo com sucesso!", alertaFalta: "Preencha o local, nome e preço!", alertaDuplicado: "Este produto já está cadastrado neste local! Em vez de duplicar, vote (👍/👎) no pino do mapa.",
                 statusGreen: "✅ Local Confiável", statusYellow: "⏳ Analisando itens...", statusRed: "🚨 Alerta de Abuso", btnYes: "👍 Confirmo", btnNo: "👎 Golpe"
             },
             en: {
                 splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Premium Safe Route", menuLang: "🌐 Languages", level: "⭐ Lvl 3", 
-                formTitle: "New Record", placeLocal: "Place Name (Ex: Joe's Kiosk)", placeName: "Product (Ex: Water)", placePrice: "Price (R$)", 
-                catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save Product", btnCancel: "Cancel", alertaSalvo: "Saved successfully!", alertaFalta: "Fill in place, name and price!",
-                // Mapa
+                formTitle: "New Record", optNewPlace: "➕ Add New Place", placeNewLocal: "New Place Name (Ex: Joe's)", placeName: "Product (Ex: Water)", placePrice: "Price (R$)", 
+                catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save Product", btnCancel: "Cancel", alertaSalvo: "Saved successfully!", alertaFalta: "Fill in place, name and price!", alertaDuplicado: "This product is already registered here! Instead of duplicating, vote (👍/👎) on the map pin.",
                 statusGreen: "✅ Trusted Place", statusYellow: "⏳ Verifying items...", statusRed: "🚨 Scam Alert", btnYes: "👍 Confirm", btnNo: "👎 Scam"
             },
             es: {
                 splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Ruta Premium Segura", menuLang: "🌐 Idiomas", level: "⭐ Nvl 3", 
-                formTitle: "Nuevo Registro", placeLocal: "Nombre del Lugar (Ej: Kiosco)", placeName: "Producto (Ej: Agua)", placePrice: "Precio (R$)", 
-                catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar Producto", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa lugar, nombre y precio!",
-                // Mapa
+                formTitle: "Nuevo Registro", optNewPlace: "➕ Añadir Nuevo Lugar", placeNewLocal: "Nombre del Nuevo Lugar", placeName: "Producto (Ej: Agua)", placePrice: "Precio (R$)", 
+                catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar Producto", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa lugar, nombre y precio!", alertaDuplicado: "¡Este producto ya está registrado aquí! En lugar de duplicarlo, vota (👍/👎) en el pin del mapa.",
                 statusGreen: "✅ Lugar Confiable", statusYellow: "⏳ Verificando...", statusRed: "🚨 Alerta de Abuso", btnYes: "👍 Confirmo", btnNo: "👎 Estafa"
             }
         };
 
         let idiomaAtual = 'pt';
-        let dadosAgrupados = {}; // Onde vamos agrupar os itens por estabelecimento
+        let dadosAgrupados = {}; 
 
         window.mudarIdioma = function(idioma) {
             idiomaAtual = idioma; const t = dicionarioIdiomas[idioma];
@@ -158,10 +157,14 @@
             const itemClicado = document.getElementById('lang_' + idioma); itemClicado.classList.add('ativo-lang'); itemClicado.querySelector('.check').style.display = 'inline';
 
             document.getElementById('t_splashSub').innerText = t.splashSub; document.getElementById('t_menuRoute').innerText = t.menuRoute; document.getElementById('t_menuLang').innerText = t.menuLang; document.getElementById('t_level').innerText = t.level; document.getElementById('t_formTitle').innerText = t.formTitle; document.getElementById('t_catDrink').innerText = t.catDrink; document.getElementById('t_catFood').innerText = t.catFood; document.getElementById('t_catService').innerText = t.catService; document.getElementById('t_catTicket').innerText = t.catTicket; document.getElementById('t_btnSave').innerText = t.btnSave; document.getElementById('t_btnCancel').innerText = t.btnCancel;
-            document.getElementById('nomeLocal').placeholder = t.placeLocal; document.getElementById('nomeProduto').placeholder = t.placeName; document.getElementById('precoProduto').placeholder = t.placePrice;
+            
+            // Textos dos inputs novos
+            if(document.getElementById('t_optNewPlace')) document.getElementById('t_optNewPlace').innerText = t.optNewPlace;
+            document.getElementById('nomeLocalInput').placeholder = t.placeNewLocal; 
+            document.getElementById('nomeProduto').placeholder = t.placeName; document.getElementById('precoProduto').placeholder = t.placePrice;
             
             document.getElementById('langSubMenu').classList.remove('open'); document.getElementById('sideMenu').classList.remove('open'); document.getElementById('menuOverlay').style.display = 'none';
-            renderizarPinosAgrupados(); // Atualiza os balões do mapa
+            renderizarPinosAgrupados(); 
         };
 
         document.getElementById('btnLangToggle').addEventListener('click', () => { document.getElementById('langSubMenu').classList.toggle('open'); });
@@ -182,8 +185,7 @@
         // --- MAPA ---
         let saldoUsuario = 15.00; const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapa);
-        let pinoUsuario = null;
-        let camadaDePinos = L.layerGroup().addTo(mapa); // Camada especial para apagarmos e desenharmos pinos fácil
+        let pinoUsuario = null; let camadaDePinos = L.layerGroup().addTo(mapa);
 
         function buscarLocalizacao() { mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 }); }
         buscarLocalizacao(); document.getElementById('btnMira').addEventListener('click', () => { buscarLocalizacao(); });
@@ -194,13 +196,25 @@
         var iconeVermelho = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
 
         // --- LÓGICA DO FORMULÁRIO ---
-        const btnCamera = document.getElementById('btnCamera'); const cameraInput = document.getElementById('cameraInput'); const modalForm = document.getElementById('modalForm'); const imagemPreview = document.getElementById('imagemPreview'); const iaStatus = document.getElementById('iaStatus'); const nomeProduto = document.getElementById('nomeProduto'); const nomeLocal = document.getElementById('nomeLocal');
+        const btnCamera = document.getElementById('btnCamera'); const cameraInput = document.getElementById('cameraInput'); const modalForm = document.getElementById('modalForm'); const imagemPreview = document.getElementById('imagemPreview'); const iaStatus = document.getElementById('iaStatus'); const nomeProduto = document.getElementById('nomeProduto'); 
+        const selectLocal = document.getElementById('selectLocal'); const nomeLocalInput = document.getElementById('nomeLocalInput');
         
+        // Esconde ou mostra o input de digitar local dependendo do Select
+        selectLocal.addEventListener('change', (e) => {
+            if(e.target.value === 'NEW') { nomeLocalInput.style.display = 'block'; } 
+            else { nomeLocalInput.style.display = 'none'; }
+        });
+
         btnCamera.addEventListener('click', () => { cameraInput.click(); });
         document.getElementById('btnCancelar').addEventListener('click', () => { modalForm.style.display = 'none'; cameraInput.value = ''; imagemPreview.style.display = 'none'; });
 
         cameraInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
+                // Reseta os campos ao abrir
+                selectLocal.value = 'NEW';
+                nomeLocalInput.style.display = 'block';
+                nomeLocalInput.value = '';
+                
                 modalForm.style.display = 'flex'; const arquivo = e.target.files[0]; const leitor = new FileReader();
                 leitor.onload = function(evento) {
                     imagemPreview.src = evento.target.result; imagemPreview.style.display = 'block'; nomeProduto.value = '';
@@ -223,60 +237,84 @@
             }
         });
 
-        // --- SALVANDO NO BANCO (AGORA COM NOME DO LOCAL) ---
+        // --- SALVANDO NO BANCO (COM VERIFICAÇÃO DE DUPLICATA) ---
         document.getElementById('btnSalvar').addEventListener('click', async () => {
-            const local = nomeLocal.value; const nome = nomeProduto.value; const preco = document.getElementById('precoProduto').value; const categoria = document.getElementById('categoriaProduto').value;
-            if(!local || !nome || !preco) { alert(dicionarioIdiomas[idiomaAtual].alertaFalta); return; }
+            const t = dicionarioIdiomas[idiomaAtual];
+            
+            // Define o nome do local baseado se é novo ou existente
+            const valorSelect = selectLocal.value;
+            const localFinal = (valorSelect === 'NEW') ? nomeLocalInput.value.trim() : valorSelect;
+            
+            const nome = nomeProduto.value.trim(); 
+            const preco = document.getElementById('precoProduto').value; 
+            const categoria = document.getElementById('categoriaProduto').value;
+
+            if(!localFinal || !nome || !preco) { alert(t.alertaFalta); return; }
+
+            // SISTEMA ANTI-DUPLICAÇÃO
+            if (dadosAgrupados[localFinal]) {
+                const itensDoLocal = dadosAgrupados[localFinal].itens;
+                // Procura se já tem algum item com o mesmo nome neste estabelecimento específico
+                const jaExiste = itensDoLocal.some(item => item.nome.toLowerCase() === nome.toLowerCase());
+                if (jaExiste) {
+                    alert(t.alertaDuplicado);
+                    return; // Interrompe o salvamento!
+                }
+            }
+
             let centro = mapa.getCenter();
             try {
-                await addDoc(collection(db, "precos"), { local: local, nome: nome, preco: parseFloat(preco), categoria: categoria, lat: centro.lat, lng: centro.lng, status: "pendente", data: new Date() });
+                await addDoc(collection(db, "precos"), { local: localFinal, nome: nome, preco: parseFloat(preco), categoria: categoria, lat: centro.lat, lng: centro.lng, status: "pendente", data: new Date() });
                 saldoUsuario += 2.00; document.getElementById('saldoDisplay').innerText = `R$ ${saldoUsuario.toFixed(2).replace('.', ',')}`;
                 nomeProduto.value = ''; document.getElementById('precoProduto').value = ''; imagemPreview.style.display = 'none'; modalForm.style.display = 'none'; cameraInput.value = '';
-                alert(dicionarioIdiomas[idiomaAtual].alertaSalvo);
+                alert(t.alertaSalvo);
             } catch (error) {}
         });
 
-        // --- O NOVO CÉREBRO: LENDO E AGRUPANDO POR ESTABELECIMENTO ---
+        // --- CÉREBRO: LENDO, AGRUPANDO E ALIMENTANDO O SELECT ---
+        function atualizarDropdownLocais() {
+            const t = dicionarioIdiomas[idiomaAtual];
+            let html = `<option value="NEW" id="t_optNewPlace">${t.optNewPlace}</option>`;
+            
+            // Pega o nome de todos os locais cadastrados
+            const nomesLocais = Object.keys(dadosAgrupados).sort();
+            
+            nomesLocais.forEach(nome => {
+                if(nome !== "Local Desconhecido") {
+                    html += `<option value="${nome}">${nome}</option>`;
+                }
+            });
+            
+            selectLocal.innerHTML = html;
+        }
+
         onSnapshot(collection(db, "precos"), (snapshot) => {
-            dadosAgrupados = {}; // Limpa os dados antigos
+            dadosAgrupados = {}; 
             
             snapshot.forEach((doc) => {
-                const item = doc.data();
-                const id = doc.id;
-                // Se for um dado antigo sem local, cria um genérico
+                const item = doc.data(); const id = doc.id;
                 const nomeDoLugar = item.local || "Local Desconhecido"; 
 
-                // Cria o estabelecimento se não existir
-                if (!dadosAgrupados[nomeDoLugar]) {
-                    dadosAgrupados[nomeDoLugar] = { lat: item.lat, lng: item.lng, itens: [] };
-                }
-                // Coloca o item dentro daquele estabelecimento
+                if (!dadosAgrupados[nomeDoLugar]) { dadosAgrupados[nomeDoLugar] = { lat: item.lat, lng: item.lng, itens: [] }; }
                 dadosAgrupados[nomeDoLugar].itens.push({ ...item, id: id });
             });
 
+            atualizarDropdownLocais(); // Alimenta a lista do formulário
             renderizarPinosAgrupados(); // Desenha no mapa
         });
 
         function renderizarPinosAgrupados() {
-            camadaDePinos.clearLayers(); // Apaga todos os pinos da tela
-            const t = dicionarioIdiomas[idiomaAtual];
+            camadaDePinos.clearLayers(); const t = dicionarioIdiomas[idiomaAtual];
 
             for (const nomeEstabelecimento in dadosAgrupados) {
                 const dadosLugar = dadosAgrupados[nomeEstabelecimento];
-                
-                let temAbusivo = false;
-                let temPendente = false;
-                let htmlListaDeItens = '';
+                let temAbusivo = false; let temPendente = false; let htmlListaDeItens = '';
 
-                // Varre os itens desse lugar para montar a lista e descobrir a cor do pino
                 dadosLugar.itens.forEach(item => {
                     if (item.status === "abusivo") temAbusivo = true;
                     if (item.status === "pendente") temPendente = true;
 
-                    // Ícone do item específico
                     let iconeItem = item.status === 'aprovado' ? '✅' : (item.status === 'abusivo' ? '🚨' : '⏳');
-                    
-                    // Botões de Voto (só aparecem se o item estiver pendente)
                     let botoes = '';
                     if (item.status === 'pendente') {
                         botoes = `<div class="item-acoes">
@@ -285,42 +323,16 @@
                                   </div>`;
                     }
 
-                    // Monta a linha bonita do item dentro do cardápio
-                    htmlListaDeItens += `
-                        <div class="item-card">
-                            <div class="item-row">
-                                <span class="item-nome">${iconeItem} ${item.nome}</span>
-                                <span class="item-preco">R$ ${item.preco.toFixed(2).replace('.', ',')}</span>
-                            </div>
-                            ${botoes}
-                        </div>`;
+                    htmlListaDeItens += `<div class="item-card"><div class="item-row"><span class="item-nome">${iconeItem} ${item.nome}</span><span class="item-preco">R$ ${item.preco.toFixed(2).replace('.', ',')}</span></div>${botoes}</div>`;
                 });
 
-                // A REGRA DE OURO DAS CORES DO PINO
-                let iconePino = iconeAmarelo;
-                let statusGeral = `<p style="color: #f57c00; font-weight: 700; font-size: 13px; margin:0 0 10px 0;">${t.statusYellow}</p>`;
-                
-                if (temAbusivo) {
-                    iconePino = iconeVermelho;
-                    statusGeral = `<p style="color: #c62828; font-weight: 700; font-size: 13px; margin:0 0 10px 0;">${t.statusRed}</p>`;
-                } else if (!temPendente && dadosLugar.itens.length > 0) {
-                    iconePino = iconeVerde;
-                    statusGeral = `<p style="color: #2e7d32; font-weight: 700; font-size: 13px; margin:0 0 10px 0;">${t.statusGreen}</p>`;
-                }
+                let iconePino = iconeAmarelo; let statusGeral = `<p style="color: #f57c00; font-weight: 700; font-size: 13px; margin:0 0 10px 0;">${t.statusYellow}</p>`;
+                if (temAbusivo) { iconePino = iconeVermelho; statusGeral = `<p style="color: #c62828; font-weight: 700; font-size: 13px; margin:0 0 10px 0;">${t.statusRed}</p>`; } 
+                else if (!temPendente && dadosLugar.itens.length > 0) { iconePino = iconeVerde; statusGeral = `<p style="color: #2e7d32; font-weight: 700; font-size: 13px; margin:0 0 10px 0;">${t.statusGreen}</p>`; }
 
-                // Cria o Balão Mágico final
-                let htmlFinal = `
-                    <div class="popup-info">
-                        <h3>🏪 ${nomeEstabelecimento}</h3>
-                        ${statusGeral}
-                        <div class="lista-itens">
-                            ${htmlListaDeItens}
-                        </div>
-                    </div>`;
-
+                let htmlFinal = `<div class="popup-info"><h3>🏪 ${nomeEstabelecimento}</h3>${statusGeral}<div class="lista-itens">${htmlListaDeItens}</div></div>`;
                 let novoPino = L.marker([dadosLugar.lat, dadosLugar.lng], {icon: iconePino});
-                novoPino.bindPopup(htmlFinal);
-                camadaDePinos.addLayer(novoPino);
+                novoPino.bindPopup(htmlFinal); camadaDePinos.addLayer(novoPino);
             }
         }
 
