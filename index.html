@@ -43,7 +43,6 @@
         .side-menu.open { left: 0; }
         .menu-header { background: #004d40; color: white; padding: 25px 20px; font-size: 22px; font-weight: bold; }
         
-        /* CARD DE USUÁRIO NO MENU */
         .user-card { padding: 20px; background: #e0f2f1; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid #ccc; }
         .user-info { display: flex; align-items: center; gap: 12px; font-weight: 700; color: #004d40; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #ccc; display: flex; justify-content: center; align-items: center; font-size: 20px; overflow: hidden; }
@@ -72,7 +71,7 @@
         .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.15); z-index: 1000; cursor: pointer; }
         .btn-mira svg { width: 22px; height: 22px; fill: #004d40; }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
         .modal-content { background-color: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 360px; text-align: center; max-height: 90vh; overflow-y: auto; }
         #modalBusca .modal-content { justify-content: flex-start; text-align: left; }
         .resultados-busca { max-height: 50vh; overflow-y: auto; margin-top: 10px; border-radius: 10px; }
@@ -80,10 +79,8 @@
         .resultado-item:hover { background: #f9f9f9; }
 
         .input-form { width: 100%; padding: 12px; margin: 8px 0; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Poppins', sans-serif; box-sizing: border-box; }
-        
         .btn-add-foto { background-color: #e0f2f1; color: #004d40; border: 1px dashed #004d40; padding: 12px; width: 100%; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
         .btn-add-foto:hover { background-color: #b2dfdb; }
-
         .btn-salvar { background-color: #004d40; color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-top: 10px; cursor: pointer; }
         .btn-cancelar { background-color: transparent; color: #757575; border: none; padding: 10px; width: 100%; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; }
 
@@ -157,7 +154,10 @@
 
     <div class="top-bar">
         <div class="top-bar-logo"><button class="btn-menu" id="btnAbrirMenu">☰</button> GringoSafe</div>
-        <div class="user-status"><span class="user-level" id="t_level">⭐ Nvl 3</span><span class="user-balance" id="saldoDisplay">R$ 15,00</span></div>
+        <div class="user-status">
+            <span class="user-level" id="t_level">⭐ Nvl 1</span>
+            <span class="user-balance" id="saldoDisplay">R$ 0,00</span>
+        </div>
     </div>
 
     <div id="mapa"></div>
@@ -193,45 +193,21 @@
             <select id="categoriaProduto" class="input-form">
                 <option value="Bebida" id="t_catDrink">Bebida</option><option value="Comida" id="t_catFood">Comida / Lanche</option><option value="Serviço" id="t_catService">Transporte / Serviço</option><option value="Ingresso" id="t_catTicket">Ingresso / Passeio</option>
             </select>
-            <button class="btn-salvar" id="btnSalvar"><span id="t_btnSave">Salvar</span></button>
+            <button class="btn-salvar" id="btnSalvar"><span id="t_btnSave">Salvar (+R$ 0,25)</span></button>
             <button class="btn-cancelar" id="btnCancelar"><span id="t_btnCancel">Cancelar</span></button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-        // IMPORTANDO O SISTEMA DE LOGIN DO GOOGLE
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
+        // --- IDIOMAS ---
         const dicionarioIdiomas = {
-            pt: {
-                splashSub: "Preço Justo em Qualquer Lugar", menuRoute: "🗺️ Roteiro Premium Seguro", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Trocar de Perfil", level: "⭐ Nvl 3", 
-                formTitle: "Novo Registro", optNewPlace: "➕ Adicionar Novo Local", placeNewLocal: "Nome do Novo Local", placeName: "Produto (Ex: Água)", placePrice: "Preço (R$)", 
-                catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Salvar Produto", btnCancel: "Cancelar", alertaSalvo: "Salvo com sucesso!", alertaFalta: "Preencha todos os campos!", alertaDuplicado: "Este produto já está cadastrado! Vote (👍/👎) no mapa.",
-                statusGreen: "✅ Local Confiável", statusYellow: "⏳ Analisando itens...", statusRed: "🚨 Alerta de Abuso", btnYes: "👍 Confirmo", btnNo: "👎 Golpe",
-                searchTitle: "Buscar Local ou Produto", searchPlaceholder: "Ex: Quiosque, Água...", searchClose: "Fechar",
-                roleTitle: "Como você quer usar o App?", roleTourist: "Sou Turista", roleTouristSub: "Quero apenas pesquisar lugares seguros e ver preços.", roleLocal: "Sou Avaliador Local", roleLocalSub: "Quero registrar preços, votar e ajudar a comunidade.",
-                btnAddPhoto: "📸 Adicionar Foto (Opcional)", btnLogin: "Entrar com Google", btnLogout: "Sair da Conta"
-            },
-            en: {
-                splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Premium Safe Route", menuLang: "🌐 Languages", menuChangeRole: "👤 Change Role", level: "⭐ Lvl 3", 
-                formTitle: "New Record", optNewPlace: "➕ Add New Place", placeNewLocal: "New Place Name", placeName: "Product (Ex: Water)", placePrice: "Price (R$)", 
-                catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save Product", btnCancel: "Cancel", alertaSalvo: "Saved successfully!", alertaFalta: "Fill in all fields!", alertaDuplicado: "Product already exists! Vote on the map.",
-                statusGreen: "✅ Trusted Place", statusYellow: "⏳ Verifying items...", statusRed: "🚨 Scam Alert", btnYes: "👍 Confirm", btnNo: "👎 Scam",
-                searchTitle: "Search Place or Product", searchPlaceholder: "Ex: Kiosk, Water...", searchClose: "Close",
-                roleTitle: "How do you want to use the App?", roleTourist: "I'm a Tourist", roleTouristSub: "I just want to search for safe places and see prices.", roleLocal: "I'm a Local Evaluator", roleLocalSub: "I want to register prices, vote and help the community.",
-                btnAddPhoto: "📸 Add Photo (Optional)", btnLogin: "Sign in with Google", btnLogout: "Sign Out"
-            },
-            es: {
-                splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Ruta Premium Segura", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Cambiar Perfil", level: "⭐ Nvl 3", 
-                formTitle: "Nuevo Registro", optNewPlace: "➕ Añadir Nuevo Lugar", placeNewLocal: "Nombre del Nuevo Lugar", placeName: "Producto (Ej: Agua)", placePrice: "Precio (R$)", 
-                catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar Producto", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa todos los campos!", alertaDuplicado: "¡Producto ya existe! Vota en el mapa.",
-                statusGreen: "✅ Lugar Confiable", statusYellow: "⏳ Verificando...", statusRed: "🚨 Alerta de Abuso", btnYes: "👍 Confirmo", btnNo: "👎 Estafa",
-                searchTitle: "Buscar Lugar o Producto", searchPlaceholder: "Ej: Kiosco, Agua...", searchClose: "Cerrar",
-                roleTitle: "¿Cómo quieres usar la App?", roleTourist: "Soy Turista", roleTouristSub: "Solo quiero buscar lugares seguros y ver precios.", roleLocal: "Soy Evaluador Local", roleLocalSub: "Quiero registrar precios, votar y ayudar a la comunidad.",
-                btnAddPhoto: "📸 Añadir Foto (Opcional)", btnLogin: "Entrar con Google", btnLogout: "Cerrar Sesión"
-            }
+            pt: { splashSub: "Preço Justo em Qualquer Lugar", menuRoute: "🗺️ Roteiro Premium Seguro", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Trocar de Perfil", level: "⭐ Nvl 1", formTitle: "Novo Registro", optNewPlace: "➕ Adicionar Novo Local", placeNewLocal: "Nome do Novo Local", placeName: "Produto (Ex: Água)", placePrice: "Preço (R$)", catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Salvar (+R$ 0,25)", btnCancel: "Cancelar", alertaSalvo: "Salvo com sucesso! Ganhou +0,25", alertaFalta: "Preencha todos os campos!", alertaDuplicado: "Este produto já está cadastrado! Vote (👍/👎) no mapa.", statusGreen: "✅ Local Confiável", statusYellow: "⏳ Analisando itens...", statusRed: "🚨 Alerta de Abuso", btnYes: "👍 Confirmo", btnNo: "👎 Golpe", searchTitle: "Buscar Local ou Produto", searchPlaceholder: "Ex: Quiosque, Água...", searchClose: "Fechar", roleTitle: "Como você quer usar o App?", roleTourist: "Sou Turista", roleTouristSub: "Quero apenas pesquisar lugares seguros e ver preços.", roleLocal: "Sou Avaliador Local", roleLocalSub: "Quero registrar preços, votar e ajudar a comunidade.", btnAddPhoto: "📸 Adicionar Foto (Opcional)", btnLogin: "Entrar com Google", btnLogout: "Sair da Conta" },
+            en: { splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Premium Safe Route", menuLang: "🌐 Languages", menuChangeRole: "👤 Change Role", level: "⭐ Lvl 1", formTitle: "New Record", optNewPlace: "➕ Add New Place", placeNewLocal: "New Place Name", placeName: "Product (Ex: Water)", placePrice: "Price", catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save (+0.25)", btnCancel: "Cancel", alertaSalvo: "Saved successfully! Earned +0.25", alertaFalta: "Fill in all fields!", alertaDuplicado: "Product already exists! Vote on the map.", statusGreen: "✅ Trusted Place", statusYellow: "⏳ Verifying items...", statusRed: "🚨 Scam Alert", btnYes: "👍 Confirm", btnNo: "👎 Scam", searchTitle: "Search Place or Product", searchPlaceholder: "Ex: Kiosk, Water...", searchClose: "Close", roleTitle: "How do you want to use the App?", roleTourist: "I'm a Tourist", roleTouristSub: "I just want to search for safe places and see prices.", roleLocal: "I'm a Local Evaluator", roleLocalSub: "I want to register prices, vote and help the community.", btnAddPhoto: "📸 Add Photo (Optional)", btnLogin: "Sign in with Google", btnLogout: "Sign Out" },
+            es: { splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Ruta Premium Segura", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Cambiar Perfil", level: "⭐ Nvl 1", formTitle: "Nuevo Registro", optNewPlace: "➕ Añadir Nuevo Lugar", placeNewLocal: "Nombre del Nuevo Lugar", placeName: "Producto (Ej: Agua)", placePrice: "Precio", catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar (+0,25)", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito! Ganaste +0,25", alertaFalta: "¡Completa todos los campos!", alertaDuplicado: "¡Producto ya existe! Vota en el mapa.", statusGreen: "✅ Lugar Confiable", statusYellow: "⏳ Verificando...", statusRed: "🚨 Alerta de Abuso", btnYes: "👍 Confirmo", btnNo: "👎 Estafa", searchTitle: "Buscar Lugar o Producto", searchPlaceholder: "Ej: Kiosco, Agua...", searchClose: "Cerrar", roleTitle: "¿Cómo quieres usar la App?", roleTourist: "Soy Turista", roleTouristSub: "Solo quiero buscar lugares seguros y ver precios.", roleLocal: "Soy Evaluador Local", roleLocalSub: "Quiero registrar precios, votar y ayudar a la comunidad.", btnAddPhoto: "📸 Añadir Foto (Opcional)", btnLogin: "Entrar con Google", btnLogout: "Cerrar Sesión" }
         };
 
         let idiomaAtual = 'pt';
@@ -242,8 +218,7 @@
 
             document.getElementById('t_splashSub').innerText = t.splashSub; document.getElementById('t_menuRoute').innerText = t.menuRoute; document.getElementById('t_menuLang').innerText = t.menuLang; document.getElementById('t_menuChangeRole').innerText = t.menuChangeRole; document.getElementById('t_level').innerText = t.level; document.getElementById('t_formTitle').innerText = t.formTitle; document.getElementById('t_catDrink').innerText = t.catDrink; document.getElementById('t_catFood').innerText = t.catFood; document.getElementById('t_catService').innerText = t.catService; document.getElementById('t_catTicket').innerText = t.catTicket; document.getElementById('t_btnSave').innerText = t.btnSave; document.getElementById('t_btnCancel').innerText = t.btnCancel;
             if(document.getElementById('t_optNewPlace')) document.getElementById('t_optNewPlace').innerText = t.optNewPlace; document.getElementById('nomeLocalInput').placeholder = t.placeNewLocal; document.getElementById('nomeProduto').placeholder = t.placeName; document.getElementById('precoProduto').placeholder = t.placePrice; document.getElementById('t_searchTitle').innerText = t.searchTitle; document.getElementById('inputBusca').placeholder = t.searchPlaceholder; document.getElementById('t_searchClose').innerText = t.searchClose;
-            document.getElementById('t_roleTitle').innerText = t.roleTitle; document.getElementById('t_roleTourist').innerText = t.roleTourist; document.getElementById('t_roleTouristSub').innerText = t.roleTouristSub; document.getElementById('t_roleLocal').innerText = t.roleLocal; document.getElementById('t_roleLocalSub').innerText = t.roleLocalSub; document.getElementById('t_btnAddPhoto').innerText = t.btnAddPhoto;
-            document.getElementById('t_btnLogin').innerText = t.btnLogin; document.getElementById('t_btnLogout').innerText = t.btnLogout;
+            document.getElementById('t_roleTitle').innerText = t.roleTitle; document.getElementById('t_roleTourist').innerText = t.roleTourist; document.getElementById('t_roleTouristSub').innerText = t.roleTouristSub; document.getElementById('t_roleLocal').innerText = t.roleLocal; document.getElementById('t_roleLocalSub').innerText = t.roleLocalSub; document.getElementById('t_btnAddPhoto').innerText = t.btnAddPhoto; document.getElementById('t_btnLogin').innerText = t.btnLogin; document.getElementById('t_btnLogout').innerText = t.btnLogout;
             
             document.getElementById('langSubMenu').classList.remove('open'); document.getElementById('sideMenu').classList.remove('open'); document.getElementById('menuOverlay').style.display = 'none'; renderizarPinosAgrupados(); 
         };
@@ -259,33 +234,47 @@
         const firebaseConfig = { apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs", authDomain: "gringosafe-1f434.firebaseapp.com", projectId: "gringosafe-1f434", storageBucket: "gringosafe-1f434.firebasestorage.app", messagingSenderId: "949745647794", appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
         
-        // --- SISTEMA DE LOGIN GOOGLE ---
+        // --- SISTEMA DE LOGIN E CARTEIRA (NOVA ECONOMIA) ---
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
+        
+        let saldoUsuarioLocal = 0.00; // Todo mundo começa zerado
+        let usuarioLogado = null; 
 
         window.loginComGoogle = function() {
-            signInWithPopup(auth, provider).then((result) => {
-                alert("Login realizado com sucesso! Bem-vindo, " + result.user.displayName);
-            }).catch((error) => {
-                console.error("Erro no login:", error);
-                alert("Erro ao fazer login. Certifique-se de que ativou o Google no Console do Firebase.");
-            });
+            signInWithPopup(auth, provider).catch((error) => { alert("Erro ao fazer login."); });
         }
+        window.sairDaConta = function() { signOut(auth).then(() => { alert("Você saiu da conta."); }); }
 
-        window.sairDaConta = function() {
-            signOut(auth).then(() => { alert("Você saiu da conta."); });
-        }
-
-        // Fica observando se tem alguém logado para mudar a interface do menu
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // Usuário Logado: Coloca a foto real dele e o nome
+                usuarioLogado = user;
                 document.getElementById('menuAvatar').innerHTML = `<img src="${user.photoURL}" alt="Foto">`;
-                document.getElementById('menuNome').innerText = user.displayName.split(" ")[0]; // Pega só o primeiro nome
+                document.getElementById('menuNome').innerText = user.displayName.split(" ")[0]; 
                 document.getElementById('btnLoginGoogle').style.display = 'none';
                 document.getElementById('btnLogout').style.display = 'block';
+
+                const userRef = doc(db, "usuarios", user.uid);
+                const docSnap = await getDoc(userRef);
+
+                if (docSnap.exists()) {
+                    // Puxa o saldo real salvo
+                    saldoUsuarioLocal = docSnap.data().saldo || 0.00;
+                } else {
+                    // CONTA NOVA: Saldo Inicial de R$ 0,00
+                    saldoUsuarioLocal = 0.00;
+                    await setDoc(userRef, { 
+                        nome: user.displayName, 
+                        email: user.email, 
+                        saldo: saldoUsuarioLocal,
+                        dataCadastro: new Date()
+                    });
+                }
+                document.getElementById('saldoDisplay').innerText = `R$ ${saldoUsuarioLocal.toFixed(2).replace('.', ',')}`;
             } else {
-                // Deslogado
+                usuarioLogado = null;
+                saldoUsuarioLocal = 0.00;
+                document.getElementById('saldoDisplay').innerText = `R$ 0,00`;
                 document.getElementById('menuAvatar').innerHTML = `👤`;
                 document.getElementById('menuNome').innerText = `Visitante`;
                 document.getElementById('btnLoginGoogle').style.display = 'flex';
@@ -301,7 +290,7 @@
         const dicionarioIA = { "water bottle": "Garrafa de Água", "beer glass": "Copo de Cerveja", "coffee mug": "Caneca de Café", "espresso": "Café Expresso", "sunglasses": "Óculos de Sol", "cellular telephone": "Celular", "mouse": "Mouse", "laptop": "Notebook", "backpack": "Mochila", "umbrella": "Guarda-chuva", "pop bottle": "Garrafa de Refrigerante", "water jug": "Galão de Água", "cup": "Copo", "menu": "Cardápio", "street sign": "Placa de Rua", "dining table": "Mesa de Restaurante", "plate": "Prato de Comida", "ice lolly": "Picolé" };
         let modeloIA = null; mobilenet.load().then(model => { modeloIA = model; });
 
-        let saldoUsuario = 15.00; const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14);
+        const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapa);
         let pinoUsuario = null; let camadaDePinos = L.layerGroup().addTo(mapa); let dadosAgrupados = {}; let marcadoresFisicosNoMapa = {};
 
@@ -358,14 +347,22 @@
             if (dadosAgrupados[localFinal]) { const jaExiste = dadosAgrupados[localFinal].itens.some(item => item.nome.toLowerCase() === nome.toLowerCase()); if (jaExiste) { alert(t.alertaDuplicado); return; } }
 
             let centro = mapa.getCenter();
-            
-            // Adiciona a informação de quem cadastrou se estiver logado
-            const usuarioAtual = auth.currentUser;
-            const quemCadastrou = usuarioAtual ? usuarioAtual.email : "Anônimo";
+            const autorEmail = usuarioLogado ? usuarioLogado.email : "Anônimo";
 
             try {
-                await addDoc(collection(db, "precos"), { local: localFinal, nome: nome, preco: parseFloat(preco), categoria: categoria, lat: centro.lat, lng: centro.lng, status: "pendente", autor: quemCadastrou, data: new Date() });
-                saldoUsuario += 2.00; document.getElementById('saldoDisplay').innerText = `R$ ${saldoUsuario.toFixed(2).replace('.', ',')}`;
+                await addDoc(collection(db, "precos"), { local: localFinal, nome: nome, preco: parseFloat(preco), categoria: categoria, lat: centro.lat, lng: centro.lng, status: "pendente", autor: autorEmail, data: new Date() });
+                
+                // PAGAMENTO DE 25 CENTAVOS!
+                if (usuarioLogado) {
+                    const userRef = doc(db, "usuarios", usuarioLogado.uid);
+                    await updateDoc(userRef, { saldo: increment(0.25) });
+                    
+                    saldoUsuarioLocal += 0.25; 
+                    document.getElementById('saldoDisplay').innerText = `R$ ${saldoUsuarioLocal.toFixed(2).replace('.', ',')}`;
+                } else {
+                    alert("Dica: Faça login no menu para começar a juntar dinheiro real na sua carteira!");
+                }
+
                 nomeProduto.value = ''; document.getElementById('precoProduto').value = ''; imagemPreview.style.display = 'none'; modalForm.style.display = 'none'; cameraInput.value = '';
                 alert(t.alertaSalvo);
             } catch (error) {}
