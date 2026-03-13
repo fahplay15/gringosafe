@@ -31,7 +31,6 @@
         .user-level { background-color: #ffc107; color: #333; padding: 5px 10px; border-radius: 20px; margin-right: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .user-balance { background-color: #1b5e20; padding: 5px 12px; border-radius: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
-        /* Menu Lateral Estendido para Idiomas */
         .side-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 3000; transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1); box-shadow: 4px 0 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; }
         .side-menu.open { left: 0; }
         .menu-header { background: #004d40; color: white; padding: 25px 20px; font-size: 22px; font-weight: bold; border-bottom-right-radius: 20px; }
@@ -41,8 +40,9 @@
         
         .sub-menu { display: none; background: #f9f9f9; flex-direction: column; }
         .sub-menu.open { display: flex; }
-        .sub-menu-item { padding: 12px 40px; border-bottom: 1px solid #eee; color: #555; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .sub-menu-item { padding: 12px 40px; border-bottom: 1px solid #eee; color: #555; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; }
         .sub-menu-item:hover { background: #e0e0e0; }
+        .ativo-lang { color: #004d40; font-weight: 700; }
 
         .menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); z-index: 2500; }
 
@@ -91,9 +91,9 @@
             <span style="font-size: 12px;">▼</span>
         </div>
         <div class="sub-menu" id="langSubMenu">
-            <div class="sub-menu-item" onclick="mudarIdioma('pt')">🇧🇷 Português</div>
-            <div class="sub-menu-item" onclick="mudarIdioma('en')">🇺🇸 English</div>
-            <div class="sub-menu-item" onclick="mudarIdioma('es')">🇪🇸 Español</div>
+            <div class="sub-menu-item ativo-lang" id="lang_pt" onclick="mudarIdioma('pt')"><span>🇧🇷 Português</span> <span class="check">✔️</span></div>
+            <div class="sub-menu-item" id="lang_en" onclick="mudarIdioma('en')"><span>🇺🇸 English</span> <span class="check" style="display:none;">✔️</span></div>
+            <div class="sub-menu-item" id="lang_es" onclick="mudarIdioma('es')"><span>🇪🇸 Español</span> <span class="check" style="display:none;">✔️</span></div>
         </div>
 
         <div class="menu-item"><span id="t_menuSettings">⚙️ Configurações</span></div>
@@ -146,216 +146,161 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // --- SISTEMA DE TRADUÇÃO (i18n) ---
+        // --- SISTEMA DE TRADUÇÃO EXPANDIDO (MAPA INCLUÍDO) ---
         const dicionarioIdiomas = {
             pt: {
-                splashSub: "Preço Justo em Qualquer Lugar",
-                menuRoute: "🗺️ Roteiro Premium Seguro",
-                menuRanking: "⭐ Meu Ranking",
-                menuLang: "🌐 Idiomas",
-                menuSettings: "⚙️ Configurações",
-                level: "⭐ Nvl 3",
-                formTitle: "Novo Registro",
-                formSub: "Ajude a comunidade verificando este item.",
-                placeName: "O que é? (Ex: Água de Coco)",
-                placePrice: "Preço Cobrado (R$)",
-                catDrink: "Bebida", catFood: "Comida / Lanche", catService: "Transporte / Serviço", catTicket: "Ingresso / Passeio",
-                btnSave: "Salvar e Ganhar",
-                btnCancel: "Cancelar",
-                alertaRoteiro: "Roteiro Premium ativado! Siga a linha roxa no mapa para encontrar os comerciantes patrocinadores.",
-                alertaFaltaDados: "Preencha o nome e o preço!",
-                alertaSalvo: "Registro salvo com sucesso!"
+                splashSub: "Preço Justo em Qualquer Lugar", menuRoute: "🗺️ Roteiro Premium Seguro", menuRanking: "⭐ Meu Ranking", menuLang: "🌐 Idiomas", menuSettings: "⚙️ Configurações", level: "⭐ Nvl 3", formTitle: "Novo Registro", formSub: "Ajude a comunidade verificando este item.", placeName: "O que é? (Ex: Água de Coco)", placePrice: "Preço Cobrado (R$)", catDrink: "Bebida", catFood: "Comida / Lanche", catService: "Transporte / Serviço", catTicket: "Ingresso / Passeio", btnSave: "Salvar e Ganhar", btnCancel: "Cancelar", alertaRoteiro: "Roteiro ativado!", alertaFaltaDados: "Preencha o nome e o preço!", alertaSalvo: "Registro salvo com sucesso!",
+                // Textos do Mapa
+                mapPending: "⏳ Em verificação", mapApproved: "✅ Selo Preço Justo", mapAbusive: "🚨 Alerta de Preço Abusivo", mapVote: "Você confirma este preço?", mapYes: "👍 Sim", mapNo: "👎 Não"
             },
             en: {
-                splashSub: "Fair Price Anywhere",
-                menuRoute: "🗺️ Premium Safe Route",
-                menuRanking: "⭐ My Ranking",
-                menuLang: "🌐 Languages",
-                menuSettings: "⚙️ Settings",
-                level: "⭐ Lvl 3",
-                formTitle: "New Record",
-                formSub: "Help the community by verifying this item.",
-                placeName: "What is it? (Ex: Coconut Water)",
-                placePrice: "Charged Price (R$)",
-                catDrink: "Drink", catFood: "Food / Snack", catService: "Transport / Service", catTicket: "Ticket / Tour",
-                btnSave: "Save and Earn",
-                btnCancel: "Cancel",
-                alertaRoteiro: "Premium Route activated! Follow the purple line on the map to find sponsored merchants.",
-                alertaFaltaDados: "Please fill in the name and price!",
-                alertaSalvo: "Record saved successfully!"
+                splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Premium Safe Route", menuRanking: "⭐ My Ranking", menuLang: "🌐 Languages", menuSettings: "⚙️ Settings", level: "⭐ Lvl 3", formTitle: "New Record", formSub: "Help the community by verifying this item.", placeName: "What is it? (Ex: Coconut Water)", placePrice: "Charged Price (R$)", catDrink: "Drink", catFood: "Food / Snack", catService: "Transport / Service", catTicket: "Ticket / Tour", btnSave: "Save and Earn", btnCancel: "Cancel", alertaRoteiro: "Route activated!", alertaFaltaDados: "Fill in the name and price!", alertaSalvo: "Saved successfully!",
+                // Textos do Mapa
+                mapPending: "⏳ Under Review", mapApproved: "✅ Fair Price Seal", mapAbusive: "🚨 Abusive Price Alert", mapVote: "Do you confirm this price?", mapYes: "👍 Yes", mapNo: "👎 No"
             },
             es: {
-                splashSub: "Precio Justo en Cualquier Lugar",
-                menuRoute: "🗺️ Ruta Premium Segura",
-                menuRanking: "⭐ Mi Ranking",
-                menuLang: "🌐 Idiomas",
-                menuSettings: "⚙️ Ajustes",
-                level: "⭐ Nvl 3",
-                formTitle: "Nuevo Registro",
-                formSub: "Ayuda a la comunidad verificando este ítem.",
-                placeName: "¿Qué es? (Ej: Agua de Coco)",
-                placePrice: "Precio Cobrado (R$)",
-                catDrink: "Bebida", catFood: "Comida / Snack", catService: "Transporte / Servicio", catTicket: "Entrada / Tour",
-                btnSave: "Guardar y Ganar",
-                btnCancel: "Cancelar",
-                alertaRoteiro: "¡Ruta Premium activada! Sigue la línea morada en el mapa para encontrar patrocinadores.",
-                alertaFaltaDados: "¡Completa el nombre y el precio!",
-                alertaSalvo: "¡Registro guardado con éxito!"
+                splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Ruta Premium Segura", menuRanking: "⭐ Mi Ranking", menuLang: "🌐 Idiomas", menuSettings: "⚙️ Ajustes", level: "⭐ Nvl 3", formTitle: "Nuevo Registro", formSub: "Ayuda a la comunidad verificando este ítem.", placeName: "¿Qué es? (Ej: Agua de Coco)", placePrice: "Precio Cobrado (R$)", catDrink: "Bebida", catFood: "Comida / Snack", catService: "Transporte / Servicio", catTicket: "Entrada / Tour", btnSave: "Guardar y Ganar", btnCancel: "Cancelar", alertaRoteiro: "¡Ruta activada!", alertaFaltaDados: "¡Completa el nombre y el precio!", alertaSalvo: "¡Guardado con éxito!",
+                // Textos do Mapa
+                mapPending: "⏳ En revisión", mapApproved: "✅ Sello Precio Justo", mapAbusive: "🚨 Alerta Precio Abusivo", mapVote: "¿Confirmas este precio?", mapYes: "👍 Sí", mapNo: "👎 No"
             }
         };
 
-        let idiomaAtual = 'pt'; // O aplicativo nasce em português
+        let idiomaAtual = 'pt';
+        let dadosDosPinos = {}; // Guarda os dados puros para podermos re-traduzir os pinos
 
         window.mudarIdioma = function(idioma) {
             idiomaAtual = idioma;
             const t = dicionarioIdiomas[idioma];
 
-            // Atualiza os Textos
-            document.getElementById('t_splashSub').innerText = t.splashSub;
-            document.getElementById('t_menuRoute').innerText = t.menuRoute;
-            document.getElementById('t_menuRanking').innerText = t.menuRanking;
-            document.getElementById('t_menuLang').innerText = t.menuLang;
-            document.getElementById('t_menuSettings').innerText = t.menuSettings;
-            document.getElementById('t_level').innerText = t.level;
-            document.getElementById('t_formTitle').innerText = t.formTitle;
-            document.getElementById('t_formSub').innerText = t.formSub;
-            document.getElementById('t_catDrink').innerText = t.catDrink;
-            document.getElementById('t_catFood').innerText = t.catFood;
-            document.getElementById('t_catService').innerText = t.catService;
-            document.getElementById('t_catTicket').innerText = t.catTicket;
-            document.getElementById('t_btnSave').innerText = t.btnSave;
-            document.getElementById('btnCancelar').innerText = t.btnCancel;
+            // 1. Atualiza Indicador Visual no Menu
+            document.querySelectorAll('.sub-menu-item').forEach(el => {
+                el.classList.remove('ativo-lang');
+                el.querySelector('.check').style.display = 'none';
+            });
+            const itemClicado = document.getElementById('lang_' + idioma);
+            itemClicado.classList.add('ativo-lang');
+            itemClicado.querySelector('.check').style.display = 'inline';
 
-            // Atualiza os Placeholders dos campos de digitar
-            document.getElementById('nomeProduto').placeholder = t.placeName;
-            document.getElementById('precoProduto').placeholder = t.placePrice;
+            // 2. Atualiza Textos da Interface
+            document.getElementById('t_splashSub').innerText = t.splashSub; document.getElementById('t_menuRoute').innerText = t.menuRoute; document.getElementById('t_menuRanking').innerText = t.menuRanking; document.getElementById('t_menuLang').innerText = t.menuLang; document.getElementById('t_menuSettings').innerText = t.menuSettings; document.getElementById('t_level').innerText = t.level; document.getElementById('t_formTitle').innerText = t.formTitle; document.getElementById('t_formSub').innerText = t.formSub; document.getElementById('t_catDrink').innerText = t.catDrink; document.getElementById('t_catFood').innerText = t.catFood; document.getElementById('t_catService').innerText = t.catService; document.getElementById('t_catTicket').innerText = t.catTicket; document.getElementById('t_btnSave').innerText = t.btnSave; document.getElementById('btnCancelar').innerText = t.btnCancel;
+            document.getElementById('nomeProduto').placeholder = t.placeName; document.getElementById('precoProduto').placeholder = t.placePrice;
 
-            // Fecha o sub-menu e o menu lateral após a escolha
+            // 3. ATUALIZA TODOS OS PINOS DO MAPA NA HORA
+            for (const id in marcadoresAtivos) {
+                const pino = marcadoresAtivos[id];
+                const dados = dadosDosPinos[id];
+                pino.setPopupContent(gerarHTMLDoPopup(id, dados));
+            }
+
+            // Fecha o menu
             document.getElementById('langSubMenu').classList.remove('open');
             document.getElementById('sideMenu').classList.remove('open');
             document.getElementById('menuOverlay').style.display = 'none';
         };
 
-        // Lógica para abrir/fechar o submenu de idiomas
-        document.getElementById('btnLangToggle').addEventListener('click', () => {
-            document.getElementById('langSubMenu').classList.toggle('open');
-        });
+        document.getElementById('btnLangToggle').addEventListener('click', () => { document.getElementById('langSubMenu').classList.toggle('open'); });
 
         // --- FIREBASE CONFIG ---
         const firebaseConfig = { apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs", authDomain: "gringosafe-1f434.firebaseapp.com", projectId: "gringosafe-1f434", storageBucket: "gringosafe-1f434.firebasestorage.app", messagingSenderId: "949745647794", appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab" };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-        // --- SPLASH E MENU LATERAL ---
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splashScreen');
-                splash.style.opacity = '0';
-                setTimeout(() => { splash.style.display = 'none'; }, 600);
-            }, 2000); 
-        });
-
-        const sideMenu = document.getElementById('sideMenu');
-        const menuOverlay = document.getElementById('menuOverlay');
+        // --- SPLASH, MENU E IA ---
+        window.addEventListener('load', () => { setTimeout(() => { const splash = document.getElementById('splashScreen'); splash.style.opacity = '0'; setTimeout(() => { splash.style.display = 'none'; }, 600); }, 2000); });
+        const sideMenu = document.getElementById('sideMenu'); const menuOverlay = document.getElementById('menuOverlay');
         document.getElementById('btnAbrirMenu').addEventListener('click', () => { sideMenu.classList.add('open'); menuOverlay.style.display = 'block'; });
         menuOverlay.addEventListener('click', () => { sideMenu.classList.remove('open'); menuOverlay.style.display = 'none'; });
 
-        // --- DICIONÁRIO IA ---
         const dicionarioIA = { "water bottle": "Garrafa de Água", "beer glass": "Copo de Cerveja", "coffee mug": "Caneca de Café", "espresso": "Café Expresso", "sunglasses": "Óculos de Sol", "cellular telephone": "Celular", "mouse": "Mouse", "laptop": "Notebook", "backpack": "Mochila", "umbrella": "Guarda-chuva", "pop bottle": "Garrafa de Refrigerante", "water jug": "Galão de Água", "cup": "Copo", "menu": "Cardápio", "street sign": "Placa de Rua", "dining table": "Mesa de Restaurante", "plate": "Prato de Comida", "ice lolly": "Picolé / Sorvete" };
-        let modeloIA = null;
-        mobilenet.load().then(model => { modeloIA = model; });
+        let modeloIA = null; mobilenet.load().then(model => { modeloIA = model; });
 
         // --- MAPA ---
-        let saldoUsuario = 15.00;
-        const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14);
+        let saldoUsuario = 15.00; const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapa);
         let pinoUsuario = null;
 
         function buscarLocalizacao() { mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 }); }
-        buscarLocalizacao();
-        document.getElementById('btnMira').addEventListener('click', () => { buscarLocalizacao(); });
-        mapa.on('locationfound', function(e) { 
-            if (pinoUsuario) { mapa.removeLayer(pinoUsuario); }
-            pinoUsuario = L.marker(e.latlng).addTo(mapa).bindPopup("<div style='font-family: Poppins, sans-serif;'>📍 Você está aqui!</div>"); 
-        });
+        buscarLocalizacao(); document.getElementById('btnMira').addEventListener('click', () => { buscarLocalizacao(); });
+        mapa.on('locationfound', function(e) { if (pinoUsuario) { mapa.removeLayer(pinoUsuario); } pinoUsuario = L.marker(e.latlng).addTo(mapa).bindPopup("<div style='font-family: Poppins, sans-serif;'>📍 Você está aqui!</div>"); });
 
         var iconeAmarelo = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         var iconeVerde = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         var iconeVermelho = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         var iconePatrocinado = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
 
-        let rotaAtiva = null; 
-        document.getElementById('btnCarregarRoteiro').addEventListener('click', () => {
-            sideMenu.classList.remove('open'); menuOverlay.style.display = 'none';
-            let centro = mapa.getCenter();
-            let ponto1 = [centro.lat + 0.002, centro.lng + 0.002]; let ponto2 = [centro.lat - 0.001, centro.lng + 0.004]; let ponto3 = [centro.lat - 0.003, centro.lng + 0.001];
-
-            L.marker(ponto1, {icon: iconePatrocinado}).addTo(mapa).bindPopup("<div class='popup-info'><h3>💎 Quiosque Premium</h3><p>Patrocinador Oficial. 10% de desconto.</p></div>");
-            L.marker(ponto2, {icon: iconePatrocinado}).addTo(mapa).bindPopup("<div class='popup-info'><h3>💎 Restaurante Seguro</h3><p>Cardápio com preços tabelados.</p></div>");
-            L.marker(ponto3, {icon: iconePatrocinado}).addTo(mapa).bindPopup("<div class='popup-info'><h3>💎 Loja de Lembranças</h3><p>Preço justo garantido.</p></div>");
-
-            if(rotaAtiva) { mapa.removeLayer(rotaAtiva); }
-            rotaAtiva = L.polyline([ponto1, ponto2, ponto3], {color: '#9c27b0', weight: 5, dashArray: '10, 10'}).addTo(mapa);
-            mapa.fitBounds(rotaAtiva.getBounds(), {padding: [50, 50]});
+        // --- FUNÇÃO CENTRAL QUE GERA O HTML DO PINO TRADUZIDO ---
+        function gerarHTMLDoPopup(idDocumento, dados) {
+            const t = dicionarioIdiomas[idiomaAtual];
+            let textoStatus = `<p style="color: #f57c00; font-weight: 700;">${t.mapPending}</p>`;
             
-            alert(dicionarioIdiomas[idiomaAtual].alertaRoteiro);
-        });
+            if (dados.status === "aprovado") { textoStatus = `<p style="color: #2e7d32; font-weight: 700;">${t.mapApproved}</p>`; } 
+            else if (dados.status === "abusivo") { textoStatus = `<p style="color: #c62828; font-weight: 700;">${t.mapAbusive}</p>`; }
 
-        // --- LÓGICA DO FORMULÁRIO E IA ---
-        const btnCamera = document.getElementById('btnCamera');
-        const cameraInput = document.getElementById('cameraInput');
-        const modalForm = document.getElementById('modalForm');
-        const imagemPreview = document.getElementById('imagemPreview');
-        const iaStatus = document.getElementById('iaStatus');
-        const nomeProduto = document.getElementById('nomeProduto');
+            let botoesVotacao = '';
+            if (dados.status === "pendente") {
+                botoesVotacao = `<hr style="border:0; border-top: 1px solid #eee; margin: 10px 0;"><p style="font-size: 13px; text-align: center; margin-bottom: 8px;">${t.mapVote}</p>
+                    <div style="display: flex; justify-content: space-between; gap: 10px;">
+                        <button onclick="window.votar('${idDocumento}', 'aprovado')" style="flex:1; background: #2e7d32; color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600;">${t.mapYes}</button>
+                        <button onclick="window.votar('${idDocumento}', 'abusivo')" style="flex:1; background: #c62828; color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600;">${t.mapNo}</button>
+                    </div>`;
+            }
 
+            // Traduz a Categoria se possível (Bebida -> Drink)
+            let catTraduzida = dados.categoria;
+            if (dados.categoria === "Bebida") catTraduzida = t.catDrink;
+            else if (dados.categoria === "Comida") catTraduzida = t.catFood;
+            else if (dados.categoria === "Serviço") catTraduzida = t.catService;
+            else if (dados.categoria === "Ingresso") catTraduzida = t.catTicket;
+
+            return `<div class="popup-info">
+                        <h3 style="margin: 0; font-size: 18px;">🛒 ${dados.nome}</h3>
+                        <p style="margin: 0; font-size: 12px; color: #666;">${catTraduzida}</p>
+                        <p style="margin: 5px 0; font-size: 15px;">R$ ${dados.preco.toFixed(2).replace('.', ',')}</p>
+                        ${textoStatus}
+                        ${botoesVotacao}
+                    </div>`;
+        }
+
+        // --- BANCO DE DADOS E EVENTOS ---
+        const btnCamera = document.getElementById('btnCamera'); const cameraInput = document.getElementById('cameraInput'); const modalForm = document.getElementById('modalForm'); const imagemPreview = document.getElementById('imagemPreview'); const iaStatus = document.getElementById('iaStatus'); const nomeProduto = document.getElementById('nomeProduto');
         btnCamera.addEventListener('click', () => { cameraInput.click(); });
         document.getElementById('btnCancelar').addEventListener('click', () => { modalForm.style.display = 'none'; cameraInput.value = ''; imagemPreview.style.display = 'none'; });
 
         cameraInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
                 modalForm.style.display = 'flex';
-                const arquivo = e.target.files[0];
-                const leitor = new FileReader();
+                const arquivo = e.target.files[0]; const leitor = new FileReader();
                 leitor.onload = function(evento) {
                     imagemPreview.src = evento.target.result; imagemPreview.style.display = 'block'; nomeProduto.value = '';
                     if (modeloIA) {
-                        iaStatus.style.display = 'block'; iaStatus.innerText = '🤖 IA analisando a foto...';
+                        iaStatus.style.display = 'block'; iaStatus.innerText = '🤖 IA...';
                         imagemPreview.onload = () => {
                             modeloIA.classify(imagemPreview).then(previsoes => {
                                 iaStatus.style.display = 'none';
                                 const termoIngles = previsoes[0].className.split(',')[0].toLowerCase().trim();
-                                
-                                // Se o app estiver em inglês, usa direto. Se estiver em PT/ES, traduz.
-                                if(idiomaAtual === 'en') {
-                                    nomeProduto.value = termoIngles.charAt(0).toUpperCase() + termoIngles.slice(1);
-                                } else {
+                                if(idiomaAtual === 'en') { nomeProduto.value = termoIngles.charAt(0).toUpperCase() + termoIngles.slice(1); } 
+                                else {
                                     const termoTraduzido = dicionarioIA[termoIngles];
                                     if (termoTraduzido) { nomeProduto.value = termoTraduzido; } 
                                     else { nomeProduto.value = termoIngles.charAt(0).toUpperCase() + termoIngles.slice(1); }
                                 }
                             });
                         }
-                    } else { iaStatus.style.display = 'block'; iaStatus.innerText = '⚠️ IA carregando...'; }
+                    } else { iaStatus.style.display = 'block'; iaStatus.innerText = '⚠️ IA...'; }
                 }
                 leitor.readAsDataURL(arquivo);
             }
         });
 
         document.getElementById('btnSalvar').addEventListener('click', async () => {
-            const nome = nomeProduto.value;
-            const preco = document.getElementById('precoProduto').value;
-            const categoria = document.getElementById('categoriaProduto').value;
-
+            const nome = nomeProduto.value; const preco = document.getElementById('precoProduto').value; const categoria = document.getElementById('categoriaProduto').value;
             if(!nome || !preco) { alert(dicionarioIdiomas[idiomaAtual].alertaFaltaDados); return; }
-
             let centro = mapa.getCenter();
             try {
                 await addDoc(collection(db, "precos"), { nome: nome, preco: parseFloat(preco), categoria: categoria, lat: centro.lat, lng: centro.lng, status: "pendente", votosPositivos: 0, data: new Date() });
                 saldoUsuario += 2.00; document.getElementById('saldoDisplay').innerText = `R$ ${saldoUsuario.toFixed(2).replace('.', ',')}`;
                 nomeProduto.value = ''; document.getElementById('precoProduto').value = ''; imagemPreview.style.display = 'none'; modalForm.style.display = 'none'; cameraInput.value = '';
                 alert(dicionarioIdiomas[idiomaAtual].alertaSalvo);
-            } catch (error) { console.error("Erro", error); }
+            } catch (error) {}
         });
 
         let marcadoresAtivos = {}; 
@@ -368,22 +313,17 @@
 
                 if (change.type === "added" || change.type === "modified") {
                     let iconeAtual = iconeAmarelo;
-                    let textoStatus = `<p style="color: #f57c00; font-weight: 700;">⏳ Em verificação</p>`;
-                    
-                    if (dados.status === "aprovado") { iconeAtual = iconeVerde; textoStatus = `<p style="color: #2e7d32; font-weight: 700;">✅ Selo Preço Justo</p>`; } 
-                    else if (dados.status === "abusivo") { iconeAtual = iconeVermelho; textoStatus = `<p style="color: #c62828; font-weight: 700;">🚨 Alerta de Preço Abusivo</p>`; }
+                    if (dados.status === "aprovado") { iconeAtual = iconeVerde; } 
+                    else if (dados.status === "abusivo") { iconeAtual = iconeVermelho; }
 
-                    let botoesVotacao = '';
-                    if (dados.status === "pendente") {
-                        botoesVotacao = `<hr style="border:0; border-top: 1px solid #eee; margin: 10px 0;"><p style="font-size: 13px; text-align: center; margin-bottom: 8px;">Você confirma este preço?</p>
-                            <div style="display: flex; justify-content: space-between; gap: 10px;">
-                                <button onclick="window.votar('${idDocumento}', 'aprovado')" style="flex:1; background: #2e7d32; color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600;">👍 Sim</button>
-                                <button onclick="window.votar('${idDocumento}', 'abusivo')" style="flex:1; background: #c62828; color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600;">👎 Não</button>
-                            </div>`;
-                    }
+                    // Salva os dados originais para poder re-traduzir depois
+                    dadosDosPinos[idDocumento] = dados;
 
                     let novoPino = L.marker([dados.lat, dados.lng], {icon: iconeAtual}).addTo(mapa);
-                    novoPino.bindPopup(`<div class="popup-info"><h3 style="margin: 0; font-size: 18px;">🛒 ${dados.nome}</h3><p style="margin: 5px 0; font-size: 15px;">R$ ${dados.preco.toFixed(2).replace('.', ',')}</p>${textoStatus}${botoesVotacao}</div>`);
+                    
+                    // Chama a função mágica de gerar HTML traduzido
+                    novoPino.bindPopup(gerarHTMLDoPopup(idDocumento, dados));
+                    
                     marcadoresAtivos[idDocumento] = novoPino;
                 }
             });
