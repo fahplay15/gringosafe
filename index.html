@@ -8,51 +8,36 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest"></script>
+
     <style>
-        /* Estilos Globais */
         body, html { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; background-color: #f4f4f4; }
         
         /* Barra Superior */
-        .top-bar {
-            position: absolute; top: 0; left: 0; width: 100%; height: 60px;
-            background-color: #004d40; color: white; display: flex;
-            justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 1000;
-        }
+        .top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 60px; background-color: #004d40; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 1000; }
         .top-bar-logo { font-weight: bold; font-size: 18px; margin-left: 15px; }
         .user-status { display: flex; align-items: center; margin-right: 15px; font-size: 14px; }
         .user-level { background-color: #ffc107; color: #333; padding: 4px 8px; border-radius: 12px; font-weight: bold; margin-right: 10px; }
         .user-balance { background-color: #2e7d32; padding: 4px 10px; border-radius: 12px; font-weight: bold; }
 
-        /* Mapa */
         #mapa { height: 100vh; width: 100vw; z-index: 1; padding-top: 60px; } 
 
-        /* Botão Flutuante */
-        .btn-flutuante {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background-color: #00c853; color: white; border: none; border-radius: 30px;
-            padding: 15px 30px; font-size: 16px; font-weight: bold;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.3); z-index: 1000; cursor: pointer;
-            transition: 0.2s;
-        }
+        .btn-flutuante { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background-color: #00c853; color: white; border: none; border-radius: 30px; padding: 15px 30px; font-size: 16px; font-weight: bold; box-shadow: 0px 4px 10px rgba(0,0,0,0.3); z-index: 1000; cursor: pointer; transition: 0.2s; }
         .btn-flutuante:active { background-color: #009624; transform: translateX(-50%) scale(0.95); }
 
         /* Modal Formulário */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background-color: white; padding: 25px; border-radius: 15px; width: 85%; max-width: 350px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center;
-        }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-content { background-color: white; padding: 25px; border-radius: 15px; width: 85%; max-width: 350px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; max-height: 90vh; overflow-y: auto; }
         .modal-content h3 { margin-top: 0; color: #333; }
         .input-form { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
         .btn-salvar { background-color: #004d40; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 10px; cursor: pointer; }
         .btn-cancelar { background-color: #e0e0e0; color: #333; border: none; padding: 10px; width: 100%; border-radius: 8px; font-size: 14px; margin-top: 10px; cursor: pointer; }
-
         .popup-info h3 { margin: 0 0 5px 0; font-size: 16px; }
-        .aguardando { color: #f57c00; font-weight: bold; }
+        
+        /* Estilos da IA */
+        #imagemPreview { max-width: 100%; max-height: 120px; border-radius: 8px; display: none; margin: 10px auto; object-fit: cover; }
+        #iaStatus { font-size: 13px; color: #004d40; font-weight: bold; display: none; margin: 5px 0; }
     </style>
 </head>
 <body>
@@ -73,7 +58,9 @@
     <div class="modal-overlay" id="modalForm">
         <div class="modal-content">
             <h3>Novo Registro</h3>
-            <p style="font-size: 13px; color: #666;">Preencha os dados do produto.</p>
+            
+            <img id="imagemPreview" alt="Sua foto">
+            <p id="iaStatus">🤖 IA analisando a foto...</p>
             
             <input type="text" id="nomeProduto" class="input-form" placeholder="O que é? (Ex: Água de Coco)">
             <input type="number" id="precoProduto" class="input-form" placeholder="Preço Cobrado (R$)">
@@ -106,37 +93,79 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // --- CARREGANDO A IA EM SEGUNDO PLANO ---
+        let modeloIA = null;
+        console.log("Baixando modelo de IA...");
+        mobilenet.load().then(model => {
+            modeloIA = model;
+            console.log("IA Pronta para uso!");
+        });
+
         // --- LÓGICA DO MAPA ---
         let saldoUsuario = 15.00;
         const mapa = L.map('mapa').setView([-22.9121, -43.2302], 14);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapa);
 
         mapa.locate({setView: true, maxZoom: 16});
-        mapa.on('locationfound', function(e) {
-            L.marker(e.latlng).addTo(mapa).bindPopup("📍 Você está aqui!").openPopup();
-        });
+        mapa.on('locationfound', function(e) { L.marker(e.latlng).addTo(mapa).bindPopup("📍 Você está aqui!").openPopup(); });
 
         var iconeAmarelo = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         var iconeVerde = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         var iconeVermelho = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
 
-        // --- LÓGICA DA INTERFACE ---
+        // --- LÓGICA DA INTERFACE E IA ---
         const btnCamera = document.getElementById('btnCamera');
         const cameraInput = document.getElementById('cameraInput');
         const modalForm = document.getElementById('modalForm');
         const btnSalvar = document.getElementById('btnSalvar');
         const btnCancelar = document.getElementById('btnCancelar');
         const saldoDisplay = document.getElementById('saldoDisplay');
+        const imagemPreview = document.getElementById('imagemPreview');
+        const iaStatus = document.getElementById('iaStatus');
+        const nomeProduto = document.getElementById('nomeProduto');
 
         btnCamera.addEventListener('click', () => { cameraInput.click(); });
-        cameraInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) modalForm.style.display = 'flex';
-        });
+        
         btnCancelar.addEventListener('click', () => { 
-            modalForm.style.display = 'none'; cameraInput.value = ''; 
+            modalForm.style.display = 'none'; cameraInput.value = ''; imagemPreview.style.display = 'none';
         });
 
-        // --- SALVANDO NO BANCO COM STATUS PENDENTE ---
+        cameraInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                modalForm.style.display = 'flex';
+                
+                // Prepara a tela para a IA
+                const arquivo = e.target.files[0];
+                const leitor = new FileReader();
+                
+                leitor.onload = function(evento) {
+                    imagemPreview.src = evento.target.result;
+                    imagemPreview.style.display = 'block';
+                    nomeProduto.value = ''; // Limpa o campo
+                    
+                    if (modeloIA) {
+                        iaStatus.style.display = 'block';
+                        iaStatus.innerText = '🤖 IA analisando a foto...';
+                        
+                        // Executa a IA na imagem
+                        imagemPreview.onload = () => {
+                            modeloIA.classify(imagemPreview).then(previsoes => {
+                                iaStatus.style.display = 'none';
+                                // Pega o nome mais provável (em inglês)
+                                const melhorAposta = previsoes[0].className.split(',')[0];
+                                nomeProduto.value = melhorAposta.charAt(0).toUpperCase() + melhorAposta.slice(1);
+                            });
+                        }
+                    } else {
+                        iaStatus.style.display = 'block';
+                        iaStatus.innerText = '⚠️ IA carregando, digite o nome manualmente.';
+                    }
+                }
+                leitor.readAsDataURL(arquivo);
+            }
+        });
+
+        // --- SALVANDO NO BANCO DE DADOS ---
         btnSalvar.addEventListener('click', async () => {
             const nome = document.getElementById('nomeProduto').value;
             const preco = document.getElementById('precoProduto').value;
@@ -153,7 +182,7 @@
                     categoria: categoria,
                     lat: centro.lat,
                     lng: centro.lng,
-                    status: "pendente", // Nasce amarelo!
+                    status: "pendente",
                     votosPositivos: 0,
                     data: new Date()
                 });
@@ -163,82 +192,55 @@
 
                 document.getElementById('nomeProduto').value = '';
                 document.getElementById('precoProduto').value = '';
+                imagemPreview.style.display = 'none';
                 modalForm.style.display = 'none';
                 cameraInput.value = '';
                 
-                alert("Registro salvo! Aguardando a comunidade validar para ganhar o Selo Verde.");
-            } catch (error) {
-                console.error("Erro ao salvar: ", error);
-            }
+                alert("Registro salvo! Aguardando validação da comunidade.");
+            } catch (error) { console.error("Erro ao salvar: ", error); }
         });
 
-        // --- LENDO EM TEMPO REAL E RENDERIZANDO AS CORES ---
+        // --- LENDO EM TEMPO REAL ---
         let marcadoresAtivos = {}; 
-
         onSnapshot(collection(db, "precos"), (snapshot) => {
             snapshot.docChanges().forEach((change) => {
                 const dados = change.doc.data();
                 const idDocumento = change.doc.id;
 
                 if (change.type === "modified" || change.type === "removed") {
-                    if (marcadoresAtivos[idDocumento]) {
-                        mapa.removeLayer(marcadoresAtivos[idDocumento]);
-                    }
+                    if (marcadoresAtivos[idDocumento]) mapa.removeLayer(marcadoresAtivos[idDocumento]);
                 }
 
                 if (change.type === "added" || change.type === "modified") {
                     let iconeAtual = iconeAmarelo;
                     let textoStatus = `<p style="color: #f57c00; font-weight: bold;">⏳ Em verificação</p>`;
                     
-                    if (dados.status === "aprovado") {
-                        iconeAtual = iconeVerde;
-                        textoStatus = `<p style="color: #2e7d32; font-weight: bold;">✅ Selo Preço Justo</p>`;
-                    } else if (dados.status === "abusivo") {
-                        iconeAtual = iconeVermelho;
-                        textoStatus = `<p style="color: #c62828; font-weight: bold;">🚨 Alerta de Preço Abusivo</p>`;
-                    }
+                    if (dados.status === "aprovado") { iconeAtual = iconeVerde; textoStatus = `<p style="color: #2e7d32; font-weight: bold;">✅ Selo Preço Justo</p>`; } 
+                    else if (dados.status === "abusivo") { iconeAtual = iconeVermelho; textoStatus = `<p style="color: #c62828; font-weight: bold;">🚨 Alerta de Preço Abusivo</p>`; }
 
                     let botoesVotacao = '';
                     if (dados.status === "pendente") {
-                        botoesVotacao = `
-                            <hr>
-                            <p style="font-size: 12px; text-align: center;">Você confirma esse preço?</p>
+                        botoesVotacao = `<hr><p style="font-size: 12px; text-align: center;">Você confirma esse preço?</p>
                             <div style="display: flex; justify-content: space-around;">
                                 <button onclick="window.votar('${idDocumento}', 'aprovado')" style="background: #2e7d32; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">👍 Sim</button>
                                 <button onclick="window.votar('${idDocumento}', 'abusivo')" style="background: #c62828; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">👎 Não</button>
-                            </div>
-                        `;
+                            </div>`;
                     }
 
                     let novoPino = L.marker([dados.lat, dados.lng], {icon: iconeAtual}).addTo(mapa);
-                    
-                    novoPino.bindPopup(`
-                        <div class="popup-info">
-                            <h3 style="margin: 0;">🛒 ${dados.nome}</h3>
-                            <p style="margin: 5px 0;">R$ ${dados.preco.toFixed(2).replace('.', ',')}</p>
-                            ${textoStatus}
-                            ${botoesVotacao}
-                        </div>
-                    `);
-
+                    novoPino.bindPopup(`<div class="popup-info"><h3 style="margin: 0;">🛒 ${dados.nome}</h3><p style="margin: 5px 0;">R$ ${dados.preco.toFixed(2).replace('.', ',')}</p>${textoStatus}${botoesVotacao}</div>`);
                     marcadoresAtivos[idDocumento] = novoPino;
                 }
             });
         });
 
-        // Função global para a votação
         window.votar = async function(idDocumento, novoStatus) {
             const docRef = doc(db, "precos", idDocumento);
             try {
-                await updateDoc(docRef, {
-                    status: novoStatus
-                });
+                await updateDoc(docRef, { status: novoStatus });
                 alert(novoStatus === 'aprovado' ? 'Você concedeu o Selo Verde!' : 'Alerta de preço abusivo registrado!');
-            } catch (error) {
-                console.error("Erro ao votar: ", error);
-            }
+            } catch (error) { console.error("Erro ao votar: ", error); }
         };
-
     </script>
 </body>
 </html>
