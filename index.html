@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GringoSafe - Preço Justo</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -12,35 +16,60 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest"></script>
 
     <style>
-        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; background-color: #f4f4f4; }
+        /* Estilos Globais Premium */
+        body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; overflow: hidden; background-color: #f0f2f5; }
         
+        /* Splash Screen (Tela de Abertura) */
+        #splashScreen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #004d40; color: white; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.6s ease-out;
+        }
+        #splashScreen h1 { font-size: 36px; margin: 0; display: flex; align-items: center; gap: 10px; }
+        #splashScreen p { font-size: 16px; opacity: 0.8; margin-top: 5px; }
+        .spinner { margin-top: 20px; width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         /* Barra Superior */
-        .top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 60px; background-color: #004d40; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 1000; }
-        .top-bar-logo { font-weight: bold; font-size: 18px; margin-left: 15px; }
-        .user-status { display: flex; align-items: center; margin-right: 15px; font-size: 14px; }
-        .user-level { background-color: #ffc107; color: #333; padding: 4px 8px; border-radius: 12px; font-weight: bold; margin-right: 10px; }
-        .user-balance { background-color: #2e7d32; padding: 4px 10px; border-radius: 12px; font-weight: bold; }
+        .top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 65px; background-color: #004d40; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
+        .top-bar-logo { font-weight: 700; font-size: 20px; margin-left: 20px; display: flex; align-items: center; gap: 5px; }
+        .user-status { display: flex; align-items: center; margin-right: 20px; font-size: 13px; font-weight: 600; }
+        .user-level { background-color: #ffc107; color: #333; padding: 5px 10px; border-radius: 20px; margin-right: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .user-balance { background-color: #1b5e20; padding: 5px 12px; border-radius: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
-        #mapa { height: 100vh; width: 100vw; z-index: 1; padding-top: 60px; } 
+        /* Mapa */
+        #mapa { height: 100vh; width: 100vw; z-index: 1; padding-top: 65px; } 
 
-        .btn-flutuante { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background-color: #00c853; color: white; border: none; border-radius: 30px; padding: 15px 30px; font-size: 16px; font-weight: bold; box-shadow: 0px 4px 10px rgba(0,0,0,0.3); z-index: 1000; cursor: pointer; transition: 0.2s; }
-        .btn-flutuante:active { background-color: #009624; transform: translateX(-50%) scale(0.95); }
+        /* Botão Flutuante (Premium) */
+        .btn-flutuante { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #00e676, #00c853); color: white; border: none; border-radius: 30px; padding: 16px 35px; font-size: 16px; font-weight: 700; font-family: 'Poppins', sans-serif; box-shadow: 0px 8px 20px rgba(0, 200, 83, 0.4); z-index: 1000; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-flutuante:active { transform: translateX(-50%) scale(0.95); box-shadow: 0px 4px 10px rgba(0, 200, 83, 0.4); }
 
-        /* Modal Formulário */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; }
-        .modal-content { background-color: white; padding: 25px; border-radius: 15px; width: 85%; max-width: 350px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; max-height: 90vh; overflow-y: auto; }
-        .modal-content h3 { margin-top: 0; color: #333; }
-        .input-form { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
-        .btn-salvar { background-color: #004d40; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 10px; cursor: pointer; }
-        .btn-cancelar { background-color: #e0e0e0; color: #333; border: none; padding: 10px; width: 100%; border-radius: 8px; font-size: 14px; margin-top: 10px; cursor: pointer; }
-        .popup-info h3 { margin: 0 0 5px 0; font-size: 16px; }
+        /* Modal Formulário (Premium) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-content { background-color: white; padding: 30px 25px; border-radius: 24px; width: 85%; max-width: 360px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; max-height: 85vh; overflow-y: auto; }
+        .modal-content h3 { margin: 0 0 5px 0; color: #1a1a1a; font-size: 22px; }
+        .input-form { width: 100%; padding: 14px; margin: 10px 0; border: 1.5px solid #e0e0e0; border-radius: 12px; box-sizing: border-box; font-size: 15px; font-family: 'Poppins', sans-serif; transition: border-color 0.3s; background-color: #f9f9f9; }
+        .input-form:focus { outline: none; border-color: #004d40; background-color: white; }
+        .btn-salvar { background-color: #004d40; color: white; border: none; padding: 14px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-top: 15px; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 77, 64, 0.2); }
+        .btn-cancelar { background-color: transparent; color: #757575; border: none; padding: 10px; width: 100%; border-radius: 12px; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; margin-top: 5px; cursor: pointer; }
+
+        /* Estilos do Popup do Mapa */
+        .popup-info { font-family: 'Poppins', sans-serif; }
+        .popup-info h3 { margin: 0 0 5px 0; font-size: 16px; color: #333; }
         
         /* Estilos da IA */
-        #imagemPreview { max-width: 100%; max-height: 120px; border-radius: 8px; display: none; margin: 10px auto; object-fit: cover; }
-        #iaStatus { font-size: 13px; color: #004d40; font-weight: bold; display: none; margin: 5px 0; }
+        #imagemPreview { max-width: 100%; max-height: 140px; border-radius: 12px; display: none; margin: 15px auto; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        #iaStatus { font-size: 13px; color: #004d40; font-weight: 600; display: none; margin: 5px 0; background: #e0f2f1; padding: 5px; border-radius: 8px; }
     </style>
 </head>
 <body>
+
+    <div id="splashScreen">
+        <h1>🛡️ GringoSafe</h1>
+        <p>Preço Justo em Qualquer Lugar</p>
+        <div class="spinner"></div>
+    </div>
 
     <div class="top-bar">
         <div class="top-bar-logo">🛡️ GringoSafe</div>
@@ -58,6 +87,7 @@
     <div class="modal-overlay" id="modalForm">
         <div class="modal-content">
             <h3>Novo Registro</h3>
+            <p style="font-size: 13px; color: #757575; margin-bottom: 15px;">Ajude a comunidade verificando este item.</p>
             
             <img id="imagemPreview" alt="Sua foto">
             <p id="iaStatus">🤖 IA analisando a foto...</p>
@@ -93,27 +123,32 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- CARREGANDO A IA EM SEGUNDO PLANO ---
-        let modeloIA = null;
-        console.log("Baixando modelo de IA...");
-        mobilenet.load().then(model => {
-            modeloIA = model;
-            console.log("IA Pronta para uso!");
+        // --- REMOVER SPLASH SCREEN APÓS CARREGAR ---
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splashScreen');
+                splash.style.opacity = '0';
+                setTimeout(() => { splash.style.display = 'none'; }, 600);
+            }, 2000); // Fica na tela por 2 segundos
         });
 
-        // --- LÓGICA DO MAPA ---
+        // --- CARREGANDO A IA ---
+        let modeloIA = null;
+        mobilenet.load().then(model => { modeloIA = model; });
+
+        // --- MAPA ---
         let saldoUsuario = 15.00;
-        const mapa = L.map('mapa').setView([-22.9121, -43.2302], 14);
+        const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapa);
 
         mapa.locate({setView: true, maxZoom: 16});
-        mapa.on('locationfound', function(e) { L.marker(e.latlng).addTo(mapa).bindPopup("📍 Você está aqui!").openPopup(); });
+        mapa.on('locationfound', function(e) { L.marker(e.latlng).addTo(mapa).bindPopup("<div style='font-family: Poppins, sans-serif;'>📍 Você está aqui!</div>").openPopup(); });
 
         var iconeAmarelo = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         var iconeVerde = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         var iconeVermelho = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
 
-        // --- LÓGICA DA INTERFACE E IA ---
+        // --- INTERFACE ---
         const btnCamera = document.getElementById('btnCamera');
         const cameraInput = document.getElementById('cameraInput');
         const modalForm = document.getElementById('modalForm');
@@ -125,47 +160,39 @@
         const nomeProduto = document.getElementById('nomeProduto');
 
         btnCamera.addEventListener('click', () => { cameraInput.click(); });
-        
-        btnCancelar.addEventListener('click', () => { 
-            modalForm.style.display = 'none'; cameraInput.value = ''; imagemPreview.style.display = 'none';
-        });
+        btnCancelar.addEventListener('click', () => { modalForm.style.display = 'none'; cameraInput.value = ''; imagemPreview.style.display = 'none'; });
 
         cameraInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
                 modalForm.style.display = 'flex';
-                
-                // Prepara a tela para a IA
                 const arquivo = e.target.files[0];
                 const leitor = new FileReader();
                 
                 leitor.onload = function(evento) {
                     imagemPreview.src = evento.target.result;
                     imagemPreview.style.display = 'block';
-                    nomeProduto.value = ''; // Limpa o campo
+                    nomeProduto.value = '';
                     
                     if (modeloIA) {
                         iaStatus.style.display = 'block';
                         iaStatus.innerText = '🤖 IA analisando a foto...';
-                        
-                        // Executa a IA na imagem
                         imagemPreview.onload = () => {
                             modeloIA.classify(imagemPreview).then(previsoes => {
                                 iaStatus.style.display = 'none';
-                                // Pega o nome mais provável (em inglês)
                                 const melhorAposta = previsoes[0].className.split(',')[0];
                                 nomeProduto.value = melhorAposta.charAt(0).toUpperCase() + melhorAposta.slice(1);
                             });
                         }
                     } else {
                         iaStatus.style.display = 'block';
-                        iaStatus.innerText = '⚠️ IA carregando, digite o nome manualmente.';
+                        iaStatus.innerText = '⚠️ IA carregando, digite manualmente.';
                     }
                 }
                 leitor.readAsDataURL(arquivo);
             }
         });
 
-        // --- SALVANDO NO BANCO DE DADOS ---
+        // --- BANCO DE DADOS ---
         btnSalvar.addEventListener('click', async () => {
             const nome = document.getElementById('nomeProduto').value;
             const preco = document.getElementById('precoProduto').value;
@@ -174,61 +201,39 @@
             if(!nome || !preco) { alert("Preencha o nome e o preço!"); return; }
 
             let centro = mapa.getCenter();
-
             try {
-                await addDoc(collection(db, "precos"), {
-                    nome: nome,
-                    preco: parseFloat(preco),
-                    categoria: categoria,
-                    lat: centro.lat,
-                    lng: centro.lng,
-                    status: "pendente",
-                    votosPositivos: 0,
-                    data: new Date()
-                });
-
-                saldoUsuario += 2.00;
-                saldoDisplay.innerText = `R$ ${saldoUsuario.toFixed(2).replace('.', ',')}`;
-
-                document.getElementById('nomeProduto').value = '';
-                document.getElementById('precoProduto').value = '';
-                imagemPreview.style.display = 'none';
-                modalForm.style.display = 'none';
-                cameraInput.value = '';
-                
-                alert("Registro salvo! Aguardando validação da comunidade.");
+                await addDoc(collection(db, "precos"), { nome: nome, preco: parseFloat(preco), categoria: categoria, lat: centro.lat, lng: centro.lng, status: "pendente", votosPositivos: 0, data: new Date() });
+                saldoUsuario += 2.00; saldoDisplay.innerText = `R$ ${saldoUsuario.toFixed(2).replace('.', ',')}`;
+                document.getElementById('nomeProduto').value = ''; document.getElementById('precoProduto').value = ''; imagemPreview.style.display = 'none'; modalForm.style.display = 'none'; cameraInput.value = '';
             } catch (error) { console.error("Erro ao salvar: ", error); }
         });
 
-        // --- LENDO EM TEMPO REAL ---
         let marcadoresAtivos = {}; 
         onSnapshot(collection(db, "precos"), (snapshot) => {
             snapshot.docChanges().forEach((change) => {
                 const dados = change.doc.data();
                 const idDocumento = change.doc.id;
 
-                if (change.type === "modified" || change.type === "removed") {
-                    if (marcadoresAtivos[idDocumento]) mapa.removeLayer(marcadoresAtivos[idDocumento]);
-                }
+                if (change.type === "modified" || change.type === "removed") { if (marcadoresAtivos[idDocumento]) mapa.removeLayer(marcadoresAtivos[idDocumento]); }
 
                 if (change.type === "added" || change.type === "modified") {
                     let iconeAtual = iconeAmarelo;
-                    let textoStatus = `<p style="color: #f57c00; font-weight: bold;">⏳ Em verificação</p>`;
+                    let textoStatus = `<p style="color: #f57c00; font-weight: 700;">⏳ Em verificação</p>`;
                     
-                    if (dados.status === "aprovado") { iconeAtual = iconeVerde; textoStatus = `<p style="color: #2e7d32; font-weight: bold;">✅ Selo Preço Justo</p>`; } 
-                    else if (dados.status === "abusivo") { iconeAtual = iconeVermelho; textoStatus = `<p style="color: #c62828; font-weight: bold;">🚨 Alerta de Preço Abusivo</p>`; }
+                    if (dados.status === "aprovado") { iconeAtual = iconeVerde; textoStatus = `<p style="color: #2e7d32; font-weight: 700;">✅ Selo Preço Justo</p>`; } 
+                    else if (dados.status === "abusivo") { iconeAtual = iconeVermelho; textoStatus = `<p style="color: #c62828; font-weight: 700;">🚨 Alerta de Preço Abusivo</p>`; }
 
                     let botoesVotacao = '';
                     if (dados.status === "pendente") {
-                        botoesVotacao = `<hr><p style="font-size: 12px; text-align: center;">Você confirma esse preço?</p>
-                            <div style="display: flex; justify-content: space-around;">
-                                <button onclick="window.votar('${idDocumento}', 'aprovado')" style="background: #2e7d32; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">👍 Sim</button>
-                                <button onclick="window.votar('${idDocumento}', 'abusivo')" style="background: #c62828; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">👎 Não</button>
+                        botoesVotacao = `<hr style="border:0; border-top: 1px solid #eee; margin: 10px 0;"><p style="font-size: 13px; text-align: center; margin-bottom: 8px;">Você confirma este preço?</p>
+                            <div style="display: flex; justify-content: space-between; gap: 10px;">
+                                <button onclick="window.votar('${idDocumento}', 'aprovado')" style="flex:1; background: #2e7d32; color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600;">👍 Sim</button>
+                                <button onclick="window.votar('${idDocumento}', 'abusivo')" style="flex:1; background: #c62828; color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600;">👎 Não</button>
                             </div>`;
                     }
 
                     let novoPino = L.marker([dados.lat, dados.lng], {icon: iconeAtual}).addTo(mapa);
-                    novoPino.bindPopup(`<div class="popup-info"><h3 style="margin: 0;">🛒 ${dados.nome}</h3><p style="margin: 5px 0;">R$ ${dados.preco.toFixed(2).replace('.', ',')}</p>${textoStatus}${botoesVotacao}</div>`);
+                    novoPino.bindPopup(`<div class="popup-info"><h3 style="margin: 0; font-size: 18px;">🛒 ${dados.nome}</h3><p style="margin: 5px 0; font-size: 15px;">R$ ${dados.preco.toFixed(2).replace('.', ',')}</p>${textoStatus}${botoesVotacao}</div>`);
                     marcadoresAtivos[idDocumento] = novoPino;
                 }
             });
@@ -236,10 +241,7 @@
 
         window.votar = async function(idDocumento, novoStatus) {
             const docRef = doc(db, "precos", idDocumento);
-            try {
-                await updateDoc(docRef, { status: novoStatus });
-                alert(novoStatus === 'aprovado' ? 'Você concedeu o Selo Verde!' : 'Alerta de preço abusivo registrado!');
-            } catch (error) { console.error("Erro ao votar: ", error); }
+            try { await updateDoc(docRef, { status: novoStatus }); } catch (error) { console.error("Erro ao votar: ", error); }
         };
     </script>
 </body>
