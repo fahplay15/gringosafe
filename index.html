@@ -125,4 +125,294 @@
 
     <button class="btn-mira" id="btnMira"><svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg></button>
 
-    <div class="modal-overlay" id="
+    <div class="modal-overlay" id="modalBusca">
+        <div class="modal-content" style="max-height: 80vh;">
+            <h3 id="t_searchTitle">Buscar Local ou Produto</h3>
+            <input type="text" id="inputBusca" class="input-form" placeholder="Ex: Quiosque, Água...">
+            <div class="resultados-busca" id="resultadosBusca">
+                </div>
+            <button class="btn-cancelar" id="btnFecharBusca" style="margin-top:15px;"><span id="t_searchClose">Fechar</span></button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalForm">
+        <div class="modal-content">
+            <h3 id="t_formTitle">Novo Registro</h3>
+            <img id="imagemPreview" alt="Sua foto">
+            <p id="iaStatus">🤖 IA analisando a foto...</p>
+            
+            <select id="selectLocal" class="input-form">
+                <option value="NEW" id="t_optNewPlace">➕ Adicionar Novo Local</option>
+            </select>
+            <input type="text" id="nomeLocalInput" class="input-form" placeholder="Nome do Novo Local (Ex: Barraca)">
+            <input type="text" id="nomeProduto" class="input-form" placeholder="O que é? (Ex: Água de Coco)">
+            <input type="number" id="precoProduto" class="input-form" placeholder="Preço Cobrado (R$)">
+            
+            <select id="categoriaProduto" class="input-form">
+                <option value="Bebida" id="t_catDrink">Bebida</option>
+                <option value="Comida" id="t_catFood">Comida / Lanche</option>
+                <option value="Serviço" id="t_catService">Transporte / Serviço</option>
+                <option value="Ingresso" id="t_catTicket">Ingresso / Passeio</option>
+            </select>
+
+            <button class="btn-salvar" id="btnSalvar"><span id="t_btnSave">Salvar</span></button>
+            <button class="btn-cancelar" id="btnCancelar"><span id="t_btnCancel">Cancelar</span></button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // --- IDIOMAS ---
+        const dicionarioIdiomas = {
+            pt: {
+                splashSub: "Preço Justo em Qualquer Lugar", menuRoute: "🗺️ Roteiro Premium Seguro", menuLang: "🌐 Idiomas", level: "⭐ Nvl 3", 
+                formTitle: "Novo Registro", optNewPlace: "➕ Adicionar Novo Local", placeNewLocal: "Nome do Novo Local (Ex: Barraca)", placeName: "Produto (Ex: Água)", placePrice: "Preço (R$)", 
+                catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Salvar Produto", btnCancel: "Cancelar", alertaSalvo: "Salvo com sucesso!", alertaFalta: "Preencha o local, nome e preço!", alertaDuplicado: "Este produto já está cadastrado! Vote (👍/👎) no mapa.",
+                statusGreen: "✅ Local Confiável", statusYellow: "⏳ Analisando itens...", statusRed: "🚨 Alerta de Abuso", btnYes: "👍 Confirmo", btnNo: "👎 Golpe",
+                searchTitle: "Buscar Local ou Produto", searchPlaceholder: "Ex: Quiosque, Água...", searchClose: "Fechar"
+            },
+            en: {
+                splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Premium Safe Route", menuLang: "🌐 Languages", level: "⭐ Lvl 3", 
+                formTitle: "New Record", optNewPlace: "➕ Add New Place", placeNewLocal: "New Place Name", placeName: "Product (Ex: Water)", placePrice: "Price (R$)", 
+                catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save Product", btnCancel: "Cancel", alertaSalvo: "Saved successfully!", alertaFalta: "Fill in all fields!", alertaDuplicado: "Product already exists! Vote on the map.",
+                statusGreen: "✅ Trusted Place", statusYellow: "⏳ Verifying items...", statusRed: "🚨 Scam Alert", btnYes: "👍 Confirm", btnNo: "👎 Scam",
+                searchTitle: "Search Place or Product", searchPlaceholder: "Ex: Kiosk, Water...", searchClose: "Close"
+            },
+            es: {
+                splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Ruta Premium Segura", menuLang: "🌐 Idiomas", level: "⭐ Nvl 3", 
+                formTitle: "Nuevo Registro", optNewPlace: "➕ Añadir Nuevo Lugar", placeNewLocal: "Nombre del Nuevo Lugar", placeName: "Producto (Ej: Agua)", placePrice: "Precio (R$)", 
+                catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar Producto", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa todos los campos!", alertaDuplicado: "¡Producto ya existe! Vota en el mapa.",
+                statusGreen: "✅ Lugar Confiable", statusYellow: "⏳ Verificando...", statusRed: "🚨 Alerta de Abuso", btnYes: "👍 Confirmo", btnNo: "👎 Estafa",
+                searchTitle: "Buscar Lugar o Producto", searchPlaceholder: "Ej: Kiosco, Agua...", searchClose: "Cerrar"
+            }
+        };
+
+        let idiomaAtual = 'pt';
+        let dadosAgrupados = {}; 
+        let marcadoresFisicosNoMapa = {}; // Guarda a referência dos pinos reais do Leaflet para o mapa "voar" até eles
+
+        window.mudarIdioma = function(idioma) {
+            idiomaAtual = idioma; const t = dicionarioIdiomas[idioma];
+            document.querySelectorAll('.sub-menu-item').forEach(el => { el.classList.remove('ativo-lang'); el.querySelector('.check').style.display = 'none'; });
+            const itemClicado = document.getElementById('lang_' + idioma); itemClicado.classList.add('ativo-lang'); itemClicado.querySelector('.check').style.display = 'inline';
+
+            document.getElementById('t_splashSub').innerText = t.splashSub; document.getElementById('t_menuRoute').innerText = t.menuRoute; document.getElementById('t_menuLang').innerText = t.menuLang; document.getElementById('t_level').innerText = t.level; document.getElementById('t_formTitle').innerText = t.formTitle; document.getElementById('t_catDrink').innerText = t.catDrink; document.getElementById('t_catFood').innerText = t.catFood; document.getElementById('t_catService').innerText = t.catService; document.getElementById('t_catTicket').innerText = t.catTicket; document.getElementById('t_btnSave').innerText = t.btnSave; document.getElementById('t_btnCancel').innerText = t.btnCancel;
+            if(document.getElementById('t_optNewPlace')) document.getElementById('t_optNewPlace').innerText = t.optNewPlace;
+            document.getElementById('nomeLocalInput').placeholder = t.placeNewLocal; document.getElementById('nomeProduto').placeholder = t.placeName; document.getElementById('precoProduto').placeholder = t.placePrice;
+            
+            // Textos da Busca
+            document.getElementById('t_searchTitle').innerText = t.searchTitle;
+            document.getElementById('inputBusca').placeholder = t.searchPlaceholder;
+            document.getElementById('t_searchClose').innerText = t.searchClose;
+
+            document.getElementById('langSubMenu').classList.remove('open'); document.getElementById('sideMenu').classList.remove('open'); document.getElementById('menuOverlay').style.display = 'none';
+            renderizarPinosAgrupados(); 
+        };
+
+        document.getElementById('btnLangToggle').addEventListener('click', () => { document.getElementById('langSubMenu').classList.toggle('open'); });
+
+        // --- FIREBASE CONFIG ---
+        const firebaseConfig = { apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs", authDomain: "gringosafe-1f434.firebaseapp.com", projectId: "gringosafe-1f434", storageBucket: "gringosafe-1f434.firebasestorage.app", messagingSenderId: "949745647794", appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab" };
+        const app = initializeApp(firebaseConfig); const db = getFirestore(app);
+
+        // --- UI GERAL ---
+        window.addEventListener('load', () => { setTimeout(() => { document.getElementById('splashScreen').style.opacity = '0'; setTimeout(() => { document.getElementById('splashScreen').style.display = 'none'; }, 600); }, 2000); });
+        const sideMenu = document.getElementById('sideMenu'); const menuOverlay = document.getElementById('menuOverlay');
+        document.getElementById('btnAbrirMenu').addEventListener('click', () => { sideMenu.classList.add('open'); menuOverlay.style.display = 'block'; });
+        menuOverlay.addEventListener('click', () => { sideMenu.classList.remove('open'); menuOverlay.style.display = 'none'; });
+
+        const dicionarioIA = { "water bottle": "Garrafa de Água", "beer glass": "Copo de Cerveja", "coffee mug": "Caneca de Café", "espresso": "Café Expresso", "sunglasses": "Óculos de Sol", "cellular telephone": "Celular", "mouse": "Mouse", "laptop": "Notebook", "backpack": "Mochila", "umbrella": "Guarda-chuva", "pop bottle": "Garrafa de Refrigerante", "water jug": "Galão de Água", "cup": "Copo", "menu": "Cardápio", "street sign": "Placa de Rua", "dining table": "Mesa de Restaurante", "plate": "Prato de Comida", "ice lolly": "Picolé" };
+        let modeloIA = null; mobilenet.load().then(model => { modeloIA = model; });
+
+        // --- MAPA ---
+        let saldoUsuario = 15.00; const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapa);
+        let pinoUsuario = null; let camadaDePinos = L.layerGroup().addTo(mapa);
+
+        function buscarLocalizacao() { mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 }); }
+        buscarLocalizacao(); document.getElementById('btnMira').addEventListener('click', () => { buscarLocalizacao(); });
+        mapa.on('locationfound', function(e) { if (pinoUsuario) { mapa.removeLayer(pinoUsuario); } pinoUsuario = L.marker(e.latlng).addTo(mapa).bindPopup("📍 Você está aqui!"); });
+
+        var iconeAmarelo = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
+        var iconeVerde = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
+        var iconeVermelho = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
+
+        // --- LÓGICA DE BUSCA INTELIGENTE ---
+        const btnAbrirBusca = document.getElementById('btnAbrirBusca');
+        const modalBusca = document.getElementById('modalBusca');
+        const inputBusca = document.getElementById('inputBusca');
+        const resultadosBusca = document.getElementById('resultadosBusca');
+
+        btnAbrirBusca.addEventListener('click', () => {
+            modalBusca.style.display = 'flex';
+            inputBusca.value = '';
+            resultadosBusca.innerHTML = '';
+            inputBusca.focus();
+        });
+
+        document.getElementById('btnFecharBusca').addEventListener('click', () => { modalBusca.style.display = 'none'; });
+
+        // Quando o usuário digita na busca
+        inputBusca.addEventListener('input', (e) => {
+            const termo = e.target.value.toLowerCase().trim();
+            resultadosBusca.innerHTML = '';
+            if(!termo) return;
+
+            for (const nomeLocal in dadosAgrupados) {
+                const dadosLugar = dadosAgrupados[nomeLocal];
+                const lugarMatch = nomeLocal.toLowerCase().includes(termo);
+                
+                // Filtra os itens desse lugar que bateram com a pesquisa
+                const itensMatch = dadosLugar.itens.filter(i => i.nome.toLowerCase().includes(termo));
+
+                if (lugarMatch || itensMatch.length > 0) {
+                    const div = document.createElement('div');
+                    div.className = 'resultado-item';
+                    
+                    let textoSecundario = `${dadosLugar.itens.length} itens no cardápio`;
+                    if(itensMatch.length > 0 && !lugarMatch) {
+                        textoSecundario = `Encontrado: ${itensMatch.map(i => i.nome).join(', ')}`;
+                    }
+
+                    div.innerHTML = `<span style="font-weight:700; color:#004d40;">🏪 ${nomeLocal}</span><span style="font-size:12px;color:#666;">${textoSecundario}</span>`;
+                    
+                    // Evento: Ao clicar no resultado, o mapa voa para o pino
+                    div.onclick = () => {
+                        modalBusca.style.display = 'none';
+                        mapa.flyTo([dadosLugar.lat, dadosLugar.lng], 18, { duration: 1.5 });
+                        
+                        // Espera o mapa chegar e abre o pop-up
+                        setTimeout(() => {
+                            if(marcadoresFisicosNoMapa[nomeLocal]) {
+                                marcadoresFisicosNoMapa[nomeLocal].openPopup();
+                            }
+                        }, 1500); 
+                    };
+                    resultadosBusca.appendChild(div);
+                }
+            }
+        });
+
+        // --- LÓGICA DO FORMULÁRIO (CÂMERA) ---
+        const btnCamera = document.getElementById('btnCamera'); const cameraInput = document.getElementById('cameraInput'); const modalForm = document.getElementById('modalForm'); const imagemPreview = document.getElementById('imagemPreview'); const iaStatus = document.getElementById('iaStatus'); const nomeProduto = document.getElementById('nomeProduto'); 
+        const selectLocal = document.getElementById('selectLocal'); const nomeLocalInput = document.getElementById('nomeLocalInput');
+        
+        selectLocal.addEventListener('change', (e) => {
+            if(e.target.value === 'NEW') { nomeLocalInput.style.display = 'block'; } 
+            else { nomeLocalInput.style.display = 'none'; }
+        });
+
+        btnCamera.addEventListener('click', () => { cameraInput.click(); });
+        document.getElementById('btnCancelar').addEventListener('click', () => { modalForm.style.display = 'none'; cameraInput.value = ''; imagemPreview.style.display = 'none'; });
+
+        cameraInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                selectLocal.value = 'NEW'; nomeLocalInput.style.display = 'block'; nomeLocalInput.value = '';
+                modalForm.style.display = 'flex'; const arquivo = e.target.files[0]; const leitor = new FileReader();
+                leitor.onload = function(evento) {
+                    imagemPreview.src = evento.target.result; imagemPreview.style.display = 'block'; nomeProduto.value = '';
+                    if (modeloIA) {
+                        iaStatus.style.display = 'block'; iaStatus.innerText = '🤖 IA...';
+                        imagemPreview.onload = () => {
+                            modeloIA.classify(imagemPreview).then(previsoes => {
+                                iaStatus.style.display = 'none';
+                                const termoIngles = previsoes[0].className.split(',')[0].toLowerCase().trim();
+                                if(idiomaAtual === 'en') { nomeProduto.value = termoIngles.charAt(0).toUpperCase() + termoIngles.slice(1); } 
+                                else {
+                                    const termoTraduzido = dicionarioIA[termoIngles];
+                                    if (termoTraduzido) { nomeProduto.value = termoTraduzido; } else { nomeProduto.value = termoIngles.charAt(0).toUpperCase() + termoIngles.slice(1); }
+                                }
+                            });
+                        }
+                    }
+                }
+                leitor.readAsDataURL(arquivo);
+            }
+        });
+
+        document.getElementById('btnSalvar').addEventListener('click', async () => {
+            const t = dicionarioIdiomas[idiomaAtual];
+            const valorSelect = selectLocal.value;
+            const localFinal = (valorSelect === 'NEW') ? nomeLocalInput.value.trim() : valorSelect;
+            const nome = nomeProduto.value.trim(); const preco = document.getElementById('precoProduto').value; const categoria = document.getElementById('categoriaProduto').value;
+
+            if(!localFinal || !nome || !preco) { alert(t.alertaFalta); return; }
+
+            if (dadosAgrupados[localFinal]) {
+                const jaExiste = dadosAgrupados[localFinal].itens.some(item => item.nome.toLowerCase() === nome.toLowerCase());
+                if (jaExiste) { alert(t.alertaDuplicado); return; }
+            }
+
+            let centro = mapa.getCenter();
+            try {
+                await addDoc(collection(db, "precos"), { local: localFinal, nome: nome, preco: parseFloat(preco), categoria: categoria, lat: centro.lat, lng: centro.lng, status: "pendente", data: new Date() });
+                saldoUsuario += 2.00; document.getElementById('saldoDisplay').innerText = `R$ ${saldoUsuario.toFixed(2).replace('.', ',')}`;
+                nomeProduto.value = ''; document.getElementById('precoProduto').value = ''; imagemPreview.style.display = 'none'; modalForm.style.display = 'none'; cameraInput.value = '';
+                alert(t.alertaSalvo);
+            } catch (error) {}
+        });
+
+        function atualizarDropdownLocais() {
+            const t = dicionarioIdiomas[idiomaAtual];
+            let html = `<option value="NEW" id="t_optNewPlace">${t.optNewPlace}</option>`;
+            const nomesLocais = Object.keys(dadosAgrupados).sort();
+            nomesLocais.forEach(nome => { if(nome !== "Local Desconhecido") html += `<option value="${nome}">${nome}</option>`; });
+            selectLocal.innerHTML = html;
+        }
+
+        onSnapshot(collection(db, "precos"), (snapshot) => {
+            dadosAgrupados = {}; 
+            snapshot.forEach((doc) => {
+                const item = doc.data(); const id = doc.id;
+                const nomeDoLugar = item.local || "Local Desconhecido"; 
+                if (!dadosAgrupados[nomeDoLugar]) { dadosAgrupados[nomeDoLugar] = { lat: item.lat, lng: item.lng, itens: [] }; }
+                dadosAgrupados[nomeDoLugar].itens.push({ ...item, id: id });
+            });
+            atualizarDropdownLocais(); renderizarPinosAgrupados();
+        });
+
+        function renderizarPinosAgrupados() {
+            camadaDePinos.clearLayers(); 
+            marcadoresFisicosNoMapa = {}; // Limpa as referências dos pinos
+            const t = dicionarioIdiomas[idiomaAtual];
+
+            for (const nomeEstabelecimento in dadosAgrupados) {
+                const dadosLugar = dadosAgrupados[nomeEstabelecimento];
+                let temAbusivo = false; let temPendente = false; let htmlListaDeItens = '';
+
+                dadosLugar.itens.forEach(item => {
+                    if (item.status === "abusivo") temAbusivo = true;
+                    if (item.status === "pendente") temPendente = true;
+
+                    let iconeItem = item.status === 'aprovado' ? '✅' : (item.status === 'abusivo' ? '🚨' : '⏳');
+                    let botoes = '';
+                    if (item.status === 'pendente') {
+                        botoes = `<div class="item-acoes"><button class="btn-voto" style="background:#2e7d32;" onclick="window.votar('${item.id}', 'aprovado')">${t.btnYes}</button><button class="btn-voto" style="background:#c62828;" onclick="window.votar('${item.id}', 'abusivo')">${t.btnNo}</button></div>`;
+                    }
+                    htmlListaDeItens += `<div class="item-card"><div class="item-row"><span class="item-nome">${iconeItem} ${item.nome}</span><span class="item-preco">R$ ${item.preco.toFixed(2).replace('.', ',')}</span></div>${botoes}</div>`;
+                });
+
+                let iconePino = iconeAmarelo; let statusGeral = `<p style="color: #f57c00; font-weight: 700; font-size: 13px; margin:0 0 10px 0;">${t.statusYellow}</p>`;
+                if (temAbusivo) { iconePino = iconeVermelho; statusGeral = `<p style="color: #c62828; font-weight: 700; font-size: 13px; margin:0 0 10px 0;">${t.statusRed}</p>`; } 
+                else if (!temPendente && dadosLugar.itens.length > 0) { iconePino = iconeVerde; statusGeral = `<p style="color: #2e7d32; font-weight: 700; font-size: 13px; margin:0 0 10px 0;">${t.statusGreen}</p>`; }
+
+                let htmlFinal = `<div class="popup-info"><h3>🏪 ${nomeEstabelecimento}</h3>${statusGeral}<div class="lista-itens">${htmlListaDeItens}</div></div>`;
+                
+                let novoPino = L.marker([dadosLugar.lat, dadosLugar.lng], {icon: iconePino});
+                novoPino.bindPopup(htmlFinal); 
+                camadaDePinos.addLayer(novoPino);
+
+                // Guarda o pino na memória para a Busca Inteligente usar depois
+                marcadoresFisicosNoMapa[nomeEstabelecimento] = novoPino;
+            }
+        }
+
+        window.votar = async function(idDocumento, novoStatus) {
+            const docRef = doc(db, "precos", idDocumento);
+            try { await updateDoc(docRef, { status: novoStatus }); } catch (error) {}
+        };
+    </script>
+</body>
+</html>
