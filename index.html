@@ -66,8 +66,8 @@
 
         #mapa { position: absolute; top: 0; left: 0; height: 100vh; width: 100vw; z-index: 1; } 
 
-        .bottom-actions { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; z-index: 1000; }
-        .btn-action { pointer-events: auto; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; position: relative; z-index: 1001; }
+        .bottom-actions { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; z-index: 3000; pointer-events: none; }
+        .btn-action { pointer-events: auto; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; position: relative; z-index: 3001; }
         .btn-action:active { transform: scale(0.9); }
         .btn-action svg { fill: currentColor; }
         .btn-adicionar { width: 70px; height: 70px; background: linear-gradient(135deg, #00e676, #00c853); color: white; box-shadow: 0px 8px 25px rgba(0, 200, 83, 0.4); }
@@ -78,10 +78,10 @@
         .btn-pesquisa svg { width: 26px; height: 26px; }
         .badge-buscas { position: absolute; top: -5px; right: -5px; background: #c62828; color: white; font-size: 11px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: none; }
         
-        .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.15); z-index: 1000; cursor: pointer; }
+        .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.15); z-index: 1000; pointer-events: auto; cursor: pointer; }
         .btn-mira svg { width: 22px; height: 22px; fill: #004d40; }
 
-        .btn-radar { position: fixed; bottom: 120px; left: 20px; background-color: #004d40; color: white; border: none; border-radius: 50%; width: 55px; height: 55px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.3); z-index: 1000; cursor: pointer; transition: 0.3s; }
+        .btn-radar { position: fixed; bottom: 120px; left: 20px; background-color: #004d40; color: white; border: none; border-radius: 50%; width: 55px; height: 55px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.3); z-index: 1000; pointer-events: auto; cursor: pointer; transition: 0.3s; }
         .btn-radar span { font-size: 9px; font-family: 'Poppins', sans-serif; font-weight: bold; margin-top: -2px; }
         .radar-anim { animation: radarPulseBtn 1.5s infinite; background: #1976d2 !important; }
         @keyframes radarPulseBtn { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(25, 118, 210, 0); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); } }
@@ -89,7 +89,7 @@
         .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: #c62828; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 2px white, 0 2px 6px rgba(0,0,0,0.5); }
         .alfinete-central { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; pointer-events: none; display: none; margin-top: -6px; filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.4)); }
 
-        .posicionamento-ui { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000; text-align: center; display: none; }
+        .posicionamento-ui { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 4000; text-align: center; display: none; }
         .posicionamento-aviso { font-size: 15px; font-weight: 600; color: #004d40; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1.2; }
         .posicionamento-botoes { display: flex; gap: 10px; }
         .btn-cancelar-pos { flex: 1; background: #f5f5f5; color: #333; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; }
@@ -133,6 +133,7 @@
         .imagem-preview { max-width: 100%; max-height: 140px; border-radius: 10px; display: none; margin: 10px auto; object-fit: cover; border: 2px solid #eee;}
         .ia-status { font-size: 12px; color: #004d40; font-weight: 600; display: none; margin: 5px 0; background: #e0f2f1; padding: 5px; border-radius: 8px; }
         
+        /* GALERIA DO LOJISTA */
         .galeria-lojista { display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 5px; }
         .galeria-lojista img { width: 75px; height: 75px; object-fit: cover; border-radius: 8px; border: 2px solid #f57c00; flex-shrink: 0; }
 
@@ -150,7 +151,6 @@
         .btn-google-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: "Product Sans", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
 
         /* MÁGICA CSS DE PERFIS BLINDADA */
-        /* Turista Rules */
         body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista #t_level { display: none !important; }
         body.modo-turista #saldoDisplay { display: none !important; }
@@ -160,11 +160,9 @@
         body.modo-turista .notif-container { display: flex !important; }
         body.modo-turista .btn-radar { display: flex !important; }
         
-        /* Avaliador Rules */
         body.modo-avaliador .notif-container { display: none !important; }
         body.modo-avaliador .btn-perguntar { display: none !important; }
         
-        /* Lojista Rules */
         body.modo-lojista #t_level { display: none !important; }
         body.modo-lojista #saldoDisplay { display: none !important; }
         body.modo-lojista .notif-container { display: none !important; }
@@ -173,7 +171,6 @@
         body.modo-lojista .btn-radar { display: none !important; }
         body.modo-lojista .item-acoes { display: none !important; } 
 
-        /* Oculta botão Área do Lojista no Menu para Turistas e Avaliadores */
         body:not(.modo-lojista) #btnAreaLojista { display: none !important; }
 
         /* PINOS MÁGICOS E ANIMAÇÕES */
@@ -397,6 +394,7 @@
             <p style="font-size: 14px; color: #555; margin-bottom: 15px;">Item: <strong id="editItemNome" style="color:#000;"></strong></p>
             <input type="number" id="editItemPreco" class="input-form" placeholder="Novo preço real">
             <input type="hidden" id="editItemId">
+            <input type="hidden" id="isPremiumLugar">
             <button class="btn-salvar" id="btnSalvarEdicao" style="background:#f57c00;">Salvar e Resetar Votos</button>
             <button class="btn-cancelar" id="btnCancelarEdicao">Cancelar</button>
         </div>
@@ -454,6 +452,8 @@
             <input type="number" id="precoProdutoResposta" class="input-form" placeholder="Qual o preço real/justo?">
             <input type="hidden" id="idPerguntaAtual">
             <input type="hidden" id="uidAutorPergunta"> 
+            <input type="hidden" id="latPerguntaAtual"> 
+            <input type="hidden" id="lngPerguntaAtual"> 
             <button class="btn-salvar" id="btnEnviarResposta" style="background:#2e7d32;"><span id="t_btnSendAns">Responder (+R$ 1,00)</span></button>
             <button class="btn-cancelar" id="btnCancelarResposta"><span id="t_btnCancelAns">Cancelar</span></button>
         </div>
@@ -478,6 +478,11 @@
         };
 
         const getEl = (id) => document.getElementById(id); const setTxt = (id, txt) => { const e = getEl(id); if(e) e.innerText = txt; }; const setPlc = (id, txt) => { const e = getEl(id); if(e) e.placeholder = txt; };
+        
+        // FUNÇÃO DE BLINDAGEM DE EVENTOS (Evita que o app trave se um elemento não for encontrado)
+        const bindClick = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('click', fn); };
+        const bindChange = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('change', fn); };
+        const bindInput = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('input', fn); };
 
         function aplicarIdioma(lang) {
             estadoApp.idioma = lang; const t = dicionario[lang];
@@ -512,25 +517,26 @@
         const perfilSalvo = localStorage.getItem('gringosafe_perfil'); if(perfilSalvo) estadoApp.perfil = perfilSalvo;
         setTimeout(() => { if(!localStorage.getItem('gringosafe_perfil')) { if(getEl('telaPerfil')) getEl('telaPerfil').style.display = 'flex'; } else { definirPerfil(estadoApp.perfil); } }, 2500);
 
-        getEl('btnLangPtInicio').onclick = () => aplicarIdioma('pt'); getEl('btnLangEnInicio').onclick = () => aplicarIdioma('en'); getEl('btnLangEsInicio').onclick = () => aplicarIdioma('es');
-        getEl('lang_pt').onclick = () => aplicarIdioma('pt'); getEl('lang_en').onclick = () => aplicarIdioma('en'); getEl('lang_es').onclick = () => aplicarIdioma('es');
-        getEl('cur_BRL').onclick = () => aplicarMoeda('BRL'); getEl('cur_USD').onclick = () => aplicarMoeda('USD'); getEl('cur_EUR').onclick = () => aplicarMoeda('EUR'); getEl('cur_ARS').onclick = () => aplicarMoeda('ARS');
+        bindClick('btnLangPtInicio', () => aplicarIdioma('pt')); bindClick('btnLangEnInicio', () => aplicarIdioma('en')); bindClick('btnLangEsInicio', () => aplicarIdioma('es'));
+        bindClick('lang_pt', () => aplicarIdioma('pt')); bindClick('lang_en', () => aplicarIdioma('en')); bindClick('lang_es', () => aplicarIdioma('es'));
+        bindClick('cur_BRL', () => aplicarMoeda('BRL')); bindClick('cur_USD', () => aplicarMoeda('USD')); bindClick('cur_EUR', () => aplicarMoeda('EUR')); bindClick('cur_ARS', () => aplicarMoeda('ARS'));
         
-        getEl('btnPerfilTurista').onclick = () => definirPerfil('turista'); 
-        getEl('btnPerfilAvaliador').onclick = () => definirPerfil('avaliador');
-        getEl('btnPerfilLojista').onclick = () => definirPerfil('lojista'); 
+        bindClick('btnPerfilTurista', () => definirPerfil('turista')); 
+        bindClick('btnPerfilAvaliador', () => definirPerfil('avaliador'));
+        bindClick('btnPerfilLojista', () => definirPerfil('lojista')); 
 
-        getEl('btnTrocarPerfil').onclick = () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; getEl('telaPerfil').style.display = 'flex'; };
-        getEl('btnLangToggle').onclick = () => getEl('langSubMenu').classList.toggle('open'); getEl('btnCurrencyToggle').onclick = () => getEl('currencySubMenu').classList.toggle('open');
-        getEl('btnAbrirMenu').onclick = () => { getEl('sideMenu').classList.add('open'); getEl('menuOverlay').style.display = 'block'; }; getEl('menuOverlay').onclick = () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; };
+        bindClick('btnTrocarPerfil', () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; getEl('telaPerfil').style.display = 'flex'; });
+        bindClick('btnLangToggle', () => getEl('langSubMenu').classList.toggle('open')); bindClick('btnCurrencyToggle', () => getEl('currencySubMenu').classList.toggle('open'));
+        bindClick('btnAbrirMenu', () => { getEl('sideMenu').classList.add('open'); getEl('menuOverlay').style.display = 'block'; }); bindClick('menuOverlay', () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; });
 
         const firebaseConfig = { apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs", authDomain: "gringosafe-1f434.firebaseapp.com", projectId: "gringosafe-1f434", storageBucket: "gringosafe-1f434.firebasestorage.app", messagingSenderId: "949745647794", appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); const provider = new GoogleAuthProvider();
         
-        getEl('btnLoginGoogle').onclick = () => signInWithPopup(auth, provider).catch(() => alert("Erro no login.")); 
-        getEl('btnLoginGoogleMenu').onclick = () => signInWithPopup(auth, provider).catch(() => alert("Erro no login.")); 
-        getEl('btnLoginGoogleOverlay').onclick = () => signInWithPopup(auth, provider).catch(() => alert("Erro no login."));
-        getEl('btnLogout').onclick = () => signOut(auth).then(() => alert("Deslogado."));
+        const fazerLogin = () => signInWithPopup(auth, provider).catch(() => alert("Erro no login."));
+        bindClick('btnLoginGoogle', fazerLogin); 
+        bindClick('btnLoginGoogleMenu', fazerLogin); 
+        bindClick('btnLoginGoogleOverlay', fazerLogin);
+        bindClick('btnLogout', () => signOut(auth).then(() => alert("Deslogado.")));
 
         let listenerNotificacoes = null;
 
@@ -565,7 +571,7 @@
             }
         });
 
-        getEl('btnAbrirNotificacoes').onclick = () => {
+        bindClick('btnAbrirNotificacoes', () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const lista = getEl('listaNotificacoes'); lista.innerHTML = '';
             if(estadoApp.notificacoes.length === 0) {
@@ -580,10 +586,10 @@
                 });
             }
             getEl('modalNotificacoes').style.display = 'flex';
-        };
-        getEl('btnFecharNotificacoes').onclick = () => getEl('modalNotificacoes').style.display = 'none';
+        });
+        bindClick('btnFecharNotificacoes', () => getEl('modalNotificacoes').style.display = 'none');
 
-        getEl('btnRadar').onclick = () => {
+        bindClick('btnRadar', () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             if(estadoApp.radarAtivo) return;
             estadoApp.radarAtivo = true;
@@ -591,7 +597,7 @@
             alert(dicionario[estadoApp.idioma].radarActive);
             desenharPinos();
             setTimeout(() => { estadoApp.radarAtivo = false; getEl('btnRadar').classList.remove('radar-anim'); desenharPinos(); alert(dicionario[estadoApp.idioma].radarCool); }, 15000); 
-        };
+        });
 
         let localParaPromover = null;
         window.prepararPromocao = function(nomeLocal) {
@@ -610,29 +616,29 @@
             } catch(e) { console.error(e); }
         };
 
-        getEl('btnAreaLojista').onclick = () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); getEl('modalLojista').style.display = 'flex'; };
-        getEl('btnFecharLojista').onclick = () => getEl('modalLojista').style.display = 'none';
-        getEl('btnPagarLojista').onclick = async () => {
+        bindClick('btnAreaLojista', () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); getEl('modalLojista').style.display = 'flex'; });
+        bindClick('btnFecharLojista', () => getEl('modalLojista').style.display = 'none');
+        bindClick('btnPagarLojista', async () => {
             alert("✅ Pagamento Simulado com Sucesso!\n\nSua conta agora é Lojista Premium.");
             estadoApp.isLojistaPremium = true;
             if(estadoApp.usuario) await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { isLojistaPremium: true });
             getEl('modalLojista').style.display = 'none';
             if (localParaPromover) { window.executarPromocao(localParaPromover); localParaPromover = null; }
             desenharPinos();
-        };
+        });
 
-        getEl('btnAbrirBusca').onclick = async () => {
+        bindClick('btnAbrirBusca', async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { 
                 if (estadoApp.buscasRestantes <= 0) { getEl('modalPaywall').style.display = 'flex'; return; } 
                 estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) });
             }
             getEl('modalBusca').style.display = 'flex'; getEl('inputBusca').value = ''; getEl('resultadosBusca').innerHTML = ''; getEl('inputBusca').focus();
-        };
+        });
         
-        getEl('btnFecharBusca').onclick = () => getEl('modalBusca').style.display = 'none';
+        bindClick('btnFecharBusca', () => getEl('modalBusca').style.display = 'none');
         
-        getEl('inputBusca').oninput = (e) => {
+        bindInput('inputBusca', (e) => {
             const termo = e.target.value.toLowerCase().trim(); getEl('resultadosBusca').innerHTML = ''; if(!termo) return;
             for (const nLocal in estadoApp.dadosHospedados) {
                 const dLugar = estadoApp.dadosHospedados[nLocal]; const lMatch = nLocal.toLowerCase().includes(termo); const iMatch = dLugar.itens.filter(i => i.nome.toLowerCase().includes(termo));
@@ -644,12 +650,12 @@
                     getEl('resultadosBusca').appendChild(div);
                 }
             }
-        };
+        });
 
         const planos = [getEl('btnPlan1'), getEl('btnPlan2'), getEl('btnPlan3')]; const precos = [4.99, 7.99, 12.99];
-        planos.forEach((p, i) => { p.onclick = () => { planos.forEach(pl => pl?.classList.remove('active')); p.classList.add('active'); estadoApp.planoPrecoUSD = precos[i]; }; });
+        planos.forEach((p, i) => { bindClick(p?.id, () => { planos.forEach(pl => pl?.classList.remove('active')); p.classList.add('active'); estadoApp.planoPrecoUSD = precos[i]; }); });
         const processarPgto = async (m) => { alert(`✅ Simulação: ${m}\n\nO cartão seria debitado em US$ ${estadoApp.planoPrecoUSD}.\n\nAcesso Premium liberado!`); estadoApp.buscasRestantes = 999; if(estadoApp.usuario) { await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: 999 }); } window.atualizarBadgeBuscas(); getEl('modalPaywall').style.display = 'none'; };
-        getEl('btnApplePay').onclick = () => processarPgto('Apple Pay'); getEl('btnGooglePay').onclick = () => processarPgto('Google Pay'); getEl('btnFecharPaywall').onclick = () => getEl('modalPaywall').style.display = 'none';
+        bindClick('btnApplePay', () => processarPgto('Apple Pay')); bindClick('btnGooglePay', () => processarPgto('Google Pay')); bindClick('btnFecharPaywall', () => getEl('modalPaywall').style.display = 'none');
 
         window.addEventListener('load', () => { setTimeout(() => { getEl('splashScreen').style.opacity = '0'; setTimeout(() => { getEl('splashScreen').style.display = 'none'; atualizarPrecosPaywall(); }, 600); }, 2000); });
         
@@ -658,7 +664,7 @@
         L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(mapa);
         
         let pinoUsuario = null; const camadaDePinos = L.layerGroup().addTo(mapa); let marcadoresNoMapa = {};
-        const buscarLoc = () => mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 }); buscarLoc(); getEl('btnMira').onclick = buscarLoc;
+        const buscarLoc = () => mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 }); buscarLoc(); bindClick('btnMira', buscarLoc);
         mapa.on('locationfound', (e) => { if(pinoUsuario) mapa.removeLayer(pinoUsuario); pinoUsuario = L.marker(e.latlng).addTo(mapa).bindPopup("📍 Você está aqui!"); });
 
         const iYellow = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
@@ -713,12 +719,11 @@
             fotosLojista.forEach((f) => { container.innerHTML += `<img src="${f}">`; });
         }
 
-        getEl('btnCamLojista').onclick = () => getEl('inputCamLojista').click();
-        getEl('btnGalLojista').onclick = () => getEl('inputGalLojista').click();
-        getEl('inputCamLojista').onchange = uploadFotoLojista;
-        getEl('inputGalLojista').onchange = uploadFotoLojista;
-
-        getEl('tipoLocalPergunta').onchange = (e) => { getEl('nomeLocalPergunta').style.display = e.target.value === 'Ambulante' ? 'none' : 'block'; };
+        bindClick('btnCamLojista', () => getEl('inputCamLojista')?.click());
+        bindClick('btnGalLojista', () => getEl('inputGalLojista')?.click());
+        bindChange('inputCamLojista', uploadFotoLojista);
+        bindChange('inputGalLojista', uploadFotoLojista);
+        bindChange('tipoLocalPergunta', (e) => { getEl('nomeLocalPergunta').style.display = e.target.value === 'Ambulante' ? 'none' : 'block'; });
 
         let coordSelecionada = null; let acaoPendente = null; 
         window.iniciarModoPosicionamento = function(acao) {
@@ -727,24 +732,30 @@
             acaoPendente = acao; getEl('bottomActions').style.display = 'none'; getEl('posicionamentoUI').style.display = 'block'; getEl('alfineteCentral').style.display = 'flex'; getEl('alfineteAlvo').style.display = 'block';
         }
         
-        getEl('btnAdicionar').onclick = () => { if (estadoApp.perfil === 'lojista') { iniciarModoPosicionamento('addLojista'); } else { iniciarModoPosicionamento('add'); } };
-        getEl('btnPerguntar').onclick = () => iniciarModoPosicionamento('ask');
-        getEl('btnCancelarPos').onclick = () => { getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex'; };
+        bindClick('btnAdicionar', () => { if (estadoApp.perfil === 'lojista') { iniciarModoPosicionamento('addLojista'); } else { iniciarModoPosicionamento('add'); } });
+        bindClick('btnPerguntar', () => iniciarModoPosicionamento('ask'));
+        bindClick('btnCancelarPos', () => { getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex'; });
         
-        getEl('btnConfirmarPos').onclick = () => {
+        bindClick('btnConfirmarPos', () => {
             coordSelecionada = mapa.getCenter(); getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex';
-            if (acaoPendente === 'add') { getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; } 
-            else if (acaoPendente === 'ask') { getEl('nomeProdutoPergunta').value = ''; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; }
-            else if (acaoPendente === 'addLojista') { fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex'; }
-        };
+            if (acaoPendente === 'add') { 
+                getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; 
+            } 
+            else if (acaoPendente === 'ask') { 
+                getEl('nomeProdutoPergunta').value = ''; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; 
+            }
+            else if (acaoPendente === 'addLojista') {
+                fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex';
+            }
+        });
 
-        getEl('btnCancelar').onclick = () => { getEl('modalForm').style.display = 'none'; };
-        getEl('btnCancelarLojista').onclick = () => { getEl('modalFormLojista').style.display = 'none'; };
+        bindClick('btnCancelar', () => { getEl('modalForm').style.display = 'none'; });
+        bindClick('btnCancelarLojista', () => { getEl('modalFormLojista').style.display = 'none'; });
         
-        getEl('btnCamNormal').onclick = () => getEl('inputCamNormal').click(); getEl('btnGalNormal').onclick = () => getEl('inputGalNormal').click();
-        getEl('inputCamNormal').onchange = (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto'); getEl('inputGalNormal').onchange = (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto');
+        bindClick('btnCamNormal', () => getEl('inputCamNormal')?.click()); bindClick('btnGalNormal', () => getEl('inputGalNormal')?.click());
+        bindChange('inputCamNormal', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto')); bindChange('inputGalNormal', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto'));
 
-        getEl('btnSalvar').onclick = async () => {
+        bindClick('btnSalvar', async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const t = dicionario[estadoApp.idioma]; const vSel = getEl('selectLocal').value; const localFinal = (vSel === 'NEW') ? getEl('nomeLocalInput').value.trim() : vSel; const nProd = getEl('nomeProduto').value.trim(); const prc = getEl('precoProduto').value;
             if(!localFinal || !nProd || !prc) return alert(t.alertaFalta);
@@ -754,9 +765,9 @@
             await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: centro.lat, lng: centro.lng, status: "pendente", premium: false, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], autor: aMail, data: new Date() });
             await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(0.25) }); estadoApp.saldo += 0.25; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
             getEl('modalForm').style.display = 'none'; alert(t.alertaSalvo);
-        };
+        });
 
-        getEl('btnSalvarLojista').onclick = async () => {
+        bindClick('btnSalvarLojista', async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const nomeNegocio = getEl('nomeLojistaInput').value.trim(); const catNegocio = getEl('categoriaLojista').value;
             if(!nomeNegocio) return alert("Por favor, digite o nome do seu negócio.");
@@ -765,28 +776,34 @@
             
             await addDoc(collection(db, "precos"), { local: nomeNegocio, nome: "Acesso ao Local", preco: 0, isLojistaPlace: true, categoria: catNegocio, lat: centro.lat, lng: centro.lng, status: "aprovado", premium: estadoApp.isLojistaPremium, fotosLocal: fotosLojista, autor: aMail, data: new Date() });
             getEl('modalFormLojista').style.display = 'none'; alert("Seu negócio foi cadastrado com sucesso e já está no mapa como Negócio Local! Clique no pino para destacá-lo.");
-        };
+        });
 
-        getEl('btnCancelarPergunta').onclick = () => getEl('modalPergunta').style.display = 'none';
-        getEl('btnCamPergunta').onclick = () => getEl('inputCamPergunta').click(); getEl('btnGalPergunta').onclick = () => getEl('inputGalPergunta').click();
-        getEl('inputCamPergunta').onchange = (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta'); 
-        getEl('inputGalPergunta').onchange = (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta');
+        bindClick('btnCancelarPergunta', () => getEl('modalPergunta').style.display = 'none');
+        bindClick('btnCamPergunta', () => getEl('inputCamPergunta')?.click()); bindClick('btnGalPergunta', () => getEl('inputGalPergunta')?.click());
+        bindChange('inputCamPergunta', (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta')); 
+        bindChange('inputGalPergunta', (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta'));
 
-        getEl('btnEnviarPergunta').onclick = async () => {
+        bindClick('btnEnviarPergunta', async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const itemDesejado = getEl('nomeProdutoPergunta').value.trim(); const localTipo = getEl('tipoLocalPergunta').value; let localNome = getEl('nomeLocalPergunta').value.trim();
             if (localTipo === 'Ambulante') { localNome = 'Vendedor Ambulante da Região'; } else if (!localNome) { return alert("Digite o nome do local!"); }
             if(!itemDesejado) return alert("Digite o nome do item!");
             
-            const centro = coordSelecionada || mapa.getCenter(); let fuzzyLat = centro.lat; let fuzzyLng = centro.lng;
+            const centro = coordSelecionada || mapa.getCenter(); 
+            let fuzzyLat = centro.lat; let fuzzyLng = centro.lng;
 
-            if (localTipo === 'Ambulante') { const angle = Math.random() * Math.PI * 2; const radius = 0.0004 + (Math.random() * 0.0004); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); } 
-            else { const angle = Math.random() * Math.PI * 2; const radius = 0.0001 + (Math.random() * 0.00015); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); }
+            if (localTipo === 'Ambulante') {
+                const angle = Math.random() * Math.PI * 2; const radius = 0.0004 + (Math.random() * 0.0004); 
+                fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle));
+            } else {
+                const angle = Math.random() * Math.PI * 2; const radius = 0.0001 + (Math.random() * 0.00015); 
+                fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle));
+            }
             
             await addDoc(collection(db, "perguntas"), { nomeItem: itemDesejado, nomeLocal: localNome, tipoLocal: localTipo, lat: fuzzyLat, lng: fuzzyLng, status: "aberta", respostas: [], autorUid: estadoApp.usuario.uid, fotoUrl: fotoAtualBase64, fotoSolicitada: false, data: new Date() });
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
             getEl('modalPergunta').style.display = 'none'; alert("Pergunta enviada no mapa! Por segurança, sua localização exata foi ocultada dos Avaliadores.");
-        };
+        });
 
         window.solicitarFoto = async function(idPergunta, autorUid, nomeItem, nomeLocal) {
             if(!estadoApp.usuario) return;
@@ -803,7 +820,7 @@
                 });
             }
         };
-        getEl('inputCamExtra').onchange = uploadFotoExtra; getEl('inputGalExtra').onchange = uploadFotoExtra;
+        bindChange('inputCamExtra', uploadFotoExtra); bindChange('inputGalExtra', uploadFotoExtra);
 
         window.resolverPerguntaConsenso = async function(idPergunta, pergData, respostas) {
             respostas.sort((a, b) => a.tempo - b.tempo); let vencedor = respostas[0]; let precoFinal = vencedor.preco;
@@ -837,8 +854,8 @@
             getEl('idPerguntaAtual').value = idPergunta; getEl('precoProdutoResposta').value = ''; getEl('modalResposta').style.display = 'flex';
         };
         
-        getEl('btnCancelarResposta').onclick = () => getEl('modalResposta').style.display = 'none';
-        getEl('btnEnviarResposta').onclick = async () => {
+        bindClick('btnCancelarResposta', () => getEl('modalResposta').style.display = 'none');
+        bindClick('btnEnviarResposta', async () => {
             if(!estadoApp.usuario) return; const prc = getEl('precoProdutoResposta').value; if(!prc) return alert("Preencha o preço!");
             const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc); 
             const idPergunta = getEl('idPerguntaAtual').value; const p = estadoApp.perguntasAbertas[idPergunta]; if(!p) return;
@@ -846,21 +863,22 @@
             if(resps.length >= 3) { window.resolverPerguntaConsenso(idPergunta, p, resps); alert("Consenso atingido! Resultado enviado."); } 
             else { await updateDoc(doc(db, "perguntas", idPergunta), { respostas: resps }); alert("Sua resposta foi registrada! ⏳ Aguardando mais avaliadores ou o tempo de 20s esgotar."); }
             getEl('modalResposta').style.display = 'none'; 
-        };
+        });
 
-        getEl('btnCancelarEdicao').onclick = () => getEl('modalEditar').style.display = 'none';
+        bindClick('btnCancelarEdicao', () => getEl('modalEditar').style.display = 'none');
         
+        // ESCUDO KYC
         window.abrirEdicao = function(id, nome, precoAtualBRL, isPremium) { 
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
             if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
             getEl('editItemId').value = id; getEl('editItemNome').innerText = nome; getEl('editItemPreco').value = (precoAtualBRL * taxasCambio[estadoApp.moeda].taxa).toFixed(2); getEl('modalEditar').style.display = 'flex'; 
         };
         
-        getEl('btnSalvarEdicao').onclick = async () => { 
+        bindClick('btnSalvarEdicao', async () => { 
             if(!estadoApp.usuario) return; 
             const id = getEl('editItemId').value; const nvPreco = getEl('editItemPreco').value; if(!nvPreco) return alert("Digite o novo preço!"); 
             try { const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(nvPreco) / taxasCambio[estadoApp.moeda].taxa : parseFloat(nvPreco); await updateDoc(doc(db, "precos", id), { preco: prcReal, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], status: "pendente" }); getEl('modalEditar').style.display = 'none'; alert("Preço atualizado e avaliações resetadas!"); } catch(e) { alert("Erro ao editar preço."); } 
-        };
+        });
 
         window.votarItem = async function(id, tipo, isPremium) {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
