@@ -62,7 +62,7 @@
         .ativo-option { color: #004d40; font-weight: 700; }
         .menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2500; }
 
-        /* MUDANÇA CRUCIAL DE MATEMÁTICA: O Mapa agora é absoluto, zerando qualquer margem de erro. */
+        /* O MAPA AGORA É ABSOLUTO 100% PARA MATEMÁTICA PERFEITA */
         #mapa { position: absolute; top: 0; left: 0; height: 100vh; width: 100vw; z-index: 1; } 
 
         .bottom-actions { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; z-index: 1000; }
@@ -80,21 +80,18 @@
         .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.15); z-index: 1000; cursor: pointer; }
         .btn-mira svg { width: 22px; height: 22px; fill: #004d40; }
 
-        /* A MIRA DE ATIRADOR (PADRÃO UBER) */
-        /* 1. O Alvo vermelho cravado no pixel exato do meio */
-        .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 8px; height: 8px; background-color: #c62828; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 2px white, 0 2px 6px rgba(0,0,0,0.5); }
-        /* 2. O Alfinete azul flutuando em cima (com a ponta apontando pro alvo) */
-        .alfinete-central { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; pointer-events: none; display: none; margin-top: -4px; animation: flutuarAlfinete 1s infinite alternate ease-in-out; filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.3)); }
-        @keyframes flutuarAlfinete { from { transform: translate(-50%, -100%) translateY(0); } to { transform: translate(-50%, -100%) translateY(-10px); } }
+        /* MIRA DE ATIRADOR DE ELITE (MATEMATICA CORRIGIDA) */
+        .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: #c62828; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 2px white, 0 2px 6px rgba(0,0,0,0.5); }
+        .alfinete-central { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; pointer-events: none; display: none; margin-top: -6px; animation: flutuarAlfinete 0.8s infinite alternate ease-in-out; filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.4)); }
+        @keyframes flutuarAlfinete { from { transform: translate(-50%, -100%) translateY(0); } to { transform: translate(-50%, -100%) translateY(-12px); } }
 
-        /* UI DE POSICIONAMENTO */
+        /* UI DO BONEQUINHO */
         .posicionamento-ui { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000; text-align: center; display: none; }
         .posicionamento-aviso { font-size: 15px; font-weight: 600; color: #004d40; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1.2; }
         .posicionamento-botoes { display: flex; gap: 10px; }
         .btn-cancelar-pos { flex: 1; background: #f5f5f5; color: #333; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; }
         .btn-confirmar-pos { flex: 1; background: #00e676; color: #004d40; border: none; padding: 12px; border-radius: 8px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 230, 118, 0.3); }
 
-        /* MODAIS E FORMULÁRIOS */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 2500; align-items: center; justify-content: center; }
         .modal-content { background-color: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 360px; text-align: center; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         
@@ -144,7 +141,7 @@
         .btn-apple-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-google-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: "Product Sans", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
 
-        /* MÁGICA DO CSS PARA PROTEGER A UI DO TURISTA */
+        /* MÁGICA CSS DE PERFIS */
         body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista #t_level { display: none !important; }
         body.modo-turista #saldoDisplay { display: none !important; }
@@ -153,13 +150,8 @@
         body.modo-turista .btn-perguntar { display: flex !important; }
         body.modo-turista .notif-container { display: flex !important; }
         
-        /* AVALIADOR NÃO VÊ FERRAMENTAS DE TURISTA */
         body.modo-avaliador .notif-container { display: none !important; }
         body.modo-avaliador .btn-perguntar { display: none !important; }
-        
-        /* ANIMAÇÃO PINO ROXO DE DÚVIDA */
-        @keyframes pulsePurple { 0% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(156, 39, 176, 0); } 100% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0); } }
-        .marker-pergunta { background-color: #9c27b0; border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 16px; border: 2px solid white; animation: pulsePurple 1.5s infinite; }
     </style>
 </head>
 <body class="modo-turista"> 
@@ -230,11 +222,9 @@
 
     <div class="top-bar">
         <div class="top-bar-logo"><button class="btn-menu" id="btnAbrirMenu">☰</button> GringoSafe</div>
-        
         <div class="top-bar-right">
             <span class="user-level" id="t_level">⭐ Nvl 1</span>
             <span class="user-balance" id="saldoDisplay">R$ 0,00</span>
-            
             <div class="notif-container" id="btnAbrirNotificacoes">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
                 <span class="badge-notificacao" id="badgeNotificacoes">0</span>
@@ -531,7 +521,11 @@
         window.addEventListener('load', () => { setTimeout(() => { getEl('splashScreen').style.opacity = '0'; setTimeout(() => { getEl('splashScreen').style.display = 'none'; atualizarPrecosPaywall(); }, 600); }, 2000); });
         
         let modeloIA = null; mobilenet.load().then(m => modeloIA = m);
-        const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapa);
+        const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14); 
+        
+        // --- MOTOR GOOGLE MAPS ---
+        L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(mapa);
+        
         let pinoUsuario = null; const camadaDePinos = L.layerGroup().addTo(mapa); let marcadoresNoMapa = {};
         
         const buscarLoc = () => mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 }); buscarLoc(); getEl('btnMira')?.addEventListener('click', buscarLoc);
@@ -561,7 +555,7 @@
             }
         };
 
-        // ------------------ MIRA DE PRECISÃO (ESTILO UBER) ------------------
+        // --- SISTEMA DE MIRA PERFEITA (UBER) ---
         let coordSelecionada = null;
         let acaoPendente = null; 
 
@@ -573,7 +567,7 @@
             getEl('bottomActions').style.display = 'none';
             getEl('posicionamentoUI').style.display = 'block';
             getEl('alfineteCentral').style.display = 'flex';
-            getEl('alfineteAlvo').style.display = 'block'; // Mostra o ponto vermelho exato
+            getEl('alfineteAlvo').style.display = 'block';
         }
 
         getEl('btnAdicionar')?.addEventListener('click', () => iniciarModoPosicionamento('add'));
@@ -587,7 +581,7 @@
         });
 
         getEl('btnConfirmarPos')?.addEventListener('click', () => {
-            coordSelecionada = mapa.getCenter(); // A matemática agora é 100% exata
+            coordSelecionada = mapa.getCenter(); // AGORA A MATEMÁTICA BATE 100%
             
             getEl('posicionamentoUI').style.display = 'none';
             getEl('alfineteCentral').style.display = 'none';
@@ -603,7 +597,7 @@
             }
         });
 
-        // ------------------ SALVAR E ENVIAR ------------------
+        // --- SALVAR USANDO A COORDENADA DA MIRA ---
         getEl('btnCancelar')?.addEventListener('click', () => { getEl('modalForm').style.display = 'none'; });
         getEl('btnCamNormal')?.addEventListener('click', () => getEl('inputCamNormal')?.click()); getEl('btnGalNormal')?.addEventListener('click', () => getEl('inputGalNormal')?.click());
         getEl('inputCamNormal')?.addEventListener('change', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto')); getEl('inputGalNormal')?.addEventListener('change', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto'));
@@ -614,14 +608,15 @@
             if(!localFinal || !nProd || !prc) return alert(t.alertaFalta);
             if (estadoApp.dadosHospedados[localFinal] && estadoApp.dadosHospedados[localFinal].itens.some(i => i.nome.toLowerCase() === nProd.toLowerCase())) return alert(t.alertaDuplicado);
             
-            const centro = coordSelecionada || mapa.getCenter(); const aMail = estadoApp.usuario.email; const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc);
+            const centro = coordSelecionada || mapa.getCenter(); 
+            const aMail = estadoApp.usuario.email; const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc);
             
             await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: centro.lat, lng: centro.lng, status: "pendente", votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], autor: aMail, data: new Date() });
-            
             await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(0.25) }); estadoApp.saldo += 0.25; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
             getEl('modalForm').style.display = 'none'; alert(t.alertaSalvo);
         });
 
+        // --- ENVIAR PERGUNTA USANDO A COORDENADA DA MIRA ---
         getEl('btnCancelarPergunta')?.addEventListener('click', () => getEl('modalPergunta').style.display = 'none');
         getEl('btnCamPergunta')?.addEventListener('click', () => getEl('inputCamPergunta')?.click()); getEl('btnGalPergunta')?.addEventListener('click', () => getEl('inputGalPergunta')?.click());
         getEl('inputCamPergunta')?.addEventListener('change', (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta')); getEl('inputGalPergunta')?.addEventListener('change', (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta'));
@@ -630,46 +625,17 @@
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const itemDesejado = getEl('nomeProdutoPergunta').value.trim(); const localNome = getEl('nomeLocalPergunta').value.trim(); const localTipo = getEl('tipoLocalPergunta').value;
             if(!itemDesejado || !localNome) return alert("Digite o nome do item e do local!");
+            
             const centro = coordSelecionada || mapa.getCenter(); 
             
             await addDoc(collection(db, "perguntas"), { nomeItem: itemDesejado, nomeLocal: localNome, tipoLocal: localTipo, lat: centro.lat, lng: centro.lng, status: "aberta", autorUid: estadoApp.usuario.uid, data: new Date() });
-            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
+            
+            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { 
+                estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) });
+            }
             getEl('modalPergunta').style.display = 'none'; alert("Pergunta enviada no mapa! Avaliadores locais foram notificados.");
         });
 
-        // EDIÇÃO E RESPOSTA
-        getEl('btnCancelarEdicao')?.addEventListener('click', () => getEl('modalEditar').style.display = 'none');
-        window.abrirEdicao = function(id, nome, precoAtualBRL) { if(!estadoApp.usuario) return; getEl('editItemId').value = id; getEl('editItemNome').innerText = nome; getEl('editItemPreco').value = (precoAtualBRL * taxasCambio[estadoApp.moeda].taxa).toFixed(2); getEl('modalEditar').style.display = 'flex'; };
-        getEl('btnSalvarEdicao')?.addEventListener('click', async () => { if(!estadoApp.usuario) return; const id = getEl('editItemId').value; const nvPreco = getEl('editItemPreco').value; if(!nvPreco) return alert("Digite o novo preço!"); try { const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(nvPreco) / taxasCambio[estadoApp.moeda].taxa : parseFloat(nvPreco); await updateDoc(doc(db, "precos", id), { preco: prcReal, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], status: "pendente" }); getEl('modalEditar').style.display = 'none'; alert("Preço atualizado e avaliações resetadas!"); } catch(e) { alert("Erro ao editar preço."); } });
-
-        window.votarItem = async function(id, tipo) {
-            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); const uid = estadoApp.usuario.uid; let jaVotou = false;
-            for (const loc in estadoApp.dadosHospedados) { const iLocal = estadoApp.dadosHospedados[loc].itens.find(i => i.id === id); if (iLocal) { const upList = iLocal.votaram_up || []; const downList = iLocal.votaram_down || []; if (upList.includes(uid) || downList.includes(uid)) jaVotou = true; break; } }
-            if (jaVotou) return alert(dicionario[estadoApp.idioma].alertVoted);
-            try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) {}
-        };
-
-        window.abrirModalResposta = function(idPergunta, nomeItem, nomeLocal, tipoLocal, autorUid, lat, lng) {
-            if(estadoApp.perfil === 'turista') return alert("Aguardando um Avaliador Local responder o preço deste item!");
-            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
-            setTxt('respItemNome', nomeItem); setTxt('respLocalNome', nomeLocal); setTxt('respLocalTipo', tipoLocal === 'Ambulante' ? '(Ambulante)' : '(Fixo)'); getEl('idPerguntaAtual').value = idPergunta; getEl('uidAutorPergunta').value = autorUid; getEl('latPerguntaAtual').value = lat; getEl('lngPerguntaAtual').value = lng; getEl('precoProdutoResposta').value = ''; getEl('modalResposta').style.display = 'flex';
-        };
-        
-        getEl('btnCancelarResposta')?.addEventListener('click', () => getEl('modalResposta').style.display = 'none');
-        getEl('btnEnviarResposta')?.addEventListener('click', async () => {
-            if(!estadoApp.usuario) return; const idPergunta = getEl('idPerguntaAtual').value; const autorPerguntaUid = getEl('uidAutorPergunta').value; const nomeItem = getEl('respItemNome').innerText; let localFinal = getEl('respLocalNome').innerText; const tipoStr = getEl('respLocalTipo').innerText;
-            if (tipoStr.includes('Ambulante')) { localFinal = localFinal + " (Ambulante)"; } const prc = getEl('precoProdutoResposta').value; if(!prc) return alert("Preencha o preço!");
-            const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc); const aMail = estadoApp.usuario.email; const latOrig = parseFloat(getEl('latPerguntaAtual').value); const lngOrig = parseFloat(getEl('lngPerguntaAtual').value);
-            try {
-                await updateDoc(doc(db, "perguntas", idPergunta), { status: "respondida" });
-                await addDoc(collection(db, "precos"), { local: localFinal, nome: nomeItem, preco: prcReal, categoria: "Serviço", lat: latOrig, lng: lngOrig, status: "pendente", votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], autor: aMail, data: new Date() });
-                await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(1.00) }); estadoApp.saldo += 1.00; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
-                if (autorPerguntaUid && autorPerguntaUid !== 'undefined') { await addDoc(collection(db, "notificacoes"), { userId: autorPerguntaUid, titulo: "✅ Dúvida Respondida!", nomeItem: nomeItem, nomeLocal: localFinal, precoReal: prcReal, lat: latOrig, lng: lngOrig, lida: false, data: new Date() }); }
-                getEl('modalResposta').style.display = 'none'; alert("Missão concluída! Você ganhou +R$ 1,00.");
-            } catch(e) { alert("Erro ao enviar resposta."); }
-        });
-
-        // RENDERIZAÇÃO GERAL
         getEl('btnCarregarRoteiro')?.addEventListener('click', () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; if(!estadoApp.usuario) return; if(estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { getEl('modalPaywall').style.display = 'flex'; return; } alert("Acesso Premium Liberado. Mostrando Rotas..."); });
         getEl('btnAbrirBusca')?.addEventListener('click', async () => {
             if(!estadoApp.usuario) return;
@@ -694,6 +660,46 @@
             }
         });
 
+        // EDIÇÃO E RESPOSTA 
+        getEl('btnCancelarEdicao')?.addEventListener('click', () => getEl('modalEditar').style.display = 'none');
+        window.abrirEdicao = function(id, nome, precoAtualBRL) { if(!estadoApp.usuario) return; getEl('editItemId').value = id; getEl('editItemNome').innerText = nome; getEl('editItemPreco').value = (precoAtualBRL * taxasCambio[estadoApp.moeda].taxa).toFixed(2); getEl('modalEditar').style.display = 'flex'; };
+        getEl('btnSalvarEdicao')?.addEventListener('click', async () => { if(!estadoApp.usuario) return; const id = getEl('editItemId').value; const nvPreco = getEl('editItemPreco').value; if(!nvPreco) return alert("Digite o novo preço!"); try { const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(nvPreco) / taxasCambio[estadoApp.moeda].taxa : parseFloat(nvPreco); await updateDoc(doc(db, "precos", id), { preco: prcReal, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], status: "pendente" }); getEl('modalEditar').style.display = 'none'; alert("Preço atualizado e avaliações resetadas!"); } catch(e) { alert("Erro ao editar preço."); } });
+
+        window.votarItem = async function(id, tipo) {
+            if(!estadoApp.usuario) return; const uid = estadoApp.usuario.uid; let jaVotou = false;
+            for (const loc in estadoApp.dadosHospedados) { const iLocal = estadoApp.dadosHospedados[loc].itens.find(i => i.id === id); if (iLocal) { const upList = iLocal.votaram_up || []; const downList = iLocal.votaram_down || []; if (upList.includes(uid) || downList.includes(uid)) jaVotou = true; break; } }
+            if (jaVotou) return alert(dicionario[estadoApp.idioma].alertVoted);
+            try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
+        };
+
+        window.abrirModalResposta = function(idPergunta, nomeItem, nomeLocal, tipoLocal, autorUid, lat, lng) {
+            if(estadoApp.perfil === 'turista') return alert("Aguardando um Avaliador Local responder o preço deste item!");
+            if(!estadoApp.usuario) return;
+            setTxt('respItemNome', nomeItem); setTxt('respLocalNome', nomeLocal); setTxt('respLocalTipo', tipoLocal === 'Ambulante' ? '(Ambulante)' : '(Fixo)'); getEl('idPerguntaAtual').value = idPergunta; getEl('uidAutorPergunta').value = autorUid; getEl('latPerguntaAtual').value = lat; getEl('lngPerguntaAtual').value = lng; getEl('precoProdutoResposta').value = ''; getEl('modalResposta').style.display = 'flex';
+        };
+        
+        getEl('btnCancelarResposta')?.addEventListener('click', () => getEl('modalResposta').style.display = 'none');
+        getEl('btnEnviarResposta')?.addEventListener('click', async () => {
+            if(!estadoApp.usuario) return;
+            const idPergunta = getEl('idPerguntaAtual').value; const autorPerguntaUid = getEl('uidAutorPergunta').value; const nomeItem = getEl('respItemNome').innerText; let localFinal = getEl('respLocalNome').innerText; const tipoStr = getEl('respLocalTipo').innerText;
+            if (tipoStr.includes('Ambulante')) { localFinal = localFinal + " (Ambulante)"; }
+            const prc = getEl('precoProdutoResposta').value; if(!prc) return alert("Preencha o preço!");
+            const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc); const aMail = estadoApp.usuario.email;
+            const latOrig = parseFloat(getEl('latPerguntaAtual').value); const lngOrig = parseFloat(getEl('lngPerguntaAtual').value);
+            
+            try {
+                await updateDoc(doc(db, "perguntas", idPergunta), { status: "respondida" });
+                await addDoc(collection(db, "precos"), { local: localFinal, nome: nomeItem, preco: prcReal, categoria: "Serviço", lat: latOrig, lng: lngOrig, status: "pendente", votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], autor: aMail, data: new Date() });
+                await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(1.00) }); estadoApp.saldo += 1.00; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
+                
+                if (autorPerguntaUid && autorPerguntaUid !== 'undefined') {
+                    await addDoc(collection(db, "notificacoes"), { userId: autorPerguntaUid, titulo: "✅ Dúvida Respondida!", nomeItem: nomeItem, nomeLocal: localFinal, precoReal: prcReal, lat: latOrig, lng: lngOrig, lida: false, data: new Date() });
+                }
+                getEl('modalResposta').style.display = 'none'; alert("Missão concluída! Você ganhou +R$ 1,00.");
+            } catch(e) { alert("Erro ao enviar resposta."); }
+        });
+
+        // RENDERIZAÇÃO
         onSnapshot(collection(db, "precos"), (snapshot) => {
             estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
             snapshot.forEach((doc) => {
@@ -707,7 +713,9 @@
             desenharPinos();
         });
 
-        onSnapshot(collection(db, "perguntas"), (snapshot) => { estadoApp.perguntasAbertas = {}; snapshot.forEach((doc) => { const p = doc.data(); if(p.status === "aberta") estadoApp.perguntasAbertas[doc.id] = p; }); desenharPinos(); });
+        onSnapshot(collection(db, "perguntas"), (snapshot) => {
+            estadoApp.perguntasAbertas = {}; snapshot.forEach((doc) => { const p = doc.data(); if(p.status === "aberta") estadoApp.perguntasAbertas[doc.id] = p; }); desenharPinos(); 
+        });
 
         function desenharPinos() {
             camadaDePinos.clearLayers(); marcadoresNoMapa = {}; const t = dicionario[estadoApp.idioma]; const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
@@ -718,11 +726,18 @@
                 dadosL.itens.forEach(item => {
                     let vUp = item.votos_up || 0; let vDown = item.votos_down || 0; let totalV = vUp + vDown;
                     let stAtual = 'pendente'; let minVotosRequeridos = 5; 
-                    if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
+
+                    if(totalV >= minVotosRequeridos) { 
+                        let pctAprovacao = (vUp / totalV) * 100;
+                        if(pctAprovacao >= 60) stAtual = 'aprovado'; 
+                        else if(pctAprovacao <= 40) stAtual = 'abusivo'; 
+                    }
+                    
                     if (stAtual === "abusivo") qAb++; if (stAtual === "aprovado") qAp++;
                     const ic = stAtual === 'aprovado' ? '✅' : (stAtual === 'abusivo' ? '🚨' : '⏳'); 
                     
                     let btns = `<div class="item-acoes"><button class="btn-voto" style="background:#2e7d32;" onclick="window.votarItem('${item.id}', 'up')">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#c62828;" onclick="window.votarItem('${item.id}', 'down')">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${item.nome}', ${item.preco})">✏️</button></div>`;
+                    
                     let badge = ""; const nl = item.nome.toLowerCase().trim(); const ctg = estadoApp.contagemPrecos[nl];
                     if (ctg > 1) {
                         const m = estadoApp.mediaPrecos[nl] / ctg; const pM = (m * cotacao).toFixed(2);
