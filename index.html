@@ -62,7 +62,6 @@
         .ativo-option { color: #004d40; font-weight: 700; }
         .menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2500; }
 
-        /* O MAPA AGORA É ABSOLUTO 100% PARA MATEMÁTICA PERFEITA */
         #mapa { position: absolute; top: 0; left: 0; height: 100vh; width: 100vw; z-index: 1; } 
 
         .bottom-actions { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; z-index: 1000; }
@@ -80,12 +79,10 @@
         .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.15); z-index: 1000; cursor: pointer; }
         .btn-mira svg { width: 22px; height: 22px; fill: #004d40; }
 
-        /* MIRA DE ATIRADOR DE ELITE (MATEMATICA CORRIGIDA) */
         .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: #c62828; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 2px white, 0 2px 6px rgba(0,0,0,0.5); }
         .alfinete-central { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; pointer-events: none; display: none; margin-top: -6px; animation: flutuarAlfinete 0.8s infinite alternate ease-in-out; filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.4)); }
         @keyframes flutuarAlfinete { from { transform: translate(-50%, -100%) translateY(0); } to { transform: translate(-50%, -100%) translateY(-12px); } }
 
-        /* UI DO BONEQUINHO */
         .posicionamento-ui { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000; text-align: center; display: none; }
         .posicionamento-aviso { font-size: 15px; font-weight: 600; color: #004d40; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1.2; }
         .posicionamento-botoes { display: flex; gap: 10px; }
@@ -141,7 +138,7 @@
         .btn-apple-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-google-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: "Product Sans", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
 
-        /* MÁGICA CSS DE PERFIS */
+        /* REGRAS VISUAIS DE PERFIS */
         body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista #t_level { display: none !important; }
         body.modo-turista #saldoDisplay { display: none !important; }
@@ -152,6 +149,14 @@
         
         body.modo-avaliador .notif-container { display: none !important; }
         body.modo-avaliador .btn-perguntar { display: none !important; }
+        
+        /* NOVO PINO ROXO DE SOCORRO (GIGANTE, PULSANTE E SEM EMOJI) */
+        @keyframes pulsePurpleGigante { 
+            0% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.8); transform: scale(1); } 
+            50% { box-shadow: 0 0 0 25px rgba(156, 39, 176, 0); transform: scale(1.15); } 
+            100% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0); transform: scale(1); } 
+        }
+        .marker-pergunta { background: linear-gradient(135deg, #ab47bc, #7b1fa2); border-radius: 50%; color: white !important; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 28px; font-family: 'Poppins', sans-serif; border: 3px solid white; animation: pulsePurpleGigante 1.2s infinite ease-in-out; }
     </style>
 </head>
 <body class="modo-turista"> 
@@ -201,7 +206,6 @@
         </div>
 
         <div class="menu-item" id="btnCarregarRoteiro" style="color: #9c27b0;"><span id="t_menuRoute">🗺️ Roteiro Premium Seguro</span></div>
-        
         <div class="menu-item" id="btnLangToggle"><span id="t_menuLang">🌐 Idiomas</span><span>▼</span></div>
         <div class="sub-menu" id="langSubMenu">
             <div class="sub-menu-item ativo-option" id="lang_pt"><span>🇧🇷 Português</span><span class="check">✔️</span></div>
@@ -446,10 +450,7 @@
 
         const fazerLogin = () => signInWithPopup(auth, provider).catch(() => alert("Erro no login."));
         
-        getEl('btnLoginGoogle')?.addEventListener('click', fazerLogin);
-        getEl('btnLoginGoogleMenu')?.addEventListener('click', fazerLogin);
-        getEl('btnLoginGoogleOverlay')?.addEventListener('click', fazerLogin);
-        
+        getEl('btnLoginGoogle')?.addEventListener('click', fazerLogin); getEl('btnLoginGoogleMenu')?.addEventListener('click', fazerLogin); getEl('btnLoginGoogleOverlay')?.addEventListener('click', fazerLogin);
         getEl('btnLogout')?.addEventListener('click', () => signOut(auth).then(() => alert("Deslogado.")));
 
         let listenerNotificacoes = null;
@@ -521,20 +522,21 @@
         window.addEventListener('load', () => { setTimeout(() => { getEl('splashScreen').style.opacity = '0'; setTimeout(() => { getEl('splashScreen').style.display = 'none'; atualizarPrecosPaywall(); }, 600); }, 2000); });
         
         let modeloIA = null; mobilenet.load().then(m => modeloIA = m);
-        const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14); 
         
-        // --- MOTOR GOOGLE MAPS ---
+        // MAPA GOOGLE MAPS INJETADO
+        const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14); 
         L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(mapa);
         
         let pinoUsuario = null; const camadaDePinos = L.layerGroup().addTo(mapa); let marcadoresNoMapa = {};
-        
         const buscarLoc = () => mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 }); buscarLoc(); getEl('btnMira')?.addEventListener('click', buscarLoc);
         mapa.on('locationfound', (e) => { if(pinoUsuario) mapa.removeLayer(pinoUsuario); pinoUsuario = L.marker(e.latlng).addTo(mapa).bindPopup("📍 Você está aqui!"); });
 
         const iYellow = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iGreen = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iRed = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
-        const iPurple = L.divIcon({ className: 'marker-pergunta', html: '❓', iconSize: [30, 30], iconAnchor: [15, 15] });
+        
+        // MUDANÇA: PINO DE SOCORRO AGORA É UMA DIV PURA (BRANCA/ROXA) COM ANIMAÇÃO GIGANTE
+        const iPurple = L.divIcon({ className: 'marker-pergunta', html: '?', iconSize: [44, 44], iconAnchor: [22, 22] });
 
         const processarImagem = (e, idPreview, idStatus, idNomeInput) => {
             if (e.target.files.length > 0) {
@@ -555,7 +557,6 @@
             }
         };
 
-        // --- SISTEMA DE MIRA PERFEITA (UBER) ---
         let coordSelecionada = null;
         let acaoPendente = null; 
 
@@ -581,7 +582,7 @@
         });
 
         getEl('btnConfirmarPos')?.addEventListener('click', () => {
-            coordSelecionada = mapa.getCenter(); // AGORA A MATEMÁTICA BATE 100%
+            coordSelecionada = mapa.getCenter(); // A MATEMÁTICA AGORA É 100% EXATA COM O ALVO VERMELHO
             
             getEl('posicionamentoUI').style.display = 'none';
             getEl('alfineteCentral').style.display = 'none';
@@ -597,7 +598,6 @@
             }
         });
 
-        // --- SALVAR USANDO A COORDENADA DA MIRA ---
         getEl('btnCancelar')?.addEventListener('click', () => { getEl('modalForm').style.display = 'none'; });
         getEl('btnCamNormal')?.addEventListener('click', () => getEl('inputCamNormal')?.click()); getEl('btnGalNormal')?.addEventListener('click', () => getEl('inputGalNormal')?.click());
         getEl('inputCamNormal')?.addEventListener('change', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto')); getEl('inputGalNormal')?.addEventListener('change', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto'));
@@ -616,7 +616,6 @@
             getEl('modalForm').style.display = 'none'; alert(t.alertaSalvo);
         });
 
-        // --- ENVIAR PERGUNTA USANDO A COORDENADA DA MIRA ---
         getEl('btnCancelarPergunta')?.addEventListener('click', () => getEl('modalPergunta').style.display = 'none');
         getEl('btnCamPergunta')?.addEventListener('click', () => getEl('inputCamPergunta')?.click()); getEl('btnGalPergunta')?.addEventListener('click', () => getEl('inputGalPergunta')?.click());
         getEl('inputCamPergunta')?.addEventListener('change', (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta')); getEl('inputGalPergunta')?.addEventListener('change', (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta'));
@@ -660,13 +659,12 @@
             }
         });
 
-        // EDIÇÃO E RESPOSTA 
         getEl('btnCancelarEdicao')?.addEventListener('click', () => getEl('modalEditar').style.display = 'none');
         window.abrirEdicao = function(id, nome, precoAtualBRL) { if(!estadoApp.usuario) return; getEl('editItemId').value = id; getEl('editItemNome').innerText = nome; getEl('editItemPreco').value = (precoAtualBRL * taxasCambio[estadoApp.moeda].taxa).toFixed(2); getEl('modalEditar').style.display = 'flex'; };
         getEl('btnSalvarEdicao')?.addEventListener('click', async () => { if(!estadoApp.usuario) return; const id = getEl('editItemId').value; const nvPreco = getEl('editItemPreco').value; if(!nvPreco) return alert("Digite o novo preço!"); try { const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(nvPreco) / taxasCambio[estadoApp.moeda].taxa : parseFloat(nvPreco); await updateDoc(doc(db, "precos", id), { preco: prcReal, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], status: "pendente" }); getEl('modalEditar').style.display = 'none'; alert("Preço atualizado e avaliações resetadas!"); } catch(e) { alert("Erro ao editar preço."); } });
 
         window.votarItem = async function(id, tipo) {
-            if(!estadoApp.usuario) return; const uid = estadoApp.usuario.uid; let jaVotou = false;
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); const uid = estadoApp.usuario.uid; let jaVotou = false;
             for (const loc in estadoApp.dadosHospedados) { const iLocal = estadoApp.dadosHospedados[loc].itens.find(i => i.id === id); if (iLocal) { const upList = iLocal.votaram_up || []; const downList = iLocal.votaram_down || []; if (upList.includes(uid) || downList.includes(uid)) jaVotou = true; break; } }
             if (jaVotou) return alert(dicionario[estadoApp.idioma].alertVoted);
             try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
@@ -674,7 +672,7 @@
 
         window.abrirModalResposta = function(idPergunta, nomeItem, nomeLocal, tipoLocal, autorUid, lat, lng) {
             if(estadoApp.perfil === 'turista') return alert("Aguardando um Avaliador Local responder o preço deste item!");
-            if(!estadoApp.usuario) return;
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             setTxt('respItemNome', nomeItem); setTxt('respLocalNome', nomeLocal); setTxt('respLocalTipo', tipoLocal === 'Ambulante' ? '(Ambulante)' : '(Fixo)'); getEl('idPerguntaAtual').value = idPergunta; getEl('uidAutorPergunta').value = autorUid; getEl('latPerguntaAtual').value = lat; getEl('lngPerguntaAtual').value = lng; getEl('precoProdutoResposta').value = ''; getEl('modalResposta').style.display = 'flex';
         };
         
@@ -682,24 +680,17 @@
         getEl('btnEnviarResposta')?.addEventListener('click', async () => {
             if(!estadoApp.usuario) return;
             const idPergunta = getEl('idPerguntaAtual').value; const autorPerguntaUid = getEl('uidAutorPergunta').value; const nomeItem = getEl('respItemNome').innerText; let localFinal = getEl('respLocalNome').innerText; const tipoStr = getEl('respLocalTipo').innerText;
-            if (tipoStr.includes('Ambulante')) { localFinal = localFinal + " (Ambulante)"; }
-            const prc = getEl('precoProdutoResposta').value; if(!prc) return alert("Preencha o preço!");
-            const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc); const aMail = estadoApp.usuario.email;
-            const latOrig = parseFloat(getEl('latPerguntaAtual').value); const lngOrig = parseFloat(getEl('lngPerguntaAtual').value);
-            
+            if (tipoStr.includes('Ambulante')) { localFinal = localFinal + " (Ambulante)"; } const prc = getEl('precoProdutoResposta').value; if(!prc) return alert("Preencha o preço!");
+            const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc); const aMail = estadoApp.usuario.email; const latOrig = parseFloat(getEl('latPerguntaAtual').value); const lngOrig = parseFloat(getEl('lngPerguntaAtual').value);
             try {
                 await updateDoc(doc(db, "perguntas", idPergunta), { status: "respondida" });
                 await addDoc(collection(db, "precos"), { local: localFinal, nome: nomeItem, preco: prcReal, categoria: "Serviço", lat: latOrig, lng: lngOrig, status: "pendente", votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], autor: aMail, data: new Date() });
                 await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(1.00) }); estadoApp.saldo += 1.00; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
-                
-                if (autorPerguntaUid && autorPerguntaUid !== 'undefined') {
-                    await addDoc(collection(db, "notificacoes"), { userId: autorPerguntaUid, titulo: "✅ Dúvida Respondida!", nomeItem: nomeItem, nomeLocal: localFinal, precoReal: prcReal, lat: latOrig, lng: lngOrig, lida: false, data: new Date() });
-                }
+                if (autorPerguntaUid && autorPerguntaUid !== 'undefined') { await addDoc(collection(db, "notificacoes"), { userId: autorPerguntaUid, titulo: "✅ Dúvida Respondida!", nomeItem: nomeItem, nomeLocal: localFinal, precoReal: prcReal, lat: latOrig, lng: lngOrig, lida: false, data: new Date() }); }
                 getEl('modalResposta').style.display = 'none'; alert("Missão concluída! Você ganhou +R$ 1,00.");
             } catch(e) { alert("Erro ao enviar resposta."); }
         });
 
-        // RENDERIZAÇÃO
         onSnapshot(collection(db, "precos"), (snapshot) => {
             estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
             snapshot.forEach((doc) => {
@@ -753,9 +744,13 @@
             }
 
             for (const idPerg in estadoApp.perguntasAbertas) {
-                const perg = estadoApp.perguntasAbertas[idPerg]; const pinoRoxo = L.marker([perg.lat, perg.lng], {icon: iPurple}); const tipoBadge = perg.tipoLocal === 'Ambulante' ? '🚶 Ambulante' : '🏪 Fixo';
+                const perg = estadoApp.perguntasAbertas[idPerg]; 
+                // O PINO ROXO DE SOCORRO ESTÁ AQUI. ELE FORÇA O Z-INDEX PARA FICAR NO TOPO ABSOLUTO.
+                const pinoRoxo = L.marker([perg.lat, perg.lng], {icon: iPurple, zIndexOffset: 9999}); 
+                const tipoBadge = perg.tipoLocal === 'Ambulante' ? '🚶 Ambulante' : '🏪 Fixo';
                 const autorP = perg.autorUid || '';
-                pinoRoxo.bindPopup(`<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:#9c27b0;">Dúvida de Turista</h3><p style="margin:0 0 5px 0; font-size:14px;"><strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Qual o preço de: <strong>${perg.nomeItem}</strong>?</p><button onclick="window.abrirModalResposta('${idPerg}', '${perg.nomeItem}', '${perg.nomeLocal}', '${perg.tipoLocal}', '${autorP}', ${perg.lat}, ${perg.lng})" style="background:#9c27b0; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Responder e Ganhar</button></div>`); camadaDePinos.addLayer(pinoRoxo);
+                pinoRoxo.bindPopup(`<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:#9c27b0;">Dúvida de Turista</h3><p style="margin:0 0 5px 0; font-size:14px;"><strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Qual o preço de: <strong>${perg.nomeItem}</strong>?</p><button onclick="window.abrirModalResposta('${idPerg}', '${perg.nomeItem}', '${perg.nomeLocal}', '${perg.tipoLocal}', '${autorP}', ${perg.lat}, ${perg.lng})" style="background:#9c27b0; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Responder e Ganhar</button></div>`); 
+                camadaDePinos.addLayer(pinoRoxo);
             }
             setTxt('t_btnSave', `${t.btnSave} (+${sim} ${(0.25 * cotacao).toFixed(2)})`); setTxt('t_btnSendAns', `${t.ansTitle} (+${sim} ${(1.00 * cotacao).toFixed(2)})`); if(estadoApp.usuario) setTxt('saldoDisplay', `${sim} ${(estadoApp.saldo * cotacao).toFixed(2)}`);
         }
