@@ -66,8 +66,8 @@
 
         #mapa { position: absolute; top: 0; left: 0; height: 100vh; width: 100vw; z-index: 1; } 
 
-        .bottom-actions { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; z-index: 3000; pointer-events: none; }
-        .btn-action { pointer-events: auto; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; position: relative; z-index: 3001; }
+        .bottom-actions { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; z-index: 1000; }
+        .btn-action { pointer-events: auto; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; position: relative; z-index: 1001; }
         .btn-action:active { transform: scale(0.9); }
         .btn-action svg { fill: currentColor; }
         .btn-adicionar { width: 70px; height: 70px; background: linear-gradient(135deg, #00e676, #00c853); color: white; box-shadow: 0px 8px 25px rgba(0, 200, 83, 0.4); }
@@ -78,10 +78,10 @@
         .btn-pesquisa svg { width: 26px; height: 26px; }
         .badge-buscas { position: absolute; top: -5px; right: -5px; background: #c62828; color: white; font-size: 11px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: none; }
         
-        .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.15); z-index: 1000; pointer-events: auto; cursor: pointer; }
+        .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.15); z-index: 1000; cursor: pointer; }
         .btn-mira svg { width: 22px; height: 22px; fill: #004d40; }
 
-        .btn-radar { position: fixed; bottom: 120px; left: 20px; background-color: #004d40; color: white; border: none; border-radius: 50%; width: 55px; height: 55px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.3); z-index: 1000; pointer-events: auto; cursor: pointer; transition: 0.3s; }
+        .btn-radar { position: fixed; bottom: 120px; left: 20px; background-color: #004d40; color: white; border: none; border-radius: 50%; width: 55px; height: 55px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.3); z-index: 1000; cursor: pointer; transition: 0.3s; }
         .btn-radar span { font-size: 9px; font-family: 'Poppins', sans-serif; font-weight: bold; margin-top: -2px; }
         .radar-anim { animation: radarPulseBtn 1.5s infinite; background: #1976d2 !important; }
         @keyframes radarPulseBtn { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(25, 118, 210, 0); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); } }
@@ -89,7 +89,7 @@
         .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: #c62828; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 2px white, 0 2px 6px rgba(0,0,0,0.5); }
         .alfinete-central { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; pointer-events: none; display: none; margin-top: -6px; filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.4)); }
 
-        .posicionamento-ui { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 4000; text-align: center; display: none; }
+        .posicionamento-ui { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000; text-align: center; display: none; }
         .posicionamento-aviso { font-size: 15px; font-weight: 600; color: #004d40; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1.2; }
         .posicionamento-botoes { display: flex; gap: 10px; }
         .btn-cancelar-pos { flex: 1; background: #f5f5f5; color: #333; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; }
@@ -133,7 +133,6 @@
         .imagem-preview { max-width: 100%; max-height: 140px; border-radius: 10px; display: none; margin: 10px auto; object-fit: cover; border: 2px solid #eee;}
         .ia-status { font-size: 12px; color: #004d40; font-weight: 600; display: none; margin: 5px 0; background: #e0f2f1; padding: 5px; border-radius: 8px; }
         
-        /* GALERIA DO LOJISTA */
         .galeria-lojista { display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 5px; }
         .galeria-lojista img { width: 75px; height: 75px; object-fit: cover; border-radius: 8px; border: 2px solid #f57c00; flex-shrink: 0; }
 
@@ -165,7 +164,7 @@
         body.modo-avaliador .notif-container { display: none !important; }
         body.modo-avaliador .btn-perguntar { display: none !important; }
         
-        /* Lojista Rules (Oculta TUDO do Turista/Avaliador) */
+        /* Lojista Rules */
         body.modo-lojista #t_level { display: none !important; }
         body.modo-lojista #saldoDisplay { display: none !important; }
         body.modo-lojista .notif-container { display: none !important; }
@@ -316,7 +315,7 @@
     <button class="btn-mira" id="btnMira"><svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg></button>
 
     <div class="posicionamento-ui" id="posicionamentoUI">
-        <div class="posicionamento-aviso" id="t_posHint">📍 Aponte para a barraca (Dica: Faça de uma distância segura)</div>
+        <div class="posicionamento-aviso" id="t_posHint">📍 Aponte para o local exato</div>
         <div class="posicionamento-botoes">
             <button class="btn-cancelar-pos" id="btnCancelarPos"><span id="t_btnPosCancel">Cancelar</span></button>
             <button class="btn-confirmar-pos" id="btnConfirmarPos"><span id="t_btnPosConfirm">Confirmar Local</span></button>
@@ -594,15 +593,11 @@
             setTimeout(() => { estadoApp.radarAtivo = false; getEl('btnRadar').classList.remove('radar-anim'); desenharPinos(); alert(dicionario[estadoApp.idioma].radarCool); }, 15000); 
         };
 
-        // FUNIL DE VENDAS DO LOJISTA
         let localParaPromover = null;
         window.prepararPromocao = function(nomeLocal) {
             localParaPromover = nomeLocal;
-            if(!estadoApp.isLojistaPremium) {
-                getEl('modalLojista').style.display = 'flex'; // Abre Paywall
-            } else {
-                window.executarPromocao(nomeLocal); // Já pagou, promove direto!
-            }
+            if(!estadoApp.isLojistaPremium) { getEl('modalLojista').style.display = 'flex'; } 
+            else { window.executarPromocao(nomeLocal); }
         };
 
         window.executarPromocao = async function(nomeLocal) {
@@ -705,17 +700,11 @@
             }
         };
 
-        // --- CARROSSEL DE FOTOS DO LOJISTA ---
-        let fotosLojista = [];
-        const maxFotosLojista = 3;
-
+        let fotosLojista = []; const maxFotosLojista = 3;
         const uploadFotoLojista = (e) => {
             if (e.target.files.length > 0) {
                 if (fotosLojista.length >= maxFotosLojista) return alert("Você já atingiu o máximo de 3 fotos!");
-                comprimirImagemBase64(e.target.files[0], (base64) => {
-                    fotosLojista.push(base64);
-                    atualizarPreviewLojista();
-                });
+                comprimirImagemBase64(e.target.files[0], (base64) => { fotosLojista.push(base64); atualizarPreviewLojista(); });
             }
         };
 
@@ -731,7 +720,6 @@
 
         getEl('tipoLocalPergunta').onchange = (e) => { getEl('nomeLocalPergunta').style.display = e.target.value === 'Ambulante' ? 'none' : 'block'; };
 
-        // --- SISTEMA DE MIRA PERFEITA ---
         let coordSelecionada = null; let acaoPendente = null; 
         window.iniciarModoPosicionamento = function(acao) {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
@@ -739,23 +727,15 @@
             acaoPendente = acao; getEl('bottomActions').style.display = 'none'; getEl('posicionamentoUI').style.display = 'block'; getEl('alfineteCentral').style.display = 'flex'; getEl('alfineteAlvo').style.display = 'block';
         }
         
-        getEl('btnAdicionar').onclick = () => {
-            if (estadoApp.perfil === 'lojista') { iniciarModoPosicionamento('addLojista'); } else { iniciarModoPosicionamento('add'); }
-        };
+        getEl('btnAdicionar').onclick = () => { if (estadoApp.perfil === 'lojista') { iniciarModoPosicionamento('addLojista'); } else { iniciarModoPosicionamento('add'); } };
         getEl('btnPerguntar').onclick = () => iniciarModoPosicionamento('ask');
         getEl('btnCancelarPos').onclick = () => { getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex'; };
         
         getEl('btnConfirmarPos').onclick = () => {
             coordSelecionada = mapa.getCenter(); getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex';
-            if (acaoPendente === 'add') { 
-                getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; 
-            } 
-            else if (acaoPendente === 'ask') { 
-                getEl('nomeProdutoPergunta').value = ''; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; 
-            }
-            else if (acaoPendente === 'addLojista') {
-                fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex';
-            }
+            if (acaoPendente === 'add') { getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; } 
+            else if (acaoPendente === 'ask') { getEl('nomeProdutoPergunta').value = ''; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; }
+            else if (acaoPendente === 'addLojista') { fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex'; }
         };
 
         getEl('btnCancelar').onclick = () => { getEl('modalForm').style.display = 'none'; };
@@ -764,7 +744,6 @@
         getEl('btnCamNormal').onclick = () => getEl('inputCamNormal').click(); getEl('btnGalNormal').onclick = () => getEl('inputGalNormal').click();
         getEl('inputCamNormal').onchange = (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto'); getEl('inputGalNormal').onchange = (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto');
 
-        // SALVAR AVALIADOR
         getEl('btnSalvar').onclick = async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const t = dicionario[estadoApp.idioma]; const vSel = getEl('selectLocal').value; const localFinal = (vSel === 'NEW') ? getEl('nomeLocalInput').value.trim() : vSel; const nProd = getEl('nomeProduto').value.trim(); const prc = getEl('precoProduto').value;
@@ -777,23 +756,15 @@
             getEl('modalForm').style.display = 'none'; alert(t.alertaSalvo);
         };
 
-        // SALVAR LOJISTA
         getEl('btnSalvarLojista').onclick = async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
-            const nomeNegocio = getEl('nomeLojistaInput').value.trim();
-            const catNegocio = getEl('categoriaLojista').value;
+            const nomeNegocio = getEl('nomeLojistaInput').value.trim(); const catNegocio = getEl('categoriaLojista').value;
             if(!nomeNegocio) return alert("Por favor, digite o nome do seu negócio.");
             
             const centro = coordSelecionada || mapa.getCenter(); const aMail = estadoApp.usuario.email;
             
-            await addDoc(collection(db, "precos"), { 
-                local: nomeNegocio, nome: "Acesso ao Local", preco: 0, isLojistaPlace: true, categoria: catNegocio, 
-                lat: centro.lat, lng: centro.lng, status: "aprovado", premium: estadoApp.isLojistaPremium, 
-                fotosLocal: fotosLojista, autor: aMail, data: new Date() 
-            });
-            
-            getEl('modalFormLojista').style.display = 'none'; 
-            alert("Seu negócio foi cadastrado com sucesso e já está no mapa como Negócio Local! Clique no pino para destacá-lo.");
+            await addDoc(collection(db, "precos"), { local: nomeNegocio, nome: "Acesso ao Local", preco: 0, isLojistaPlace: true, categoria: catNegocio, lat: centro.lat, lng: centro.lng, status: "aprovado", premium: estadoApp.isLojistaPremium, fotosLocal: fotosLojista, autor: aMail, data: new Date() });
+            getEl('modalFormLojista').style.display = 'none'; alert("Seu negócio foi cadastrado com sucesso e já está no mapa como Negócio Local! Clique no pino para destacá-lo.");
         };
 
         getEl('btnCancelarPergunta').onclick = () => getEl('modalPergunta').style.display = 'none';
@@ -807,16 +778,10 @@
             if (localTipo === 'Ambulante') { localNome = 'Vendedor Ambulante da Região'; } else if (!localNome) { return alert("Digite o nome do local!"); }
             if(!itemDesejado) return alert("Digite o nome do item!");
             
-            const centro = coordSelecionada || mapa.getCenter(); 
-            let fuzzyLat = centro.lat; let fuzzyLng = centro.lng;
+            const centro = coordSelecionada || mapa.getCenter(); let fuzzyLat = centro.lat; let fuzzyLng = centro.lng;
 
-            if (localTipo === 'Ambulante') {
-                const angle = Math.random() * Math.PI * 2; const radius = 0.0004 + (Math.random() * 0.0004); 
-                fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle));
-            } else {
-                const angle = Math.random() * Math.PI * 2; const radius = 0.0001 + (Math.random() * 0.00015); 
-                fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle));
-            }
+            if (localTipo === 'Ambulante') { const angle = Math.random() * Math.PI * 2; const radius = 0.0004 + (Math.random() * 0.0004); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); } 
+            else { const angle = Math.random() * Math.PI * 2; const radius = 0.0001 + (Math.random() * 0.00015); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); }
             
             await addDoc(collection(db, "perguntas"), { nomeItem: itemDesejado, nomeLocal: localNome, tipoLocal: localTipo, lat: fuzzyLat, lng: fuzzyLng, status: "aberta", respostas: [], autorUid: estadoApp.usuario.uid, fotoUrl: fotoAtualBase64, fotoSolicitada: false, data: new Date() });
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
@@ -864,8 +829,7 @@
         }, 5000);
 
         window.abrirModalResposta = async function(idPergunta) {
-            if(estadoApp.perfil === 'turista' || estadoApp.perfil === 'lojista') return; 
-            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            if(estadoApp.perfil === 'turista' || estadoApp.perfil === 'lojista') return; if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const p = estadoApp.perguntasAbertas[idPergunta]; if(!p) return;
             const uid = estadoApp.usuario.uid; const resps = p.respostas || [];
             if(resps.some(r => r.uid === uid)) return alert("Você já respondeu esta dúvida! Aguardando o consenso.");
@@ -886,7 +850,6 @@
 
         getEl('btnCancelarEdicao').onclick = () => getEl('modalEditar').style.display = 'none';
         
-        // ESCUDO KYC
         window.abrirEdicao = function(id, nome, precoAtualBRL, isPremium) { 
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
             if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
@@ -916,7 +879,6 @@
                 if (!estadoApp.dadosHospedados[nomeL]) estadoApp.dadosHospedados[nomeL] = { lat: item.lat, lng: item.lng, itens: [] };
                 estadoApp.dadosHospedados[nomeL].itens.push({ ...item, id: doc.id });
                 if(!item.isLojistaPlace) {
-                    let avaliacoesValidas = estadoApp.dadosHospedados[nomeL].itens.filter(i => !i.isLojistaPlace);
                     const nl = item.nome.toLowerCase().trim(); if(!estadoApp.mediaPrecos[nl]) { estadoApp.mediaPrecos[nl] = 0; estadoApp.contagemPrecos[nl] = 0; }
                     estadoApp.mediaPrecos[nl] += item.preco; estadoApp.contagemPrecos[nl]++;
                 }
