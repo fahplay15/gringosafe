@@ -79,10 +79,12 @@
         .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.15); z-index: 1000; cursor: pointer; }
         .btn-mira svg { width: 22px; height: 22px; fill: #004d40; }
 
+        /* MIRA DE ATIRADOR DE ELITE */
         .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: #c62828; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 2px white, 0 2px 6px rgba(0,0,0,0.5); }
         .alfinete-central { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; pointer-events: none; display: none; margin-top: -6px; animation: flutuarAlfinete 0.8s infinite alternate ease-in-out; filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.4)); }
         @keyframes flutuarAlfinete { from { transform: translate(-50%, -100%) translateY(0); } to { transform: translate(-50%, -100%) translateY(-12px); } }
 
+        /* UI DO BONEQUINHO */
         .posicionamento-ui { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000; text-align: center; display: none; }
         .posicionamento-aviso { font-size: 15px; font-weight: 600; color: #004d40; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1.2; }
         .posicionamento-botoes { display: flex; gap: 10px; }
@@ -138,6 +140,7 @@
         .btn-apple-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-google-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: "Product Sans", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
 
+        /* MÁGICA CSS DE PERFIS */
         body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista #t_level { display: none !important; }
         body.modo-turista #saldoDisplay { display: none !important; }
@@ -149,6 +152,7 @@
         body.modo-avaliador .notif-container { display: none !important; }
         body.modo-avaliador .btn-perguntar { display: none !important; }
         
+        /* CORREÇÃO MESTRE: O ENVELOPE INVISÍVEL DO MAPA */
         .marker-pergunta-container { background: transparent; border: none; }
         @keyframes pulsePurpleGigante { 
             0% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.8); transform: scale(1); } 
@@ -363,6 +367,9 @@
             <p style="font-size: 14px; color: #555; margin-bottom: 15px; text-align: left;">Item: <strong id="respItemNome" style="color:#000;"></strong></p>
             <input type="number" id="precoProdutoResposta" class="input-form" placeholder="Qual o preço real/justo?">
             <input type="hidden" id="idPerguntaAtual">
+            <input type="hidden" id="uidAutorPergunta"> 
+            <input type="hidden" id="latPerguntaAtual"> 
+            <input type="hidden" id="lngPerguntaAtual"> 
             <button class="btn-salvar" id="btnEnviarResposta" style="background:#2e7d32;"><span id="t_btnSendAns">Responder (+R$ 1,00)</span></button>
             <button class="btn-cancelar" id="btnCancelarResposta"><span id="t_btnCancelAns">Cancelar</span></button>
         </div>
@@ -407,6 +414,7 @@
             estadoApp.moeda = moeda;
             document.querySelectorAll('#currencySubMenu .sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; });
             const opt = getEl('cur_' + moeda); if(opt) { opt.classList.add('ativo-option'); opt.querySelector('.check').style.display = 'inline'; }
+            
             getEl('currencySubMenu')?.classList.remove('open'); getEl('sideMenu')?.classList.remove('open'); if(getEl('menuOverlay')) getEl('menuOverlay').style.display = 'none';
             desenharPinos(); atualizarPrecosPaywall();
         }
@@ -418,12 +426,17 @@
 
         window.atualizarBadgeBuscas = function() {
             const b = getEl('badgeBuscas'); if(!b) return;
-            if(estadoApp.perfil === 'turista') { b.style.display = 'flex'; if(estadoApp.buscasRestantes >= 999) { b.innerText = '♾️'; b.style.background = '#ffc107'; b.style.color = '#333'; } else { b.innerText = estadoApp.buscasRestantes; b.style.background = '#c62828'; b.style.color = 'white'; } } else { b.style.display = 'none'; }
+            if(estadoApp.perfil === 'turista') {
+                b.style.display = 'flex';
+                if(estadoApp.buscasRestantes >= 999) { b.innerText = '♾️'; b.style.background = '#ffc107'; b.style.color = '#333'; } 
+                else { b.innerText = estadoApp.buscasRestantes; b.style.background = '#c62828'; b.style.color = 'white'; }
+            } else { b.style.display = 'none'; }
         }
 
         function definirPerfil(tipo) {
             estadoApp.perfil = tipo; document.body.className = 'modo-' + tipo; localStorage.setItem('gringosafe_perfil', tipo);
-            if(getEl('telaPerfil')) getEl('telaPerfil').style.display = 'none'; desenharPinos(); window.atualizarBadgeBuscas();
+            if(getEl('telaPerfil')) getEl('telaPerfil').style.display = 'none'; desenharPinos();
+            window.atualizarBadgeBuscas();
         }
 
         const perfilSalvo = localStorage.getItem('gringosafe_perfil'); if(perfilSalvo) estadoApp.perfil = perfilSalvo;
@@ -439,7 +452,9 @@
 
         const firebaseConfig = { apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs", authDomain: "gringosafe-1f434.firebaseapp.com", projectId: "gringosafe-1f434", storageBucket: "gringosafe-1f434.firebasestorage.app", messagingSenderId: "949745647794", appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); const provider = new GoogleAuthProvider();
+
         const fazerLogin = () => signInWithPopup(auth, provider).catch(() => alert("Erro no login."));
+        
         getEl('btnLoginGoogle')?.addEventListener('click', fazerLogin); getEl('btnLoginGoogleMenu')?.addEventListener('click', fazerLogin); getEl('btnLoginGoogleOverlay')?.addEventListener('click', fazerLogin);
         getEl('btnLogout')?.addEventListener('click', () => signOut(auth).then(() => alert("Deslogado.")));
 
@@ -447,11 +462,22 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                estadoApp.usuario = user; getEl('menuAvatar').innerHTML = `<img src="${user.photoURL}" alt="Foto">`; setTxt('menuNome', user.displayName.split(" ")[0]); getEl('btnLoginGoogleMenu').style.display = 'none'; getEl('btnLogout').style.display = 'block'; getEl('bloqueioLoginOverlay').style.display = 'none'; 
-                const docRef = doc(db, "usuarios", user.uid); const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) { estadoApp.saldo = docSnap.data().saldo || 0.00; estadoApp.buscasRestantes = docSnap.data().buscas !== undefined ? docSnap.data().buscas : 3; } 
-                else { estadoApp.saldo = 0.00; estadoApp.buscasRestantes = 3; await setDoc(docRef, { nome: user.displayName, email: user.email, saldo: 0, buscas: 3, dataCadastro: new Date() }); }
-                setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`); window.atualizarBadgeBuscas();
+                estadoApp.usuario = user; 
+                getEl('menuAvatar').innerHTML = `<img src="${user.photoURL}" alt="Foto">`; setTxt('menuNome', user.displayName.split(" ")[0]); 
+                getEl('btnLoginGoogleMenu').style.display = 'none'; getEl('btnLogout').style.display = 'block';
+                getEl('bloqueioLoginOverlay').style.display = 'none'; 
+                
+                const docRef = doc(db, "usuarios", user.uid);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) { 
+                    estadoApp.saldo = docSnap.data().saldo || 0.00; 
+                    estadoApp.buscasRestantes = docSnap.data().buscas !== undefined ? docSnap.data().buscas : 3;
+                } else { 
+                    estadoApp.saldo = 0.00; estadoApp.buscasRestantes = 3;
+                    await setDoc(docRef, { nome: user.displayName, email: user.email, saldo: 0, buscas: 3, dataCadastro: new Date() }); 
+                }
+                setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
+                window.atualizarBadgeBuscas();
 
                 const q = query(collection(db, "notificacoes"), where("userId", "==", user.uid));
                 listenerNotificacoes = onSnapshot(q, (snapshot) => {
@@ -460,19 +486,28 @@
                     estadoApp.notificacoes.sort((a,b) => b.data.toMillis() - a.data.toMillis());
                     const bN = getEl('badgeNotificacoes'); if(qtdNaoLidas > 0) { bN.style.display = 'flex'; bN.innerText = qtdNaoLidas; } else { bN.style.display = 'none'; }
                 });
+
             } else {
-                estadoApp.usuario = null; estadoApp.saldo = 0.00; estadoApp.buscasRestantes = 3; setTxt('saldoDisplay', `R$ 0,00`); setTxt('menuNome', `Visitante`); getEl('menuAvatar').innerHTML = `👤`; getEl('btnLoginGoogleMenu').style.display = 'flex'; getEl('btnLogout').style.display = 'none'; getEl('bloqueioLoginOverlay').style.display = 'flex'; window.atualizarBadgeBuscas();
-                if(listenerNotificacoes) { listenerNotificacoes(); listenerNotificacoes = null; } getEl('badgeNotificacoes').style.display = 'none';
+                estadoApp.usuario = null; estadoApp.saldo = 0.00; estadoApp.buscasRestantes = 3; 
+                setTxt('saldoDisplay', `R$ 0,00`); setTxt('menuNome', `Visitante`); 
+                getEl('menuAvatar').innerHTML = `👤`; getEl('btnLoginGoogleMenu').style.display = 'flex'; getEl('btnLogout').style.display = 'none';
+                getEl('bloqueioLoginOverlay').style.display = 'flex'; 
+                window.atualizarBadgeBuscas();
+                
+                if(listenerNotificacoes) { listenerNotificacoes(); listenerNotificacoes = null; }
+                getEl('badgeNotificacoes').style.display = 'none';
             }
         });
 
         getEl('btnAbrirNotificacoes')?.addEventListener('click', () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const lista = getEl('listaNotificacoes'); lista.innerHTML = '';
-            if(estadoApp.notificacoes.length === 0) { lista.innerHTML = `<p style="text-align:center; color:#757575; font-size:14px; margin-top:20px;">${dicionario[estadoApp.idioma].notifEmpty}</p>`; } 
-            else {
+            if(estadoApp.notificacoes.length === 0) {
+                lista.innerHTML = `<p style="text-align:center; color:#757575; font-size:14px; margin-top:20px;">${dicionario[estadoApp.idioma].notifEmpty}</p>`;
+            } else {
                 estadoApp.notificacoes.forEach(n => {
-                    const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim; const precoFormatado = n.precoReal ? `${sim} ${(n.precoReal * cotacao).toFixed(2)}` : '';
+                    const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
+                    const precoFormatado = n.precoReal ? `${sim} ${(n.precoReal * cotacao).toFixed(2)}` : '';
                     const div = document.createElement('div'); div.className = `notif-item ${n.lida ? '' : 'nao-lida'}`;
                     div.innerHTML = `<div class="notif-titulo">${n.titulo}</div><div class="notif-msg">O preço de <strong>${n.nomeItem}</strong> em ${n.nomeLocal} é <strong>${precoFormatado}</strong>.<br><span style="font-size:11px; color:#9c27b0; font-weight:bold; display:block; margin-top:5px;">📍 Clique para ver no mapa</span></div>`;
                     div.onclick = () => { getEl('modalNotificacoes').style.display = 'none'; mapa.flyTo([n.lat, n.lng], 18, { duration: 1.5 }); setTimeout(() => { if(marcadoresNoMapa[n.nomeLocal]) marcadoresNoMapa[n.nomeLocal].openPopup(); }, 1500); if(!n.lida) updateDoc(doc(db, "notificacoes", n.id), { lida: true }); };
@@ -481,6 +516,7 @@
             }
             getEl('modalNotificacoes').style.display = 'flex';
         });
+
         getEl('btnFecharNotificacoes')?.addEventListener('click', () => getEl('modalNotificacoes').style.display = 'none');
 
         const planos = [getEl('btnPlan1'), getEl('btnPlan2'), getEl('btnPlan3')]; const precos = [4.99, 7.99, 12.99];
@@ -493,6 +529,7 @@
         let modeloIA = null; mobilenet.load().then(m => modeloIA = m);
         const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14); 
         L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(mapa);
+        
         let pinoUsuario = null; const camadaDePinos = L.layerGroup().addTo(mapa); let marcadoresNoMapa = {};
         const buscarLoc = () => mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 }); buscarLoc(); getEl('btnMira')?.addEventListener('click', buscarLoc);
         mapa.on('locationfound', (e) => { if(pinoUsuario) mapa.removeLayer(pinoUsuario); pinoUsuario = L.marker(e.latlng).addTo(mapa).bindPopup("📍 Você está aqui!"); });
@@ -501,7 +538,13 @@
         const iGreen = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iRed = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         
-        const iPurple = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="marker-pergunta-anim">?</div>', iconSize: [44, 44], iconAnchor: [22, 22] });
+        // MUDANÇA: O ENVELOPE DE CSS PARA O PINO ROXO GIGANTE 
+        const iPurple = L.divIcon({ 
+            className: 'marker-pergunta-container', 
+            html: '<div class="marker-pergunta-anim">?</div>', 
+            iconSize: [44, 44], 
+            iconAnchor: [22, 22] 
+        });
 
         const processarImagem = (e, idPreview, idStatus, idNomeInput) => {
             if (e.target.files.length > 0) {
@@ -510,25 +553,57 @@
                     const inpNome = getEl(idNomeInput); if(inpNome) inpNome.value = '';
                     if (modeloIA) {
                         const status = getEl(idStatus); if(status) { status.style.display = 'block'; setTxt(idStatus, '🤖 IA...'); }
-                        if(img) img.onload = () => { modeloIA.classify(img).then(prev => { if(status) status.style.display = 'none'; const tIngles = prev[0].className.split(',')[0].toLowerCase().trim(); if(estadoApp.idioma === 'en') { if(inpNome) inpNome.value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } else { const tTrad = dicionario['pt'][tIngles]; if(inpNome) inpNome.value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } }); }
+                        if(img) img.onload = () => {
+                            modeloIA.classify(img).then(prev => {
+                                if(status) status.style.display = 'none'; const tIngles = prev[0].className.split(',')[0].toLowerCase().trim();
+                                if(estadoApp.idioma === 'en') { if(inpNome) inpNome.value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } 
+                                else { const tTrad = dicionario['pt'][tIngles]; if(inpNome) inpNome.value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); }
+                            });
+                        }
                     }
                 }; leitor.readAsDataURL(e.target.files[0]);
             }
         };
 
-        let coordSelecionada = null; let acaoPendente = null; 
+        let coordSelecionada = null;
+        let acaoPendente = null; 
+
         window.iniciarModoPosicionamento = function(acao) {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             if (acao === 'ask' && estadoApp.perfil === 'turista' && estadoApp.buscasRestantes <= 0) { getEl('modalPaywall').style.display = 'flex'; return; }
-            acaoPendente = acao; getEl('bottomActions').style.display = 'none'; getEl('posicionamentoUI').style.display = 'block'; getEl('alfineteCentral').style.display = 'flex'; getEl('alfineteAlvo').style.display = 'block';
+            
+            acaoPendente = acao;
+            getEl('bottomActions').style.display = 'none';
+            getEl('posicionamentoUI').style.display = 'block';
+            getEl('alfineteCentral').style.display = 'flex';
+            getEl('alfineteAlvo').style.display = 'block';
         }
-        getEl('btnAdicionar')?.addEventListener('click', () => iniciarModoPosicionamento('add')); getEl('btnPerguntar')?.addEventListener('click', () => iniciarModoPosicionamento('ask'));
-        getEl('btnCancelarPos')?.addEventListener('click', () => { getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex'; });
-        
+
+        getEl('btnAdicionar')?.addEventListener('click', () => iniciarModoPosicionamento('add'));
+        getEl('btnPerguntar')?.addEventListener('click', () => iniciarModoPosicionamento('ask'));
+
+        getEl('btnCancelarPos')?.addEventListener('click', () => {
+            getEl('posicionamentoUI').style.display = 'none';
+            getEl('alfineteCentral').style.display = 'none';
+            getEl('alfineteAlvo').style.display = 'none';
+            getEl('bottomActions').style.display = 'flex';
+        });
+
         getEl('btnConfirmarPos')?.addEventListener('click', () => {
-            coordSelecionada = mapa.getCenter(); getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex';
-            if (acaoPendente === 'add') { getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; getEl('inputCamNormal').value = ''; getEl('inputGalNormal').value = ''; getEl('modalForm').style.display = 'flex'; } 
-            else if (acaoPendente === 'ask') { getEl('nomeProdutoPergunta').value = ''; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; getEl('inputCamPergunta').value = ''; getEl('inputGalPergunta').value = ''; getEl('modalPergunta').style.display = 'flex'; }
+            coordSelecionada = mapa.getCenter(); 
+            
+            getEl('posicionamentoUI').style.display = 'none';
+            getEl('alfineteCentral').style.display = 'none';
+            getEl('alfineteAlvo').style.display = 'none';
+            getEl('bottomActions').style.display = 'flex';
+
+            if (acaoPendente === 'add') {
+                getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; getEl('inputCamNormal').value = ''; getEl('inputGalNormal').value = ''; 
+                getEl('modalForm').style.display = 'flex';
+            } else if (acaoPendente === 'ask') {
+                getEl('nomeProdutoPergunta').value = ''; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; getEl('inputCamPergunta').value = ''; getEl('inputGalPergunta').value = ''; 
+                getEl('modalPergunta').style.display = 'flex';
+            }
         });
 
         getEl('btnCancelar')?.addEventListener('click', () => { getEl('modalForm').style.display = 'none'; });
@@ -540,7 +615,10 @@
             const t = dicionario[estadoApp.idioma]; const vSel = getEl('selectLocal').value; const localFinal = (vSel === 'NEW') ? getEl('nomeLocalInput').value.trim() : vSel; const nProd = getEl('nomeProduto').value.trim(); const prc = getEl('precoProduto').value;
             if(!localFinal || !nProd || !prc) return alert(t.alertaFalta);
             if (estadoApp.dadosHospedados[localFinal] && estadoApp.dadosHospedados[localFinal].itens.some(i => i.nome.toLowerCase() === nProd.toLowerCase())) return alert(t.alertaDuplicado);
-            const centro = coordSelecionada || mapa.getCenter(); const aMail = estadoApp.usuario.email; const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc);
+            
+            const centro = coordSelecionada || mapa.getCenter(); 
+            const aMail = estadoApp.usuario.email; const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc);
+            
             await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: centro.lat, lng: centro.lng, status: "pendente", votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], autor: aMail, data: new Date() });
             await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(0.25) }); estadoApp.saldo += 0.25; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
             getEl('modalForm').style.display = 'none'; alert(t.alertaSalvo);
@@ -554,63 +632,102 @@
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const itemDesejado = getEl('nomeProdutoPergunta').value.trim(); const localNome = getEl('nomeLocalPergunta').value.trim(); const localTipo = getEl('tipoLocalPergunta').value;
             if(!itemDesejado || !localNome) return alert("Digite o nome do item e do local!");
+            
             const centro = coordSelecionada || mapa.getCenter(); 
             
-            // INICIA A PERGUNTA COM ARRAY VAZIO DE RESPOSTAS E REGISTRA O AUTOR
+            // INICIA A PERGUNTA COM ARRAY VAZIO DE RESPOSTAS
             await addDoc(collection(db, "perguntas"), { nomeItem: itemDesejado, nomeLocal: localNome, tipoLocal: localTipo, lat: centro.lat, lng: centro.lng, status: "aberta", respostas: [], autorUid: estadoApp.usuario.uid, data: new Date() });
             
-            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
+            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { 
+                estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) });
+            }
             getEl('modalPergunta').style.display = 'none'; alert("Pergunta enviada no mapa! Avaliadores locais foram notificados.");
         });
 
-        // ---------------- O TRIBUNAL DO CONSENSO ----------------
-        
+        getEl('btnCarregarRoteiro')?.addEventListener('click', () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; if(!estadoApp.usuario) return; if(estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { getEl('modalPaywall').style.display = 'flex'; return; } alert("Acesso Premium Liberado. Mostrando Rotas..."); });
+        getEl('btnAbrirBusca')?.addEventListener('click', async () => {
+            if(!estadoApp.usuario) return;
+            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { 
+                if (estadoApp.buscasRestantes <= 0) { getEl('modalPaywall').style.display = 'flex'; return; } 
+                estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) });
+            }
+            getEl('modalBusca').style.display = 'flex'; getEl('inputBusca').value = ''; getEl('resultadosBusca').innerHTML = ''; getEl('inputBusca').focus();
+        });
+        getEl('btnFecharBusca')?.addEventListener('click', () => getEl('modalBusca').style.display = 'none');
+        getEl('inputBusca')?.addEventListener('input', (e) => {
+            const termo = e.target.value.toLowerCase().trim(); getEl('resultadosBusca').innerHTML = ''; if(!termo) return;
+            for (const nLocal in estadoApp.dadosHospedados) {
+                const dLugar = estadoApp.dadosHospedados[nLocal]; const lMatch = nLocal.toLowerCase().includes(termo); const iMatch = dLugar.itens.filter(i => i.nome.toLowerCase().includes(termo));
+                if (lMatch || iMatch.length > 0) {
+                    const div = document.createElement('div'); div.className = 'resultado-item'; 
+                    let txtSec = `${dLugar.itens.length} itens`; if(iMatch.length > 0 && !lMatch) { txtSec = `Encontrado: ${iMatch.map(i => i.nome).join(', ')}`; }
+                    div.innerHTML = `<span style="font-weight:700; color:#004d40;">🏪 ${nLocal}</span><span style="font-size:12px;color:#666;">${txtSec}</span>`;
+                    div.onclick = () => { getEl('modalBusca').style.display = 'none'; mapa.flyTo([dLugar.lat, dLugar.lng], 18, { duration: 1.5 }); setTimeout(() => { if(marcadoresNoMapa[nLocal]) marcadoresNoMapa[nLocal].openPopup(); }, 1500); };
+                    getEl('resultadosBusca').appendChild(div);
+                }
+            }
+        });
+
+        // EDIÇÃO
+        getEl('btnCancelarEdicao')?.addEventListener('click', () => getEl('modalEditar').style.display = 'none');
+        window.abrirEdicao = function(id, nome, precoAtualBRL) { if(!estadoApp.usuario) return; getEl('editItemId').value = id; getEl('editItemNome').innerText = nome; getEl('editItemPreco').value = (precoAtualBRL * taxasCambio[estadoApp.moeda].taxa).toFixed(2); getEl('modalEditar').style.display = 'flex'; };
+        getEl('btnSalvarEdicao')?.addEventListener('click', async () => { if(!estadoApp.usuario) return; const id = getEl('editItemId').value; const nvPreco = getEl('editItemPreco').value; if(!nvPreco) return alert("Digite o novo preço!"); try { const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(nvPreco) / taxasCambio[estadoApp.moeda].taxa : parseFloat(nvPreco); await updateDoc(doc(db, "precos", id), { preco: prcReal, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], status: "pendente" }); getEl('modalEditar').style.display = 'none'; alert("Preço atualizado e avaliações resetadas!"); } catch(e) { alert("Erro ao editar preço."); } });
+
+        window.votarItem = async function(id, tipo) {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); const uid = estadoApp.usuario.uid; let jaVotou = false;
+            for (const loc in estadoApp.dadosHospedados) { const iLocal = estadoApp.dadosHospedados[loc].itens.find(i => i.id === id); if (iLocal) { const upList = iLocal.votaram_up || []; const downList = iLocal.votaram_down || []; if (upList.includes(uid) || downList.includes(uid)) jaVotou = true; break; } }
+            if (jaVotou) return alert(dicionario[estadoApp.idioma].alertVoted);
+            try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
+        };
+
+        // --- SISTEMA DE TRIBUNAL DO CONSENSO ---
         window.resolverPerguntaConsenso = async function(idPergunta, pergData, respostas) {
             respostas.sort((a, b) => a.tempo - b.tempo);
             let vencedor = respostas[0]; 
             let precoFinal = vencedor.preco;
 
-            // Se bater 3 avaliações, faz a matemática do empate
+            // Matemática do Empate (Se houver 3 respostas)
             if (respostas.length >= 3) {
                 const precos = respostas.map(r => r.preco).sort((a,b) => a-b);
                 const median = precos[Math.floor(precos.length/2)];
+                // Elimina quem chutou um preço mais de 30% diferente da mediana
                 const validos = respostas.filter(r => r.preco >= median * 0.7 && r.preco <= median * 1.3);
                 if (validos.length > 0) {
-                    vencedor = validos[0]; // Quem chegou primeiro e não mentiu
+                    vencedor = validos[0]; // O mais rápido dentro da margem correta leva
                     precoFinal = validos.reduce((acc, curr) => acc + curr.preco, 0) / validos.length; 
                 }
             }
 
             try {
                 await updateDoc(doc(db, "perguntas", idPergunta), { status: "respondida" });
-                
                 await addDoc(collection(db, "precos"), { local: pergData.nomeLocal, nome: pergData.nomeItem, preco: precoFinal, categoria: "Serviço", lat: pergData.lat, lng: pergData.lng, status: "pendente", votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], autor: "Consenso Comunitário", data: new Date() });
                 
+                // Paga quem ganhou
                 await updateDoc(doc(db, "usuarios", vencedor.uid), { saldo: increment(1.00) });
                 
+                // Notifica o turista
                 if (pergData.autorUid && pergData.autorUid !== 'undefined') {
                     await addDoc(collection(db, "notificacoes"), { userId: pergData.autorUid, titulo: "✅ Dúvida Respondida!", nomeItem: pergData.nomeItem, nomeLocal: pergData.nomeLocal, precoReal: precoFinal, lat: pergData.lat, lng: pergData.lng, lida: false, data: new Date() });
                 }
             } catch(e) { console.log(e); }
         };
 
-        // CRONÔMETRO INVISÍVEL (O JUIZ DE 20 SEGUNDOS)
+        // O JUIZ INVISÍVEL: Roda a cada 5 segundos checando os relógios das missões abertas
         setInterval(() => {
             if(!estadoApp.usuario) return;
             const agora = Date.now();
             for(const id in estadoApp.perguntasAbertas) {
                 const p = estadoApp.perguntasAbertas[id];
                 const resps = p.respostas || [];
-                // Se passou 20s e alguém já respondeu
                 if(p.data && (agora - p.data.toMillis()) > 20000 && resps.length > 0) {
                     window.resolverPerguntaConsenso(id, p, resps);
-                    delete estadoApp.perguntasAbertas[id]; // Evita chamar duas vezes
+                    delete estadoApp.perguntasAbertas[id]; 
                 }
             }
         }, 5000);
 
         window.abrirModalResposta = async function(idPergunta) {
-            if(estadoApp.perfil === 'turista') return alert("Aguardando Avaliadores responderem!");
+            if(estadoApp.perfil === 'turista') return; // Bloqueado no CSS e JS
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             
             const p = estadoApp.perguntasAbertas[idPergunta];
@@ -640,18 +757,16 @@
             resps.push({ uid: estadoApp.usuario.uid, preco: prcReal, tempo: Date.now() });
 
             if(resps.length >= 3) {
-                // Chegou a 3 pessoas! O Juiz entra na hora, sem esperar o relógio.
                 window.resolverPerguntaConsenso(idPergunta, p, resps);
                 alert("Consenso atingido! Resultado enviado para o mapa.");
             } else {
-                // Aguarda na fila
                 await updateDoc(doc(db, "perguntas", idPergunta), { respostas: resps });
                 alert("Sua resposta foi registrada! ⏳ Aguardando mais avaliadores ou o tempo de 20s esgotar.");
             }
             getEl('modalResposta').style.display = 'none'; 
         });
 
-        // ---------------- LEITURA DE DADOS ----------------
+
         onSnapshot(collection(db, "precos"), (snapshot) => {
             estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
             snapshot.forEach((doc) => {
@@ -697,17 +812,35 @@
                 const pino = L.marker([dadosL.lat, dadosL.lng], {icon: icP}); pino.bindPopup(`<div class="popup-info"><h3>🏪 ${nomeL}</h3>${st}<div class="lista-itens">${htmlLista}</div></div>`); camadaDePinos.addLayer(pino); marcadoresNoMapa[nomeL] = pino;
             }
 
+            // O MAPA AGORA OCULTA AS PERGUNTAS DOS OUTROS TURISTAS
             for (const idPerg in estadoApp.perguntasAbertas) {
                 const perg = estadoApp.perguntasAbertas[idPerg]; 
-                const pinoRoxo = L.marker([perg.lat, perg.lng], {icon: iPurple, zIndexOffset: 9999}); 
+                const autorP = perg.autorUid || '';
                 
+                // MÁGICA: Se for turista e a pergunta NÃO for dele, oculta o pino para não poluir
+                if (estadoApp.perfil === 'turista' && (!estadoApp.usuario || autorP !== estadoApp.usuario.uid)) {
+                    continue; 
+                }
+
+                const pinoRoxo = L.marker([perg.lat, perg.lng], {icon: iPurple, zIndexOffset: 9999}); 
                 const resps = perg.respostas || [];
                 const qtdResps = resps.length;
-                
                 const tipoBadge = perg.tipoLocal === 'Ambulante' ? '🚶 Ambulante' : '🏪 Fixo';
-                pinoRoxo.bindPopup(`<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:#9c27b0;">Dúvida de Turista</h3><p style="margin:0 0 5px 0; font-size:14px;"><strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Qual o preço de: <strong>${perg.nomeItem}</strong>?</p><p style="font-size:12px; color:#f57c00; font-weight:bold;">Respostas: ${qtdResps}/3</p><button onclick="window.abrirModalResposta('${idPerg}')" style="background:#9c27b0; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:5px;">Responder e Ganhar</button></div>`); 
+                
+                let htmlPopup = '';
+                
+                if (estadoApp.perfil === 'avaliador') {
+                    // Avaliador vê tudo para responder
+                    htmlPopup = `<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:#9c27b0;">Dúvida de Turista</h3><p style="margin:0 0 5px 0; font-size:14px;"><strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Qual o preço de: <strong>${perg.nomeItem}</strong>?</p><p style="font-size:12px; color:#f57c00; font-weight:bold;">Respostas: ${qtdResps}/3</p><button onclick="window.abrirModalResposta('${idPerg}')" style="background:#9c27b0; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:5px;">Responder e Ganhar</button></div>`; 
+                } else {
+                    // Turista vê a própria pergunta de forma limpa (sem botões)
+                    htmlPopup = `<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:#9c27b0;">Sua Dúvida</h3><p style="margin:0 0 5px 0; font-size:14px;"><strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Item: <strong>${perg.nomeItem}</strong></p><p style="font-size:12px; color:#f57c00; font-weight:bold;">⏳ Aguardando avaliadores locais...</p></div>`;
+                }
+
+                pinoRoxo.bindPopup(htmlPopup);
                 camadaDePinos.addLayer(pinoRoxo);
             }
+            
             setTxt('t_btnSave', `${t.btnSave} (+${sim} ${(0.25 * cotacao).toFixed(2)})`); setTxt('t_btnSendAns', `${t.ansTitle} (+${sim} ${(1.00 * cotacao).toFixed(2)})`); if(estadoApp.usuario) setTxt('saldoDisplay', `${sim} ${(estadoApp.saldo * cotacao).toFixed(2)}`);
         }
     </script>
