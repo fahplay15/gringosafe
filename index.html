@@ -150,11 +150,11 @@
         .btn-apple-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-google-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: "Product Sans", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
 
-        /* MÁGICA CSS DE PERFIS */
+        /* MÁGICA CSS DE PERFIS BLINDADA */
         /* Turista Rules */
         body.modo-turista .btn-adicionar { display: none !important; }
-        body.modo-turista .user-level { display: none !important; }
-        body.modo-turista .user-balance { display: none !important; }
+        body.modo-turista #t_level { display: none !important; }
+        body.modo-turista #saldoDisplay { display: none !important; }
         body.modo-turista .item-acoes { display: none !important; }
         body.modo-turista .badge-buscas { display: flex !important; }
         body.modo-turista .btn-perguntar { display: flex !important; }
@@ -165,16 +165,19 @@
         body.modo-avaliador .notif-container { display: none !important; }
         body.modo-avaliador .btn-perguntar { display: none !important; }
         
-        /* Lojista Rules (Oculta métricas e ferramentas inúteis para o Lojista) */
-        body.modo-lojista .user-level { display: none !important; }
-        body.modo-lojista .user-balance { display: none !important; }
+        /* Lojista Rules (Oculta TUDO do Turista/Avaliador) */
+        body.modo-lojista #t_level { display: none !important; }
+        body.modo-lojista #saldoDisplay { display: none !important; }
         body.modo-lojista .notif-container { display: none !important; }
         body.modo-lojista .btn-perguntar { display: none !important; }
         body.modo-lojista .badge-buscas { display: none !important; }
         body.modo-lojista .btn-radar { display: none !important; }
         body.modo-lojista .item-acoes { display: none !important; } 
 
-        /* PINOS MÁGICOS */
+        /* Oculta botão Área do Lojista no Menu para Turistas e Avaliadores */
+        body:not(.modo-lojista) #btnAreaLojista { display: none !important; }
+
+        /* PINOS MÁGICOS E ANIMAÇÕES */
         .marker-pergunta-container { background: transparent; border: none; pointer-events: none; }
         @keyframes wanderGhost { 0% { transform: translate(0px, 0px); } 20% { transform: translate(25px, -20px); } 40% { transform: translate(-15px, 25px); } 60% { transform: translate(-25px, -10px); } 80% { transform: translate(15px, -25px); } 100% { transform: translate(0px, 0px); } }
         .ghost-anim { animation: wanderGhost 8s infinite linear; pointer-events: auto; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
@@ -188,7 +191,6 @@
         .marker-camera-anim { width: 36px; height: 36px; background: linear-gradient(135deg, #ff9800, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.4); animation: pulseOrangeCamera 1.2s infinite ease-in-out; }
         .marker-foto-anim { width: 36px; height: 36px; background: linear-gradient(135deg, #42a5f5, #1976d2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.4); animation: pulseBlueFoto 1.2s infinite ease-in-out; }
         
-        /* PINO PREMIUM (ESTRELA DE OURO) */
         .marker-premium { width: 36px; height: 36px; background: linear-gradient(135deg, #ffc107, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 18px; border: 3px solid white; box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); animation: pulseGold 2s infinite; }
 
         @keyframes pulseArea { 0% { fill-opacity: 0.1; } 50% { fill-opacity: 0.3; } 100% { fill-opacity: 0.1; } }
@@ -292,7 +294,6 @@
     <input type="file" id="inputGalPergunta" accept="image/*" style="display: none;">
     <input type="file" id="inputCamExtra" accept="image/*" capture="environment" style="display: none;">
     <input type="file" id="inputGalExtra" accept="image/*" style="display: none;">
-    
     <input type="file" id="inputCamLojista" accept="image/*" capture="environment" style="display: none;">
     <input type="file" id="inputGalLojista" accept="image/*" style="display: none;">
 
@@ -315,7 +316,7 @@
     <button class="btn-mira" id="btnMira"><svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg></button>
 
     <div class="posicionamento-ui" id="posicionamentoUI">
-        <div class="posicionamento-aviso" id="t_posHint">📍 Aponte para o local exato</div>
+        <div class="posicionamento-aviso" id="t_posHint">📍 Aponte para a barraca (Dica: Faça de uma distância segura)</div>
         <div class="posicionamento-botoes">
             <button class="btn-cancelar-pos" id="btnCancelarPos"><span id="t_btnPosCancel">Cancelar</span></button>
             <button class="btn-confirmar-pos" id="btnConfirmarPos"><span id="t_btnPosConfirm">Confirmar Local</span></button>
@@ -397,7 +398,6 @@
             <p style="font-size: 14px; color: #555; margin-bottom: 15px;">Item: <strong id="editItemNome" style="color:#000;"></strong></p>
             <input type="number" id="editItemPreco" class="input-form" placeholder="Novo preço real">
             <input type="hidden" id="editItemId">
-            <input type="hidden" id="isPremiumLugar">
             <button class="btn-salvar" id="btnSalvarEdicao" style="background:#f57c00;">Salvar e Resetar Votos</button>
             <button class="btn-cancelar" id="btnCancelarEdicao">Cancelar</button>
         </div>
@@ -455,8 +455,6 @@
             <input type="number" id="precoProdutoResposta" class="input-form" placeholder="Qual o preço real/justo?">
             <input type="hidden" id="idPerguntaAtual">
             <input type="hidden" id="uidAutorPergunta"> 
-            <input type="hidden" id="latPerguntaAtual"> 
-            <input type="hidden" id="lngPerguntaAtual"> 
             <button class="btn-salvar" id="btnEnviarResposta" style="background:#2e7d32;"><span id="t_btnSendAns">Responder (+R$ 1,00)</span></button>
             <button class="btn-cancelar" id="btnCancelarResposta"><span id="t_btnCancelAns">Cancelar</span></button>
         </div>
@@ -467,12 +465,9 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // VARIÁVEIS DE ESTADO
         let estadoApp = { 
-            moeda: 'BRL', idioma: 'pt', perfil: 'turista', 
-            buscasRestantes: 3, planoPrecoUSD: 4.99, saldo: 0.00, 
-            usuario: null, dadosHospedados: {}, mediaPrecos: {}, 
-            contagemPrecos: {}, perguntasAbertas: {}, notificacoes: [], 
+            moeda: 'BRL', idioma: 'pt', perfil: 'turista', buscasRestantes: 3, planoPrecoUSD: 4.99, saldo: 0.00, 
+            usuario: null, dadosHospedados: {}, mediaPrecos: {}, contagemPrecos: {}, perguntasAbertas: {}, notificacoes: [], 
             radarAtivo: false, isLojistaPremium: false, nivelAvaliador: 1 
         };
         const taxasCambio = { 'BRL': { sim: 'R$', taxa: 1 }, 'USD': { sim: 'US$', taxa: 0.20 }, 'EUR': { sim: '€', taxa: 0.18 }, 'ARS': { sim: '$', taxa: 170.0 } };
@@ -518,23 +513,25 @@
         const perfilSalvo = localStorage.getItem('gringosafe_perfil'); if(perfilSalvo) estadoApp.perfil = perfilSalvo;
         setTimeout(() => { if(!localStorage.getItem('gringosafe_perfil')) { if(getEl('telaPerfil')) getEl('telaPerfil').style.display = 'flex'; } else { definirPerfil(estadoApp.perfil); } }, 2500);
 
-        getEl('btnLangPtInicio')?.addEventListener('click', () => aplicarIdioma('pt')); getEl('btnLangEnInicio')?.addEventListener('click', () => aplicarIdioma('en')); getEl('btnLangEsInicio')?.addEventListener('click', () => aplicarIdioma('es'));
-        getEl('lang_pt')?.addEventListener('click', () => aplicarIdioma('pt')); getEl('lang_en')?.addEventListener('click', () => aplicarIdioma('en')); getEl('lang_es')?.addEventListener('click', () => aplicarIdioma('es'));
-        getEl('cur_BRL')?.addEventListener('click', () => aplicarMoeda('BRL')); getEl('cur_USD')?.addEventListener('click', () => aplicarMoeda('USD')); getEl('cur_EUR')?.addEventListener('click', () => aplicarMoeda('EUR')); getEl('cur_ARS')?.addEventListener('click', () => aplicarMoeda('ARS'));
+        getEl('btnLangPtInicio').onclick = () => aplicarIdioma('pt'); getEl('btnLangEnInicio').onclick = () => aplicarIdioma('en'); getEl('btnLangEsInicio').onclick = () => aplicarIdioma('es');
+        getEl('lang_pt').onclick = () => aplicarIdioma('pt'); getEl('lang_en').onclick = () => aplicarIdioma('en'); getEl('lang_es').onclick = () => aplicarIdioma('es');
+        getEl('cur_BRL').onclick = () => aplicarMoeda('BRL'); getEl('cur_USD').onclick = () => aplicarMoeda('USD'); getEl('cur_EUR').onclick = () => aplicarMoeda('EUR'); getEl('cur_ARS').onclick = () => aplicarMoeda('ARS');
         
-        getEl('btnPerfilTurista')?.addEventListener('click', () => definirPerfil('turista')); 
-        getEl('btnPerfilAvaliador')?.addEventListener('click', () => definirPerfil('avaliador'));
-        getEl('btnPerfilLojista')?.addEventListener('click', () => definirPerfil('lojista')); 
+        getEl('btnPerfilTurista').onclick = () => definirPerfil('turista'); 
+        getEl('btnPerfilAvaliador').onclick = () => definirPerfil('avaliador');
+        getEl('btnPerfilLojista').onclick = () => definirPerfil('lojista'); 
 
-        getEl('btnTrocarPerfil')?.addEventListener('click', () => { getEl('sideMenu')?.classList.remove('open'); getEl('menuOverlay').style.display = 'none'; getEl('telaPerfil').style.display = 'flex'; });
-        getEl('btnLangToggle')?.addEventListener('click', () => getEl('langSubMenu')?.classList.toggle('open')); getEl('btnCurrencyToggle')?.addEventListener('click', () => getEl('currencySubMenu')?.classList.toggle('open'));
-        getEl('btnAbrirMenu')?.addEventListener('click', () => { getEl('sideMenu')?.classList.add('open'); getEl('menuOverlay').style.display = 'block'; }); getEl('menuOverlay')?.addEventListener('click', () => { getEl('sideMenu')?.classList.remove('open'); getEl('menuOverlay').style.display = 'none'; });
+        getEl('btnTrocarPerfil').onclick = () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; getEl('telaPerfil').style.display = 'flex'; };
+        getEl('btnLangToggle').onclick = () => getEl('langSubMenu').classList.toggle('open'); getEl('btnCurrencyToggle').onclick = () => getEl('currencySubMenu').classList.toggle('open');
+        getEl('btnAbrirMenu').onclick = () => { getEl('sideMenu').classList.add('open'); getEl('menuOverlay').style.display = 'block'; }; getEl('menuOverlay').onclick = () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; };
 
         const firebaseConfig = { apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs", authDomain: "gringosafe-1f434.firebaseapp.com", projectId: "gringosafe-1f434", storageBucket: "gringosafe-1f434.firebasestorage.app", messagingSenderId: "949745647794", appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); const provider = new GoogleAuthProvider();
-        const fazerLogin = () => signInWithPopup(auth, provider).catch(() => alert("Erro no login."));
-        getEl('btnLoginGoogle')?.addEventListener('click', fazerLogin); getEl('btnLoginGoogleMenu')?.addEventListener('click', fazerLogin); getEl('btnLoginGoogleOverlay')?.addEventListener('click', fazerLogin);
-        getEl('btnLogout')?.addEventListener('click', () => signOut(auth).then(() => alert("Deslogado.")));
+        
+        getEl('btnLoginGoogle').onclick = () => signInWithPopup(auth, provider).catch(() => alert("Erro no login.")); 
+        getEl('btnLoginGoogleMenu').onclick = () => signInWithPopup(auth, provider).catch(() => alert("Erro no login.")); 
+        getEl('btnLoginGoogleOverlay').onclick = () => signInWithPopup(auth, provider).catch(() => alert("Erro no login."));
+        getEl('btnLogout').onclick = () => signOut(auth).then(() => alert("Deslogado."));
 
         let listenerNotificacoes = null;
 
@@ -547,7 +544,7 @@
                 if (docSnap.exists()) { 
                     estadoApp.saldo = docSnap.data().saldo || 0.00; 
                     estadoApp.buscasRestantes = docSnap.data().buscas !== undefined ? docSnap.data().buscas : 3; 
-                    estadoApp.isLojistaPremium = docSnap.data().isLojistaPremium || false; // Salva o status VIP
+                    estadoApp.isLojistaPremium = docSnap.data().isLojistaPremium || false;
                 } 
                 else { 
                     estadoApp.saldo = 0.00; estadoApp.buscasRestantes = 3; 
@@ -587,7 +584,6 @@
         };
         getEl('btnFecharNotificacoes').onclick = () => getEl('modalNotificacoes').style.display = 'none';
 
-        // RADAR DO TURISTA
         getEl('btnRadar').onclick = () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             if(estadoApp.radarAtivo) return;
@@ -595,26 +591,41 @@
             getEl('btnRadar').classList.add('radar-anim');
             alert(dicionario[estadoApp.idioma].radarActive);
             desenharPinos();
-            setTimeout(() => {
-                estadoApp.radarAtivo = false;
-                getEl('btnRadar').classList.remove('radar-anim');
-                desenharPinos();
-                alert(dicionario[estadoApp.idioma].radarCool);
-            }, 15000); 
+            setTimeout(() => { estadoApp.radarAtivo = false; getEl('btnRadar').classList.remove('radar-anim'); desenharPinos(); alert(dicionario[estadoApp.idioma].radarCool); }, 15000); 
         };
 
-        // ÁREA DO LOJISTA
+        // FUNIL DE VENDAS DO LOJISTA
+        let localParaPromover = null;
+        window.prepararPromocao = function(nomeLocal) {
+            localParaPromover = nomeLocal;
+            if(!estadoApp.isLojistaPremium) {
+                getEl('modalLojista').style.display = 'flex'; // Abre Paywall
+            } else {
+                window.executarPromocao(nomeLocal); // Já pagou, promove direto!
+            }
+        };
+
+        window.executarPromocao = async function(nomeLocal) {
+            try {
+                const q = query(collection(db, "precos"), where("local", "==", nomeLocal));
+                const snapshot = await getDocs(q);
+                let atualizouAlgo = false;
+                snapshot.forEach((docSnap) => { updateDoc(doc(db, "precos", docSnap.id), { premium: true }); atualizouAlgo = true; });
+                if(atualizouAlgo){ alert(`✅ Sucesso! O local "${nomeLocal}" agora é Oficial e Premium!\n\nEle ficará com uma estrela dourada visível 24h por dia para os turistas! Seus preços agora estão protegidos pelo Escudo KYC.`); }
+            } catch(e) { console.error(e); }
+        };
+
         getEl('btnAreaLojista').onclick = () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); getEl('modalLojista').style.display = 'flex'; };
         getEl('btnFecharLojista').onclick = () => getEl('modalLojista').style.display = 'none';
         getEl('btnPagarLojista').onclick = async () => {
-            alert("✅ Pagamento Simulado com Sucesso!\n\nSua conta agora é Lojista Premium. Use o botão + para adicionar seu estabelecimento com fotos! Depois clique na estrela do seu balão para destacá-lo 24h por dia para os turistas!");
+            alert("✅ Pagamento Simulado com Sucesso!\n\nSua conta agora é Lojista Premium.");
             estadoApp.isLojistaPremium = true;
             if(estadoApp.usuario) await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { isLojistaPremium: true });
             getEl('modalLojista').style.display = 'none';
+            if (localParaPromover) { window.executarPromocao(localParaPromover); localParaPromover = null; }
             desenharPinos();
         };
 
-        // LUPA (BUG CORRIGIDO)
         getEl('btnAbrirBusca').onclick = async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { 
@@ -641,7 +652,7 @@
         };
 
         const planos = [getEl('btnPlan1'), getEl('btnPlan2'), getEl('btnPlan3')]; const precos = [4.99, 7.99, 12.99];
-        planos.forEach((p, i) => { p?.addEventListener('click', () => { planos.forEach(pl => pl?.classList.remove('active')); p.classList.add('active'); estadoApp.planoPrecoUSD = precos[i]; }); });
+        planos.forEach((p, i) => { p.onclick = () => { planos.forEach(pl => pl?.classList.remove('active')); p.classList.add('active'); estadoApp.planoPrecoUSD = precos[i]; }; });
         const processarPgto = async (m) => { alert(`✅ Simulação: ${m}\n\nO cartão seria debitado em US$ ${estadoApp.planoPrecoUSD}.\n\nAcesso Premium liberado!`); estadoApp.buscasRestantes = 999; if(estadoApp.usuario) { await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: 999 }); } window.atualizarBadgeBuscas(); getEl('modalPaywall').style.display = 'none'; };
         getEl('btnApplePay').onclick = () => processarPgto('Apple Pay'); getEl('btnGooglePay').onclick = () => processarPgto('Google Pay'); getEl('btnFecharPaywall').onclick = () => getEl('modalPaywall').style.display = 'none';
 
@@ -782,7 +793,7 @@
             });
             
             getEl('modalFormLojista').style.display = 'none'; 
-            alert("Seu negócio foi cadastrado com sucesso e já está no mapa!");
+            alert("Seu negócio foi cadastrado com sucesso e já está no mapa como Negócio Local! Clique no pino para destacá-lo.");
         };
 
         getEl('btnCancelarPergunta').onclick = () => getEl('modalPergunta').style.display = 'none';
@@ -858,7 +869,6 @@
             const p = estadoApp.perguntasAbertas[idPergunta]; if(!p) return;
             const uid = estadoApp.usuario.uid; const resps = p.respostas || [];
             if(resps.some(r => r.uid === uid)) return alert("Você já respondeu esta dúvida! Aguardando o consenso.");
-            
             setTxt('respItemNome', p.nomeItem); setTxt('respLocalNome', p.nomeLocal); setTxt('respLocalTipo', p.tipoLocal === 'Ambulante' ? '(Ambulante)' : '(Fixo)'); 
             getEl('idPerguntaAtual').value = idPergunta; getEl('precoProdutoResposta').value = ''; getEl('modalResposta').style.display = 'flex';
         };
@@ -899,16 +909,6 @@
             try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
         };
 
-        window.promoverLugar = async function(nomeLocal) {
-            try {
-                const q = query(collection(db, "precos"), where("local", "==", nomeLocal));
-                const snapshot = await getDocs(q);
-                let atualizouAlgo = false;
-                snapshot.forEach((docSnap) => { updateDoc(doc(db, "precos", docSnap.id), { premium: true }); atualizouAlgo = true; });
-                if(atualizouAlgo){ alert(`✅ O local "${nomeLocal}" agora é Oficial e Premium!\n\nEle ficará com uma estrela dourada visível 24h por dia para os turistas (sem precisar de radar). Seus preços agora estão protegidos pelo Escudo KYC.`); }
-            } catch(e) { console.error(e); }
-        };
-
         onSnapshot(collection(db, "precos"), (snapshot) => {
             estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
             snapshot.forEach((doc) => {
@@ -916,6 +916,7 @@
                 if (!estadoApp.dadosHospedados[nomeL]) estadoApp.dadosHospedados[nomeL] = { lat: item.lat, lng: item.lng, itens: [] };
                 estadoApp.dadosHospedados[nomeL].itens.push({ ...item, id: doc.id });
                 if(!item.isLojistaPlace) {
+                    let avaliacoesValidas = estadoApp.dadosHospedados[nomeL].itens.filter(i => !i.isLojistaPlace);
                     const nl = item.nome.toLowerCase().trim(); if(!estadoApp.mediaPrecos[nl]) { estadoApp.mediaPrecos[nl] = 0; estadoApp.contagemPrecos[nl] = 0; }
                     estadoApp.mediaPrecos[nl] += item.preco; estadoApp.contagemPrecos[nl]++;
                 }
@@ -932,7 +933,9 @@
             camadaDePinos.clearLayers(); marcadoresNoMapa = {}; const t = dicionario[estadoApp.idioma]; const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
 
             for (const nomeL in estadoApp.dadosHospedados) {
-                const dadosL = estadoApp.dadosHospedados[nomeL]; let tItens = dadosL.itens.length; let qAb = 0; let qAp = 0; let htmlLista = '';
+                const dadosL = estadoApp.dadosHospedados[nomeL]; 
+                const avaliacoesValidas = dadosL.itens.filter(i => !i.isLojistaPlace);
+                let tItens = avaliacoesValidas.length; let qAb = 0; let qAp = 0; let htmlLista = '';
                 
                 const isPremium = dadosL.itens.some(i => i.premium === true);
 
@@ -943,9 +946,7 @@
                     fotosLojistaHtml = '<div class="galeria-lojista">'; lugarLojista.fotosLocal.forEach(f => { fotosLojistaHtml += `<img src="${f}">`; }); fotosLojistaHtml += '</div>';
                 }
 
-                dadosL.itens.forEach(item => {
-                    if(item.isLojistaPlace) return; 
-
+                avaliacoesValidas.forEach(item => {
                     let vUp = item.votos_up || 0; let vDown = item.votos_down || 0; let totalV = vUp + vDown; let stAtual = 'pendente'; let minVotosRequeridos = 5; 
                     if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
                     if (stAtual === "abusivo") qAb++; if (stAtual === "aprovado") qAp++; const ic = stAtual === 'aprovado' ? '✅' : (stAtual === 'abusivo' ? '🚨' : '⏳'); 
@@ -970,8 +971,8 @@
                 }
 
                 let btnPromover = '';
-                if (estadoApp.perfil === 'lojista' && estadoApp.isLojistaPremium && !isPremium) {
-                    btnPromover = `<button onclick="window.promoverLugar('${nomeL}')" class="btn-laranja" style="margin-top:8px; background:#ffc107; color:#333; box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);">${dicionario[estadoApp.idioma].makePremium}</button>`;
+                if (estadoApp.perfil === 'lojista' && !isPremium && lugarLojista && lugarLojista.autor === (estadoApp.usuario ? estadoApp.usuario.email : '')) {
+                    btnPromover = `<button onclick="window.prepararPromocao('${nomeL}')" class="btn-laranja" style="margin-top:8px; background:#ffc107; color:#333; box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);">${dicionario[estadoApp.idioma].makePremium}</button>`;
                 }
 
                 if (htmlLista === '' && !lugarLojista) continue; 
