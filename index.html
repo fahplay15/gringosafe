@@ -31,7 +31,6 @@
         .btn-perfil:active { transform: scale(0.95); }
         .btn-perfil.avaliador { background: #ffc107; color: #333; }
         
-        /* CABEÇALHO COM SININHO DE NOTIFICAÇÃO */
         .top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 65px; background-color: #004d40; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1600; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
         .top-bar-logo { font-weight: 700; font-size: 20px; margin-left: 15px; display: flex; align-items: center; gap: 8px; }
         .btn-menu { background: transparent; border: none; color: white; font-size: 26px; cursor: pointer; padding: 0 5px; line-height: 1; }
@@ -39,7 +38,6 @@
         .user-level { background-color: #ffc107; color: #333; padding: 5px 10px; border-radius: 20px; margin-right: 10px; }
         .user-balance { background-color: #1b5e20; padding: 5px 12px; border-radius: 20px; }
         
-        /* NOVO: ÍCONE DE NOTIFICAÇÃO */
         .notif-container { position: relative; margin-left: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .badge-notificacao { position: absolute; top: -5px; right: -5px; background: #c62828; color: white; font-size: 10px; font-weight: bold; width: 16px; height: 16px; border-radius: 50%; display: none; justify-content: center; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
@@ -95,11 +93,12 @@
         .btn-roxo { background-color: #9c27b0; color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-top: 10px; cursor: pointer; }
         .linha-botoes-foto { display: flex; gap: 10px; margin-bottom: 10px; }
 
-        /* LISTA DE NOTIFICAÇÕES */
-        .notif-item { padding: 15px; border-bottom: 1px solid #eee; background: #f9f9f9; border-radius: 8px; margin-bottom: 8px; }
+        /* LISTA DE NOTIFICAÇÕES (NOVO ESTILO CLICÁVEL) */
+        .notif-item { padding: 15px; border-bottom: 1px solid #eee; background: #f9f9f9; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; }
+        .notif-item:active { transform: scale(0.98); }
         .notif-item.nao-lida { background: #e8f5e9; border-left: 4px solid #2e7d32; }
         .notif-titulo { font-weight: 700; font-size: 14px; color: #004d40; margin-bottom: 4px; }
-        .notif-msg { font-size: 12px; color: #444; line-height: 1.4; }
+        .notif-msg { font-size: 13px; color: #444; line-height: 1.4; }
 
         .popup-info { font-family: 'Poppins', sans-serif; min-width: 250px; }
         .popup-info h3 { margin: 0 0 5px 0; font-size: 18px; color: #1a1a1a; border-bottom: 2px solid #eee; padding-bottom: 5px;}
@@ -129,11 +128,15 @@
         .btn-apple-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-google-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: "Product Sans", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
 
+        /* MODO TURISTA E AVALIADOR CSS EXCLUSIVOS */
         body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista .user-status { display: none !important; }
         body.modo-turista .item-acoes { display: none !important; }
         body.modo-turista .badge-buscas { display: flex !important; }
         body.modo-turista .btn-perguntar { display: flex !important; }
+        
+        /* ESCONDE O SINO PARA O AVALIADOR */
+        body.modo-avaliador .notif-container { display: none !important; }
         
         @keyframes pulsePurple { 0% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(156, 39, 176, 0); } 100% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0); } }
         .marker-pergunta { background-color: #9c27b0; border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 16px; border: 2px solid white; animation: pulsePurple 1.5s infinite; }
@@ -329,13 +332,13 @@
             <p style="font-size: 14px; color: #555; margin-bottom: 15px; text-align: left;">Item: <strong id="respItemNome" style="color:#000;"></strong></p>
             <input type="number" id="precoProdutoResposta" class="input-form" placeholder="Qual o preço real/justo?">
             <input type="hidden" id="idPerguntaAtual">
-            <input type="hidden" id="uidAutorPergunta"> <button class="btn-salvar" id="btnEnviarResposta" style="background:#2e7d32;"><span id="t_btnSendAns">Responder (+R$ 1,00)</span></button>
+            <input type="hidden" id="uidAutorPergunta"> 
+            <button class="btn-salvar" id="btnEnviarResposta" style="background:#2e7d32;"><span id="t_btnSendAns">Responder (+R$ 1,00)</span></button>
             <button class="btn-cancelar" id="btnCancelarResposta"><span id="t_btnCancelAns">Cancelar</span></button>
         </div>
     </div>
 
     <script type="module">
-        // NOVO IMPORT: `query` e `where` para filtrar as notificações do usuário logado
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -427,7 +430,7 @@
                 estadoApp.usuario = user; 
                 getEl('menuAvatar').innerHTML = `<img src="${user.photoURL}" alt="Foto">`; setTxt('menuNome', user.displayName.split(" ")[0]); 
                 getEl('btnLoginGoogleMenu').style.display = 'none'; getEl('btnLogout').style.display = 'block';
-                getEl('bloqueioLoginOverlay').style.display = 'none'; // TIRA A CENSURA
+                getEl('bloqueioLoginOverlay').style.display = 'none'; 
                 
                 const docRef = doc(db, "usuarios", user.uid);
                 const docSnap = await getDoc(docRef);
@@ -441,7 +444,7 @@
                 setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
                 window.atualizarBadgeBuscas();
 
-                // LIGA O RADAR DE NOTIFICAÇÕES PARA ESSE USUÁRIO
+                // RADAR DE NOTIFICAÇÕES
                 const q = query(collection(db, "notificacoes"), where("userId", "==", user.uid));
                 listenerNotificacoes = onSnapshot(q, (snapshot) => {
                     estadoApp.notificacoes = [];
@@ -451,10 +454,7 @@
                         estadoApp.notificacoes.push(notif); 
                         if(!notif.lida) qtdNaoLidas++; 
                     });
-                    
-                    // Ordena das mais novas pras mais velhas
                     estadoApp.notificacoes.sort((a,b) => b.data.toMillis() - a.data.toMillis());
-                    
                     const bN = getEl('badgeNotificacoes');
                     if(qtdNaoLidas > 0) { bN.style.display = 'flex'; bN.innerText = qtdNaoLidas; }
                     else { bN.style.display = 'none'; }
@@ -464,16 +464,15 @@
                 estadoApp.usuario = null; estadoApp.saldo = 0.00; estadoApp.buscasRestantes = 3; 
                 setTxt('saldoDisplay', `R$ 0,00`); setTxt('menuNome', `Visitante`); 
                 getEl('menuAvatar').innerHTML = `👤`; getEl('btnLoginGoogleMenu').style.display = 'flex'; getEl('btnLogout').style.display = 'none';
-                getEl('bloqueioLoginOverlay').style.display = 'flex'; // COLOCA A CENSURA
+                getEl('bloqueioLoginOverlay').style.display = 'flex'; 
                 window.atualizarBadgeBuscas();
                 
-                // DESLIGA RADAR SE SAIR DA CONTA
                 if(listenerNotificacoes) { listenerNotificacoes(); listenerNotificacoes = null; }
                 getEl('badgeNotificacoes').style.display = 'none';
             }
         });
 
-        // ------------------ MODAL DE NOTIFICAÇÕES ------------------
+        // MODAL DE NOTIFICAÇÕES (NOVO)
         getEl('btnAbrirNotificacoes')?.addEventListener('click', () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             
@@ -481,19 +480,29 @@
             lista.innerHTML = '';
             
             if(estadoApp.notificacoes.length === 0) {
-                lista.innerHTML = `<p style="text-align:center; color:#757575;">${dicionario[estadoApp.idioma].notifEmpty}</p>`;
+                lista.innerHTML = `<p style="text-align:center; color:#757575; font-size:14px; margin-top:20px;">${dicionario[estadoApp.idioma].notifEmpty}</p>`;
             } else {
                 estadoApp.notificacoes.forEach(n => {
-                    lista.innerHTML += `
-                        <div class="notif-item ${n.lida ? '' : 'nao-lida'}">
-                            <div class="notif-titulo">${n.titulo}</div>
-                            <div class="notif-msg">${n.mensagem}</div>
-                        </div>
+                    const cotacao = taxasCambio[estadoApp.moeda].taxa;
+                    const sim = taxasCambio[estadoApp.moeda].sim;
+                    const precoFormatado = n.precoReal ? `${sim} ${(n.precoReal * cotacao).toFixed(2)}` : '';
+                    
+                    const div = document.createElement('div');
+                    div.className = `notif-item ${n.lida ? '' : 'nao-lida'}`;
+                    div.innerHTML = `
+                        <div class="notif-titulo">${n.titulo}</div>
+                        <div class="notif-msg">O preço de <strong>${n.nomeItem}</strong> em ${n.nomeLocal} é <strong>${precoFormatado}</strong>.<br><span style="font-size:11px; color:#9c27b0; font-weight:bold; display:block; margin-top:5px;">📍 Clique para ver no mapa</span></div>
                     `;
-                    // Marca como lida no banco de dados automaticamente
-                    if(!n.lida) {
-                        updateDoc(doc(db, "notificacoes", n.id), { lida: true });
-                    }
+                    
+                    div.onclick = () => {
+                        getEl('modalNotificacoes').style.display = 'none';
+                        mapa.flyTo([n.lat, n.lng], 18, { duration: 1.5 });
+                        setTimeout(() => {
+                            if(marcadoresNoMapa[n.nomeLocal]) marcadoresNoMapa[n.nomeLocal].openPopup();
+                        }, 1500);
+                        if(!n.lida) updateDoc(doc(db, "notificacoes", n.id), { lida: true });
+                    };
+                    lista.appendChild(div);
                 });
             }
             getEl('modalNotificacoes').style.display = 'flex';
@@ -549,7 +558,7 @@
         // --- TURISTA: ROTA PREMIUM ---
         getEl('btnCarregarRoteiro')?.addEventListener('click', () => { 
             getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; 
-            if(!estadoApp.usuario) return; // BlurWall already prevents, but just in case
+            if(!estadoApp.usuario) return; 
             if(estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { getEl('modalPaywall').style.display = 'flex'; return; } 
             alert("Acesso Premium Liberado. Mostrando Rotas..."); 
         });
@@ -600,7 +609,6 @@
             if(!itemDesejado || !localNome) return alert("Digite o nome do item e do local!");
             const centro = mapa.getCenter(); 
             
-            // CARIMBA O ID DO TURISTA PARA ELE RECEBER A NOTIFICAÇÃO DEPOIS
             await addDoc(collection(db, "perguntas"), { nomeItem: itemDesejado, nomeLocal: localNome, tipoLocal: localTipo, lat: centro.lat, lng: centro.lng, status: "aberta", autorUid: estadoApp.usuario.uid, data: new Date() });
             
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { 
@@ -678,7 +686,7 @@
             getEl('modalForm').style.display = 'none'; alert(t.alertaSalvo);
         });
 
-        // --- AVALIADOR: RESPONDER PERGUNTA ---
+        // --- AVALIADOR: RESPONDER PERGUNTA E GERAR NOTIFICAÇÃO ---
         window.abrirModalResposta = function(idPergunta, nomeItem, nomeLocal, tipoLocal, autorUid) {
             if(estadoApp.perfil === 'turista') return alert("Aguardando um Avaliador Local responder o preço deste item!");
             if(!estadoApp.usuario) return;
@@ -691,6 +699,7 @@
         };
         
         getEl('btnCancelarResposta')?.addEventListener('click', () => getEl('modalResposta').style.display = 'none');
+        
         getEl('btnEnviarResposta')?.addEventListener('click', async () => {
             if(!estadoApp.usuario) return;
             const idPergunta = getEl('idPerguntaAtual').value; 
@@ -701,21 +710,20 @@
             const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc); const aMail = estadoApp.usuario.email;
             
             try {
-                // 1. Apaga a pergunta
                 await updateDoc(doc(db, "perguntas", idPergunta), { status: "respondida" });
-                
-                // 2. Registra o preço
                 const centro = mapa.getCenter(); await addDoc(collection(db, "precos"), { local: localFinal, nome: nomeItem, preco: prcReal, categoria: "Serviço", lat: centro.lat, lng: centro.lng, status: "pendente", votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], autor: aMail, data: new Date() });
-                
-                // 3. Paga o Avaliador
                 await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(1.00) }); estadoApp.saldo += 1.00; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
                 
-                // 4. DISPARA A NOTIFICAÇÃO PARA O TURISTA
+                // CRIA A NOTIFICAÇÃO PRO TURISTA NO BANCO
                 if (autorPerguntaUid && autorPerguntaUid !== 'undefined') {
                     await addDoc(collection(db, "notificacoes"), {
                         userId: autorPerguntaUid,
                         titulo: "✅ Dúvida Respondida!",
-                        mensagem: `Sua pergunta sobre "${nomeItem}" em "${localFinal}" foi respondida pela comunidade. Confira no mapa!`,
+                        nomeItem: nomeItem,
+                        nomeLocal: localFinal,
+                        precoReal: prcReal,
+                        lat: centro.lat,
+                        lng: centro.lng,
                         lida: false,
                         data: new Date()
                     });
@@ -787,11 +795,7 @@
                 const autorP = perg.autorUid || '';
                 pinoRoxo.bindPopup(`<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:#9c27b0;">Dúvida de Turista</h3><p style="margin:0 0 5px 0; font-size:14px;"><strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Qual o preço de: <strong>${perg.nomeItem}</strong>?</p><button onclick="window.abrirModalResposta('${idPerg}', '${perg.nomeItem}', '${perg.nomeLocal}', '${perg.tipoLocal}', '${autorP}')" style="background:#9c27b0; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Responder e Ganhar</button></div>`); camadaDePinos.addLayer(pinoRoxo);
             }
-            setTxt('t_btnSave', `${t.btnSave} (+${sim} ${(0.25 * cotacao).toFixed(2)})`); setTxt('t_btnSendAns', `${t.ansTitle} (+${sim} ${(1.00 * cotacao).toFixed(2)})`); 
-            
-            if(estadoApp.usuario) {
-                setTxt('saldoDisplay', `${sim} ${(estadoApp.saldo * cotacao).toFixed(2)}`);
-            }
+            setTxt('t_btnSave', `${t.btnSave} (+${sim} ${(0.25 * cotacao).toFixed(2)})`); setTxt('t_btnSendAns', `${t.ansTitle} (+${sim} ${(1.00 * cotacao).toFixed(2)})`); if(estadoApp.usuario) setTxt('saldoDisplay', `${sim} ${(estadoApp.saldo * cotacao).toFixed(2)}`);
         }
     </script>
 </body>
