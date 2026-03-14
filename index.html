@@ -66,22 +66,22 @@
 
         #mapa { position: absolute; top: 0; left: 0; height: 100vh; width: 100vw; z-index: 1; } 
 
-        .bottom-actions { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; z-index: 1000; }
-        .btn-action { border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; }
+        .bottom-actions { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; z-index: 3000; pointer-events: none; }
+        .btn-action { pointer-events: auto; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; position: relative; z-index: 3001; }
         .btn-action:active { transform: scale(0.9); }
         .btn-action svg { fill: currentColor; }
         .btn-adicionar { width: 70px; height: 70px; background: linear-gradient(135deg, #00e676, #00c853); color: white; box-shadow: 0px 8px 25px rgba(0, 200, 83, 0.4); }
         .btn-adicionar svg { width: 36px; height: 36px; }
         .btn-perguntar { width: 70px; height: 70px; background: linear-gradient(135deg, #9c27b0, #6a1b9a); color: white; box-shadow: 0px 8px 25px rgba(156, 39, 176, 0.4); display: none; }
         .btn-perguntar svg { width: 34px; height: 34px; }
-        .btn-pesquisa { width: 60px; height: 60px; background: white; color: #004d40; box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.15); position: relative; }
+        .btn-pesquisa { width: 60px; height: 60px; background: white; color: #004d40; box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.15); }
         .btn-pesquisa svg { width: 26px; height: 26px; }
         .badge-buscas { position: absolute; top: -5px; right: -5px; background: #c62828; color: white; font-size: 11px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: none; }
         
-        .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.15); z-index: 1000; cursor: pointer; }
+        .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.15); z-index: 1000; pointer-events: auto; cursor: pointer; }
         .btn-mira svg { width: 22px; height: 22px; fill: #004d40; }
 
-        .btn-radar { position: fixed; bottom: 120px; left: 20px; background-color: #004d40; color: white; border: none; border-radius: 50%; width: 55px; height: 55px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.3); z-index: 1000; cursor: pointer; transition: 0.3s; }
+        .btn-radar { position: fixed; bottom: 120px; left: 20px; background-color: #004d40; color: white; border: none; border-radius: 50%; width: 55px; height: 55px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.3); z-index: 1000; pointer-events: auto; cursor: pointer; transition: 0.3s; }
         .btn-radar span { font-size: 9px; font-family: 'Poppins', sans-serif; font-weight: bold; margin-top: -2px; }
         .radar-anim { animation: radarPulseBtn 1.5s infinite; background: #1976d2 !important; }
         @keyframes radarPulseBtn { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(25, 118, 210, 0); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); } }
@@ -89,7 +89,7 @@
         .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: #c62828; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 2px white, 0 2px 6px rgba(0,0,0,0.5); }
         .alfinete-central { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; pointer-events: none; display: none; margin-top: -6px; filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.4)); }
 
-        .posicionamento-ui { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000; text-align: center; display: none; }
+        .posicionamento-ui { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 4000; text-align: center; display: none; }
         .posicionamento-aviso { font-size: 15px; font-weight: 600; color: #004d40; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1.2; }
         .posicionamento-botoes { display: flex; gap: 10px; }
         .btn-cancelar-pos { flex: 1; background: #f5f5f5; color: #333; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; }
@@ -132,7 +132,7 @@
         
         .imagem-preview { max-width: 100%; max-height: 140px; border-radius: 10px; display: none; margin: 10px auto; object-fit: cover; border: 2px solid #eee;}
         .ia-status { font-size: 12px; color: #004d40; font-weight: 600; display: none; margin: 5px 0; background: #e0f2f1; padding: 5px; border-radius: 8px; }
-        
+
         /* GALERIA DO LOJISTA */
         .galeria-lojista { display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 5px; }
         .galeria-lojista img { width: 75px; height: 75px; object-fit: cover; border-radius: 8px; border: 2px solid #f57c00; flex-shrink: 0; }
@@ -150,7 +150,7 @@
         .btn-apple-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-google-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: "Product Sans", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
 
-        /* MÁGICA CSS DE PERFIS */
+        /* REGRAS VISUAIS RÍGIDAS DE PERFIS */
         /* Turista */
         body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista #t_level { display: none !important; }
@@ -165,16 +165,16 @@
         body.modo-avaliador .notif-container { display: none !important; }
         body.modo-avaliador .btn-perguntar { display: none !important; }
         
-        /* 🏢 LOJISTA (NOVO PERFIL VIP) */
+        /* Lojista (Painel VIP - Oculta métricas e ferramentas comuns) */
         body.modo-lojista #t_level { display: none !important; }
         body.modo-lojista #saldoDisplay { display: none !important; }
         body.modo-lojista .notif-container { display: none !important; }
         body.modo-lojista .btn-perguntar { display: none !important; }
         body.modo-lojista .badge-buscas { display: none !important; }
         body.modo-lojista .btn-radar { display: none !important; }
-        body.modo-lojista .item-acoes { display: none !important; } /* Lojista não avalia os outros */
+        body.modo-lojista .item-acoes { display: none !important; } 
 
-        /* PINOS MÁGICOS */
+        /* PINOS MÁGICOS E ANIMAÇÕES */
         .marker-pergunta-container { background: transparent; border: none; pointer-events: none; }
         @keyframes wanderGhost { 0% { transform: translate(0px, 0px); } 20% { transform: translate(25px, -20px); } 40% { transform: translate(-15px, 25px); } 60% { transform: translate(-25px, -10px); } 80% { transform: translate(15px, -25px); } 100% { transform: translate(0px, 0px); } }
         .ghost-anim { animation: wanderGhost 8s infinite linear; pointer-events: auto; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
@@ -291,7 +291,6 @@
     <input type="file" id="inputGalPergunta" accept="image/*" style="display: none;">
     <input type="file" id="inputCamExtra" accept="image/*" capture="environment" style="display: none;">
     <input type="file" id="inputGalExtra" accept="image/*" style="display: none;">
-    
     <input type="file" id="inputCamLojista" accept="image/*" capture="environment" style="display: none;">
     <input type="file" id="inputGalLojista" accept="image/*" style="display: none;">
 
@@ -324,9 +323,7 @@
     <div class="modal-overlay" id="modalFormLojista">
         <div class="modal-content">
             <h3 style="color:#f57c00; margin-bottom:15px;">🏢 Cadastrar Meu Negócio</h3>
-            
             <input type="text" id="nomeLojistaInput" class="input-form" placeholder="Nome Oficial do Estabelecimento">
-            
             <select id="categoriaLojista" class="input-form">
                 <option value="Restaurante">🍽️ Restaurante</option>
                 <option value="Bar">🍻 Bar / Pub</option>
@@ -334,15 +331,12 @@
                 <option value="Quiosque">🏖️ Quiosque de Praia</option>
                 <option value="Turismo">🚤 Agência de Passeios / Turismo</option>
             </select>
-
             <div style="font-size:13px; color:#555; margin:15px 0 5px 0; font-weight:600;">Adicione até 3 fotos para atrair turistas:</div>
             <div class="linha-botoes-foto">
                 <button class="btn-laranja" id="btnCamLojista" style="flex: 1;">📸 Câmera</button>
                 <button class="btn-laranja" id="btnGalLojista" style="flex: 1; background: #e0e0e0; color: #333;">🖼️ Galeria</button>
             </div>
-            
             <div id="previewFotosLojista" class="galeria-lojista"></div>
-
             <button class="btn-salvar" id="btnSalvarLojista" style="background:#f57c00; margin-top:15px;">Salvar Local</button>
             <button class="btn-cancelar" id="btnCancelarLojista">Cancelar</button>
         </div>
@@ -396,7 +390,6 @@
             <p style="font-size: 14px; color: #555; margin-bottom: 15px;">Item: <strong id="editItemNome" style="color:#000;"></strong></p>
             <input type="number" id="editItemPreco" class="input-form" placeholder="Novo preço real">
             <input type="hidden" id="editItemId">
-            <input type="hidden" id="isPremiumLugar">
             <button class="btn-salvar" id="btnSalvarEdicao" style="background:#f57c00;">Salvar e Resetar Votos</button>
             <button class="btn-cancelar" id="btnCancelarEdicao">Cancelar</button>
         </div>
@@ -479,7 +472,7 @@
         const dicionario = {
             pt: { splashSub: "Preço Justo em Qualquer Lugar", menuRoute: "🗺️ Roteiro Premium", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Trocar de Perfil", menuLojista: "🏢 Área do Lojista", level: "⭐ Nvl 1", formTitle: "Novo Registro", optNewPlace: "➕ Adicionar Novo Local", placeNewLocal: "Nome do Novo Local", placeName: "Produto (Ex: Água)", placePrice: "Preço", catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Salvar", btnCancel: "Cancelar", alertaSalvo: "Salvo com sucesso!", alertaFalta: "Preencha todos os campos!", alertaDuplicado: "Este produto já está cadastrado!", statusGreen: "✅ Confiável", statusYellow: "⏳ Em Análise", statusRed: "🚨 Alerta de Golpe", btnYes: "👍", btnNo: "👎", searchTitle: "Buscar Local ou Produto", searchPlaceholder: "Ex: Quiosque, Água...", searchClose: "Fechar", roleTitle: "Como você quer usar o App?", roleTourist: "Sou Turista", roleTouristSub: "Pesquisar lugares e perguntar preços.", roleLocal: "Sou Avaliador Local", roleLocalSub: "Registrar preços e responder turistas.", roleLojista: "Sou Lojista", roleLojistaSub: "Quero cadastrar meu negócio e atrair turistas.", btnAddCam: "📸 Câmera", btnAddGal: "🖼️ Galeria", btnLogin: "Entrar com Google", btnLogout: "Sair da Conta", pwTitle: "Acesso Premium", pwSub: "Buscas ilimitadas e Roteiros Seguros.", pwPlan1: "Pass de 7 Dias", pwPlan2: "Pass de 15 Dias", pwPlan3: "Pass de 30 Dias", pwCancel: "Talvez depois", badgeMedia: "⚖️ Preço na Média", badgeCaro: "📈 Acima da Média", badgeBom: "✨ Melhor Preço", askTitle: "O que você quer comprar?", askSub: "A comunidade local vai te dizer se o preço está justo.", btnAskCam: "📸 Câmera", btnAskGal: "🖼️ Galeria", btnSendAsk: "Enviar Pergunta", btnCancelAsk: "Cancelar", ansTitle: "Responder Turista", btnSendAns: "Responder", optFixo: "🏪 Estabelecimento Fixo", optAmbulante: "🚶 Vendedor Ambulante", btnCancelAns: "Cancelar", placeNewLocalAsk: "Nome do Local ou Vendedor", alertReqLogin: "⚠️ Faça login no menu (☰) para usar esta função!", alertVoted: "🚫 Você já votou neste item!", lockTitle: "Mapa Protegido", lockSub: "Faça login gratuitamente para visualizar preços y locais.", lockBtn: "Entrar com Google", notifTitle: "🔔 Notificações", notifEmpty: "Nenhuma notificação nova.", posHint: "📍 Aponte para a barraca (Dica: Faça de uma distância segura)", btnPosCancel: "Cancelar", btnPosConfirm: "Confirmar Local", btnReqFoto: "📷 Pedir Foto ao Turista", notifReqFoto: "Um Avaliador pediu uma foto do item para dar o preço exato. 📍 Clique aqui para enviar.", radarBtn: "Radar", radarActive: "Radar ligado! Os locais estão visíveis.", radarCool: "O radar esfriou. Os locais não premium foram ocultados.", makePremium: "⭐ Destacar Meu Negócio", lojistaTitle: "Destaque seu Negócio", lojistaSub: "Atraia turistas 24h por dia. Pinos Premium nunca somem do mapa, mesmo sem radar!", kycAlert: "🛡️ Segurança KYC: Apenas Avaliadores Nível 5+ (Verificados com Documento) podem alterar preços de Estabelecimentos Premium Oficiais!" },
             en: { splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Premium Route", menuLang: "🌐 Languages", menuChangeRole: "👤 Change Role", menuLojista: "🏢 Store Owner Area", level: "⭐ Lvl 1", formTitle: "New Record", optNewPlace: "➕ Add New Place", placeNewLocal: "New Place Name", placeName: "Product (Ex: Water)", placePrice: "Price", catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save", btnCancel: "Cancel", alertaSalvo: "Saved successfully!", alertaFalta: "Fill in all fields!", alertaDuplicado: "Product already exists!", statusGreen: "✅ Trusted", statusYellow: "⏳ Under Review", statusRed: "🚨 Scam Alert", btnYes: "👍", btnNo: "👎", searchTitle: "Search Place or Product", searchPlaceholder: "Ex: Kiosk, Water...", searchClose: "Close", roleTitle: "How do you want to use the App?", roleTourist: "I'm a Tourist", roleTouristSub: "Search safe places and ask prices.", roleLocal: "I'm a Local Evaluator", roleLocalSub: "Register prices and answer tourists.", roleLojista: "I'm a Store Owner", roleLojistaSub: "Register my business and attract tourists.", btnAddCam: "📸 Camera", btnAddGal: "🖼️ Gallery", btnLogin: "Sign in with Google", btnLogout: "Sign Out", pwTitle: "Premium Access", pwSub: "Unlimited searches and Safe Routes.", pwPlan1: "7-Day Pass", pwPlan2: "15-Day Pass", pwPlan3: "30-Day Pass", pwCancel: "Maybe later", badgeMedia: "⚖️ Average Price", badgeCaro: "📈 Above Average", badgeBom: "✨ Best Price", askTitle: "What do you want to buy?", askSub: "The local community will tell you the fair price.", btnAskCam: "📸 Camera", btnAskGal: "🖼️ Gallery", btnSendAsk: "Send Question", btnCancelAsk: "Cancel", ansTitle: "Answer Tourist", btnSendAns: "Answer", optFixo: "🏪 Fixed Establishment", optAmbulante: "🚶 Mobile Vendor", btnCancelAns: "Cancel", placeNewLocalAsk: "Location or Vendor Name", alertReqLogin: "⚠️ Please login in the menu (☰) to use this feature!", alertVoted: "🚫 You already voted on this item!", lockTitle: "Protected Map", lockSub: "Log in for free to view prices and places.", lockBtn: "Sign in with Google", notifTitle: "🔔 Notifications", notifEmpty: "No new notifications.", posHint: "📍 Point to the vendor (Tip: Do it from a safe distance)", btnPosCancel: "Cancel", btnPosConfirm: "Confirm Location", btnReqFoto: "📷 Request Photo", notifReqFoto: "An Evaluator requested a photo to give the exact price. 📍 Click here to send.", radarBtn: "Radar", radarActive: "Radar active! Places are visible.", radarCool: "Radar cooled down. Non-premium places hidden.", makePremium: "⭐ Highlight My Business", lojistaTitle: "Highlight your Business", lojistaSub: "Attract tourists 24/7. Premium Pins never disappear!", kycAlert: "🛡️ KYC Security: Only Level 5+ Evaluators (ID Verified) can change prices of Official Premium Stores!" },
-            es: { splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Ruta Premium", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Cambiar Perfil", menuLojista: "🏢 Área del Comerciante", level: "⭐ Nvl 1", formTitle: "Nuevo Registro", optNewPlace: "➕ Añadir Nuevo Lugar", placeNewLocal: "Nombre del Nuevo Lugar", placeName: "Producto (Ej: Agua)", placePrice: "Precio", catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa todos los campos!", alertaDuplicado: "¡Producto ya existe!", statusGreen: "✅ Confiable", statusYellow: "⏳ En Revisión", statusRed: "🚨 Alerta de Estafa", btnYes: "👍", btnNo: "👎", searchTitle: "Buscar Lugar o Producto", searchPlaceholder: "Ej: Kiosco, Agua...", searchClose: "Cerrar", roleTitle: "¿Cómo quieres usar la App?", roleTourist: "Soy Turista", roleTouristSub: "Buscar lugares seguros y preguntar precios.", roleLocal: "Soy Evaluador Local", roleLocalSub: "Registrar precios y responder turistas.", roleLojista: "Soy Comerciante", roleLojistaSub: "Registrar mi negocio y atraer turistas.", btnAddCam: "📸 Cámara", btnAddGal: "🖼️ Galería", btnLogin: "Entrar con Google", btnLogout: "Cerrar Sesión", pwTitle: "Acceso Premium", pwSub: "Búsquedas ilimitadas y Rutas Seguras.", pwPlan1: "Pase de 7 Días", pwPlan2: "Pase de 15 Días", pwPlan3: "Pase de 30 Días", pwCancel: "Quizás después", badgeMedia: "⚖️ Precio Promedio", badgeCaro: "📈 Por Encima de Media", badgeBom: "✨ Mejor Precio", askTitle: "¿Qué quieres comprar?", askSub: "La comunidad local te dirá el precio justo.", btnAskCam: "📸 Cámara", btnAskGal: "🖼️ Galería", btnSendAsk: "Enviar Pregunta", btnCancelAsk: "Cancelar", ansTitle: "Responder al Turista", btnSendAns: "Responder", optFixo: "🏪 Establecimiento Fijo", optAmbulante: "🚶 Vendedor Ambulante", btnCancelAns: "Cancelar", placeNewLocalAsk: "Nombre del Lugar o Vendedor", alertReqLogin: "⚠️ ¡Inicia sesión en el menú (☰) para usar esta función!", alertVoted: "🚫 ¡Ya votaste por este artículo!", lockTitle: "Mapa Protegido", lockSub: "Inicia sesión gratis para ver precios y lugares.", lockBtn: "Entrar con Google", notifTitle: "🔔 Notificaciones", notifEmpty: "No hay notificaciones nuevas.", posHint: "📍 Apunta al vendedor (Consejo: Hazlo desde una distancia segura)", btnPosCancel: "Cancelar", btnPosConfirm: "Confirmar Lugar", btnReqFoto: "📷 Pedir Foto", notifReqFoto: "Un Evaluador Local pidió una foto para dar el precio exacto. 📍 Clic para enviar.", radarBtn: "Radar", radarActive: "Radar encendido! Lugares visibles.", radarCool: "Radar apagado. Lugares ocultos.", makePremium: "⭐ Destacar Mi Negocio", lojistaTitle: "Destaca tu Negocio", lojistaSub: "Atrae turistas 24/7. ¡Los pines premium nunca desaparecen!", kycAlert: "🛡️ Seguridad KYC: ¡Solo Evaluadores de Nivel 5+ (Identificación Verificada) pueden cambiar los precios de las Tiendas Premium!" }
+            es: { splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Ruta Premium Segura", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Cambiar Perfil", menuLojista: "🏢 Área del Comerciante", level: "⭐ Nvl 1", formTitle: "Nuevo Registro", optNewPlace: "➕ Añadir Nuevo Lugar", placeNewLocal: "Nombre del Nuevo Lugar", placeName: "Producto (Ej: Agua)", placePrice: "Precio", catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa todos los campos!", alertaDuplicado: "¡Producto ya existe!", statusGreen: "✅ Confiable", statusYellow: "⏳ En Revisión", statusRed: "🚨 Alerta de Estafa", btnYes: "👍", btnNo: "👎", searchTitle: "Buscar Lugar o Producto", searchPlaceholder: "Ej: Kiosco, Agua...", searchClose: "Cerrar", roleTitle: "¿Cómo quieres usar la App?", roleTourist: "Soy Turista", roleTouristSub: "Buscar lugares seguros y preguntar precios.", roleLocal: "Soy Evaluador Local", roleLocalSub: "Registrar precios y responder turistas.", roleLojista: "Soy Comerciante", roleLojistaSub: "Registrar mi negocio y atraer turistas.", btnAddCam: "📸 Cámara", btnAddGal: "🖼️ Galería", btnLogin: "Entrar con Google", btnLogout: "Cerrar Sesión", pwTitle: "Acceso Premium", pwSub: "Búsquedas ilimitadas y Rutas Seguras.", pwPlan1: "Pase de 7 Días", pwPlan2: "Pase de 15 Días", pwPlan3: "Pase de 30 Días", pwCancel: "Quizás después", badgeMedia: "⚖️ Precio Promedio", badgeCaro: "📈 Por Encima de Media", badgeBom: "✨ Mejor Precio", askTitle: "¿Qué quieres comprar?", askSub: "La comunidad local te dirá el precio justo.", btnAskCam: "📸 Cámara", btnAskGal: "🖼️ Galería", btnSendAsk: "Enviar Pregunta", btnCancelAsk: "Cancelar", ansTitle: "Responder al Turista", btnSendAns: "Responder", optFixo: "🏪 Establecimiento Fijo", optAmbulante: "🚶 Vendedor Ambulante", btnCancelAns: "Cancelar", placeNewLocalAsk: "Nombre del Lugar o Vendedor", alertReqLogin: "⚠️ ¡Inicia sesión en el menú (☰) para usar esta función!", alertVoted: "🚫 ¡Ya votaste por este artículo!", lockTitle: "Mapa Protegido", lockSub: "Inicia sesión gratis para ver precios y lugares.", lockBtn: "Entrar con Google", notifTitle: "🔔 Notificaciones", notifEmpty: "No hay notificaciones nuevas.", posHint: "📍 Apunta al vendedor (Consejo: Hazlo desde una distancia segura)", btnPosCancel: "Cancelar", btnPosConfirm: "Confirmar Lugar", btnReqFoto: "📷 Pedir Foto", notifReqFoto: "Un Evaluador Local pidió una foto para dar el precio exacto. 📍 Clic para enviar.", radarBtn: "Radar", radarActive: "Radar encendido! Lugares visibles.", radarCool: "Radar apagado. Lugares ocultos.", makePremium: "⭐ Destacar Mi Negocio", lojistaTitle: "Destaca tu Negocio", lojistaSub: "Atrae turistas 24/7. ¡Los pines premium nunca desaparecen!", kycAlert: "🛡️ Seguridad KYC: ¡Solo Evaluadores de Nivel 5+ (Identificación Verificada) pueden cambiar los precios de las Tiendas Premium!" }
         };
 
         const getEl = (id) => document.getElementById(id); const setTxt = (id, txt) => { const e = getEl(id); if(e) e.innerText = txt; }; const setPlc = (id, txt) => { const e = getEl(id); if(e) e.placeholder = txt; };
@@ -578,6 +571,58 @@
         });
         getEl('btnFecharNotificacoes')?.addEventListener('click', () => getEl('modalNotificacoes').style.display = 'none');
 
+        // RADAR DO TURISTA
+        getEl('btnRadar')?.addEventListener('click', () => {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            if(estadoApp.radarAtivo) return;
+            estadoApp.radarAtivo = true;
+            getEl('btnRadar').classList.add('radar-anim');
+            alert(dicionario[estadoApp.idioma].radarActive);
+            desenharPinos();
+            setTimeout(() => {
+                estadoApp.radarAtivo = false;
+                getEl('btnRadar').classList.remove('radar-anim');
+                desenharPinos();
+                alert(dicionario[estadoApp.idioma].radarCool);
+            }, 15000); 
+        });
+
+        // ÁREA DO LOJISTA
+        getEl('btnAreaLojista')?.addEventListener('click', () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); getEl('modalLojista').style.display = 'flex'; });
+        getEl('btnFecharLojista')?.addEventListener('click', () => getEl('modalLojista').style.display = 'none');
+        getEl('btnPagarLojista')?.addEventListener('click', () => {
+            alert("✅ Pagamento Simulado com Sucesso!\n\nSua conta agora é Lojista Premium. Use o botão + para adicionar seu estabelecimento com fotos! Depois clique na estrela do seu balão para destacá-lo 24h por dia para os turistas!");
+            estadoApp.isLojistaPremium = true;
+            getEl('modalLojista').style.display = 'none';
+            desenharPinos();
+        });
+
+        // LUPA (RESOLVIDA - onclick direto)
+        getEl('btnAbrirBusca').onclick = async () => {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { 
+                if (estadoApp.buscasRestantes <= 0) { getEl('modalPaywall').style.display = 'flex'; return; } 
+                estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) });
+            }
+            getEl('modalBusca').style.display = 'flex'; getEl('inputBusca').value = ''; getEl('resultadosBusca').innerHTML = ''; getEl('inputBusca').focus();
+        };
+        
+        getEl('btnFecharBusca')?.addEventListener('click', () => getEl('modalBusca').style.display = 'none');
+        
+        getEl('inputBusca')?.addEventListener('input', (e) => {
+            const termo = e.target.value.toLowerCase().trim(); getEl('resultadosBusca').innerHTML = ''; if(!termo) return;
+            for (const nLocal in estadoApp.dadosHospedados) {
+                const dLugar = estadoApp.dadosHospedados[nLocal]; const lMatch = nLocal.toLowerCase().includes(termo); const iMatch = dLugar.itens.filter(i => i.nome.toLowerCase().includes(termo));
+                if (lMatch || iMatch.length > 0) {
+                    const div = document.createElement('div'); div.className = 'resultado-item'; 
+                    let txtSec = `${dLugar.itens.length} itens`; if(iMatch.length > 0 && !lMatch) { txtSec = `Encontrado: ${iMatch.map(i => i.nome).join(', ')}`; }
+                    div.innerHTML = `<span style="font-weight:700; color:#004d40;">🏪 ${nLocal}</span><span style="font-size:12px;color:#666;">${txtSec}</span>`;
+                    div.onclick = () => { getEl('modalBusca').style.display = 'none'; mapa.flyTo([dLugar.lat, dLugar.lng], 18, { duration: 1.5 }); setTimeout(() => { if(marcadoresNoMapa[nLocal]) marcadoresNoMapa[nLocal].openPopup(); }, 1500); };
+                    getEl('resultadosBusca').appendChild(div);
+                }
+            }
+        });
+
         const planos = [getEl('btnPlan1'), getEl('btnPlan2'), getEl('btnPlan3')]; const precos = [4.99, 7.99, 12.99];
         planos.forEach((p, i) => { p?.addEventListener('click', () => { planos.forEach(pl => pl?.classList.remove('active')); p.classList.add('active'); estadoApp.planoPrecoUSD = precos[i]; }); });
         const processarPgto = async (m) => { alert(`✅ Simulação: ${m}\n\nO cartão seria debitado em US$ ${estadoApp.planoPrecoUSD}.\n\nAcesso Premium liberado!`); estadoApp.buscasRestantes = 999; if(estadoApp.usuario) { await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: 999 }); } window.atualizarBadgeBuscas(); getEl('modalPaywall').style.display = 'none'; };
@@ -632,7 +677,7 @@
             }
         };
 
-        // --- LÓGICA DE FOTOS DO LOJISTA (CARROSSEL) ---
+        // --- CARROSSEL DE FOTOS DO LOJISTA ---
         let fotosLojista = [];
         const maxFotosLojista = 3;
 
@@ -654,13 +699,14 @@
             });
         }
 
-        getEl('btnCamLojista')?.addEventListener('click', () => getEl('inputCamLojista')?.click());
-        getEl('btnGalLojista')?.addEventListener('click', () => getEl('inputGalLojista')?.click());
-        getEl('inputCamLojista')?.addEventListener('change', uploadFotoLojista);
-        getEl('inputGalLojista')?.addEventListener('change', uploadFotoLojista);
+        getEl('btnCamLojista').onclick = () => getEl('inputCamLojista').click();
+        getEl('btnGalLojista').onclick = () => getEl('inputGalLojista').click();
+        getEl('inputCamLojista').onchange = uploadFotoLojista;
+        getEl('inputGalLojista').onchange = uploadFotoLojista;
 
         getEl('tipoLocalPergunta')?.addEventListener('change', (e) => { getEl('nomeLocalPergunta').style.display = e.target.value === 'Ambulante' ? 'none' : 'block'; });
 
+        // --- SISTEMA DE MIRA PERFEITA ---
         let coordSelecionada = null; let acaoPendente = null; 
         window.iniciarModoPosicionamento = function(acao) {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
@@ -668,20 +714,16 @@
             acaoPendente = acao; getEl('bottomActions').style.display = 'none'; getEl('posicionamentoUI').style.display = 'block'; getEl('alfineteCentral').style.display = 'flex'; getEl('alfineteAlvo').style.display = 'block';
         }
         
-        // BOTÃO DE ADICIONAR COM DESVIO PARA O LOJISTA
-        getEl('btnAdicionar')?.addEventListener('click', () => {
-            if (estadoApp.perfil === 'lojista') {
-                iniciarModoPosicionamento('addLojista');
-            } else {
-                iniciarModoPosicionamento('add');
-            }
-        });
+        getEl('btnAdicionar').onclick = () => {
+            if (estadoApp.perfil === 'lojista') { iniciarModoPosicionamento('addLojista'); } 
+            else { iniciarModoPosicionamento('add'); }
+        };
         
-        getEl('btnPerguntar')?.addEventListener('click', () => iniciarModoPosicionamento('ask'));
+        getEl('btnPerguntar').onclick = () => iniciarModoPosicionamento('ask');
         
-        getEl('btnCancelarPos')?.addEventListener('click', () => { getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex'; });
+        getEl('btnCancelarPos').onclick = () => { getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex'; };
         
-        getEl('btnConfirmarPos')?.addEventListener('click', () => {
+        getEl('btnConfirmarPos').onclick = () => {
             coordSelecionada = mapa.getCenter(); getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex';
             if (acaoPendente === 'add') { 
                 getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; 
@@ -692,29 +734,31 @@
             else if (acaoPendente === 'addLojista') {
                 fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex';
             }
-        });
+        };
 
-        // CANCELAMENTOS DE MODAL
-        getEl('btnCancelar')?.addEventListener('click', () => { getEl('modalForm').style.display = 'none'; });
-        getEl('btnCancelarLojista')?.addEventListener('click', () => { getEl('modalFormLojista').style.display = 'none'; });
+        getEl('btnCancelar').onclick = () => { getEl('modalForm').style.display = 'none'; };
+        getEl('btnCancelarLojista').onclick = () => { getEl('modalFormLojista').style.display = 'none'; };
         
-        getEl('btnCamNormal')?.addEventListener('click', () => getEl('inputCamNormal')?.click()); getEl('btnGalNormal')?.addEventListener('click', () => getEl('inputGalNormal')?.click());
-        getEl('inputCamNormal')?.addEventListener('change', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto')); getEl('inputGalNormal')?.addEventListener('change', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto'));
+        getEl('btnCamNormal').onclick = () => getEl('inputCamNormal').click(); 
+        getEl('btnGalNormal').onclick = () => getEl('inputGalNormal').click();
+        getEl('inputCamNormal').onchange = (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto'); 
+        getEl('inputGalNormal').onchange = (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto');
 
         // SALVAR AVALIADOR
-        getEl('btnSalvar')?.addEventListener('click', async () => {
+        getEl('btnSalvar').onclick = async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const t = dicionario[estadoApp.idioma]; const vSel = getEl('selectLocal').value; const localFinal = (vSel === 'NEW') ? getEl('nomeLocalInput').value.trim() : vSel; const nProd = getEl('nomeProduto').value.trim(); const prc = getEl('precoProduto').value;
             if(!localFinal || !nProd || !prc) return alert(t.alertaFalta);
             if (estadoApp.dadosHospedados[localFinal] && estadoApp.dadosHospedados[localFinal].itens.some(i => i.nome.toLowerCase() === nProd.toLowerCase())) return alert(t.alertaDuplicado);
             const centro = coordSelecionada || mapa.getCenter(); const aMail = estadoApp.usuario.email; const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc);
+            
             await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: centro.lat, lng: centro.lng, status: "pendente", premium: false, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], autor: aMail, data: new Date() });
             await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(0.25) }); estadoApp.saldo += 0.25; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
             getEl('modalForm').style.display = 'none'; alert(t.alertaSalvo);
-        });
+        };
 
-        // SALVAR LOJISTA
-        getEl('btnSalvarLojista')?.addEventListener('click', async () => {
+        // SALVAR LOJISTA (NOVO E EXCLUSIVO)
+        getEl('btnSalvarLojista').onclick = async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const nomeNegocio = getEl('nomeLojistaInput').value.trim();
             const catNegocio = getEl('categoriaLojista').value;
@@ -723,7 +767,6 @@
             const centro = coordSelecionada || mapa.getCenter(); 
             const aMail = estadoApp.usuario.email;
             
-            // Lojista cria o "Local Master". Criamos um item invisível só para ancorar o local no banco de dados.
             await addDoc(collection(db, "precos"), { 
                 local: nomeNegocio, 
                 nome: "Acesso ao Local", 
@@ -741,13 +784,15 @@
             
             getEl('modalFormLojista').style.display = 'none'; 
             alert("Seu negócio foi cadastrado com sucesso e já está no mapa!");
-        });
+        };
 
-        getEl('btnCancelarPergunta')?.addEventListener('click', () => getEl('modalPergunta').style.display = 'none');
-        getEl('btnCamPergunta')?.addEventListener('click', () => getEl('inputCamPergunta')?.click()); getEl('btnGalPergunta')?.addEventListener('click', () => getEl('inputGalPergunta')?.click());
-        getEl('inputCamPergunta')?.addEventListener('change', (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta')); getEl('inputGalPergunta')?.addEventListener('change', (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta'));
+        getEl('btnCancelarPergunta').onclick = () => getEl('modalPergunta').style.display = 'none';
+        getEl('btnCamPergunta').onclick = () => getEl('inputCamPergunta').click(); 
+        getEl('btnGalPergunta').onclick = () => getEl('inputGalPergunta').click();
+        getEl('inputCamPergunta').onchange = (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta'); 
+        getEl('inputGalPergunta').onchange = (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta');
 
-        getEl('btnEnviarPergunta')?.addEventListener('click', async () => {
+        getEl('btnEnviarPergunta').onclick = async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const itemDesejado = getEl('nomeProdutoPergunta').value.trim(); const localTipo = getEl('tipoLocalPergunta').value; let localNome = getEl('nomeLocalPergunta').value.trim();
             
@@ -757,6 +802,7 @@
             const centro = coordSelecionada || mapa.getCenter(); 
             let fuzzyLat = centro.lat; let fuzzyLng = centro.lng;
 
+            // MATEMÁTICA CORRIGIDA (10m a 80m de desvio)
             if (localTipo === 'Ambulante') {
                 const angle = Math.random() * Math.PI * 2; const radius = 0.0004 + (Math.random() * 0.0004); 
                 fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle));
@@ -769,7 +815,7 @@
             
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
             getEl('modalPergunta').style.display = 'none'; alert("Pergunta enviada no mapa! Por segurança, sua localização exata foi ocultada dos Avaliadores.");
-        });
+        };
 
         window.solicitarFoto = async function(idPergunta, autorUid, nomeItem, nomeLocal) {
             if(!estadoApp.usuario) return;
@@ -790,7 +836,7 @@
                 });
             }
         };
-        getEl('inputCamExtra')?.addEventListener('change', uploadFotoExtra); getEl('inputGalExtra')?.addEventListener('change', uploadFotoExtra);
+        getEl('inputCamExtra').onchange = uploadFotoExtra; getEl('inputGalExtra').onchange = uploadFotoExtra;
 
         window.resolverPerguntaConsenso = async function(idPergunta, pergData, respostas) {
             respostas.sort((a, b) => a.tempo - b.tempo); let vencedor = respostas[0]; let precoFinal = vencedor.preco;
@@ -816,7 +862,8 @@
         }, 5000);
 
         window.abrirModalResposta = async function(idPergunta) {
-            if(estadoApp.perfil === 'turista') return; if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            if(estadoApp.perfil === 'turista' || estadoApp.perfil === 'lojista') return; 
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const p = estadoApp.perguntasAbertas[idPergunta]; if(!p) return;
             const uid = estadoApp.usuario.uid; const resps = p.respostas || [];
             if(resps.some(r => r.uid === uid)) return alert("Você já respondeu esta dúvida! Aguardando o consenso.");
@@ -825,8 +872,8 @@
             getEl('idPerguntaAtual').value = idPergunta; getEl('precoProdutoResposta').value = ''; getEl('modalResposta').style.display = 'flex';
         };
         
-        getEl('btnCancelarResposta')?.addEventListener('click', () => getEl('modalResposta').style.display = 'none');
-        getEl('btnEnviarResposta')?.addEventListener('click', async () => {
+        getEl('btnCancelarResposta').onclick = () => getEl('modalResposta').style.display = 'none';
+        getEl('btnEnviarResposta').onclick = async () => {
             if(!estadoApp.usuario) return; const prc = getEl('precoProdutoResposta').value; if(!prc) return alert("Preencha o preço!");
             const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc); 
             const idPergunta = getEl('idPerguntaAtual').value; const p = estadoApp.perguntasAbertas[idPergunta]; if(!p) return;
@@ -834,23 +881,22 @@
             if(resps.length >= 3) { window.resolverPerguntaConsenso(idPergunta, p, resps); alert("Consenso atingido! Resultado enviado."); } 
             else { await updateDoc(doc(db, "perguntas", idPergunta), { respostas: resps }); alert("Sua resposta foi registrada! ⏳ Aguardando mais avaliadores ou o tempo de 20s esgotar."); }
             getEl('modalResposta').style.display = 'none'; 
-        });
+        };
 
-        getEl('btnCancelarEdicao')?.addEventListener('click', () => getEl('modalEditar').style.display = 'none');
+        getEl('btnCancelarEdicao').onclick = () => getEl('modalEditar').style.display = 'none';
         
-        // 🚨 ESCUDO KYC 🚨
+        // ESCUDO KYC
         window.abrirEdicao = function(id, nome, precoAtualBRL, isPremium) { 
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
             if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
-            
             getEl('editItemId').value = id; getEl('editItemNome').innerText = nome; getEl('editItemPreco').value = (precoAtualBRL * taxasCambio[estadoApp.moeda].taxa).toFixed(2); getEl('modalEditar').style.display = 'flex'; 
         };
         
-        getEl('btnSalvarEdicao')?.addEventListener('click', async () => { 
+        getEl('btnSalvarEdicao').onclick = async () => { 
             if(!estadoApp.usuario) return; 
             const id = getEl('editItemId').value; const nvPreco = getEl('editItemPreco').value; if(!nvPreco) return alert("Digite o novo preço!"); 
             try { const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(nvPreco) / taxasCambio[estadoApp.moeda].taxa : parseFloat(nvPreco); await updateDoc(doc(db, "precos", id), { preco: prcReal, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], status: "pendente" }); getEl('modalEditar').style.display = 'none'; alert("Preço atualizado e avaliações resetadas!"); } catch(e) { alert("Erro ao editar preço."); } 
-        });
+        };
 
         window.votarItem = async function(id, tipo, isPremium) {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
@@ -897,11 +943,8 @@
                 
                 const isPremium = dadosL.itens.some(i => i.premium === true);
 
-                if (estadoApp.perfil === 'turista' && !estadoApp.radarAtivo && !isPremium) {
-                    continue; 
-                }
+                if (estadoApp.perfil === 'turista' && !estadoApp.radarAtivo && !isPremium) { continue; }
                 
-                // Extrai as fotos do Lojista se existirem
                 let fotosLojistaHtml = '';
                 const lugarLojista = dadosL.itens.find(i => i.isLojistaPlace);
                 if (lugarLojista && lugarLojista.fotosLocal && lugarLojista.fotosLocal.length > 0) {
@@ -911,7 +954,7 @@
                 }
 
                 dadosL.itens.forEach(item => {
-                    if(item.isLojistaPlace) return; // Não mostra o "Acesso ao Local" na lista de preços
+                    if(item.isLojistaPlace) return; 
 
                     let vUp = item.votos_up || 0; let vDown = item.votos_down || 0; let totalV = vUp + vDown; let stAtual = 'pendente'; let minVotosRequeridos = 5; 
                     if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
@@ -939,7 +982,8 @@
                     btnPromover = `<button onclick="window.promoverLugar('${nomeL}')" class="btn-laranja" style="margin-top:8px; background:#ffc107; color:#333; box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);">${dicionario[estadoApp.idioma].makePremium}</button>`;
                 }
 
-                // Injeta as fotos do lojista no balão!
+                if (htmlLista === '' && !lugarLojista) continue; 
+
                 const pino = L.marker([dadosL.lat, dadosL.lng], {icon: icP}); 
                 pino.bindPopup(`<div class="popup-info"><h3>🏪 ${nomeL}</h3>${fotosLojistaHtml}${st}<div class="lista-itens">${htmlLista}</div>${btnPromover}</div>`); 
                 camadaDePinos.addLayer(pino); marcadoresNoMapa[nomeL] = pino;
