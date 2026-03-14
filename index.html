@@ -79,10 +79,12 @@
         .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.15); z-index: 1000; cursor: pointer; }
         .btn-mira svg { width: 22px; height: 22px; fill: #004d40; }
 
+        /* MIRA DE ATIRADOR DE ELITE */
         .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: #c62828; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 2px white, 0 2px 6px rgba(0,0,0,0.5); }
         .alfinete-central { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; pointer-events: none; display: none; margin-top: -6px; animation: flutuarAlfinete 0.8s infinite alternate ease-in-out; filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.4)); }
         @keyframes flutuarAlfinete { from { transform: translate(-50%, -100%) translateY(0); } to { transform: translate(-50%, -100%) translateY(-12px); } }
 
+        /* UI DO BONEQUINHO */
         .posicionamento-ui { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000; text-align: center; display: none; }
         .posicionamento-aviso { font-size: 15px; font-weight: 600; color: #004d40; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1.2; }
         .posicionamento-botoes { display: flex; gap: 10px; }
@@ -138,7 +140,6 @@
         .btn-apple-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-google-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: "Product Sans", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
 
-        /* REGRAS VISUAIS DE PERFIS */
         body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista #t_level { display: none !important; }
         body.modo-turista #saldoDisplay { display: none !important; }
@@ -150,13 +151,24 @@
         body.modo-avaliador .notif-container { display: none !important; }
         body.modo-avaliador .btn-perguntar { display: none !important; }
         
-        /* NOVO PINO ROXO DE SOCORRO (GIGANTE, PULSANTE E SEM EMOJI) */
+        /* SOLUÇÃO DO BUG: O ENVELOPE INVISÍVEL DO MAPA */
+        .marker-pergunta-container { background: transparent; border: none; }
+        
         @keyframes pulsePurpleGigante { 
             0% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.8); transform: scale(1); } 
             50% { box-shadow: 0 0 0 25px rgba(156, 39, 176, 0); transform: scale(1.15); } 
             100% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0); transform: scale(1); } 
         }
-        .marker-pergunta { background: linear-gradient(135deg, #ab47bc, #7b1fa2); border-radius: 50%; color: white !important; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 28px; font-family: 'Poppins', sans-serif; border: 3px solid white; animation: pulsePurpleGigante 1.2s infinite ease-in-out; }
+
+        .marker-pergunta-anim { 
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #ab47bc, #7b1fa2); 
+            border-radius: 50%; color: white; display: flex; 
+            justify-content: center; align-items: center; 
+            font-weight: 900; font-size: 32px; font-family: 'Poppins', sans-serif; 
+            border: 3px solid white; box-sizing: border-box;
+            animation: pulsePurpleGigante 1.2s infinite ease-in-out; 
+        }
     </style>
 </head>
 <body class="modo-turista"> 
@@ -212,7 +224,6 @@
             <div class="sub-menu-item" id="lang_en"><span>🇺🇸 English</span><span class="check" style="display:none;">✔️</span></div>
             <div class="sub-menu-item" id="lang_es"><span>🇪🇸 Español</span><span class="check" style="display:none;">✔️</span></div>
         </div>
-
         <div class="menu-item" id="btnCurrencyToggle"><span>💵 Moeda (Câmbio)</span><span>▼</span></div>
         <div class="sub-menu" id="currencySubMenu">
             <div class="sub-menu-item ativo-option" id="cur_BRL"><span>🇧🇷 BRL (Real)</span><span class="check">✔️</span></div>
@@ -220,7 +231,6 @@
             <div class="sub-menu-item" id="cur_EUR"><span>🇪🇺 EUR (Euro)</span><span class="check" style="display:none;">✔️</span></div>
             <div class="sub-menu-item" id="cur_ARS"><span>🇦🇷 ARS (Peso)</span><span class="check" style="display:none;">✔️</span></div>
         </div>
-
         <div class="menu-item" id="btnTrocarPerfil"><span id="t_menuChangeRole">👤 Trocar de Perfil</span></div>
     </div>
 
@@ -263,7 +273,6 @@
         </button>
         <button class="btn-action btn-adicionar" id="btnAdicionar"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
     </div>
-    
     <button class="btn-mira" id="btnMira"><svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg></button>
 
     <div class="posicionamento-ui" id="posicionamentoUI">
@@ -511,19 +520,16 @@
             }
             getEl('modalNotificacoes').style.display = 'flex';
         });
-
         getEl('btnFecharNotificacoes')?.addEventListener('click', () => getEl('modalNotificacoes').style.display = 'none');
 
         const planos = [getEl('btnPlan1'), getEl('btnPlan2'), getEl('btnPlan3')]; const precos = [4.99, 7.99, 12.99];
         planos.forEach((p, i) => { p?.addEventListener('click', () => { planos.forEach(pl => pl?.classList.remove('active')); p.classList.add('active'); estadoApp.planoPrecoUSD = precos[i]; }); });
-        const processarPgto = async (m) => { alert(`✅ Simulação: ${m}\n\nO cartão seria debitado em US$ ${estadoApp.planoPrecoUSD}.\n\nAcesso Premium liberado!`); estadoApp.buscasRestantes = 999; if(estadoApp.usuario) { await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: 999 }); } window.atualizarBadgeBuscas(); getEl('modalPaywall').style.display = 'none'; };
+        const processarPgto = async (m) => { alert(`✅ Simulação: ${m}\n\nO cartão seria debitado em US$ ${estadoApp.planoPrecoUSD}.\n\nAcesso Premium liberado!`); estadoApp.buscasRestantes = 999; if(estadoApp.usuario) { await updateDoc(doc(db, "usuarios", subject.uid), { buscas: 999 }); } window.atualizarBadgeBuscas(); getEl('modalPaywall').style.display = 'none'; };
         getEl('btnApplePay')?.addEventListener('click', () => processarPgto('Apple Pay')); getEl('btnGooglePay')?.addEventListener('click', () => processarPgto('Google Pay')); getEl('btnFecharPaywall')?.addEventListener('click', () => getEl('modalPaywall').style.display = 'none');
 
         window.addEventListener('load', () => { setTimeout(() => { getEl('splashScreen').style.opacity = '0'; setTimeout(() => { getEl('splashScreen').style.display = 'none'; atualizarPrecosPaywall(); }, 600); }, 2000); });
         
         let modeloIA = null; mobilenet.load().then(m => modeloIA = m);
-        
-        // MAPA GOOGLE MAPS INJETADO
         const mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14); 
         L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(mapa);
         
@@ -535,8 +541,13 @@
         const iGreen = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iRed = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         
-        // MUDANÇA: PINO DE SOCORRO AGORA É UMA DIV PURA (BRANCA/ROXA) COM ANIMAÇÃO GIGANTE
-        const iPurple = L.divIcon({ className: 'marker-pergunta', html: '?', iconSize: [44, 44], iconAnchor: [22, 22] });
+        // CORREÇÃO MESTRE: O ENVELOPE DE CSS PARA O PINO ROXO GIGANTE (Impede o Leaflet de engolir a animação)
+        const iPurple = L.divIcon({ 
+            className: 'marker-pergunta-container', 
+            html: '<div class="marker-pergunta-anim">?</div>', 
+            iconSize: [44, 44], 
+            iconAnchor: [22, 22] 
+        });
 
         const processarImagem = (e, idPreview, idStatus, idNomeInput) => {
             if (e.target.files.length > 0) {
@@ -582,8 +593,7 @@
         });
 
         getEl('btnConfirmarPos')?.addEventListener('click', () => {
-            coordSelecionada = mapa.getCenter(); // A MATEMÁTICA AGORA É 100% EXATA COM O ALVO VERMELHO
-            
+            coordSelecionada = mapa.getCenter(); 
             getEl('posicionamentoUI').style.display = 'none';
             getEl('alfineteCentral').style.display = 'none';
             getEl('alfineteAlvo').style.display = 'none';
@@ -718,12 +728,7 @@
                     let vUp = item.votos_up || 0; let vDown = item.votos_down || 0; let totalV = vUp + vDown;
                     let stAtual = 'pendente'; let minVotosRequeridos = 5; 
 
-                    if(totalV >= minVotosRequeridos) { 
-                        let pctAprovacao = (vUp / totalV) * 100;
-                        if(pctAprovacao >= 60) stAtual = 'aprovado'; 
-                        else if(pctAprovacao <= 40) stAtual = 'abusivo'; 
-                    }
-                    
+                    if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
                     if (stAtual === "abusivo") qAb++; if (stAtual === "aprovado") qAp++;
                     const ic = stAtual === 'aprovado' ? '✅' : (stAtual === 'abusivo' ? '🚨' : '⏳'); 
                     
@@ -745,7 +750,7 @@
 
             for (const idPerg in estadoApp.perguntasAbertas) {
                 const perg = estadoApp.perguntasAbertas[idPerg]; 
-                // O PINO ROXO DE SOCORRO ESTÁ AQUI. ELE FORÇA O Z-INDEX PARA FICAR NO TOPO ABSOLUTO.
+                // Z-INDEX MÁXIMO (Fica por cima de todos os outros pinos sempre)
                 const pinoRoxo = L.marker([perg.lat, perg.lng], {icon: iPurple, zIndexOffset: 9999}); 
                 const tipoBadge = perg.tipoLocal === 'Ambulante' ? '🚶 Ambulante' : '🏪 Fixo';
                 const autorP = perg.autorUid || '';
