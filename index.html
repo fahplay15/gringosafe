@@ -188,15 +188,16 @@
         @keyframes pulseOrangeCamera { 0% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(245, 124, 0, 0); transform: scale(1.15); } 100% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0); transform: scale(1); } }
         @keyframes pulseBlueFoto { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(25, 118, 210, 0); transform: scale(1.15); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); transform: scale(1); } }
         @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.8); } 70% { box-shadow: 0 0 0 15px rgba(255, 193, 7, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
+        
+        /* 🚨 MAPA DE CALOR: ANIMAÇÃO DA ETIQUETA 💲 🚨 */
+        @keyframes pulseDolarAnim { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .marker-dolar { background: #00e676; color: #004d40; font-weight: 900; border-radius: 20px; padding: 5px 10px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; font-family: 'Poppins', sans-serif; pointer-events: auto; }
+        .pulse-dolar { animation: pulseDolarAnim 1.5s infinite ease-in-out; }
 
         .marker-pergunta-anim { width: 36px; height: 36px; background: linear-gradient(135deg, #ab47bc, #7b1fa2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 22px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.4); animation: pulsePurpleGigante 1.2s infinite ease-in-out; }
         .marker-camera-anim { width: 36px; height: 36px; background: linear-gradient(135deg, #ff9800, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.4); animation: pulseOrangeCamera 1.2s infinite ease-in-out; }
         .marker-foto-anim { width: 36px; height: 36px; background: linear-gradient(135deg, #42a5f5, #1976d2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.4); animation: pulseBlueFoto 1.2s infinite ease-in-out; }
         .marker-premium { width: 36px; height: 36px; background: linear-gradient(135deg, #ffc107, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 18px; border: 3px solid white; box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); animation: pulseGold 2s infinite; }
-        
-        /* 🚨 O PINO DO DINHEIRO (FILTRO MAPA) 🚨 */
-        .marker-dolar { background: #00e676; color: #004d40; font-weight: 900; border-radius: 20px; padding: 5px 10px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; font-family: 'Poppins', sans-serif; }
-
         @keyframes pulseArea { 0% { fill-opacity: 0.1; } 50% { fill-opacity: 0.3; } 100% { fill-opacity: 0.1; } }
         .area-segura-anim { animation: pulseArea 2s infinite; cursor: pointer; }
     </style>
@@ -254,7 +255,7 @@
         </div>
         <div class="menu-item" id="btnMinhaCarteira" style="color: #2e7d32;"><span id="t_menuWallet">💰 Minha Carteira</span></div>
         <div class="menu-item" id="btnAreaLojista" style="color: #f57c00;"><span id="t_menuLojista">🏢 Área do Lojista</span></div>
-        <div class="menu-item" id="btnCarregarRoteiro" style="color: #9c27b0;"><span id="t_menuRoute">🗺️ Ligar Roteiro Premium</span></div>
+        <div class="menu-item" id="btnCarregarRoteiro" style="color: #9c27b0;"><span id="t_menuRoute">🗺️ Roteiro Premium Seguro</span></div>
         <div class="menu-item" id="btnLangToggle"><span id="t_menuLang">🌐 Idiomas</span><span>▼</span></div>
         <div class="sub-menu" id="langSubMenu">
             <div class="sub-menu-item ativo-option" id="lang_pt"><span>🇧🇷 Português</span><span class="check">✔️</span></div>
@@ -428,14 +429,7 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="modalBusca">
-        <div class="modal-content" style="max-height: 80vh;">
-            <h3 id="t_searchTitle">Buscar Local ou Produto</h3>
-            <input type="text" id="inputBusca" class="input-form" placeholder="Ex: Quiosque, Água...">
-            <div class="resultados-busca" id="resultadosBusca"></div>
-            <button class="btn-cancelar" id="btnFecharBusca" style="margin-top:15px;"><span id="t_searchClose">Fechar</span></button>
-        </div>
-    </div>
+    <div class="modal-overlay" id="modalBusca"><div class="modal-content" style="max-height: 80vh;"><h3 id="t_searchTitle">Buscar Local ou Produto</h3><input type="text" id="inputBusca" class="input-form" placeholder="Ex: Quiosque, Água..."><div class="resultados-busca" id="resultadosBusca"></div><button class="btn-cancelar" id="btnFecharBusca" style="margin-top:15px;"><span id="t_searchClose">Fechar</span></button></div></div>
     
     <div class="modal-overlay" id="modalEditar">
         <div class="modal-content">
@@ -517,7 +511,7 @@
             moeda: 'BRL', idioma: 'pt', perfil: 'turista', buscasRestantes: 3, planoPrecoUSD: 4.99, saldo: 0.00, 
             usuario: null, dadosHospedados: {}, mediaPrecos: {}, contagemPrecos: {}, perguntasAbertas: {}, notificacoes: [], 
             radarAtivo: false, isLojistaPremium: false, nivelAvaliador: 1, avaliacoes: {},
-            filtroProduto: null // 🚨 NOVO: Variável de filtro do Mapa de Preços 🚨
+            filtroProduto: null 
         };
         const taxasCambio = { 'BRL': { sim: 'R$', taxa: 1 }, 'USD': { sim: 'US$', taxa: 0.20 }, 'EUR': { sim: '€', taxa: 0.18 }, 'ARS': { sim: '$', taxa: 170.0 } };
         
@@ -531,7 +525,6 @@
             'espetinho': { min: 30, max: 60 }, 'porção': { min: 30, max: 60 }, 'skewer': { min: 30, max: 60 }
         };
 
-        // Dicionário Ocultado para poupar espaço... (Usa o mesmo de antes)
         const dicionario = {
             pt: { splashSub: "Preço Justo em Qualquer Lugar", menuRoute: "🗺️ Ligar Roteiro Premium", menuRouteOff: "❌ Desligar Roteiro", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Trocar de Perfil", menuLojista: "🏢 Área do Lojista", menuWallet: "💰 Minha Carteira", walletTitle: "Saque via PIX", walletSub: "Saque mínimo de R$ 20,00.", btnWithdraw: "Solicitar Saque PIX", level: "⭐ Nvl 1", formTitle: "Novo Registro", optNewPlace: "➕ Adicionar Novo Local", placeNewLocal: "Nome do Novo Local", placeName: "Produto (Ex: Água)", placePrice: "Preço", catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Salvar", btnCancel: "Cancelar", alertaSalvo: "Salvo com sucesso!", alertaFalta: "Preencha todos os campos!", alertaDuplicado: "Este produto já está cadastrado!", statusGreen: "✅ Confiável", statusYellow: "⏳ Em Análise", statusRed: "🚨 Alerta de Golpe", btnYes: "👍", btnNo: "👎", searchTitle: "Buscar Local ou Produto", searchPlaceholder: "Ex: Quiosque, Água...", searchClose: "Fechar", roleTitle: "Como você quer usar o App?", roleTourist: "Sou Turista", roleTouristSub: "Pesquisar lugares e perguntar preços.", roleLocal: "Sou Avaliador Local", roleLocalSub: "Registrar preços e responder turistas.", roleLojista: "Sou Lojista", roleLojistaSub: "Quero cadastrar meu negócio e atrair turistas.", btnAddCam: "📸 Câmera", btnAddGal: "🖼️ Galeria", btnLogin: "Entrar com Google", btnLogout: "Sair da Conta", pwTitle: "Acesso Premium", pwSub: "Buscas ilimitadas e Roteiros Seguros.", pwPlan1: "Pass de 7 Dias", pwPlan2: "Pass de 15 Dias", pwPlan3: "Pass de 30 Dias", pwCancel: "Talvez depois", badgeMedia: "⚖️ Preço na Média", badgeCaro: "📈 Acima da Média", badgeBom: "✨ Melhor Preço", askTitle: "O que você quer comprar?", askSub: "A comunidade local vai te dizer se o preço está justo.", btnAskCam: "📸 Câmera", btnAskGal: "🖼️ Galeria", btnSendAsk: "Enviar Pergunta", btnCancelAsk: "Cancelar", ansTitle: "Responder Turista", btnSendAns: "Responder", optFixo: "🏪 Estabelecimento Fixo", optAmbulante: "🚶 Vendedor Ambulante", btnCancelAns: "Cancelar", placeNewLocalAsk: "Nome do Local ou Vendedor", alertReqLogin: "⚠️ Faça login no menu (☰) para usar esta função!", alertVoted: "🚫 Você já votou neste item!", lockTitle: "Mapa Protegido", lockSub: "Faça login gratuitamente para visualizar preços y locais.", lockBtn: "Entrar com Google", notifTitle: "🔔 Notificações", notifEmpty: "Nenhuma notificação nova.", posHint: "📍 Aponte para a barraca (Dica: Faça de uma distância segura)", btnPosCancel: "Cancelar", btnPosConfirm: "Confirmar Local", btnReqFoto: "📷 Pedir Foto ao Turista", notifReqFoto: "Um Avaliador pediu uma foto do item para dar o preço exato. 📍 Clique aqui para enviar.", radarBtn: "Radar", radarActive: "Radar ligado! Os locais estão visíveis.", radarCool: "O radar esfriou. Os locais não premium foram ocultados.", makePremium: "⭐ Destacar Meu Negócio", lojistaTitle: "Destaque seu Negócio", lojistaSub: "Atraia turistas 24h por dia. Pinos Premium nunca somem do mapa, mesmo sem radar!", kycAlert: "🛡️ Segurança KYC: Apenas Avaliadores Nível 5+ (Verificados com Documento) podem alterar preços de Estabelecimentos Premium Oficiais!" },
             en: { splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Turn On Premium Route", menuRouteOff: "❌ Turn Off Route", menuLang: "🌐 Languages", menuChangeRole: "👤 Change Role", menuLojista: "🏢 Store Owner Area", menuWallet: "💰 My Wallet", walletTitle: "Withdraw Funds", walletSub: "Minimum withdrawal: $ 20.00.", btnWithdraw: "Request Withdrawal", level: "⭐ Lvl 1", formTitle: "New Record", optNewPlace: "➕ Add New Place", placeNewLocal: "New Place Name", placeName: "Product (Ex: Water)", placePrice: "Price", catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save", btnCancel: "Cancel", alertaSalvo: "Saved successfully!", alertaFalta: "Fill in all fields!", alertaDuplicado: "Product already exists!", statusGreen: "✅ Trusted", statusYellow: "⏳ Under Review", statusRed: "🚨 Scam Alert", btnYes: "👍", btnNo: "👎", searchTitle: "Search Place or Product", searchPlaceholder: "Ex: Kiosk, Water...", searchClose: "Close", roleTitle: "How do you want to use the App?", roleTourist: "I'm a Tourist", roleTouristSub: "Search safe places and ask prices.", roleLocal: "I'm a Local Evaluator", roleLocalSub: "Register prices and answer tourists.", roleLojista: "I'm a Store Owner", roleLojistaSub: "Register my business and attract tourists.", btnAddCam: "📸 Camera", btnAddGal: "🖼️ Gallery", btnLogin: "Sign in with Google", btnLogout: "Sign Out", pwTitle: "Premium Access", pwSub: "Unlimited searches and Safe Routes.", pwPlan1: "7-Day Pass", pwPlan2: "15-Day Pass", pwPlan3: "30-Day Pass", pwCancel: "Maybe later", badgeMedia: "⚖️ Average Price", badgeCaro: "📈 Above Average", badgeBom: "✨ Best Price", askTitle: "What do you want to buy?", askSub: "The local community will tell you the fair price.", btnAskCam: "📸 Camera", btnAskGal: "🖼️ Gallery", btnSendAsk: "Send Question", btnCancelAsk: "Cancel", ansTitle: "Answer Tourist", btnSendAns: "Answer", optFixo: "🏪 Fixed Establishment", optAmbulante: "🚶 Mobile Vendor", btnCancelAns: "Cancel", placeNewLocalAsk: "Location or Vendor Name", alertReqLogin: "⚠️ Please login in the menu (☰) to use this feature!", alertVoted: "🚫 You already voted on this item!", lockTitle: "Protected Map", lockSub: "Log in for free to view prices and places.", lockBtn: "Sign in with Google", notifTitle: "🔔 Notifications", notifEmpty: "No new notifications.", posHint: "📍 Point to the vendor (Tip: Do it from a safe distance)", btnPosCancel: "Cancel", btnPosConfirm: "Confirm Location", btnReqFoto: "📷 Request Photo", notifReqFoto: "An Evaluator requested a photo to give the exact price. 📍 Click here to send.", radarBtn: "Radar", radarActive: "Radar active! Places are visible.", radarCool: "Radar cooled down. Non-premium places hidden.", makePremium: "⭐ Highlight My Business", lojistaTitle: "Highlight your Business", lojistaSub: "Attract tourists 24/7. Premium Pins never disappear!", kycAlert: "🛡️ KYC Security: Only Level 5+ Evaluators (ID Verified) can change prices of Official Premium Stores!" },
@@ -543,6 +536,8 @@
         const bindClick = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('click', fn); };
         const bindChange = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('change', fn); };
         const bindInput = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('input', fn); };
+
+        let rotaAtiva = null;
 
         function aplicarIdioma(lang) {
             estadoApp.idioma = lang; const t = dicionario[lang];
@@ -721,47 +716,30 @@
         });
         bindClick('btnFecharNotificacoes', () => getEl('modalNotificacoes').style.display = 'none');
 
-        // 🚨 FUNÇÃO EXCLUSIVA DE FILTRO DE PREÇOS NO MAPA (O RADAR DO DINHEIRO) 🚨
+        // 🚨 O BOTÃO DE RADAR (AGORA CONVERSA COM O FILTRO) 🚨
+        bindClick('btnRadar', () => {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            if(estadoApp.radarAtivo) return;
+            
+            // Limpa o filtro de preços do mapa para não dar conflito
+            estadoApp.filtroProduto = null; 
+            getEl('btnLimparFiltro').style.display = 'none';
+
+            estadoApp.radarAtivo = true;
+            getEl('btnRadar').classList.add('radar-anim');
+            alert(dicionario[estadoApp.idioma].radarActive);
+            desenharPinos();
+            setTimeout(() => { estadoApp.radarAtivo = false; getEl('btnRadar').classList.remove('radar-anim'); desenharPinos(); alert(dicionario[estadoApp.idioma].radarCool); }, 15000); 
+        });
+
+        // LÓGICA DE LIMPEZA DO FILTRO NO TOPO DO MAPA
         bindClick('btnLimparFiltro', () => { 
             estadoApp.filtroProduto = null; 
             getEl('btnLimparFiltro').style.display = 'none'; 
             desenharPinos(); 
         });
 
-        // 🧠 ORÁCULO IA: Usa dados reais dos avaliadores + Base Offline 🧠
-        bindInput('nomeProdutoPergunta', (e) => {
-            const termo = e.target.value.toLowerCase().trim(); const estimativaEl = getEl('estimativaIA'); let achou = false;
-            if (termo.length > 2) {
-                // 1. Procura na base de dados reais da praia primeiro!
-                let precosReais = [];
-                for (let loc in estadoApp.dadosHospedados) {
-                    estadoApp.dadosHospedados[loc].itens.forEach(it => {
-                        if (!it.isLojistaPlace && it.nome.toLowerCase().includes(termo)) precosReais.push(it.preco);
-                    });
-                }
-
-                const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
-                
-                if (precosReais.length > 0) {
-                    const minReal = Math.min(...precosReais); const maxReal = Math.max(...precosReais);
-                    const minF = (minReal * cotacao).toFixed(2); const maxF = (maxReal * cotacao).toFixed(2);
-                    estimativaEl.innerHTML = `🧠 <strong>Preço na Comunidade Local:</strong> ${sim} ${minF} a ${sim} ${maxF}`;
-                    estimativaEl.style.display = 'block'; achou = true;
-                } else {
-                    // 2. Se ninguém cadastrou ainda, usa o Cérebro Offline
-                    for (let key in basePrecosIA) {
-                        if (termo.includes(key)) {
-                            const min = (basePrecosIA[key].min * cotacao).toFixed(2); const max = (basePrecosIA[key].max * cotacao).toFixed(2);
-                            estimativaEl.innerHTML = `💡 <strong>Estimativa Global da IA:</strong> ${sim} ${min} a ${sim} ${max}`;
-                            estimativaEl.style.display = 'block'; achou = true; break;
-                        }
-                    }
-                }
-            }
-            if(!achou) estimativaEl.style.display = 'none';
-        });
-
-        // 🚨 LUPA HÍBRIDA (BOTÃO VER NO MAPA) 🚨
+        // 🧠 A LUPA DE BUSCA (A NOVA EXPERIÊNCIA DO TURISTA) 🧠
         bindClick('btnAbrirBusca', async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { 
@@ -780,8 +758,9 @@
 
         bindInput('inputBusca', (e) => {
             const termo = e.target.value.toLowerCase().trim(); getEl('resultadosBusca').innerHTML = ''; if(!termo) return;
+            const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
             
-            // 1. O NOVO BOTÃO DE FILTRO DE PREÇOS NO MAPA
+            // 1. Cria o botão verde pra filtrar os preços direto no mapa se a palavra for grande o suficiente
             if (termo.length > 2) {
                 const divMapa = document.createElement('div'); divMapa.className = 'resultado-item';
                 divMapa.style.background = '#e8f5e9'; divMapa.style.borderLeft = '4px solid #2e7d32';
@@ -795,39 +774,56 @@
                 getEl('resultadosBusca').appendChild(divMapa);
             }
 
-            // 2. Busca na mente da IA
+            // 2. Busca na mente da IA (Física e Online)
             let achouIA = false;
             if (termo.length > 2) {
-                for (let key in basePrecosIA) {
-                    if (termo.includes(key)) {
-                        achouIA = true;
-                        const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
-                        const min = (basePrecosIA[key].min * cotacao).toFixed(2); const max = (basePrecosIA[key].max * cotacao).toFixed(2);
-                        
-                        const divAI = document.createElement('div'); divAI.className = 'resultado-item';
-                        divAI.style.background = '#e8eaf6'; divAI.style.borderLeft = '4px solid #1976d2'; divAI.style.cursor = 'default';
-                        divAI.innerHTML = `<span style="font-weight:700; color:#1565c0;">🤖 Estimativa IA: ${key.charAt(0).toUpperCase() + key.slice(1)}</span>
-                                           <span style="font-size:16px; color:#333; font-weight:bold; margin-top:5px;">${sim} ${min} a ${sim} ${max}</span>
-                                           <button class="btn-roxo" style="margin-top:10px; padding:8px; font-size:12px;" onclick="window.pesquisarComLocal('${key}')">Não encontrou? Pergunte a um Avaliador</button>`;
-                        getEl('resultadosBusca').appendChild(divAI); break; 
+                let precosReais = [];
+                for (let loc in estadoApp.dadosHospedados) {
+                    estadoApp.dadosHospedados[loc].itens.forEach(it => {
+                        if (!it.isLojistaPlace && it.nome.toLowerCase().includes(termo)) precosReais.push(it.preco);
+                    });
+                }
+
+                if (precosReais.length > 0) {
+                    const minReal = Math.min(...precosReais); const maxReal = Math.max(...precosReais);
+                    const minF = (minReal * cotacao).toFixed(2); const maxF = (maxReal * cotacao).toFixed(2);
+                    const divAI = document.createElement('div'); divAI.className = 'resultado-item'; divAI.style.background = '#e8eaf6'; divAI.style.borderLeft = '4px solid #1976d2'; divAI.style.cursor = 'default';
+                    divAI.innerHTML = `<span style="font-weight:700; color:#1565c0;">🧠 Preço na Comunidade Local</span><span style="font-size:16px; color:#333; font-weight:bold; margin-top:5px;">${sim} ${minF} a ${sim} ${maxF}</span><button class="btn-roxo" style="margin-top:10px; padding:8px; font-size:12px;" onclick="window.pesquisarComLocal('${termo}')">Não encontrou sua barraca? Pergunte!</button>`;
+                    getEl('resultadosBusca').appendChild(divAI); achouIA = true;
+                } else {
+                    for (let key in basePrecosIA) {
+                        if (termo.includes(key)) {
+                            const min = (basePrecosIA[key].min * cotacao).toFixed(2); const max = (basePrecosIA[key].max * cotacao).toFixed(2);
+                            const divAI = document.createElement('div'); divAI.className = 'resultado-item'; divAI.style.background = '#e8eaf6'; divAI.style.borderLeft = '4px solid #1976d2'; divAI.style.cursor = 'default';
+                            divAI.innerHTML = `<span style="font-weight:700; color:#1565c0;">💡 Estimativa Global da IA</span><span style="font-size:16px; color:#333; font-weight:bold; margin-top:5px;">${sim} ${min} a ${sim} ${max}</span><button class="btn-roxo" style="margin-top:10px; padding:8px; font-size:12px;" onclick="window.pesquisarComLocal('${key}')">Pergunte a um Avaliador Local</button>`;
+                            getEl('resultadosBusca').appendChild(divAI); achouIA = true; break; 
+                        }
                     }
                 }
             }
 
-            // 3. Busca nos locais físicos do mapa
+            // 3. Mostra os produtos com preço literias já na barra de busca!
             let achouLocais = false;
             for (const nLocal in estadoApp.dadosHospedados) {
-                const dLugar = estadoApp.dadosHospedados[nLocal]; const lMatch = nLocal.toLowerCase().includes(termo); const iMatch = dLugar.itens.filter(i => i.nome.toLowerCase().includes(termo));
-                if (lMatch || iMatch.length > 0) {
-                    achouLocais = true; const div = document.createElement('div'); div.className = 'resultado-item'; 
-                    let txtSec = `${dLugar.itens.length} itens`; if(iMatch.length > 0 && !lMatch) { txtSec = `Encontrado: ${iMatch.map(i => i.nome).join(', ')}`; }
-                    div.innerHTML = `<span style="font-weight:700; color:#004d40;">🏪 ${nLocal}</span><span style="font-size:12px;color:#666;">${txtSec}</span>`;
-                    div.onclick = () => { getEl('modalBusca').style.display = 'none'; mapa.flyTo([dLugar.lat, dLugar.lng], 18, { duration: 1.5 }); setTimeout(() => { if(marcadoresNoMapa[nLocal]) marcadoresNoMapa[nLocal].openPopup(); }, 1500); };
-                    getEl('resultadosBusca').appendChild(div);
+                const dLugar = estadoApp.dadosHospedados[nLocal]; 
+                const iMatch = dLugar.itens.filter(i => !i.isLojistaPlace && i.nome.toLowerCase().includes(termo));
+                
+                if (iMatch.length > 0) {
+                    achouLocais = true; 
+                    iMatch.forEach(item => {
+                        const div = document.createElement('div'); div.className = 'resultado-item'; 
+                        const prc = (item.preco * cotacao).toFixed(2);
+                        div.innerHTML = `<span style="font-weight:700; color:#004d40;">🏪 ${nLocal}</span><span style="font-size:15px; color:#2e7d32; font-weight:bold; margin-top:2px;">${item.nome}: ${sim} ${prc}</span>`;
+                        div.onclick = () => { 
+                            estadoApp.filtroProduto = item.nome; getEl('btnLimparFiltro').style.display = 'block'; getEl('modalBusca').style.display = 'none'; 
+                            mapa.flyTo([dLugar.lat, dLugar.lng], 18, { duration: 1.5 }); desenharPinos(); 
+                        };
+                        getEl('resultadosBusca').appendChild(div);
+                    });
                 }
             }
 
-            // 4. O Funil: Obriga a perguntar se não achar
+            // 4. O Funil de Conversão (Se deu em nada)
             if (!achouLocais && !achouIA && termo.length > 2) {
                 const divVazio = document.createElement('div'); divVazio.className = 'resultado-item'; divVazio.style.textAlign = 'center'; divVazio.style.cursor = 'default';
                 divVazio.innerHTML = `<span style="color:#666; margin-bottom:10px; display:block;">Ainda não temos dados sobre "${termo}" por aqui.</span><button class="btn-roxo" style="padding:8px; font-size:13px;" onclick="window.pesquisarComLocal('${termo}')">Pergunte aos Moradores Agora!</button>`;
@@ -850,19 +846,66 @@
         const buscarLoc = () => mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 }); buscarLoc(); bindClick('btnMira', buscarLoc);
         mapa.on('locationfound', (e) => { if(pinoUsuario) mapa.removeLayer(pinoUsuario); pinoUsuario = L.marker(e.latlng).addTo(mapa).bindPopup("📍 Você está aqui!"); });
 
+        // ICONES OFICIAIS
         const iYellow = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iGreen = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iRed = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iPremium = L.divIcon({ className: 'marker-premium', html: '⭐', iconSize: [36, 36], iconAnchor: [18, 36] });
-        
-        // FANTASMAS
         const iPurpleGhost = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-pergunta-anim">?</div></div>', iconSize: [36, 36], iconAnchor: [18, 18] });
         const iCameraGhost = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-camera-anim">📸</div></div>', iconSize: [36, 36], iconAnchor: [18, 18] });
         const iPhotoGhost  = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-foto-anim">🖼️</div></div>', iconSize: [36, 36], iconAnchor: [18, 18] });
 
+        function comprimirImagemBase64(file, callback) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas'); const MAX_WIDTH = 400; const MAX_HEIGHT = 400;
+                    let width = img.width; let height = img.height;
+                    if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
+                    else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+                    canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/jpeg', 0.6)); 
+                }; img.src = e.target.result;
+            }; reader.readAsDataURL(file);
+        }
+
+        let fotoAtualBase64 = null;
+        
+        const processarImagem = (e, idPreview, idStatus, idNomeInput) => {
+            if (e.target.files.length > 0) {
+                comprimirImagemBase64(e.target.files[0], (base64) => {
+                    fotoAtualBase64 = base64; const img = getEl(idPreview); if(img) { img.src = base64; img.style.display = 'block'; }
+                    const inpNome = getEl(idNomeInput); if(inpNome) inpNome.value = '';
+                    if (modeloIA) {
+                        const status = getEl(idStatus); if(status) { status.style.display = 'block'; setTxt(idStatus, '🤖 IA...'); }
+                        if(img) img.onload = () => { 
+                            modeloIA.classify(img).then(prev => { 
+                                if(status) status.style.display = 'none'; 
+                                const tIngles = prev[0].className.split(',')[0].toLowerCase().trim(); 
+                                if(estadoApp.idioma === 'en') { if(inpNome) inpNome.value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } 
+                                else { const tTrad = dicionario['pt'][tIngles]; if(inpNome) inpNome.value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } 
+                                
+                                if(idNomeInput === 'nomeProdutoPergunta') { const event = new Event('input'); inpNome.dispatchEvent(event); }
+                            }); 
+                        }
+                    }
+                });
+            }
+        };
+
         let fotosLojista = []; const maxFotosLojista = 3;
-        const uploadFotoLojista = (e) => { if (e.target.files.length > 0) { if (fotosLojista.length >= maxFotosLojista) return alert("Você já atingiu o máximo de 3 fotos!"); comprimirImagemBase64(e.target.files[0], (base64) => { fotosLojista.push(base64); atualizarPreviewLojista(); }); } };
-        function atualizarPreviewLojista() { const container = getEl('previewFotosLojista'); container.innerHTML = ''; fotosLojista.forEach((f) => { container.innerHTML += `<img src="${f}">`; }); }
+        const uploadFotoLojista = (e) => {
+            if (e.target.files.length > 0) {
+                if (fotosLojista.length >= maxFotosLojista) return alert("Você já atingiu o máximo de 3 fotos!");
+                comprimirImagemBase64(e.target.files[0], (base64) => { fotosLojista.push(base64); atualizarPreviewLojista(); });
+            }
+        };
+
+        function atualizarPreviewLojista() {
+            const container = getEl('previewFotosLojista'); container.innerHTML = '';
+            fotosLojista.forEach((f) => { container.innerHTML += `<img src="${f}">`; });
+        }
 
         bindClick('btnCamLojista', () => getEl('inputCamLojista')?.click()); bindClick('btnGalLojista', () => getEl('inputGalLojista')?.click());
         bindChange('inputCamLojista', uploadFotoLojista); bindChange('inputGalLojista', uploadFotoLojista);
@@ -886,7 +929,9 @@
             else if (acaoPendente === 'addLojista') { fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex'; }
         });
 
-        bindClick('btnCancelar', () => { getEl('modalForm').style.display = 'none'; }); bindClick('btnCancelarLojista', () => { getEl('modalFormLojista').style.display = 'none'; });
+        bindClick('btnCancelar', () => { getEl('modalForm').style.display = 'none'; });
+        bindClick('btnCancelarLojista', () => { getEl('modalFormLojista').style.display = 'none'; });
+        
         bindClick('btnCamNormal', () => getEl('inputCamNormal')?.click()); bindClick('btnGalNormal', () => getEl('inputGalNormal')?.click());
         bindChange('inputCamNormal', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto')); bindChange('inputGalNormal', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto'));
 
@@ -896,6 +941,7 @@
             if(!localFinal || !nProd || !prc) return alert(t.alertaFalta);
             if (estadoApp.dadosHospedados[localFinal] && estadoApp.dadosHospedados[localFinal].itens.some(i => i.nome.toLowerCase() === nProd.toLowerCase())) return alert(t.alertaDuplicado);
             const centro = coordSelecionada || mapa.getCenter(); const aMail = estadoApp.usuario.email; const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc);
+            
             await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: centro.lat, lng: centro.lng, status: "pendente", premium: false, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: aMail, data: new Date() });
             await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(0.25) }); estadoApp.saldo += 0.25; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
             getEl('modalForm').style.display = 'none'; alert(t.alertaSalvo);
@@ -905,7 +951,9 @@
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const nomeNegocio = getEl('nomeLojistaInput').value.trim(); const catNegocio = getEl('categoriaLojista').value;
             if(!nomeNegocio) return alert("Por favor, digite o nome do seu negócio.");
+            
             const centro = coordSelecionada || mapa.getCenter(); const aMail = estadoApp.usuario.email;
+            
             await addDoc(collection(db, "precos"), { local: nomeNegocio, nome: "Acesso ao Local", preco: 0, isLojistaPlace: true, categoria: catNegocio, lat: centro.lat, lng: centro.lng, status: "aprovado", premium: estadoApp.isLojistaPremium, fotosLocal: fotosLojista, autor: aMail, data: new Date() });
             getEl('modalFormLojista').style.display = 'none'; alert("Seu negócio foi cadastrado com sucesso e já está no mapa como Negócio Local! Clique no pino para destacá-lo.");
         });
@@ -921,9 +969,16 @@
             if (localTipo === 'Ambulante') { localNome = 'Vendedor Ambulante da Região'; } else if (!localNome) { return alert("Digite o nome do local!"); }
             if(!itemDesejado) return alert("Digite o nome do item!");
             
-            const centro = coordSelecionada || mapa.getCenter(); let fuzzyLat = centro.lat; let fuzzyLng = centro.lng;
-            if (localTipo === 'Ambulante') { const angle = Math.random() * Math.PI * 2; const radius = 0.0004 + (Math.random() * 0.0004); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); } 
-            else { const angle = Math.random() * Math.PI * 2; const radius = 0.0001 + (Math.random() * 0.00015); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); }
+            const centro = coordSelecionada || mapa.getCenter(); 
+            let fuzzyLat = centro.lat; let fuzzyLng = centro.lng;
+
+            if (localTipo === 'Ambulante') {
+                const angle = Math.random() * Math.PI * 2; const radius = 0.0004 + (Math.random() * 0.0004); 
+                fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle));
+            } else {
+                const angle = Math.random() * Math.PI * 2; const radius = 0.0001 + (Math.random() * 0.00015); 
+                fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle));
+            }
             
             await addDoc(collection(db, "perguntas"), { nomeItem: itemDesejado, nomeLocal: localNome, tipoLocal: localTipo, lat: fuzzyLat, lng: fuzzyLng, status: "aberta", respostas: [], autorUid: estadoApp.usuario.uid, fotoUrl: fotoAtualBase64, fotoSolicitada: false, data: new Date() });
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
@@ -935,8 +990,16 @@
             try { await updateDoc(doc(db, "perguntas", idPergunta), { fotoSolicitada: true }); if (autorUid && autorUid !== 'undefined') { await addDoc(collection(db, "notificacoes"), { userId: autorUid, tipo: 'foto_req', titulo: "📷 Foto Solicitada!", nomeItem: nomeItem, nomeLocal: nomeLocal, lida: false, data: new Date() }); } alert("Solicitação enviada! O turista foi notificado."); } catch(e) { console.log(e); }
         };
 
-        let idPerguntaParaFotoExtra = null; window.abrirEnvioFotoExtra = function(idPergunta) { idPerguntaParaFotoExtra = idPergunta; getEl('inputCamExtra').click(); };
-        const uploadFotoExtra = async (e) => { if (e.target.files.length > 0 && idPerguntaParaFotoExtra) { comprimirImagemBase64(e.target.files[0], async (base64) => { await updateDoc(doc(db, "perguntas", idPerguntaParaFotoExtra), { fotoUrl: base64, fotoSolicitada: false }); alert("📸 Foto enviada com sucesso! Os avaliadores já podem ver."); idPerguntaParaFotoExtra = null; }); } };
+        let idPerguntaParaFotoExtra = null;
+        window.abrirEnvioFotoExtra = function(idPergunta) { idPerguntaParaFotoExtra = idPergunta; getEl('inputCamExtra').click(); };
+        const uploadFotoExtra = async (e) => {
+            if (e.target.files.length > 0 && idPerguntaParaFotoExtra) {
+                comprimirImagemBase64(e.target.files[0], async (base64) => {
+                    await updateDoc(doc(db, "perguntas", idPerguntaParaFotoExtra), { fotoUrl: base64, fotoSolicitada: false });
+                    alert("📸 Foto enviada com sucesso! Os avaliadores já podem ver."); idPerguntaParaFotoExtra = null;
+                });
+            }
+        };
         bindChange('inputCamExtra', uploadFotoExtra); bindChange('inputGalExtra', uploadFotoExtra);
 
         window.resolverPerguntaConsenso = async function(idPergunta, pergData, respostas) {
@@ -986,6 +1049,7 @@
 
         bindClick('btnCancelarEdicao', () => getEl('modalEditar').style.display = 'none');
         
+        // ESCUDO KYC
         window.abrirEdicao = function(id, nome, precoAtualBRL, isPremium) { 
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
             if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
@@ -1008,6 +1072,16 @@
             try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
         };
 
+        window.promoverLugar = async function(nomeLocal) {
+            try {
+                const q = query(collection(db, "precos"), where("local", "==", nomeLocal));
+                const snapshot = await getDocs(q);
+                let atualizouAlgo = false;
+                snapshot.forEach((docSnap) => { updateDoc(doc(db, "precos", docSnap.id), { premium: true }); atualizouAlgo = true; });
+                if(atualizouAlgo){ alert(`✅ O local "${nomeLocal}" agora é Oficial e Premium!\n\nEle ficará com uma estrela dourada visível 24h por dia para os turistas (sem precisar de radar). Seus preços agora estão protegidos pelo Escudo KYC.`); }
+            } catch(e) { console.error(e); }
+        };
+
         onSnapshot(collection(db, "precos"), (snapshot) => {
             estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
             snapshot.forEach((doc) => {
@@ -1027,7 +1101,7 @@
             estadoApp.perguntasAbertas = {}; snapshot.forEach((doc) => { const p = doc.data(); if(p.status === "aberta") estadoApp.perguntasAbertas[doc.id] = p; }); desenharPinos(); 
         });
 
-        // 🚨 O DESENHO DO MAPA COM FILTRO DE PREÇOS (O RADAR DINHEIRO) 🚨
+        // ======================= MAPA DE CALOR E FILTRO (O CÓDIGO DA MAGIA) =======================
         function desenharPinos() {
             camadaDePinos.clearLayers(); marcadoresNoMapa = {}; const t = dicionario[estadoApp.idioma]; const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
 
@@ -1038,21 +1112,36 @@
                 
                 const isPremium = dadosL.itens.some(i => i.premium === true);
 
-                // FILTRO: Se tiver pesquisa rolando, só desenha se tiver o item
+                // 🚨 1. SE TEM FILTRO DE PREÇO ATIVO: SÓ DESENHA A ETIQUETA E VAI PRO PRÓXIMO 🚨
                 if (estadoApp.filtroProduto) {
                     const itemFiltrado = avaliacoesValidas.find(i => i.nome.toLowerCase().includes(estadoApp.filtroProduto.toLowerCase()));
-                    if (!itemFiltrado) continue; // Pula a barraca se ela não tem o item pesquisado!
+                    if (!itemFiltrado) continue; // Pula essa barraca se ela não vende o item pesquisado!
                     
                     const precoLocal = (itemFiltrado.preco * cotacao).toFixed(2);
-                    const icDolar = L.divIcon({ className: 'marker-pergunta-container', html: `<div class="marker-dolar">💲 ${sim} ${precoLocal}</div>`, iconSize: [80, 30], iconAnchor: [40, 15] });
                     
+                    // A Plaquinha de Dinheiro do mapa de calor
+                    const icDolar = L.divIcon({ className: 'marker-pergunta-container', html: `<div class="marker-dolar pulse-dolar">💲 ${sim} ${precoLocal}</div>`, iconSize: [80, 30], iconAnchor: [40, 15] });
                     const pinoDinheiro = L.marker([dadosL.lat, dadosL.lng], {icon: icDolar, zIndexOffset: 9999});
-                    pinoDinheiro.bindPopup(`<div class="popup-info"><h3>🏪 ${nomeL}</h3><p style="color:#2e7d32; font-weight:bold;">${itemFiltrado.nome}: ${sim} ${precoLocal}</p></div>`);
+                    
+                    // Constrói a lista inteira dentro do balão e DESTACA com a borda verde o item que o turista pesquisou
+                    avaliacoesValidas.forEach(item => {
+                        let vUp = item.votos_up || 0; let vDown = item.votos_down || 0; let totalV = vUp + vDown; let stAtual = 'pendente'; let minVotosRequeridos = 5; 
+                        if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
+                        let ic = stAtual === 'aprovado' ? '✅' : (stAtual === 'abusivo' ? '🚨' : '⏳'); 
+                        let btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:#2e7d32;" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#c62828;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${item.nome}', ${item.preco}, ${isPremium})">✏️</button></div>`;
+                        
+                        let bgDestaque = (item.nome.toLowerCase() === estadoApp.filtroProduto.toLowerCase()) ? 'background:#e8f5e9; border: 2px solid #00e676;' : '';
+                        htmlLista += `<div class="item-card" style="${bgDestaque}"><div class="item-row"><div class="item-detalhes"><span class="item-nome">${ic} ${item.nome}</span></div><span class="item-preco">${sim} ${(item.preco * cotacao).toFixed(2)}</span></div>${btns}</div>`;
+                    });
+
+                    let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3><div class="lista-itens">${htmlLista}</div></div>`;
+                    pinoDinheiro.bindPopup(popupHtml);
                     camadaDePinos.addLayer(pinoDinheiro);
-                    continue; // Se filtrou, desenha só o $ e vai pra próxima
+                    continue; // Vai pro próximo local
                 }
 
-                if (estadoApp.perfil === 'turista' && !estadoApp.radarAtivo && !isPremium && !estadoApp.filtroProduto) { continue; }
+                // 2. LÓGICA NORMAL DO MAPA (Sem Filtro)
+                if (estadoApp.perfil === 'turista' && !estadoApp.radarAtivo && !isPremium) { continue; }
                 
                 let fotosLojistaHtml = ''; const lugarLojista = dadosL.itens.find(i => i.isLojistaPlace);
                 if (lugarLojista && lugarLojista.fotosLocal && lugarLojista.fotosLocal.length > 0) {
@@ -1064,6 +1153,7 @@
                     let vUp = item.votos_up || 0; let vDown = item.votos_down || 0; let totalV = vUp + vDown; let stAtual = 'pendente'; let minVotosRequeridos = 5; 
                     if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
                     if (stAtual === "abusivo") qAb++; if (stAtual === "aprovado") qAp++; 
+                    
                     let ic = stAtual === 'aprovado' ? '✅' : (stAtual === 'abusivo' ? '🚨' : '⏳'); 
                     let btns = '';
 
@@ -1078,11 +1168,9 @@
                 let txAbuso = tItens > 0 ? (qAb / tItens) * 100 : 0; let txAprov = tItens > 0 ? (qAp / tItens) * 100 : 0; 
                 let icP = iYellow; let st = `<p style="color:#f57c00;font-weight:700;font-size:13px;margin:0 0 10px 0;">${t.statusYellow}</p>`;
                 
-                if (isPremium) {
-                    icP = iPremium; st = `<p style="color:#f57c00;font-weight:900;font-size:13px;margin:0 0 10px 0;">⭐ Local Parceiro (Protegido)</p>`;
-                } else if (lugarLojista) {
-                    icP = iGreen; st = `<p style="color:#2e7d32;font-weight:700;font-size:13px;margin:0 0 10px 0;">✅ Negócio Local</p>`;
-                } else {
+                if (isPremium) { icP = iPremium; st = `<p style="color:#f57c00;font-weight:900;font-size:13px;margin:0 0 10px 0;">⭐ Local Parceiro (Protegido)</p>`; } 
+                else if (lugarLojista) { icP = iGreen; st = `<p style="color:#2e7d32;font-weight:700;font-size:13px;margin:0 0 10px 0;">✅ Negócio Local</p>`; } 
+                else {
                     if (txAbuso >= 30) { icP = iRed; st = `<p style="color:#c62828;font-weight:700;font-size:13px;margin:0 0 10px 0;">${t.statusRed} (${txAbuso.toFixed(0)}% Abusivo)</p>`; } 
                     else if (txAprov >= 60) { icP = iGreen; st = `<p style="color:#2e7d32;font-weight:700;font-size:13px;margin:0 0 10px 0;">${t.statusGreen} (${txAprov.toFixed(0)}% Seguro)</p>`; }
                 }
@@ -1095,8 +1183,7 @@
                 let estrelasStr = "⭐ Novo";
                 if(estadoApp.avaliacoes && estadoApp.avaliacoes[nomeL]) {
                     const revs = estadoApp.avaliacoes[nomeL];
-                    let soma = 0; revs.forEach(r => soma += r.nota);
-                    const media = (soma / revs.length).toFixed(1);
+                    let soma = 0; revs.forEach(r => soma += r.nota); const media = (soma / revs.length).toFixed(1);
                     estrelasStr = `⭐ ${media} (${revs.length} avaliações)`;
                 }
                 const btnVerAvaliacoes = `<button onclick="window.abrirAvaliacoes('${nomeL}')" class="btn-laranja" style="margin-top:8px; background:#1976d2; border-radius:8px; font-size:13px;">Ver / Deixar Avaliação</button>`;
@@ -1109,16 +1196,14 @@
             }
 
             for (const idPerg in estadoApp.perguntasAbertas) {
-                // FILTRO: Se tiver pesquisa rolando, esconde todos os fantasmas pra não poluir
+                // Se tiver filtro ativo no mapa, a gente oculta as dúvidas para não poluir a tela!
                 if (estadoApp.filtroProduto) continue;
 
                 const perg = estadoApp.perguntasAbertas[idPerg]; const autorP = perg.autorUid || '';
                 if (estadoApp.perfil === 'lojista' || (estadoApp.perfil === 'turista' && (!estadoApp.usuario || autorP !== estadoApp.usuario.uid))) continue; 
 
                 let iconUsado = iPurpleGhost; let corArea = '#9c27b0';      
-                if (perg.fotoSolicitada) { iconUsado = iCameraGhost; corArea = '#f57c00'; } 
-                else if (perg.fotoUrl) { iconUsado = iPhotoGhost; corArea = '#1976d2'; }
-
+                if (perg.fotoSolicitada) { iconUsado = iCameraGhost; corArea = '#f57c00'; } else if (perg.fotoUrl) { iconUsado = iPhotoGhost; corArea = '#1976d2'; }
                 const pinoDuvida = L.marker([perg.lat, perg.lng], {icon: iconUsado, zIndexOffset: 9999}); 
                 const resps = perg.respostas || []; const qtdResps = resps.length; const tipoBadge = perg.tipoLocal === 'Ambulante' ? '🚶 Ambulante' : '🏪 Fixo';
                 let htmlPopup = ''; const imgHtml = perg.fotoUrl ? `<img src="${perg.fotoUrl}" style="width:100%; max-height:120px; object-fit:cover; border-radius:8px; border: 1px solid #ccc; margin-bottom:8px;">` : '';
@@ -1126,20 +1211,16 @@
                 if(estadoApp.perfil === 'avaliador') {
                     const raio = perg.tipoLocal === 'Ambulante' ? 80 : 35;
                     const areaSegura = L.circle([perg.lat, perg.lng], { color: corArea, fillColor: corArea, fillOpacity: 0.15, radius: raio, weight: 2, dashArray: '5, 5', className: 'area-segura-anim' });
-                    
                     let btnFoto = '';
                     if (!perg.fotoUrl && !perg.fotoSolicitada) { btnFoto = `<button onclick="window.solicitarFoto('${idPerg}', '${autorP}', '${perg.nomeItem}', '${perg.nomeLocal}')" class="btn-laranja">${t.btnReqFoto}</button>`; } 
                     else if (perg.fotoSolicitada) { btnFoto = `<p style="font-size:12px; color:#f57c00; font-weight:bold;">⏳ Aguardando envio de foto...</p>`; }
-                    
                     htmlPopup = `<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:${corArea};">Dúvida na Área</h3><p style="margin:0 0 5px 0; font-size:14px;">Procurar por: <strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}<p style="font-size:12px; color:#f57c00; font-weight:bold;">Respostas: ${qtdResps}/3</p><button onclick="window.abrirModalResposta('${idPerg}')" style="background:#2e7d32; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:5px; width:100%;">Responder e Ganhar</button>${btnFoto}</div>`; 
-                    
                     areaSegura.bindPopup(htmlPopup); pinoDuvida.bindPopup(htmlPopup); 
                     camadaDePinos.addLayer(areaSegura); camadaDePinos.addLayer(pinoDuvida); 
                 } else {
                     let btnEnviarExtra = ''; let statusMsg = `<p style="font-size:12px; color:#f57c00; font-weight:bold;">⏳ Aguardando avaliadores...</p>`;
                     if(perg.fotoSolicitada) { statusMsg = `<p style="font-size:12px; color:#c62828; font-weight:bold; line-height:1.2; margin-bottom:5px;">🚨 Os avaliadores precisam de uma foto para ajudar!</p>`; btnEnviarExtra = `<button onclick="window.abrirEnvioFotoExtra('${idPerg}')" style="background:#f57c00; color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:5px;">📸 Enviar Foto Agora</button>`; }
                     htmlPopup = `<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:${corArea};">Sua Dúvida</h3><p style="margin:0 0 5px 0; font-size:14px;"><strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}${statusMsg}${btnEnviarExtra}</div>`;
-                    
                     pinoDuvida.bindPopup(htmlPopup); camadaDePinos.addLayer(pinoDuvida);
                 }
             }
