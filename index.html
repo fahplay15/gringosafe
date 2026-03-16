@@ -1182,6 +1182,7 @@
                 const isPremium = dadosL.itens.some(i => i.premium === true);
                 
                 const lugarLojista = dadosL.itens.find(i => i.isLojistaPlace);
+                // 🚨 A TRAVA DE SEGURANÇA: Só é dono se for o mesmo e-mail 🚨
                 const isDono = estadoApp.perfil === 'lojista' && lugarLojista && estadoApp.usuario && lugarLojista.autor === estadoApp.usuario.email;
 
                 if (estadoApp.filtroProduto) {
@@ -1210,6 +1211,7 @@
 
                     const safeLocalName = nomeL.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                     
+                    // 🚨 BOTÃO DE DESTACAR NO TOPO 🚨
                     let btnPromoverHtml = ''; 
                     if (isDono && !isPremium) {
                         btnPromoverHtml = `
@@ -1219,6 +1221,7 @@
                         </div>`;
                     }
 
+                    // 🚨 BOTÃO DE ADICIONAR PRODUTO NO FUNDO 🚨
                     let btnAdicionarItemHtml = '';
                     if (estadoApp.perfil === 'avaliador') { 
                         btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(76, 175, 80, 0.3);">➕ Cadastrar Novo Item Aqui</button>`; 
@@ -1273,6 +1276,7 @@
 
                 const safeLocalName = nomeL.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 
+                // 🚨 BOTÃO DE DESTACAR NO TOPO 🚨
                 let btnPromoverHtml = ''; 
                 if (isDono && !isPremium) {
                     btnPromoverHtml = `
@@ -1282,6 +1286,7 @@
                     </div>`;
                 }
 
+                // 🚨 BOTÃO DE ADICIONAR PRODUTO NO FUNDO 🚨
                 let btnAdicionarItemHtml = '';
                 if (estadoApp.perfil === 'avaliador') { 
                     btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(76, 175, 80, 0.3);">➕ Cadastrar Novo Item Aqui</button>`; 
