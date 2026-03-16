@@ -189,7 +189,6 @@
         @keyframes pulseBlueFoto { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(25, 118, 210, 0); transform: scale(1.15); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); transform: scale(1); } }
         @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.8); } 70% { box-shadow: 0 0 0 15px rgba(255, 193, 7, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
         
-        /* 🚨 MAPA DE CALOR: ANIMAÇÃO DA ETIQUETA 💲 🚨 */
         @keyframes pulseDolarAnim { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         .marker-dolar { background: #00e676; color: #004d40; font-weight: 900; border-radius: 20px; padding: 5px 10px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; font-family: 'Poppins', sans-serif; pointer-events: auto; }
         .pulse-dolar { animation: pulseDolarAnim 1.5s infinite ease-in-out; }
@@ -255,7 +254,7 @@
         </div>
         <div class="menu-item" id="btnMinhaCarteira" style="color: #2e7d32;"><span id="t_menuWallet">💰 Minha Carteira</span></div>
         <div class="menu-item" id="btnAreaLojista" style="color: #f57c00;"><span id="t_menuLojista">🏢 Área do Lojista</span></div>
-        <div class="menu-item" id="btnCarregarRoteiro" style="color: #9c27b0;"><span id="t_menuRoute">🗺️ Roteiro Premium Seguro</span></div>
+        <div class="menu-item" id="btnCarregarRoteiro" style="color: #9c27b0;"><span id="t_menuRoute">🗺️ Ligar Roteiro Premium</span></div>
         <div class="menu-item" id="btnLangToggle"><span id="t_menuLang">🌐 Idiomas</span><span>▼</span></div>
         <div class="sub-menu" id="langSubMenu">
             <div class="sub-menu-item ativo-option" id="lang_pt"><span>🇧🇷 Português</span><span class="check">✔️</span></div>
@@ -537,8 +536,6 @@
         const bindChange = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('change', fn); };
         const bindInput = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('input', fn); };
 
-        let rotaAtiva = null;
-
         function aplicarIdioma(lang) {
             estadoApp.idioma = lang; const t = dicionario[lang];
             document.querySelectorAll('.sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; });
@@ -716,30 +713,48 @@
         });
         bindClick('btnFecharNotificacoes', () => getEl('modalNotificacoes').style.display = 'none');
 
-        // 🚨 O BOTÃO DE RADAR (AGORA CONVERSA COM O FILTRO) 🚨
         bindClick('btnRadar', () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             if(estadoApp.radarAtivo) return;
-            
-            // Limpa o filtro de preços do mapa para não dar conflito
-            estadoApp.filtroProduto = null; 
-            getEl('btnLimparFiltro').style.display = 'none';
-
-            estadoApp.radarAtivo = true;
-            getEl('btnRadar').classList.add('radar-anim');
-            alert(dicionario[estadoApp.idioma].radarActive);
-            desenharPinos();
+            estadoApp.filtroProduto = null; getEl('btnLimparFiltro').style.display = 'none'; // Limpa mapa de calor
+            estadoApp.radarAtivo = true; getEl('btnRadar').classList.add('radar-anim'); alert(dicionario[estadoApp.idioma].radarActive); desenharPinos();
             setTimeout(() => { estadoApp.radarAtivo = false; getEl('btnRadar').classList.remove('radar-anim'); desenharPinos(); alert(dicionario[estadoApp.idioma].radarCool); }, 15000); 
         });
 
-        // LÓGICA DE LIMPEZA DO FILTRO NO TOPO DO MAPA
-        bindClick('btnLimparFiltro', () => { 
-            estadoApp.filtroProduto = null; 
-            getEl('btnLimparFiltro').style.display = 'none'; 
-            desenharPinos(); 
+        bindClick('btnLimparFiltro', () => { estadoApp.filtroProduto = null; getEl('btnLimparFiltro').style.display = 'none'; desenharPinos(); });
+
+        window.pesquisarComLocal = function(termo) {
+            getEl('modalBusca').style.display = 'none'; iniciarModoPosicionamento('ask');
+            setTimeout(() => { getEl('nomeProdutoPergunta').value = termo.charAt(0).toUpperCase() + termo.slice(1); const event = new Event('input'); getEl('nomeProdutoPergunta').dispatchEvent(event); }, 500);
+        };
+
+        // 🧠 ORÁCULO IA: Lê os dados do firebase e junta com offline 🧠
+        bindInput('nomeProdutoPergunta', (e) => {
+            const termo = e.target.value.toLowerCase().trim(); const estimativaEl = getEl('estimativaIA'); let achou = false;
+            if (termo.length > 2) {
+                let precosReais = [];
+                for (let loc in estadoApp.dadosHospedados) { estadoApp.dadosHospedados[loc].itens.forEach(it => { if (!it.isLojistaPlace && it.nome.toLowerCase().includes(termo)) precosReais.push(it.preco); }); }
+
+                const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
+                
+                if (precosReais.length > 0) {
+                    const minReal = Math.min(...precosReais); const maxReal = Math.max(...precosReais);
+                    const minF = (minReal * cotacao).toFixed(2); const maxF = (maxReal * cotacao).toFixed(2);
+                    estimativaEl.innerHTML = `🧠 <strong>Preço na Comunidade Local:</strong> ${sim} ${minF} a ${sim} ${maxF}`;
+                    estimativaEl.style.display = 'block'; achou = true;
+                } else {
+                    for (let key in basePrecosIA) {
+                        if (termo.includes(key)) {
+                            const min = (basePrecosIA[key].min * cotacao).toFixed(2); const max = (basePrecosIA[key].max * cotacao).toFixed(2);
+                            estimativaEl.innerHTML = `💡 <strong>Estimativa Global da IA:</strong> ${sim} ${min} a ${sim} ${max}`;
+                            estimativaEl.style.display = 'block'; achou = true; break;
+                        }
+                    }
+                }
+            }
+            if(!achou) estimativaEl.style.display = 'none';
         });
 
-        // 🧠 A LUPA DE BUSCA (A NOVA EXPERIÊNCIA DO TURISTA) 🧠
         bindClick('btnAbrirBusca', async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { 
@@ -751,42 +766,24 @@
         
         bindClick('btnFecharBusca', () => getEl('modalBusca').style.display = 'none');
 
-        window.pesquisarComLocal = function(termo) {
-            getEl('modalBusca').style.display = 'none'; iniciarModoPosicionamento('ask');
-            setTimeout(() => { getEl('nomeProdutoPergunta').value = termo.charAt(0).toUpperCase() + termo.slice(1); const event = new Event('input'); getEl('nomeProdutoPergunta').dispatchEvent(event); }, 500);
-        };
-
         bindInput('inputBusca', (e) => {
             const termo = e.target.value.toLowerCase().trim(); getEl('resultadosBusca').innerHTML = ''; if(!termo) return;
             const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
             
-            // 1. Cria o botão verde pra filtrar os preços direto no mapa se a palavra for grande o suficiente
             if (termo.length > 2) {
-                const divMapa = document.createElement('div'); divMapa.className = 'resultado-item';
-                divMapa.style.background = '#e8f5e9'; divMapa.style.borderLeft = '4px solid #2e7d32';
+                const divMapa = document.createElement('div'); divMapa.className = 'resultado-item'; divMapa.style.background = '#e8f5e9'; divMapa.style.borderLeft = '4px solid #2e7d32';
                 divMapa.innerHTML = `<span style="font-weight:bold; color:#2e7d32;">💲 Ver todos os preços de "${termo.toUpperCase()}" no mapa</span>`;
-                divMapa.onclick = () => {
-                    estadoApp.filtroProduto = termo;
-                    getEl('modalBusca').style.display = 'none';
-                    getEl('btnLimparFiltro').style.display = 'block';
-                    desenharPinos();
-                };
+                divMapa.onclick = () => { estadoApp.filtroProduto = termo; getEl('modalBusca').style.display = 'none'; getEl('btnLimparFiltro').style.display = 'block'; desenharPinos(); };
                 getEl('resultadosBusca').appendChild(divMapa);
             }
 
-            // 2. Busca na mente da IA (Física e Online)
             let achouIA = false;
             if (termo.length > 2) {
                 let precosReais = [];
-                for (let loc in estadoApp.dadosHospedados) {
-                    estadoApp.dadosHospedados[loc].itens.forEach(it => {
-                        if (!it.isLojistaPlace && it.nome.toLowerCase().includes(termo)) precosReais.push(it.preco);
-                    });
-                }
+                for (let loc in estadoApp.dadosHospedados) { estadoApp.dadosHospedados[loc].itens.forEach(it => { if (!it.isLojistaPlace && it.nome.toLowerCase().includes(termo)) precosReais.push(it.preco); }); }
 
                 if (precosReais.length > 0) {
-                    const minReal = Math.min(...precosReais); const maxReal = Math.max(...precosReais);
-                    const minF = (minReal * cotacao).toFixed(2); const maxF = (maxReal * cotacao).toFixed(2);
+                    const minReal = Math.min(...precosReais); const maxReal = Math.max(...precosReais); const minF = (minReal * cotacao).toFixed(2); const maxF = (maxReal * cotacao).toFixed(2);
                     const divAI = document.createElement('div'); divAI.className = 'resultado-item'; divAI.style.background = '#e8eaf6'; divAI.style.borderLeft = '4px solid #1976d2'; divAI.style.cursor = 'default';
                     divAI.innerHTML = `<span style="font-weight:700; color:#1565c0;">🧠 Preço na Comunidade Local</span><span style="font-size:16px; color:#333; font-weight:bold; margin-top:5px;">${sim} ${minF} a ${sim} ${maxF}</span><button class="btn-roxo" style="margin-top:10px; padding:8px; font-size:12px;" onclick="window.pesquisarComLocal('${termo}')">Não encontrou sua barraca? Pergunte!</button>`;
                     getEl('resultadosBusca').appendChild(divAI); achouIA = true;
@@ -802,28 +799,20 @@
                 }
             }
 
-            // 3. Mostra os produtos com preço literias já na barra de busca!
             let achouLocais = false;
             for (const nLocal in estadoApp.dadosHospedados) {
-                const dLugar = estadoApp.dadosHospedados[nLocal]; 
-                const iMatch = dLugar.itens.filter(i => !i.isLojistaPlace && i.nome.toLowerCase().includes(termo));
-                
+                const dLugar = estadoApp.dadosHospedados[nLocal]; const iMatch = dLugar.itens.filter(i => !i.isLojistaPlace && i.nome.toLowerCase().includes(termo));
                 if (iMatch.length > 0) {
                     achouLocais = true; 
                     iMatch.forEach(item => {
-                        const div = document.createElement('div'); div.className = 'resultado-item'; 
-                        const prc = (item.preco * cotacao).toFixed(2);
+                        const div = document.createElement('div'); div.className = 'resultado-item'; const prc = (item.preco * cotacao).toFixed(2);
                         div.innerHTML = `<span style="font-weight:700; color:#004d40;">🏪 ${nLocal}</span><span style="font-size:15px; color:#2e7d32; font-weight:bold; margin-top:2px;">${item.nome}: ${sim} ${prc}</span>`;
-                        div.onclick = () => { 
-                            estadoApp.filtroProduto = item.nome; getEl('btnLimparFiltro').style.display = 'block'; getEl('modalBusca').style.display = 'none'; 
-                            mapa.flyTo([dLugar.lat, dLugar.lng], 18, { duration: 1.5 }); desenharPinos(); 
-                        };
+                        div.onclick = () => { estadoApp.filtroProduto = item.nome; getEl('btnLimparFiltro').style.display = 'block'; getEl('modalBusca').style.display = 'none'; mapa.flyTo([dLugar.lat, dLugar.lng], 18, { duration: 1.5 }); desenharPinos(); };
                         getEl('resultadosBusca').appendChild(div);
                     });
                 }
             }
 
-            // 4. O Funil de Conversão (Se deu em nada)
             if (!achouLocais && !achouIA && termo.length > 2) {
                 const divVazio = document.createElement('div'); divVazio.className = 'resultado-item'; divVazio.style.textAlign = 'center'; divVazio.style.cursor = 'default';
                 divVazio.innerHTML = `<span style="color:#666; margin-bottom:10px; display:block;">Ainda não temos dados sobre "${termo}" por aqui.</span><button class="btn-roxo" style="padding:8px; font-size:13px;" onclick="window.pesquisarComLocal('${termo}')">Pergunte aos Moradores Agora!</button>`;
@@ -846,7 +835,6 @@
         const buscarLoc = () => mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 }); buscarLoc(); bindClick('btnMira', buscarLoc);
         mapa.on('locationfound', (e) => { if(pinoUsuario) mapa.removeLayer(pinoUsuario); pinoUsuario = L.marker(e.latlng).addTo(mapa).bindPopup("📍 Você está aqui!"); });
 
-        // ICONES OFICIAIS
         const iYellow = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iGreen = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iRed = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
@@ -885,7 +873,6 @@
                                 const tIngles = prev[0].className.split(',')[0].toLowerCase().trim(); 
                                 if(estadoApp.idioma === 'en') { if(inpNome) inpNome.value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } 
                                 else { const tTrad = dicionario['pt'][tIngles]; if(inpNome) inpNome.value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } 
-                                
                                 if(idNomeInput === 'nomeProdutoPergunta') { const event = new Event('input'); inpNome.dispatchEvent(event); }
                             }); 
                         }
@@ -895,17 +882,8 @@
         };
 
         let fotosLojista = []; const maxFotosLojista = 3;
-        const uploadFotoLojista = (e) => {
-            if (e.target.files.length > 0) {
-                if (fotosLojista.length >= maxFotosLojista) return alert("Você já atingiu o máximo de 3 fotos!");
-                comprimirImagemBase64(e.target.files[0], (base64) => { fotosLojista.push(base64); atualizarPreviewLojista(); });
-            }
-        };
-
-        function atualizarPreviewLojista() {
-            const container = getEl('previewFotosLojista'); container.innerHTML = '';
-            fotosLojista.forEach((f) => { container.innerHTML += `<img src="${f}">`; });
-        }
+        const uploadFotoLojista = (e) => { if (e.target.files.length > 0) { if (fotosLojista.length >= maxFotosLojista) return alert("Você já atingiu o máximo de 3 fotos!"); comprimirImagemBase64(e.target.files[0], (base64) => { fotosLojista.push(base64); atualizarPreviewLojista(); }); } };
+        function atualizarPreviewLojista() { const container = getEl('previewFotosLojista'); container.innerHTML = ''; fotosLojista.forEach((f) => { container.innerHTML += `<img src="${f}">`; }); }
 
         bindClick('btnCamLojista', () => getEl('inputCamLojista')?.click()); bindClick('btnGalLojista', () => getEl('inputGalLojista')?.click());
         bindChange('inputCamLojista', uploadFotoLojista); bindChange('inputGalLojista', uploadFotoLojista);
@@ -929,9 +907,7 @@
             else if (acaoPendente === 'addLojista') { fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex'; }
         });
 
-        bindClick('btnCancelar', () => { getEl('modalForm').style.display = 'none'; });
-        bindClick('btnCancelarLojista', () => { getEl('modalFormLojista').style.display = 'none'; });
-        
+        bindClick('btnCancelar', () => { getEl('modalForm').style.display = 'none'; }); bindClick('btnCancelarLojista', () => { getEl('modalFormLojista').style.display = 'none'; });
         bindClick('btnCamNormal', () => getEl('inputCamNormal')?.click()); bindClick('btnGalNormal', () => getEl('inputGalNormal')?.click());
         bindChange('inputCamNormal', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto')); bindChange('inputGalNormal', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto'));
 
@@ -941,8 +917,7 @@
             if(!localFinal || !nProd || !prc) return alert(t.alertaFalta);
             if (estadoApp.dadosHospedados[localFinal] && estadoApp.dadosHospedados[localFinal].itens.some(i => i.nome.toLowerCase() === nProd.toLowerCase())) return alert(t.alertaDuplicado);
             const centro = coordSelecionada || mapa.getCenter(); const aMail = estadoApp.usuario.email; const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc);
-            
-            await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: centro.lat, lng: centro.lng, status: "pendente", premium: false, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: aMail, data: new Date() });
+            await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: centro.lat, lng: centro.lng, status: "pendente", premium: false, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: aMail, tipoLocal: 'Fixo', data: new Date() });
             await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(0.25) }); estadoApp.saldo += 0.25; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
             getEl('modalForm').style.display = 'none'; alert(t.alertaSalvo);
         });
@@ -951,9 +926,7 @@
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const nomeNegocio = getEl('nomeLojistaInput').value.trim(); const catNegocio = getEl('categoriaLojista').value;
             if(!nomeNegocio) return alert("Por favor, digite o nome do seu negócio.");
-            
             const centro = coordSelecionada || mapa.getCenter(); const aMail = estadoApp.usuario.email;
-            
             await addDoc(collection(db, "precos"), { local: nomeNegocio, nome: "Acesso ao Local", preco: 0, isLojistaPlace: true, categoria: catNegocio, lat: centro.lat, lng: centro.lng, status: "aprovado", premium: estadoApp.isLojistaPremium, fotosLocal: fotosLojista, autor: aMail, data: new Date() });
             getEl('modalFormLojista').style.display = 'none'; alert("Seu negócio foi cadastrado com sucesso e já está no mapa como Negócio Local! Clique no pino para destacá-lo.");
         });
@@ -969,16 +942,9 @@
             if (localTipo === 'Ambulante') { localNome = 'Vendedor Ambulante da Região'; } else if (!localNome) { return alert("Digite o nome do local!"); }
             if(!itemDesejado) return alert("Digite o nome do item!");
             
-            const centro = coordSelecionada || mapa.getCenter(); 
-            let fuzzyLat = centro.lat; let fuzzyLng = centro.lng;
-
-            if (localTipo === 'Ambulante') {
-                const angle = Math.random() * Math.PI * 2; const radius = 0.0004 + (Math.random() * 0.0004); 
-                fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle));
-            } else {
-                const angle = Math.random() * Math.PI * 2; const radius = 0.0001 + (Math.random() * 0.00015); 
-                fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle));
-            }
+            const centro = coordSelecionada || mapa.getCenter(); let fuzzyLat = centro.lat; let fuzzyLng = centro.lng;
+            if (localTipo === 'Ambulante') { const angle = Math.random() * Math.PI * 2; const radius = 0.0004 + (Math.random() * 0.0004); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); } 
+            else { const angle = Math.random() * Math.PI * 2; const radius = 0.0001 + (Math.random() * 0.00015); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); }
             
             await addDoc(collection(db, "perguntas"), { nomeItem: itemDesejado, nomeLocal: localNome, tipoLocal: localTipo, lat: fuzzyLat, lng: fuzzyLng, status: "aberta", respostas: [], autorUid: estadoApp.usuario.uid, fotoUrl: fotoAtualBase64, fotoSolicitada: false, data: new Date() });
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
@@ -990,18 +956,11 @@
             try { await updateDoc(doc(db, "perguntas", idPergunta), { fotoSolicitada: true }); if (autorUid && autorUid !== 'undefined') { await addDoc(collection(db, "notificacoes"), { userId: autorUid, tipo: 'foto_req', titulo: "📷 Foto Solicitada!", nomeItem: nomeItem, nomeLocal: nomeLocal, lida: false, data: new Date() }); } alert("Solicitação enviada! O turista foi notificado."); } catch(e) { console.log(e); }
         };
 
-        let idPerguntaParaFotoExtra = null;
-        window.abrirEnvioFotoExtra = function(idPergunta) { idPerguntaParaFotoExtra = idPergunta; getEl('inputCamExtra').click(); };
-        const uploadFotoExtra = async (e) => {
-            if (e.target.files.length > 0 && idPerguntaParaFotoExtra) {
-                comprimirImagemBase64(e.target.files[0], async (base64) => {
-                    await updateDoc(doc(db, "perguntas", idPerguntaParaFotoExtra), { fotoUrl: base64, fotoSolicitada: false });
-                    alert("📸 Foto enviada com sucesso! Os avaliadores já podem ver."); idPerguntaParaFotoExtra = null;
-                });
-            }
-        };
+        let idPerguntaParaFotoExtra = null; window.abrirEnvioFotoExtra = function(idPergunta) { idPerguntaParaFotoExtra = idPergunta; getEl('inputCamExtra').click(); };
+        const uploadFotoExtra = async (e) => { if (e.target.files.length > 0 && idPerguntaParaFotoExtra) { comprimirImagemBase64(e.target.files[0], async (base64) => { await updateDoc(doc(db, "perguntas", idPerguntaParaFotoExtra), { fotoUrl: base64, fotoSolicitada: false }); alert("📸 Foto enviada com sucesso! Os avaliadores já podem ver."); idPerguntaParaFotoExtra = null; }); } };
         bindChange('inputCamExtra', uploadFotoExtra); bindChange('inputGalExtra', uploadFotoExtra);
 
+        // 🚨 NOVO: RESPOSTA DO CONSENSO AGORA SALVA TUDO (FIXO E AMBULANTE) 🚨
         window.resolverPerguntaConsenso = async function(idPergunta, pergData, respostas) {
             respostas.sort((a, b) => a.tempo - b.tempo); let vencedor = respostas[0]; let precoFinal = vencedor.preco;
             if (respostas.length >= 3) {
@@ -1011,7 +970,10 @@
             }
             try {
                 await updateDoc(doc(db, "perguntas", idPergunta), { status: "respondida" });
-                if (pergData.tipoLocal === 'Fixo') { await addDoc(collection(db, "precos"), { local: pergData.nomeLocal, nome: pergData.nomeItem, preco: precoFinal, categoria: "Serviço", lat: pergData.lat, lng: pergData.lng, status: "pendente", premium: false, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: "Consenso Comunitário", data: new Date() }); }
+                
+                // MÁGICA: Agora salva Fixo E Ambulante no banco de dados geral!
+                await addDoc(collection(db, "precos"), { local: pergData.nomeLocal, nome: pergData.nomeItem, preco: precoFinal, categoria: "Serviço", lat: pergData.lat, lng: pergData.lng, status: "pendente", premium: false, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: "Consenso Comunitário", tipoLocal: pergData.tipoLocal || 'Fixo', data: new Date() });
+                
                 await updateDoc(doc(db, "usuarios", vencedor.uid), { saldo: increment(1.00) });
                 if (pergData.autorUid && pergData.autorUid !== 'undefined') { await addDoc(collection(db, "notificacoes"), { userId: pergData.autorUid, tipo: 'resposta', titulo: "✅ Dúvida Respondida!", nomeItem: pergData.nomeItem, nomeLocal: pergData.nomeLocal, precoReal: precoFinal, lat: pergData.lat, lng: pergData.lng, lida: false, data: new Date() }); }
             } catch(e) { console.log(e); }
@@ -1049,7 +1011,6 @@
 
         bindClick('btnCancelarEdicao', () => getEl('modalEditar').style.display = 'none');
         
-        // ESCUDO KYC
         window.abrirEdicao = function(id, nome, precoAtualBRL, isPremium) { 
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
             if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
@@ -1082,10 +1043,15 @@
             } catch(e) { console.error(e); }
         };
 
+        // 🚨 NOVO: GERADOR DE PINOS DE AMBULANTES NO MAPA 🚨
         onSnapshot(collection(db, "precos"), (snapshot) => {
             estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
             snapshot.forEach((doc) => {
-                const item = doc.data(); const nomeL = item.local || "Desconhecido"; 
+                const item = doc.data(); 
+                
+                // MÁGICA: Se for ambulante, ele ganha um pino próprio espalhado na região usando o ID dele!
+                const nomeL = item.tipoLocal === 'Ambulante' ? `🚶 Ambulante (${doc.id.substring(0,4)})` : (item.local || "Desconhecido"); 
+                
                 if (!estadoApp.dadosHospedados[nomeL]) estadoApp.dadosHospedados[nomeL] = { lat: item.lat, lng: item.lng, itens: [] };
                 estadoApp.dadosHospedados[nomeL].itens.push({ ...item, id: doc.id });
                 if(!item.isLojistaPlace) {
@@ -1093,7 +1059,11 @@
                     estadoApp.mediaPrecos[nl] += item.preco; estadoApp.contagemPrecos[nl]++;
                 }
             });
-            let h = `<option value="NEW" id="t_optNewPlace">${dicionario[estadoApp.idioma].optNewPlace}</option>`; Object.keys(estadoApp.dadosHospedados).sort().forEach(n => { if(n !== "Desconhecido") h += `<option value="${n}">${n}</option>`; }); getEl('selectLocal').innerHTML = h;
+            
+            // Tira os ambulantes da lista de criação manual do formulário "+"
+            let h = `<option value="NEW" id="t_optNewPlace">${dicionario[estadoApp.idioma].optNewPlace}</option>`; 
+            Object.keys(estadoApp.dadosHospedados).sort().forEach(n => { if(n !== "Desconhecido" && !n.includes("🚶 Ambulante")) h += `<option value="${n}">${n}</option>`; }); 
+            getEl('selectLocal').innerHTML = h;
             desenharPinos();
         });
 
@@ -1101,7 +1071,6 @@
             estadoApp.perguntasAbertas = {}; snapshot.forEach((doc) => { const p = doc.data(); if(p.status === "aberta") estadoApp.perguntasAbertas[doc.id] = p; }); desenharPinos(); 
         });
 
-        // ======================= MAPA DE CALOR E FILTRO (O CÓDIGO DA MAGIA) =======================
         function desenharPinos() {
             camadaDePinos.clearLayers(); marcadoresNoMapa = {}; const t = dicionario[estadoApp.idioma]; const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
 
@@ -1112,35 +1081,26 @@
                 
                 const isPremium = dadosL.itens.some(i => i.premium === true);
 
-                // 🚨 1. SE TEM FILTRO DE PREÇO ATIVO: SÓ DESENHA A ETIQUETA E VAI PRO PRÓXIMO 🚨
                 if (estadoApp.filtroProduto) {
                     const itemFiltrado = avaliacoesValidas.find(i => i.nome.toLowerCase().includes(estadoApp.filtroProduto.toLowerCase()));
-                    if (!itemFiltrado) continue; // Pula essa barraca se ela não vende o item pesquisado!
-                    
+                    if (!itemFiltrado) continue; 
                     const precoLocal = (itemFiltrado.preco * cotacao).toFixed(2);
-                    
-                    // A Plaquinha de Dinheiro do mapa de calor
                     const icDolar = L.divIcon({ className: 'marker-pergunta-container', html: `<div class="marker-dolar pulse-dolar">💲 ${sim} ${precoLocal}</div>`, iconSize: [80, 30], iconAnchor: [40, 15] });
                     const pinoDinheiro = L.marker([dadosL.lat, dadosL.lng], {icon: icDolar, zIndexOffset: 9999});
                     
-                    // Constrói a lista inteira dentro do balão e DESTACA com a borda verde o item que o turista pesquisou
                     avaliacoesValidas.forEach(item => {
                         let vUp = item.votos_up || 0; let vDown = item.votos_down || 0; let totalV = vUp + vDown; let stAtual = 'pendente'; let minVotosRequeridos = 5; 
                         if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
                         let ic = stAtual === 'aprovado' ? '✅' : (stAtual === 'abusivo' ? '🚨' : '⏳'); 
                         let btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:#2e7d32;" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#c62828;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${item.nome}', ${item.preco}, ${isPremium})">✏️</button></div>`;
-                        
                         let bgDestaque = (item.nome.toLowerCase() === estadoApp.filtroProduto.toLowerCase()) ? 'background:#e8f5e9; border: 2px solid #00e676;' : '';
                         htmlLista += `<div class="item-card" style="${bgDestaque}"><div class="item-row"><div class="item-detalhes"><span class="item-nome">${ic} ${item.nome}</span></div><span class="item-preco">${sim} ${(item.preco * cotacao).toFixed(2)}</span></div>${btns}</div>`;
                     });
 
                     let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3><div class="lista-itens">${htmlLista}</div></div>`;
-                    pinoDinheiro.bindPopup(popupHtml);
-                    camadaDePinos.addLayer(pinoDinheiro);
-                    continue; // Vai pro próximo local
+                    pinoDinheiro.bindPopup(popupHtml); camadaDePinos.addLayer(pinoDinheiro); continue; 
                 }
 
-                // 2. LÓGICA NORMAL DO MAPA (Sem Filtro)
                 if (estadoApp.perfil === 'turista' && !estadoApp.radarAtivo && !isPremium) { continue; }
                 
                 let fotosLojistaHtml = ''; const lugarLojista = dadosL.itens.find(i => i.isLojistaPlace);
@@ -1153,7 +1113,6 @@
                     let vUp = item.votos_up || 0; let vDown = item.votos_down || 0; let totalV = vUp + vDown; let stAtual = 'pendente'; let minVotosRequeridos = 5; 
                     if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
                     if (stAtual === "abusivo") qAb++; if (stAtual === "aprovado") qAp++; 
-                    
                     let ic = stAtual === 'aprovado' ? '✅' : (stAtual === 'abusivo' ? '🚨' : '⏳'); 
                     let btns = '';
 
@@ -1196,7 +1155,6 @@
             }
 
             for (const idPerg in estadoApp.perguntasAbertas) {
-                // Se tiver filtro ativo no mapa, a gente oculta as dúvidas para não poluir a tela!
                 if (estadoApp.filtroProduto) continue;
 
                 const perg = estadoApp.perguntasAbertas[idPerg]; const autorP = perg.autorUid || '';
