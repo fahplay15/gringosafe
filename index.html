@@ -1140,16 +1140,14 @@
             try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
         };
 
-        // 🚨 BLINDAGEM MESTRE DE DADOS 🚨
+        // 🚨 BLINDAGEM DE DADOS (EVITA CRASH NO MAPA) 🚨
         onSnapshot(collection(db, "precos"), (snapshot) => {
             estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
             snapshot.forEach((doc) => {
                 const item = doc.data(); 
                 
-                // Evita crash de dados zumbis do passado
                 const nomeItemSeguro = item.nome || "Item Não Nomeado";
                 const precoSeguro = item.preco || 0;
-                
                 const nomeL = item.tipoLocal === 'Ambulante' ? `🚶 Ambulante (${doc.id.substring(0,4)})` : (item.local || "Desconhecido"); 
                 
                 if (!estadoApp.dadosHospedados[nomeL]) estadoApp.dadosHospedados[nomeL] = { lat: item.lat, lng: item.lng, itens: [] };
@@ -1172,19 +1170,22 @@
             estadoApp.perguntasAbertas = {}; snapshot.forEach((doc) => { const p = doc.data(); if(p.status === "aberta") estadoApp.perguntasAbertas[doc.id] = p; }); desenharPinos(); 
         });
 
-        // 🚨 DESENHO DE MAPA BLINDADO 🚨
+        // 🚨 DESENHO DO MAPA COM HIERARQUIA VISUAL E PROTEÇÃO DE CONTA 🚨
         function desenharPinos() {
             camadaDePinos.clearLayers(); marcadoresNoMapa = {}; const t = dicionario[estadoApp.idioma]; const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
 
             for (const nomeL in estadoApp.dadosHospedados) {
                 const dadosL = estadoApp.dadosHospedados[nomeL]; 
                 
-                // SE O PINO NÃO TEM COORDENADA (Dados corrompidos), IGNORA ELE PARA NÃO TRAVAR O APP
                 if (dadosL.lat == null || dadosL.lng == null) continue; 
                 
                 const avaliacoesValidas = dadosL.itens.filter(i => !i.isLojistaPlace);
                 let tItens = avaliacoesValidas.length; let qAb = 0; let qAp = 0; let htmlLista = '';
                 const isPremium = dadosL.itens.some(i => i.premium === true);
+                
+                const lugarLojista = dadosL.itens.find(i => i.isLojistaPlace);
+                // 🚨 A TRAVA DE SEGURANÇA: Só é dono se for o mesmo e-mail 🚨
+                const isDono = estadoApp.perfil === 'lojista' && lugarLojista && estadoApp.usuario && lugarLojista.autor === estadoApp.usuario.email;
 
                 if (estadoApp.filtroProduto) {
                     const itemFiltrado = avaliacoesValidas.find(i => (i.nome || "").toLowerCase().includes(estadoApp.filtroProduto.toLowerCase()));
@@ -1211,18 +1212,38 @@
                     });
 
                     const safeLocalName = nomeL.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                    let btnAdicionarItem = '';
-                    if (estadoApp.perfil === 'avaliador') { 
-                        btnAdicionarItem = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(76, 175, 80, 0.3);">➕ Cadastrar Novo Item Aqui</button>`; 
+                    
+                    // 🚨 BOTÃO DE DESTACAR NO TOPO 🚨
+                    let btnPromoverHtml = ''; 
+                    if (isDono && !isPremium) {
+                        btnPromoverHtml = `
+                        <div style="background:#fff3e0; border:2px dashed #ff9800; padding:10px; border-radius:10px; margin-bottom:15px; text-align:center;">
+                            <p style="font-size:11px; color:#f57c00; margin:0 0 5px 0; font-weight:bold;">Sua loja é invisível no radar comum!</p>
+                            <button onclick="event.stopPropagation(); window.prepararPromocao('${safeLocalName}')" style="width:100%; padding:12px; background:linear-gradient(135deg, #ffc107, #ff9800); color:#000; font-weight:900; font-size:14px; border:none; border-radius:8px; cursor:pointer; box-shadow:0 4px 10px rgba(255, 193, 7, 0.4); animation: pulseGold 2s infinite;">⭐ DESTACAR MEU NEGÓCIO</button>
+                        </div>`;
                     }
 
-                    let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3><div class="lista-itens">${htmlLista}</div>${btnAdicionarItem}</div>`;
+                    // 🚨 BOTÃO DE ADICIONAR PRODUTO NO FUNDO 🚨
+                    let btnAdicionarItemHtml = '';
+                    if (estadoApp.perfil === 'avaliador') { 
+                        btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(76, 175, 80, 0.3);">➕ Cadastrar Novo Item Aqui</button>`; 
+                    } else if (isDono) {
+                        btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#004d40; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(0, 77, 64, 0.3);">📋 Adicionar Produto ao Menu</button>`;
+                    }
+
+                    let popupHtml = `<div class="popup-info">
+                        <h3>🏪 ${nomeL}</h3>
+                        ${btnPromoverHtml}
+                        <div class="lista-itens">${htmlLista}</div>
+                        ${btnAdicionarItemHtml}
+                    </div>`;
+                    
                     pinoDinheiro.bindPopup(popupHtml); camadaDePinos.addLayer(pinoDinheiro); continue; 
                 }
 
                 if (estadoApp.perfil === 'turista' && !estadoApp.radarAtivo && !isPremium) { continue; }
                 
-                let fotosLojistaHtml = ''; const lugarLojista = dadosL.itens.find(i => i.isLojistaPlace);
+                let fotosLojistaHtml = ''; 
                 if (lugarLojista && lugarLojista.fotosLocal && lugarLojista.fotosLocal.length > 0) {
                     fotosLojistaHtml = '<div class="galeria-lojista">'; lugarLojista.fotosLocal.forEach(f => { fotosLojistaHtml += `<img src="${f}">`; }); fotosLojistaHtml += '</div>';
                 }
@@ -1256,16 +1277,23 @@
                 }
 
                 const safeLocalName = nomeL.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                let btnPromover = ''; let btnAdicionarItem = '';
                 
-                if (estadoApp.perfil === 'lojista' && !isPremium && lugarLojista && lugarLojista.autor === (estadoApp.usuario ? estadoApp.usuario.email : '')) {
-                    btnPromover = `<button onclick="event.stopPropagation(); window.prepararPromocao('${safeLocalName}')" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:linear-gradient(135deg, #ffc107, #ff9800); color:#000; font-weight:900; font-size:14px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(255, 193, 7, 0.4);">⭐ DESTACAR MEU NEGÓCIO</button>`;
+                // 🚨 BOTÃO DE DESTACAR NO TOPO 🚨
+                let btnPromoverHtml = ''; 
+                if (isDono && !isPremium) {
+                    btnPromoverHtml = `
+                    <div style="background:#fff3e0; border:2px dashed #ff9800; padding:10px; border-radius:10px; margin-bottom:15px; text-align:center;">
+                        <p style="font-size:11px; color:#f57c00; margin:0 0 5px 0; font-weight:bold;">Sua loja é invisível no radar comum!</p>
+                        <button onclick="event.stopPropagation(); window.prepararPromocao('${safeLocalName}')" style="width:100%; padding:12px; background:linear-gradient(135deg, #ffc107, #ff9800); color:#000; font-weight:900; font-size:14px; border:none; border-radius:8px; cursor:pointer; box-shadow:0 4px 10px rgba(255, 193, 7, 0.4); animation: pulseGold 2s infinite;">⭐ DESTACAR MEU NEGÓCIO</button>
+                    </div>`;
                 }
 
-                if (estadoApp.perfil === 'avaliador') {
-                    btnAdicionarItem = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(76, 175, 80, 0.3);">➕ Cadastrar Novo Item Aqui</button>`;
-                } else if (estadoApp.perfil === 'lojista' && lugarLojista && lugarLojista.autor === (estadoApp.usuario ? estadoApp.usuario.email : '')) {
-                    btnAdicionarItem = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-bottom:8px; padding:12px; background:#004d40; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(0, 77, 64, 0.3);">📋 Adicionar Produto ao Menu</button>`;
+                // 🚨 BOTÃO DE ADICIONAR PRODUTO NO FUNDO 🚨
+                let btnAdicionarItemHtml = '';
+                if (estadoApp.perfil === 'avaliador') { 
+                    btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(76, 175, 80, 0.3);">➕ Cadastrar Novo Item Aqui</button>`; 
+                } else if (isDono) {
+                    btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#004d40; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(0, 77, 64, 0.3);">📋 Adicionar Produto ao Menu</button>`;
                 }
 
                 let estrelasStr = "⭐ Novo";
@@ -1273,12 +1301,23 @@
                     const revs = estadoApp.avaliacoes[nomeL]; let soma = 0; revs.forEach(r => soma += r.nota); const media = (soma / revs.length).toFixed(1);
                     estrelasStr = `⭐ ${media} (${revs.length} avaliações)`;
                 }
-                const btnVerAvaliacoes = `<button onclick="event.stopPropagation(); window.abrirAvaliacoes('${safeLocalName}')" style="width:100%; margin-bottom:5px; padding:10px; background:#1976d2; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(25, 118, 210, 0.3);">💬 Ver / Deixar Avaliação</button>`;
+                const btnVerAvaliacoesHtml = `<button onclick="event.stopPropagation(); window.abrirAvaliacoes('${safeLocalName}')" style="width:100%; margin-bottom:5px; padding:10px; background:#1976d2; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(25, 118, 210, 0.3);">💬 Ver / Deixar Avaliação</button>`;
 
                 if (htmlLista === '' && !lugarLojista) continue; 
 
+                let popupHtml = `<div class="popup-info">
+                    <h3>🏪 ${nomeL}</h3>
+                    <div style="font-size:12px; color:#555; font-weight:bold; margin-bottom:10px;">${estrelasStr}</div>
+                    ${btnPromoverHtml}
+                    ${fotosLojistaHtml}
+                    ${st}
+                    <div class="lista-itens">${htmlLista}</div>
+                    ${btnAdicionarItemHtml}
+                    ${btnVerAvaliacoesHtml}
+                </div>`;
+
                 const pino = L.marker([dadosL.lat, dadosL.lng], {icon: icP}); 
-                pino.bindPopup(`<div class="popup-info"><h3>🏪 ${nomeL}</h3><div style="font-size:12px; color:#555; font-weight:bold; margin-bottom:10px;">${estrelasStr}</div>${fotosLojistaHtml}${st}<div class="lista-itens">${htmlLista}</div>${btnPromover}${btnAdicionarItem}${btnVerAvaliacoes}</div>`); 
+                pino.bindPopup(popupHtml); 
                 camadaDePinos.addLayer(pino); marcadoresNoMapa[nomeL] = pino;
             }
 
@@ -1287,7 +1326,6 @@
 
                 const perg = estadoApp.perguntasAbertas[idPerg]; const autorP = perg.autorUid || '';
                 
-                // BLINDAGEM GPS DA PERGUNTA
                 if (!perg.lat || !perg.lng) continue; 
 
                 if (estadoApp.perfil === 'lojista' || (estadoApp.perfil === 'turista' && (!estadoApp.usuario || autorP !== estadoApp.usuario.uid))) continue; 
