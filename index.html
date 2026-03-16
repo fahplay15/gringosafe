@@ -160,7 +160,7 @@
         body.modo-turista .btn-perguntar { display: flex !important; }
         body.modo-turista .notif-container { display: flex !important; }
         body.modo-turista .btn-radar { display: flex !important; }
-        body.modo-turista .btn-denuncia { display: inline-block !important; } /* Turista pode denunciar */
+        body.modo-turista .btn-denuncia { display: inline-block !important; } 
         
         body.modo-avaliador .notif-container { display: none !important; }
         body.modo-avaliador .btn-perguntar { display: none !important; }
@@ -245,6 +245,7 @@
             <button class="btn-sair" id="btnLogout" style="display: none;"><span id="t_btnLogout">Sair da Conta</span></button>
         </div>
         <div class="menu-item" id="btnMinhaCarteira" style="color: #2e7d32;"><span id="t_menuWallet">💰 Minha Carteira</span></div>
+        
         <div class="menu-item" id="btnAreaLojista" style="color: #f57c00;"><span id="t_menuLojista">🏢 Área do Lojista</span></div>
         <div class="menu-item" id="btnCarregarRoteiro" style="color: #9c27b0;"><span id="t_menuRoute">🗺️ Roteiro Premium Seguro</span></div>
         <div class="menu-item" id="btnLangToggle"><span id="t_menuLang">🌐 Idiomas</span><span>▼</span></div>
@@ -339,7 +340,9 @@
     <div class="modal-overlay" id="modalFormLojista">
         <div class="modal-content">
             <h3 style="color:#f57c00; margin-bottom:15px;">🏢 Cadastrar Meu Negócio</h3>
+            
             <input type="text" id="nomeLojistaInput" class="input-form" placeholder="Nome Oficial do Estabelecimento">
+            
             <select id="categoriaLojista" class="input-form">
                 <option value="Restaurante">🍽️ Restaurante</option>
                 <option value="Bar">🍻 Bar / Pub</option>
@@ -347,12 +350,15 @@
                 <option value="Quiosque">🏖️ Quiosque de Praia</option>
                 <option value="Turismo">🚤 Agência de Passeios / Turismo</option>
             </select>
+
             <div style="font-size:13px; color:#555; margin:15px 0 5px 0; font-weight:600;">Adicione até 3 fotos para atrair turistas:</div>
             <div class="linha-botoes-foto">
                 <button class="btn-laranja" id="btnCamLojista" style="flex: 1;">📸 Câmera</button>
                 <button class="btn-laranja" id="btnGalLojista" style="flex: 1; background: #e0e0e0; color: #333;">🖼️ Galeria</button>
             </div>
+            
             <div id="previewFotosLojista" class="galeria-lojista"></div>
+
             <button class="btn-salvar" id="btnSalvarLojista" style="background:#f57c00; margin-top:15px;">Salvar Meu Negócio no Mapa</button>
             <button class="btn-cancelar" id="btnCancelarLojista">Cancelar</button>
         </div>
@@ -500,7 +506,10 @@
 
             setTxt('t_splashSub', t.splashSub); setTxt('t_menuRoute', t.menuRoute); setTxt('t_menuLang', t.menuLang); setTxt('t_menuChangeRole', t.menuChangeRole); setTxt('t_level', t.level); setTxt('t_formTitle', t.formTitle); setTxt('t_catDrink', t.catDrink); setTxt('t_catFood', t.catFood); setTxt('t_catService', t.catService); setTxt('t_catTicket', t.catTicket); setTxt('t_btnCancel', t.btnCancel); setTxt('t_optNewPlace', t.optNewPlace); setTxt('t_searchTitle', t.searchTitle); setTxt('t_searchClose', t.searchClose); setTxt('t_roleTitle', t.roleTitle); setTxt('t_roleTourist', t.roleTourist); setTxt('t_roleTouristSub', t.roleTouristSub); setTxt('t_roleLocal', t.roleLocal); setTxt('t_roleLocalSub', t.roleLocalSub); setTxt('t_btnLogin', t.btnLogin); setTxt('t_btnLogout', t.btnLogout); setTxt('t_pwTitle', t.pwTitle); setTxt('t_pwSub', t.pwSub); setTxt('t_pwPlan1', t.pwPlan1); setTxt('t_pwPlan2', t.pwPlan2); setTxt('t_pwPlan3', t.pwPlan3); setTxt('t_pwCancel', t.pwCancel); setTxt('t_askTitle', t.askTitle); setTxt('t_askSub', t.askSub); setTxt('t_btnSendAsk', t.btnSendAsk); setTxt('t_btnCancelAsk', t.btnCancelAsk); setTxt('t_ansTitle', t.ansTitle); setTxt('t_btnCancelAns', t.btnCancelAns); setTxt('t_btnAddCam', t.btnAddCam); setTxt('t_btnAddGal', t.btnAddGal); setTxt('t_btnAskCam', t.btnAskCam); setTxt('t_btnAskGal', t.btnAskGal); setTxt('t_optFixo', t.optFixo); setTxt('t_optAmbulante', t.optAmbulante); setTxt('t_lockTitle', t.lockTitle); setTxt('t_lockSub', t.lockSub); setTxt('t_lockBtn', t.lockBtn); setTxt('t_notifTitle', t.notifTitle); setTxt('t_posHint', t.posHint); setTxt('t_btnPosCancel', t.btnPosCancel); setTxt('t_btnPosConfirm', t.btnPosConfirm); setPlc('nomeLocalInput', t.placeNewLocal); setPlc('nomeProduto', t.placeName); setPlc('precoProduto', t.placePrice); setPlc('inputBusca', t.searchPlaceholder); setPlc('nomeLocalPergunta', t.placeNewLocalAsk);
             setTxt('t_menuLojista', t.menuLojista); setTxt('t_btnRadarText', t.radarBtn); setTxt('t_lojistaTitle', t.lojistaTitle); setTxt('t_lojistaSub', t.lojistaSub); setTxt('t_roleLojista', t.roleLojista); setTxt('t_roleLojistaSub', t.roleLojistaSub);
+            
+            // Textos novos da Carteira
             setTxt('t_menuWallet', t.menuWallet); setTxt('t_walletTitle', t.walletTitle); setTxt('t_walletSub', t.walletSub); setTxt('t_btnWithdraw', t.btnWithdraw);
+
             getEl('langSubMenu')?.classList.remove('open'); getEl('sideMenu')?.classList.remove('open'); if(getEl('menuOverlay')) getEl('menuOverlay').style.display = 'none';
             desenharPinos(); 
         }
@@ -582,6 +591,7 @@
             }
         });
 
+        // ======================= SISTEMA DE SAQUE PIX =======================
         bindClick('btnMinhaCarteira', () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none';
@@ -593,17 +603,29 @@
 
         bindClick('btnSacarPix', async () => {
             if(!estadoApp.usuario) return;
-            const chavePix = getEl('inputChavePix').value.trim(); const saldoBRL = estadoApp.saldo; 
+            const chavePix = getEl('inputChavePix').value.trim();
+            const saldoBRL = estadoApp.saldo; // Saldo real interno sempre em BRL base
+
             if (saldoBRL < 20) return alert(`Saldo insuficiente!\nVocê precisa acumular o equivalente a R$ 20,00 para sacar. Continue avaliando locais no mapa!`);
             if (!chavePix) return alert("Por favor, digite a sua Chave PIX.");
 
             try {
+                // Deduz saldo no banco
                 await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(-saldoBRL) });
-                estadoApp.saldo = 0; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`); setTxt('saldoCarteiraDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`);
+                // Zera localmente
+                estadoApp.saldo = 0;
+                setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`);
+                setTxt('saldoCarteiraDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`);
+                
                 alert(`✅ Saque Solicitado!\n\nUm PIX no valor de R$ ${saldoBRL.toFixed(2)} foi programado para a chave:\n${chavePix}\n\nO valor entrará na sua conta em até 2 horas úteis.`);
-                getEl('inputChavePix').value = ''; getEl('modalCarteira').style.display = 'none';
-            } catch(e) { console.error(e); alert("Erro ao solicitar saque. Tente novamente mais tarde."); }
+                getEl('inputChavePix').value = '';
+                getEl('modalCarteira').style.display = 'none';
+            } catch(e) {
+                console.error(e);
+                alert("Erro ao solicitar saque. Tente novamente mais tarde.");
+            }
         });
+        // ====================================================================
 
         bindClick('btnAbrirNotificacoes', () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
@@ -851,7 +873,7 @@
         bindClick('btnCancelarPergunta', () => getEl('modalPergunta').style.display = 'none');
         bindClick('btnCamPergunta', () => getEl('inputCamPergunta')?.click()); bindClick('btnGalPergunta', () => getEl('inputGalPergunta')?.click());
         bindChange('inputCamPergunta', (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta')); 
-        bindChange('inputGalPergunta', (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta');
+        bindChange('inputGalPergunta', (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta'));
 
         bindClick('btnEnviarPergunta', async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
@@ -939,6 +961,7 @@
 
         bindClick('btnCancelarEdicao', () => getEl('modalEditar').style.display = 'none');
         
+        // ESCUDO KYC
         window.abrirEdicao = function(id, nome, precoAtualBRL, isPremium) { 
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
             if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
@@ -959,16 +982,6 @@
             for (const loc in estadoApp.dadosHospedados) { const iLocal = estadoApp.dadosHospedados[loc].itens.find(i => i.id === id); if (iLocal) { const upList = iLocal.votaram_up || []; const downList = iLocal.votaram_down || []; if (upList.includes(uid) || downList.includes(uid)) jaVotou = true; break; } }
             if (jaVotou) return alert(dicionario[estadoApp.idioma].alertVoted);
             try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
-        };
-
-        window.promoverLugar = async function(nomeLocal) {
-            try {
-                const q = query(collection(db, "precos"), where("local", "==", nomeLocal));
-                const snapshot = await getDocs(q);
-                let atualizouAlgo = false;
-                snapshot.forEach((docSnap) => { updateDoc(doc(db, "precos", docSnap.id), { premium: true }); atualizouAlgo = true; });
-                if(atualizouAlgo){ alert(`✅ O local "${nomeLocal}" agora é Oficial e Premium!\n\nEle ficará com uma estrela dourada visível 24h por dia para os turistas (sem precisar de radar). Seus preços agora estão protegidos pelo Escudo KYC.`); }
-            } catch(e) { console.error(e); }
         };
 
         onSnapshot(collection(db, "precos"), (snapshot) => {
