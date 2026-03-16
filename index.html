@@ -112,7 +112,6 @@
 
         .linha-botoes-foto { display: flex; gap: 10px; margin-bottom: 10px; }
 
-        /* NOTIFICAÇÕES (UX) */
         .notif-item { padding: 15px; border-bottom: 1px solid #eee; background: #f9f9f9; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
         .notif-content { flex: 1; }
         .notif-item:active { transform: scale(0.98); }
@@ -193,7 +192,6 @@
         @keyframes pulseBlueFoto { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(25, 118, 210, 0); transform: scale(1.15); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); transform: scale(1); } }
         @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.8); } 70% { box-shadow: 0 0 0 15px rgba(255, 193, 7, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
         
-        /* 🚨 MAPA DE CALOR E FLASH DE RESPOSTA 🚨 */
         @keyframes pulseDolarAnim { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .marker-dolar { background: #00e676; color: #004d40; border-radius: 8px; padding: 4px 8px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; font-family: 'Poppins', sans-serif; pointer-events: auto; font-weight: bold; line-height: 1.1; }
         .pulse-dolar { animation: pulseDolarAnim 1.5s infinite ease-in-out; }
@@ -1140,7 +1138,7 @@
             try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
         };
 
-        // 🚨 BLINDAGEM DE DADOS (EVITA CRASH NO MAPA) 🚨
+        // 🚨 BLINDAGEM MESTRE DE DADOS 🚨
         onSnapshot(collection(db, "precos"), (snapshot) => {
             estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
             snapshot.forEach((doc) => {
@@ -1184,7 +1182,6 @@
                 const isPremium = dadosL.itens.some(i => i.premium === true);
                 
                 const lugarLojista = dadosL.itens.find(i => i.isLojistaPlace);
-                // 🚨 A TRAVA DE SEGURANÇA: Só é dono se for o mesmo e-mail 🚨
                 const isDono = estadoApp.perfil === 'lojista' && lugarLojista && estadoApp.usuario && lugarLojista.autor === estadoApp.usuario.email;
 
                 if (estadoApp.filtroProduto) {
@@ -1213,7 +1210,6 @@
 
                     const safeLocalName = nomeL.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                     
-                    // 🚨 BOTÃO DE DESTACAR NO TOPO 🚨
                     let btnPromoverHtml = ''; 
                     if (isDono && !isPremium) {
                         btnPromoverHtml = `
@@ -1223,7 +1219,6 @@
                         </div>`;
                     }
 
-                    // 🚨 BOTÃO DE ADICIONAR PRODUTO NO FUNDO 🚨
                     let btnAdicionarItemHtml = '';
                     if (estadoApp.perfil === 'avaliador') { 
                         btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(76, 175, 80, 0.3);">➕ Cadastrar Novo Item Aqui</button>`; 
@@ -1278,7 +1273,6 @@
 
                 const safeLocalName = nomeL.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 
-                // 🚨 BOTÃO DE DESTACAR NO TOPO 🚨
                 let btnPromoverHtml = ''; 
                 if (isDono && !isPremium) {
                     btnPromoverHtml = `
@@ -1288,7 +1282,6 @@
                     </div>`;
                 }
 
-                // 🚨 BOTÃO DE ADICIONAR PRODUTO NO FUNDO 🚨
                 let btnAdicionarItemHtml = '';
                 if (estadoApp.perfil === 'avaliador') { 
                     btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(76, 175, 80, 0.3);">➕ Cadastrar Novo Item Aqui</button>`; 
