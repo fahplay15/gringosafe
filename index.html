@@ -138,7 +138,6 @@
         .galeria-lojista { display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 5px; }
         .galeria-lojista img { width: 75px; height: 75px; object-fit: cover; border-radius: 8px; border: 2px solid #f57c00; flex-shrink: 0; }
 
-        /* ESTIMATIVA IA (NOVO) */
         .estimativa-ia-box { background: #e8eaf6; color: #1565c0; border-left: 4px solid #1976d2; padding: 10px; border-radius: 6px; font-size: 13px; text-align: left; margin: 10px 0; display: none; font-weight: 500; }
 
         #modalPaywall .modal-content { background: linear-gradient(180deg, #ffffff 0%, #f0f2f5 100%); }
@@ -509,7 +508,6 @@
         };
         const taxasCambio = { 'BRL': { sim: 'R$', taxa: 1 }, 'USD': { sim: 'US$', taxa: 0.20 }, 'EUR': { sim: '€', taxa: 0.18 }, 'ARS': { sim: '$', taxa: 170.0 } };
         
-        // 🧠 O CÉREBRO DE PREÇOS DA IA (BASE PREDITIVA) 🧠
         const basePrecosIA = {
             'água': { min: 4, max: 7 }, 'agua': { min: 4, max: 7 }, 'water': { min: 4, max: 7 },
             'cerveja': { min: 8, max: 15 }, 'beer': { min: 8, max: 15 },
@@ -521,9 +519,9 @@
         };
 
         const dicionario = {
-            pt: { splashSub: "Preço Justo em Qualquer Lugar", menuRoute: "🗺️ Roteiro Premium", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Trocar de Perfil", menuLojista: "🏢 Área do Lojista", menuWallet: "💰 Minha Carteira", walletTitle: "Saque via PIX", walletSub: "Saque mínimo de R$ 20,00.", btnWithdraw: "Solicitar Saque PIX", level: "⭐ Nvl 1", formTitle: "Novo Registro", optNewPlace: "➕ Adicionar Novo Local", placeNewLocal: "Nome do Novo Local", placeName: "Produto (Ex: Água)", placePrice: "Preço", catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Salvar", btnCancel: "Cancelar", alertaSalvo: "Salvo com sucesso!", alertaFalta: "Preencha todos os campos!", alertaDuplicado: "Este produto já está cadastrado!", statusGreen: "✅ Confiável", statusYellow: "⏳ Em Análise", statusRed: "🚨 Alerta de Golpe", btnYes: "👍", btnNo: "👎", searchTitle: "Buscar Local ou Produto", searchPlaceholder: "Ex: Quiosque, Água...", searchClose: "Fechar", roleTitle: "Como você quer usar o App?", roleTourist: "Sou Turista", roleTouristSub: "Pesquisar lugares e perguntar preços.", roleLocal: "Sou Avaliador Local", roleLocalSub: "Registrar preços e responder turistas.", roleLojista: "Sou Lojista", roleLojistaSub: "Quero cadastrar meu negócio e atrair turistas.", btnAddCam: "📸 Câmera", btnAddGal: "🖼️ Galeria", btnLogin: "Entrar com Google", btnLogout: "Sair da Conta", pwTitle: "Acesso Premium", pwSub: "Buscas ilimitadas e Roteiros Seguros.", pwPlan1: "Pass de 7 Dias", pwPlan2: "Pass de 15 Dias", pwPlan3: "Pass de 30 Dias", pwCancel: "Talvez depois", badgeMedia: "⚖️ Preço na Média", badgeCaro: "📈 Acima da Média", badgeBom: "✨ Melhor Preço", askTitle: "O que você quer comprar?", askSub: "A comunidade local vai te dizer se o preço está justo.", btnAskCam: "📸 Câmera", btnAskGal: "🖼️ Galeria", btnSendAsk: "Enviar Pergunta", btnCancelAsk: "Cancelar", ansTitle: "Responder Turista", btnSendAns: "Responder", optFixo: "🏪 Estabelecimento Fixo", optAmbulante: "🚶 Vendedor Ambulante", btnCancelAns: "Cancelar", placeNewLocalAsk: "Nome do Local ou Vendedor", alertReqLogin: "⚠️ Faça login no menu (☰) para usar esta função!", alertVoted: "🚫 Você já votou neste item!", lockTitle: "Mapa Protegido", lockSub: "Faça login gratuitamente para visualizar preços y locais.", lockBtn: "Entrar com Google", notifTitle: "🔔 Notificações", notifEmpty: "Nenhuma notificação nova.", posHint: "📍 Aponte para a barraca (Dica: Faça de uma distância segura)", btnPosCancel: "Cancelar", btnPosConfirm: "Confirmar Local", btnReqFoto: "📷 Pedir Foto ao Turista", notifReqFoto: "Um Avaliador pediu uma foto do item para dar o preço exato. 📍 Clique aqui para enviar.", radarBtn: "Radar", radarActive: "Radar ligado! Os locais estão visíveis.", radarCool: "O radar esfriou. Os locais não premium foram ocultados.", makePremium: "⭐ Destacar Meu Negócio", lojistaTitle: "Destaque seu Negócio", lojistaSub: "Atraia turistas 24h por dia. Pinos Premium nunca somem do mapa, mesmo sem radar!", kycAlert: "🛡️ Segurança KYC: Apenas Avaliadores Nível 5+ (Verificados com Documento) podem alterar preços de Estabelecimentos Premium Oficiais!" },
-            en: { splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Premium Route", menuLang: "🌐 Languages", menuChangeRole: "👤 Change Role", menuLojista: "🏢 Store Owner Area", menuWallet: "💰 My Wallet", walletTitle: "Withdraw Funds", walletSub: "Minimum withdrawal: $ 20.00.", btnWithdraw: "Request Withdrawal", level: "⭐ Lvl 1", formTitle: "New Record", optNewPlace: "➕ Add New Place", placeNewLocal: "New Place Name", placeName: "Product (Ex: Water)", placePrice: "Price", catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save", btnCancel: "Cancel", alertaSalvo: "Saved successfully!", alertaFalta: "Fill in all fields!", alertaDuplicado: "Product already exists!", statusGreen: "✅ Trusted", statusYellow: "⏳ Under Review", statusRed: "🚨 Scam Alert", btnYes: "👍", btnNo: "👎", searchTitle: "Search Place or Product", searchPlaceholder: "Ex: Kiosk, Water...", searchClose: "Close", roleTitle: "How do you want to use the App?", roleTourist: "I'm a Tourist", roleTouristSub: "Search safe places and ask prices.", roleLocal: "I'm a Local Evaluator", roleLocalSub: "Register prices and answer tourists.", roleLojista: "I'm a Store Owner", roleLojistaSub: "Register my business and attract tourists.", btnAddCam: "📸 Camera", btnAddGal: "🖼️ Gallery", btnLogin: "Sign in with Google", btnLogout: "Sign Out", pwTitle: "Premium Access", pwSub: "Unlimited searches and Safe Routes.", pwPlan1: "7-Day Pass", pwPlan2: "15-Day Pass", pwPlan3: "30-Day Pass", pwCancel: "Maybe later", badgeMedia: "⚖️ Average Price", badgeCaro: "📈 Above Average", badgeBom: "✨ Best Price", askTitle: "What do you want to buy?", askSub: "The local community will tell you the fair price.", btnAskCam: "📸 Camera", btnAskGal: "🖼️ Gallery", btnSendAsk: "Send Question", btnCancelAsk: "Cancel", ansTitle: "Answer Tourist", btnSendAns: "Answer", optFixo: "🏪 Fixed Establishment", optAmbulante: "🚶 Mobile Vendor", btnCancelAns: "Cancel", placeNewLocalAsk: "Location or Vendor Name", alertReqLogin: "⚠️ Please login in the menu (☰) to use this feature!", alertVoted: "🚫 You already voted on this item!", lockTitle: "Protected Map", lockSub: "Log in for free to view prices and places.", lockBtn: "Sign in with Google", notifTitle: "🔔 Notifications", notifEmpty: "No new notifications.", posHint: "📍 Point to the vendor (Tip: Do it from a safe distance)", btnPosCancel: "Cancel", btnPosConfirm: "Confirm Location", btnReqFoto: "📷 Request Photo", notifReqFoto: "An Evaluator requested a photo to give the exact price. 📍 Click here to send.", radarBtn: "Radar", radarActive: "Radar active! Places are visible.", radarCool: "Radar cooled down. Non-premium places hidden.", makePremium: "⭐ Highlight My Business", lojistaTitle: "Highlight your Business", lojistaSub: "Attract tourists 24/7. Premium Pins never disappear!", kycAlert: "🛡️ KYC Security: Only Level 5+ Evaluators (ID Verified) can change prices of Official Premium Stores!" },
-            es: { splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Ruta Premium", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Cambiar Perfil", menuLojista: "🏢 Área del Comerciante", menuWallet: "💰 Mi Billetera", walletTitle: "Retiro de Fondos", walletSub: "Retiro mínimo: $ 20.00.", btnWithdraw: "Solicitar Retiro", level: "⭐ Nvl 1", formTitle: "Nuevo Registro", optNewPlace: "➕ Añadir Nuevo Lugar", placeNewLocal: "Nombre del Nuevo Lugar", placeName: "Producto (Ej: Agua)", placePrice: "Precio", catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa todos los campos!", alertaDuplicado: "¡Producto ya existe!", statusGreen: "✅ Confiable", statusYellow: "⏳ En Revisión", statusRed: "🚨 Alerta de Estafa", btnYes: "👍", btnNo: "👎", searchTitle: "Buscar Lugar o Producto", searchPlaceholder: "Ej: Kiosco, Agua...", searchClose: "Cerrar", roleTitle: "¿Cómo quieres usar la App?", roleTourist: "Soy Turista", roleTouristSub: "Buscar lugares seguros y preguntar precios.", roleLocal: "Soy Evaluador Local", roleLocalSub: "Registrar precios y responder turistas.", roleLojista: "Soy Comerciante", roleLojistaSub: "Registrar mi negocio y atraer turistas.", btnAddCam: "📸 Cámara", btnAddGal: "🖼️ Galería", btnLogin: "Entrar con Google", btnLogout: "Cerrar Sesión", pwTitle: "Acceso Premium", pwSub: "Búsquedas ilimitadas y Rutas Seguras.", pwPlan1: "Pase de 7 Días", pwPlan2: "Pase de 15 Días", pwPlan3: "Pase de 30 Días", pwCancel: "Quizás después", badgeMedia: "⚖️ Precio Promedio", badgeCaro: "📈 Por Encima de Media", badgeBom: "✨ Mejor Precio", askTitle: "¿Qué quieres comprar?", askSub: "La comunidad local te dirá el precio justo.", btnAskCam: "📸 Cámara", btnAskGal: "🖼️ Galería", btnSendAsk: "Enviar Pregunta", btnCancelAsk: "Cancelar", ansTitle: "Responder al Turista", btnSendAns: "Responder", optFixo: "🏪 Establecimiento Fijo", optAmbulante: "🚶 Vendedor Ambulante", btnCancelAns: "Cancelar", placeNewLocalAsk: "Nombre del Lugar o Vendedor", alertReqLogin: "⚠️ ¡Inicia sesión en el menú (☰) para usar esta función!", alertVoted: "🚫 ¡Ya votaste por este artículo!", lockTitle: "Mapa Protegido", lockSub: "Inicia sesión gratis para ver precios y lugares.", lockBtn: "Entrar con Google", notifTitle: "🔔 Notificaciones", notifEmpty: "No hay notificaciones nuevas.", posHint: "📍 Apunta al vendedor (Consejo: Hazlo desde una distancia segura)", btnPosCancel: "Cancelar", btnPosConfirm: "Confirmar Lugar", btnReqFoto: "📷 Pedir Foto", notifReqFoto: "Un Evaluador Local pidió una foto para dar el precio exacto. 📍 Clic para enviar.", radarBtn: "Radar", radarActive: "Radar encendido! Lugares visibles.", radarCool: "Radar apagado. Lugares ocultos.", makePremium: "⭐ Destacar Mi Negocio", lojistaTitle: "Destaca tu Negocio", lojistaSub: "Atrae turistas 24/7. ¡Los pines premium nunca desaparecen!", kycAlert: "🛡️ Seguridad KYC: ¡Solo Evaluadores de Nivel 5+ (Identificación Verificada) pueden cambiar los precios de las Tiendas Premium!" }
+            pt: { splashSub: "Preço Justo em Qualquer Lugar", menuRoute: "🗺️ Ligar Roteiro Premium", menuRouteOff: "❌ Desligar Roteiro", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Trocar de Perfil", menuLojista: "🏢 Área do Lojista", menuWallet: "💰 Minha Carteira", walletTitle: "Saque via PIX", walletSub: "Saque mínimo de R$ 20,00.", btnWithdraw: "Solicitar Saque PIX", level: "⭐ Nvl 1", formTitle: "Novo Registro", optNewPlace: "➕ Adicionar Novo Local", placeNewLocal: "Nome do Novo Local", placeName: "Produto (Ex: Água)", placePrice: "Preço", catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Salvar", btnCancel: "Cancelar", alertaSalvo: "Salvo com sucesso!", alertaFalta: "Preencha todos os campos!", alertaDuplicado: "Este produto já está cadastrado!", statusGreen: "✅ Confiável", statusYellow: "⏳ Em Análise", statusRed: "🚨 Alerta de Golpe", btnYes: "👍", btnNo: "👎", searchTitle: "Buscar Local ou Produto", searchPlaceholder: "Ex: Quiosque, Água...", searchClose: "Fechar", roleTitle: "Como você quer usar o App?", roleTourist: "Sou Turista", roleTouristSub: "Pesquisar lugares e perguntar preços.", roleLocal: "Sou Avaliador Local", roleLocalSub: "Registrar preços e responder turistas.", roleLojista: "Sou Lojista", roleLojistaSub: "Quero cadastrar meu negócio e atrair turistas.", btnAddCam: "📸 Câmera", btnAddGal: "🖼️ Galeria", btnLogin: "Entrar com Google", btnLogout: "Sair da Conta", pwTitle: "Acesso Premium", pwSub: "Buscas ilimitadas e Roteiros Seguros.", pwPlan1: "Pass de 7 Dias", pwPlan2: "Pass de 15 Dias", pwPlan3: "Pass de 30 Dias", pwCancel: "Talvez depois", badgeMedia: "⚖️ Preço na Média", badgeCaro: "📈 Acima da Média", badgeBom: "✨ Melhor Preço", askTitle: "O que você quer comprar?", askSub: "A comunidade local vai te dizer se o preço está justo.", btnAskCam: "📸 Câmera", btnAskGal: "🖼️ Galeria", btnSendAsk: "Enviar Pergunta", btnCancelAsk: "Cancelar", ansTitle: "Responder Turista", btnSendAns: "Responder", optFixo: "🏪 Estabelecimento Fixo", optAmbulante: "🚶 Vendedor Ambulante", btnCancelAns: "Cancelar", placeNewLocalAsk: "Nome do Local ou Vendedor", alertReqLogin: "⚠️ Faça login no menu (☰) para usar esta função!", alertVoted: "🚫 Você já votou neste item!", lockTitle: "Mapa Protegido", lockSub: "Faça login gratuitamente para visualizar preços y locais.", lockBtn: "Entrar com Google", notifTitle: "🔔 Notificações", notifEmpty: "Nenhuma notificação nova.", posHint: "📍 Aponte para a barraca (Dica: Faça de uma distância segura)", btnPosCancel: "Cancelar", btnPosConfirm: "Confirmar Local", btnReqFoto: "📷 Pedir Foto ao Turista", notifReqFoto: "Um Avaliador pediu uma foto do item para dar o preço exato. 📍 Clique aqui para enviar.", radarBtn: "Radar", radarActive: "Radar ligado! Os locais estão visíveis.", radarCool: "O radar esfriou. Os locais não premium foram ocultados.", makePremium: "⭐ Destacar Meu Negócio", lojistaTitle: "Destaque seu Negócio", lojistaSub: "Atraia turistas 24h por dia. Pinos Premium nunca somem do mapa, mesmo sem radar!", kycAlert: "🛡️ Segurança KYC: Apenas Avaliadores Nível 5+ (Verificados com Documento) podem alterar preços de Estabelecimentos Premium Oficiais!" },
+            en: { splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Turn On Premium Route", menuRouteOff: "❌ Turn Off Route", menuLang: "🌐 Languages", menuChangeRole: "👤 Change Role", menuLojista: "🏢 Store Owner Area", menuWallet: "💰 My Wallet", walletTitle: "Withdraw Funds", walletSub: "Minimum withdrawal: $ 20.00.", btnWithdraw: "Request Withdrawal", level: "⭐ Lvl 1", formTitle: "New Record", optNewPlace: "➕ Add New Place", placeNewLocal: "New Place Name", placeName: "Product (Ex: Water)", placePrice: "Price", catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save", btnCancel: "Cancel", alertaSalvo: "Saved successfully!", alertaFalta: "Fill in all fields!", alertaDuplicado: "Product already exists!", statusGreen: "✅ Trusted", statusYellow: "⏳ Under Review", statusRed: "🚨 Scam Alert", btnYes: "👍", btnNo: "👎", searchTitle: "Search Place or Product", searchPlaceholder: "Ex: Kiosk, Water...", searchClose: "Close", roleTitle: "How do you want to use the App?", roleTourist: "I'm a Tourist", roleTouristSub: "Search safe places and ask prices.", roleLocal: "I'm a Local Evaluator", roleLocalSub: "Register prices and answer tourists.", roleLojista: "I'm a Store Owner", roleLojistaSub: "Register my business and attract tourists.", btnAddCam: "📸 Camera", btnAddGal: "🖼️ Gallery", btnLogin: "Sign in with Google", btnLogout: "Sign Out", pwTitle: "Premium Access", pwSub: "Unlimited searches and Safe Routes.", pwPlan1: "7-Day Pass", pwPlan2: "15-Day Pass", pwPlan3: "30-Day Pass", pwCancel: "Maybe later", badgeMedia: "⚖️ Average Price", badgeCaro: "📈 Above Average", badgeBom: "✨ Best Price", askTitle: "What do you want to buy?", askSub: "The local community will tell you the fair price.", btnAskCam: "📸 Camera", btnAskGal: "🖼️ Gallery", btnSendAsk: "Send Question", btnCancelAsk: "Cancel", ansTitle: "Answer Tourist", btnSendAns: "Answer", optFixo: "🏪 Fixed Establishment", optAmbulante: "🚶 Mobile Vendor", btnCancelAns: "Cancel", placeNewLocalAsk: "Location or Vendor Name", alertReqLogin: "⚠️ Please login in the menu (☰) to use this feature!", alertVoted: "🚫 You already voted on this item!", lockTitle: "Protected Map", lockSub: "Log in for free to view prices and places.", lockBtn: "Sign in with Google", notifTitle: "🔔 Notifications", notifEmpty: "No new notifications.", posHint: "📍 Point to the vendor (Tip: Do it from a safe distance)", btnPosCancel: "Cancel", btnPosConfirm: "Confirm Location", btnReqFoto: "📷 Request Photo", notifReqFoto: "An Evaluator requested a photo to give the exact price. 📍 Click here to send.", radarBtn: "Radar", radarActive: "Radar active! Places are visible.", radarCool: "Radar cooled down. Non-premium places hidden.", makePremium: "⭐ Highlight My Business", lojistaTitle: "Highlight your Business", lojistaSub: "Attract tourists 24/7. Premium Pins never disappear!", kycAlert: "🛡️ KYC Security: Only Level 5+ Evaluators (ID Verified) can change prices of Official Premium Stores!" },
+            es: { splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Activar Ruta Premium", menuRouteOff: "❌ Apagar Ruta", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Cambiar Perfil", menuLojista: "🏢 Área del Comerciante", menuWallet: "💰 Mi Billetera", walletTitle: "Retiro de Fondos", walletSub: "Retiro mínimo: $ 20.00.", btnWithdraw: "Solicitar Retiro", level: "⭐ Nvl 1", formTitle: "Nuevo Registro", optNewPlace: "➕ Añadir Nuevo Lugar", placeNewLocal: "Nombre del Nuevo Lugar", placeName: "Producto (Ej: Agua)", placePrice: "Precio", catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa todos los campos!", alertaDuplicado: "¡Producto ya existe!", statusGreen: "✅ Confiable", statusYellow: "⏳ En Revisión", statusRed: "🚨 Alerta de Estafa", btnYes: "👍", btnNo: "👎", searchTitle: "Buscar Lugar o Producto", searchPlaceholder: "Ej: Kiosco, Agua...", searchClose: "Cerrar", roleTitle: "¿Cómo quieres usar la App?", roleTourist: "Soy Turista", roleTouristSub: "Buscar lugares seguros y preguntar precios.", roleLocal: "Soy Evaluador Local", roleLocalSub: "Registrar precios y responder turistas.", roleLojista: "Soy Comerciante", roleLojistaSub: "Registrar mi negocio y atraer turistas.", btnAddCam: "📸 Cámara", btnAddGal: "🖼️ Galería", btnLogin: "Entrar con Google", btnLogout: "Cerrar Sesión", pwTitle: "Acceso Premium", pwSub: "Búsquedas ilimitadas y Rutas Seguras.", pwPlan1: "Pase de 7 Días", pwPlan2: "Pase de 15 Días", pwPlan3: "Pase de 30 Días", pwCancel: "Quizás después", badgeMedia: "⚖️ Precio Promedio", badgeCaro: "📈 Por Encima de Media", badgeBom: "✨ Mejor Precio", askTitle: "¿Qué quieres comprar?", askSub: "La comunidad local te dirá el precio justo.", btnAskCam: "📸 Cámara", btnAskGal: "🖼️ Galería", btnSendAsk: "Enviar Pregunta", btnCancelAsk: "Cancelar", ansTitle: "Responder al Turista", btnSendAns: "Responder", optFixo: "🏪 Establecimiento Fijo", optAmbulante: "🚶 Vendedor Ambulante", btnCancelAns: "Cancelar", placeNewLocalAsk: "Nombre del Lugar o Vendedor", alertReqLogin: "⚠️ ¡Inicia sesión en el menú (☰) para usar esta función!", alertVoted: "🚫 ¡Ya votaste por este artículo!", lockTitle: "Mapa Protegido", lockSub: "Inicia sesión gratis para ver precios y lugares.", lockBtn: "Entrar con Google", notifTitle: "🔔 Notificaciones", notifEmpty: "No hay notificaciones nuevas.", posHint: "📍 Apunta al vendedor (Consejo: Hazlo desde una distancia segura)", btnPosCancel: "Cancelar", btnPosConfirm: "Confirmar Lugar", btnReqFoto: "📷 Pedir Foto", notifReqFoto: "Un Evaluador Local pidió una foto para dar el precio exacto. 📍 Clic para enviar.", radarBtn: "Radar", radarActive: "Radar encendido! Lugares visibles.", radarCool: "Radar apagado. Lugares ocultos.", makePremium: "⭐ Destacar Mi Negocio", lojistaTitle: "Destaca tu Negocio", lojistaSub: "Atrae turistas 24/7. ¡Los pines premium nunca desaparecen!", kycAlert: "🛡️ Seguridad KYC: ¡Solo Evaluadores de Nivel 5+ (Identificación Verificada) pueden cambiar los precios de las Tiendas Premium!" }
         };
 
         const getEl = (id) => document.getElementById(id); const setTxt = (id, txt) => { const e = getEl(id); if(e) e.innerText = txt; }; const setPlc = (id, txt) => { const e = getEl(id); if(e) e.placeholder = txt; };
@@ -532,12 +530,18 @@
         const bindChange = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('change', fn); };
         const bindInput = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('input', fn); };
 
+        let rotaAtiva = null; // Variável global para saber se o roteiro tá ligado
+
         function aplicarIdioma(lang) {
             estadoApp.idioma = lang; const t = dicionario[lang];
             document.querySelectorAll('.sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; });
             const opt = getEl('lang_' + lang); if(opt) { opt.classList.add('ativo-option'); opt.querySelector('.check').style.display = 'inline'; }
 
-            setTxt('t_splashSub', t.splashSub); setTxt('t_menuRoute', t.menuRoute); setTxt('t_menuLang', t.menuLang); setTxt('t_menuChangeRole', t.menuChangeRole); setTxt('t_level', t.level); setTxt('t_formTitle', t.formTitle); setTxt('t_catDrink', t.catDrink); setTxt('t_catFood', t.catFood); setTxt('t_catService', t.catService); setTxt('t_catTicket', t.catTicket); setTxt('t_btnCancel', t.btnCancel); setTxt('t_optNewPlace', t.optNewPlace); setTxt('t_searchTitle', t.searchTitle); setTxt('t_searchClose', t.searchClose); setTxt('t_roleTitle', t.roleTitle); setTxt('t_roleTourist', t.roleTourist); setTxt('t_roleTouristSub', t.roleTouristSub); setTxt('t_roleLocal', t.roleLocal); setTxt('t_roleLocalSub', t.roleLocalSub); setTxt('t_btnLogin', t.btnLogin); setTxt('t_btnLogout', t.btnLogout); setTxt('t_pwTitle', t.pwTitle); setTxt('t_pwSub', t.pwSub); setTxt('t_pwPlan1', t.pwPlan1); setTxt('t_pwPlan2', t.pwPlan2); setTxt('t_pwPlan3', t.pwPlan3); setTxt('t_pwCancel', t.pwCancel); setTxt('t_askTitle', t.askTitle); setTxt('t_askSub', t.askSub); setTxt('t_btnSendAsk', t.btnSendAsk); setTxt('t_btnCancelAsk', t.btnCancelAsk); setTxt('t_ansTitle', t.ansTitle); setTxt('t_btnCancelAns', t.btnCancelAns); setTxt('t_btnAddCam', t.btnAddCam); setTxt('t_btnAddGal', t.btnAddGal); setTxt('t_btnAskCam', t.btnAskCam); setTxt('t_btnAskGal', t.btnAskGal); setTxt('t_optFixo', t.optFixo); setTxt('t_optAmbulante', t.optAmbulante); setTxt('t_lockTitle', t.lockTitle); setTxt('t_lockSub', t.lockSub); setTxt('t_lockBtn', t.lockBtn); setTxt('t_notifTitle', t.notifTitle); setTxt('t_posHint', t.posHint); setTxt('t_btnPosCancel', t.btnPosCancel); setTxt('t_btnPosConfirm', t.btnPosConfirm); setPlc('nomeLocalInput', t.placeNewLocal); setPlc('nomeProduto', t.placeName); setPlc('precoProduto', t.placePrice); setPlc('inputBusca', t.searchPlaceholder); setPlc('nomeLocalPergunta', t.placeNewLocalAsk);
+            setTxt('t_splashSub', t.splashSub); 
+            // Atualiza o texto do menu dependendo se a rota tá ativa ou não
+            setTxt('t_menuRoute', rotaAtiva ? t.menuRouteOff : t.menuRoute); 
+            
+            setTxt('t_menuLang', t.menuLang); setTxt('t_menuChangeRole', t.menuChangeRole); setTxt('t_level', t.level); setTxt('t_formTitle', t.formTitle); setTxt('t_catDrink', t.catDrink); setTxt('t_catFood', t.catFood); setTxt('t_catService', t.catService); setTxt('t_catTicket', t.catTicket); setTxt('t_btnCancel', t.btnCancel); setTxt('t_optNewPlace', t.optNewPlace); setTxt('t_searchTitle', t.searchTitle); setTxt('t_searchClose', t.searchClose); setTxt('t_roleTitle', t.roleTitle); setTxt('t_roleTourist', t.roleTourist); setTxt('t_roleTouristSub', t.roleTouristSub); setTxt('t_roleLocal', t.roleLocal); setTxt('t_roleLocalSub', t.roleLocalSub); setTxt('t_btnLogin', t.btnLogin); setTxt('t_btnLogout', t.btnLogout); setTxt('t_pwTitle', t.pwTitle); setTxt('t_pwSub', t.pwSub); setTxt('t_pwPlan1', t.pwPlan1); setTxt('t_pwPlan2', t.pwPlan2); setTxt('t_pwPlan3', t.pwPlan3); setTxt('t_pwCancel', t.pwCancel); setTxt('t_askTitle', t.askTitle); setTxt('t_askSub', t.askSub); setTxt('t_btnSendAsk', t.btnSendAsk); setTxt('t_btnCancelAsk', t.btnCancelAsk); setTxt('t_ansTitle', t.ansTitle); setTxt('t_btnCancelAns', t.btnCancelAns); setTxt('t_btnAddCam', t.btnAddCam); setTxt('t_btnAddGal', t.btnAddGal); setTxt('t_btnAskCam', t.btnAskCam); setTxt('t_btnAskGal', t.btnAskGal); setTxt('t_optFixo', t.optFixo); setTxt('t_optAmbulante', t.optAmbulante); setTxt('t_lockTitle', t.lockTitle); setTxt('t_lockSub', t.lockSub); setTxt('t_lockBtn', t.lockBtn); setTxt('t_notifTitle', t.notifTitle); setTxt('t_posHint', t.posHint); setTxt('t_btnPosCancel', t.btnPosCancel); setTxt('t_btnPosConfirm', t.btnPosConfirm); setPlc('nomeLocalInput', t.placeNewLocal); setPlc('nomeProduto', t.placeName); setPlc('precoProduto', t.placePrice); setPlc('inputBusca', t.searchPlaceholder); setPlc('nomeLocalPergunta', t.placeNewLocalAsk);
             setTxt('t_menuLojista', t.menuLojista); setTxt('t_btnRadarText', t.radarBtn); setTxt('t_lojistaTitle', t.lojistaTitle); setTxt('t_lojistaSub', t.lojistaSub); setTxt('t_roleLojista', t.roleLojista); setTxt('t_roleLojistaSub', t.roleLojistaSub);
             
             setTxt('t_menuWallet', t.menuWallet); setTxt('t_walletTitle', t.walletTitle); setTxt('t_walletSub', t.walletSub); setTxt('t_btnWithdraw', t.btnWithdraw);
@@ -623,7 +627,6 @@
             }
         });
 
-        // ======================= SISTEMA DE AVALIAÇÕES E ROTEIRO IA =======================
         onSnapshot(collection(db, "avaliacoes"), (snapshot) => {
             estadoApp.avaliacoes = {};
             snapshot.forEach((doc) => {
@@ -655,41 +658,34 @@
 
         bindClick('btnEnviarReview', async () => {
             if(!estadoApp.usuario) return;
-            const local = getEl('localAlvoReview').value;
-            const nota = getEl('notaReview').value;
-            const texto = getEl('textoReview').value.trim();
+            const local = getEl('localAlvoReview').value; const nota = getEl('notaReview').value; const texto = getEl('textoReview').value.trim();
             if(!texto) return alert("Por favor, escreva um comentário para ajudar os outros!");
 
             try {
-                await addDoc(collection(db, "avaliacoes"), {
-                    local: local,
-                    uid: estadoApp.usuario.uid,
-                    nome: estadoApp.usuario.displayName.split(" ")[0],
-                    nota: parseInt(nota),
-                    comentario: texto,
-                    data: new Date()
-                });
-                getEl('textoReview').value = '';
-                getEl('modalAvaliacoes').style.display = 'none';
-                alert("⭐ Obrigado! Sua avaliação foi publicada e ajudará muitos turistas.");
-            } catch(e) {
-                console.error(e);
-                alert("Erro ao publicar avaliação.");
-            }
+                await addDoc(collection(db, "avaliacoes"), { local: local, uid: estadoApp.usuario.uid, nome: estadoApp.usuario.displayName.split(" ")[0], nota: parseInt(nota), comentario: texto, data: new Date() });
+                getEl('textoReview').value = ''; getEl('modalAvaliacoes').style.display = 'none'; alert("⭐ Obrigado! Sua avaliação foi publicada.");
+            } catch(e) { console.error(e); alert("Erro ao publicar avaliação."); }
         });
 
-        let rotaAtiva = null;
+        // ======================= INTERRUPTOR ROTEIRO IA =======================
         bindClick('btnCarregarRoteiro', async () => {
             getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none';
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             
+            // DESLIGA O ROTEIRO SE JÁ ESTIVER LIGADO
+            if(rotaAtiva) { 
+                mapa.removeLayer(rotaAtiva); 
+                rotaAtiva = null; 
+                setTxt('t_menuRoute', dicionario[estadoApp.idioma].menuRoute);
+                alert("Roteiro Premium desligado.");
+                return; 
+            }
+
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) {
                 getEl('modalPaywall').style.display = 'flex'; return;
             }
             
             if(!pinoUsuario) return alert("Aguarde o GPS encontrar sua localização antes de traçar a rota.");
-
-            if(rotaAtiva) { mapa.removeLayer(rotaAtiva); rotaAtiva = null; }
 
             const userLat = pinoUsuario.getLatLng().lat;
             const userLng = pinoUsuario.getLatLng().lng;
@@ -719,9 +715,10 @@
 
             rotaAtiva = L.polyline(pontosRota, {color: '#9c27b0', weight: 5, dashArray: '10, 10'}).addTo(mapa);
             mapa.fitBounds(rotaAtiva.getBounds());
-            alert("🗺️ Roteiro Seguro traçado pela IA!\n\nSiga a linha roxa no mapa para visitar apenas os locais mais seguros e recomendados da região.");
+            
+            setTxt('t_menuRoute', dicionario[estadoApp.idioma].menuRouteOff);
+            alert("🗺️ Roteiro Seguro traçado pela IA!\n\nSiga a linha roxa no mapa. Abra o menu e clique no botão novamente para desligar.");
         });
-        // ====================================================================================
 
         bindClick('btnMinhaCarteira', () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
@@ -734,25 +731,16 @@
 
         bindClick('btnSacarPix', async () => {
             if(!estadoApp.usuario) return;
-            const chavePix = getEl('inputChavePix').value.trim();
-            const saldoBRL = estadoApp.saldo; 
-
-            if (saldoBRL < 20) return alert(`Saldo insuficiente!\nVocê precisa acumular o equivalente a R$ 20,00 para sacar. Continue avaliando locais no mapa!`);
+            const chavePix = getEl('inputChavePix').value.trim(); const saldoBRL = estadoApp.saldo; 
+            if (saldoBRL < 20) return alert(`Saldo insuficiente!\nVocê precisa acumular o equivalente a R$ 20,00 para sacar.`);
             if (!chavePix) return alert("Por favor, digite a sua Chave PIX.");
 
             try {
                 await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(-saldoBRL) });
-                estadoApp.saldo = 0;
-                setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`);
-                setTxt('saldoCarteiraDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`);
-                
-                alert(`✅ Saque Solicitado!\n\nUm PIX no valor de R$ ${saldoBRL.toFixed(2)} foi programado para a chave:\n${chavePix}\n\nO valor entrará na sua conta em até 2 horas úteis.`);
-                getEl('inputChavePix').value = '';
-                getEl('modalCarteira').style.display = 'none';
-            } catch(e) {
-                console.error(e);
-                alert("Erro ao solicitar saque. Tente novamente mais tarde.");
-            }
+                estadoApp.saldo = 0; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`); setTxt('saldoCarteiraDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`);
+                alert(`✅ Saque Solicitado!\n\nUm PIX no valor de R$ ${saldoBRL.toFixed(2)} foi programado para a chave:\n${chavePix}`);
+                getEl('inputChavePix').value = ''; getEl('modalCarteira').style.display = 'none';
+            } catch(e) { console.error(e); alert("Erro ao solicitar saque. Tente novamente mais tarde."); }
         });
 
         bindClick('btnAbrirNotificacoes', () => {
@@ -776,46 +764,34 @@
         bindClick('btnRadar', () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             if(estadoApp.radarAtivo) return;
-            estadoApp.radarAtivo = true;
-            getEl('btnRadar').classList.add('radar-anim');
-            alert(dicionario[estadoApp.idioma].radarActive);
-            desenharPinos();
+            estadoApp.radarAtivo = true; getEl('btnRadar').classList.add('radar-anim'); alert(dicionario[estadoApp.idioma].radarActive); desenharPinos();
             setTimeout(() => { estadoApp.radarAtivo = false; getEl('btnRadar').classList.remove('radar-anim'); desenharPinos(); alert(dicionario[estadoApp.idioma].radarCool); }, 15000); 
         });
 
         let localParaPromover = null;
         window.prepararPromocao = function(nomeLocal) {
             localParaPromover = nomeLocal;
-            if(!estadoApp.isLojistaPremium) { getEl('modalLojista').style.display = 'flex'; } 
-            else { window.executarPromocao(nomeLocal); }
+            if(!estadoApp.isLojistaPremium) { getEl('modalLojista').style.display = 'flex'; } else { window.executarPromocao(nomeLocal); }
         };
 
         window.executarPromocao = async function(nomeLocal) {
             try {
-                const q = query(collection(db, "precos"), where("local", "==", nomeLocal));
-                const snapshot = await getDocs(q);
-                let atualizouAlgo = false;
+                const q = query(collection(db, "precos"), where("local", "==", nomeLocal)); const snapshot = await getDocs(q); let atualizouAlgo = false;
                 snapshot.forEach((docSnap) => { updateDoc(doc(db, "precos", docSnap.id), { premium: true }); atualizouAlgo = true; });
-                if(atualizouAlgo){ alert(`✅ Sucesso! O local "${nomeLocal}" agora é Oficial e Premium!\n\nEle ficará com uma estrela dourada visível 24h por dia para os turistas! Seus preços agora estão protegidos pelo Escudo KYC.`); }
+                if(atualizouAlgo){ alert(`✅ Sucesso! O local "${nomeLocal}" agora é Oficial e Premium!`); }
             } catch(e) { console.error(e); }
         };
 
         window.denunciarItem = async function(idItem) {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const uid = estadoApp.usuario.uid; let itemParaDenunciar = null;
-            for (const loc in estadoApp.dadosHospedados) {
-                const encontrado = estadoApp.dadosHospedados[loc].itens.find(i => i.id === idItem);
-                if (encontrado) { itemParaDenunciar = encontrado; break; }
-            }
+            for (const loc in estadoApp.dadosHospedados) { const encontrado = estadoApp.dadosHospedados[loc].itens.find(i => i.id === idItem); if (encontrado) { itemParaDenunciar = encontrado; break; } }
             if (!itemParaDenunciar) return;
             const listaDenunciantes = itemParaDenunciar.denunciaram || [];
             if (listaDenunciantes.includes(uid)) { return alert("🚫 Você já denunciou este item! Nossa equipe está analisando."); }
-            const confirma = confirm("🚨 DENÚNCIA DE GOLPE\n\nVocê tem certeza que este preço é falso ou a barraca não existe?\nSe confirmarmos fraude, a conta do autor será banida.");
+            const confirma = confirm("🚨 DENÚNCIA DE GOLPE\n\nVocê tem certeza que este preço é falso ou a barraca não existe?");
             if (!confirma) return;
-            try {
-                await updateDoc(doc(db, "precos", idItem), { denuncias: increment(1), denunciaram: arrayUnion(uid) });
-                alert("🚩 Denúncia registrada com sucesso! Obrigado por manter a comunidade segura.");
-            } catch (error) { console.error(error); alert("Erro ao registrar denúncia."); }
+            try { await updateDoc(doc(db, "precos", idItem), { denuncias: increment(1), denunciaram: arrayUnion(uid) }); alert("🚩 Denúncia registrada com sucesso!"); } catch (error) { console.error(error); }
         };
 
         bindClick('btnAreaLojista', () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); getEl('modalLojista').style.display = 'flex'; });
@@ -829,6 +805,13 @@
             desenharPinos();
         });
 
+        // AJUDANTE GLOBAL PARA PERGUNTAR PELA LUPA
+        window.pesquisarComLocal = function(termo) {
+            getEl('modalBusca').style.display = 'none';
+            iniciarModoPosicionamento('ask');
+            setTimeout(() => { getEl('nomeProdutoPergunta').value = termo.charAt(0).toUpperCase() + termo.slice(1); }, 500);
+        };
+
         bindClick('btnAbrirBusca', async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { 
@@ -840,17 +823,50 @@
         
         bindClick('btnFecharBusca', () => getEl('modalBusca').style.display = 'none');
         
+        // ======================= SUPER LUPA HÍBRIDA (IA + MAPA) =======================
         bindInput('inputBusca', (e) => {
             const termo = e.target.value.toLowerCase().trim(); getEl('resultadosBusca').innerHTML = ''; if(!termo) return;
+            
+            // 1. Busca na mente da IA Primeiro
+            let achouIA = false;
+            if (termo.length > 2) {
+                for (let key in basePrecosIA) {
+                    if (termo.includes(key)) {
+                        achouIA = true;
+                        const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
+                        const min = (basePrecosIA[key].min * cotacao).toFixed(2); const max = (basePrecosIA[key].max * cotacao).toFixed(2);
+                        
+                        const divAI = document.createElement('div'); divAI.className = 'resultado-item';
+                        divAI.style.background = '#e8eaf6'; divAI.style.borderLeft = '4px solid #1976d2'; divAI.style.cursor = 'default';
+                        divAI.innerHTML = `<span style="font-weight:700; color:#1565c0;">🤖 Estimativa IA: ${key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                                           <span style="font-size:16px; color:#333; font-weight:bold; margin-top:5px;">${sim} ${min} a ${sim} ${max}</span>
+                                           <button class="btn-roxo" style="margin-top:10px; padding:8px; font-size:12px;" onclick="window.pesquisarComLocal('${key}')">Não confia? Pergunte a um Avaliador</button>`;
+                        getEl('resultadosBusca').appendChild(divAI);
+                        break; // Mostra só o primeiro match pra não poluir a tela
+                    }
+                }
+            }
+
+            // 2. Busca nos locais físicos do mapa
+            let achouLocais = false;
             for (const nLocal in estadoApp.dadosHospedados) {
                 const dLugar = estadoApp.dadosHospedados[nLocal]; const lMatch = nLocal.toLowerCase().includes(termo); const iMatch = dLugar.itens.filter(i => i.nome.toLowerCase().includes(termo));
                 if (lMatch || iMatch.length > 0) {
+                    achouLocais = true;
                     const div = document.createElement('div'); div.className = 'resultado-item'; 
                     let txtSec = `${dLugar.itens.length} itens`; if(iMatch.length > 0 && !lMatch) { txtSec = `Encontrado: ${iMatch.map(i => i.nome).join(', ')}`; }
                     div.innerHTML = `<span style="font-weight:700; color:#004d40;">🏪 ${nLocal}</span><span style="font-size:12px;color:#666;">${txtSec}</span>`;
                     div.onclick = () => { getEl('modalBusca').style.display = 'none'; mapa.flyTo([dLugar.lat, dLugar.lng], 18, { duration: 1.5 }); setTimeout(() => { if(marcadoresNoMapa[nLocal]) marcadoresNoMapa[nLocal].openPopup(); }, 1500); };
                     getEl('resultadosBusca').appendChild(div);
                 }
+            }
+
+            // 3. O Funil: Se a IA não sabe e não tem no mapa, obriga ele a fazer a pergunta!
+            if (!achouLocais && !achouIA && termo.length > 2) {
+                const divVazio = document.createElement('div'); divVazio.className = 'resultado-item'; divVazio.style.textAlign = 'center'; divVazio.style.cursor = 'default';
+                divVazio.innerHTML = `<span style="color:#666; margin-bottom:10px; display:block;">Ainda não temos dados sobre "${termo}" por aqui.</span>
+                                      <button class="btn-roxo" style="padding:8px; font-size:13px;" onclick="window.pesquisarComLocal('${termo}')">Pergunte aos Moradores Agora!</button>`;
+                getEl('resultadosBusca').appendChild(divVazio);
             }
         });
 
@@ -894,7 +910,6 @@
 
         let fotoAtualBase64 = null;
         
-        // 🚨 FUNÇÃO ATUALIZADA: Puxa o valor do banco de dados preditivo da IA 🚨
         const processarImagem = (e, idPreview, idStatus, idNomeInput) => {
             if (e.target.files.length > 0) {
                 comprimirImagemBase64(e.target.files[0], (base64) => {
@@ -909,11 +924,7 @@
                                 if(estadoApp.idioma === 'en') { if(inpNome) inpNome.value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } 
                                 else { const tTrad = dicionario['pt'][tIngles]; if(inpNome) inpNome.value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } 
                                 
-                                // Aciona a estimativa IA na hora se for o input de pergunta
-                                if(idNomeInput === 'nomeProdutoPergunta') {
-                                    const event = new Event('input');
-                                    inpNome.dispatchEvent(event);
-                                }
+                                if(idNomeInput === 'nomeProdutoPergunta') { const event = new Event('input'); inpNome.dispatchEvent(event); }
                             }); 
                         }
                     }
@@ -921,23 +932,15 @@
             }
         };
 
-        // 🚨 LISTENER DO ORÁCULO DE PREÇOS IA 🚨
         bindInput('nomeProdutoPergunta', (e) => {
-            const termo = e.target.value.toLowerCase().trim();
-            const estimativaEl = getEl('estimativaIA');
-            let achou = false;
-            
+            const termo = e.target.value.toLowerCase().trim(); const estimativaEl = getEl('estimativaIA'); let achou = false;
             if (termo.length > 2) {
                 for (let key in basePrecosIA) {
                     if (termo.includes(key)) {
-                        const cotacao = taxasCambio[estadoApp.moeda].taxa;
-                        const sim = taxasCambio[estadoApp.moeda].sim;
-                        const min = (basePrecosIA[key].min * cotacao).toFixed(2);
-                        const max = (basePrecosIA[key].max * cotacao).toFixed(2);
+                        const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
+                        const min = (basePrecosIA[key].min * cotacao).toFixed(2); const max = (basePrecosIA[key].max * cotacao).toFixed(2);
                         estimativaEl.innerHTML = `💡 <strong>Estimativa da IA:</strong> ${sim} ${min} a ${sim} ${max}`;
-                        estimativaEl.style.display = 'block';
-                        achou = true;
-                        break;
+                        estimativaEl.style.display = 'block'; achou = true; break;
                     }
                 }
             }
@@ -957,10 +960,8 @@
             fotosLojista.forEach((f) => { container.innerHTML += `<img src="${f}">`; });
         }
 
-        bindClick('btnCamLojista', () => getEl('inputCamLojista')?.click());
-        bindClick('btnGalLojista', () => getEl('inputGalLojista')?.click());
-        bindChange('inputCamLojista', uploadFotoLojista);
-        bindChange('inputGalLojista', uploadFotoLojista);
+        bindClick('btnCamLojista', () => getEl('inputCamLojista')?.click()); bindClick('btnGalLojista', () => getEl('inputGalLojista')?.click());
+        bindChange('inputCamLojista', uploadFotoLojista); bindChange('inputGalLojista', uploadFotoLojista);
         bindChange('tipoLocalPergunta', (e) => { getEl('nomeLocalPergunta').style.display = e.target.value === 'Ambulante' ? 'none' : 'block'; });
 
         let coordSelecionada = null; let acaoPendente = null; 
@@ -976,15 +977,9 @@
         
         bindClick('btnConfirmarPos', () => {
             coordSelecionada = mapa.getCenter(); getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex';
-            if (acaoPendente === 'add') { 
-                getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; 
-            } 
-            else if (acaoPendente === 'ask') { 
-                getEl('nomeProdutoPergunta').value = ''; getEl('estimativaIA').style.display = 'none'; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; 
-            }
-            else if (acaoPendente === 'addLojista') {
-                fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex';
-            }
+            if (acaoPendente === 'add') { getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; } 
+            else if (acaoPendente === 'ask') { getEl('nomeProdutoPergunta').value = ''; getEl('estimativaIA').style.display = 'none'; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; }
+            else if (acaoPendente === 'addLojista') { fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex'; }
         });
 
         bindClick('btnCancelar', () => { getEl('modalForm').style.display = 'none'; });
@@ -1107,6 +1102,7 @@
 
         bindClick('btnCancelarEdicao', () => getEl('modalEditar').style.display = 'none');
         
+        // ESCUDO KYC
         window.abrirEdicao = function(id, nome, precoAtualBRL, isPremium) { 
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
             if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
