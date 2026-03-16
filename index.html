@@ -138,6 +138,9 @@
         .galeria-lojista { display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 5px; }
         .galeria-lojista img { width: 75px; height: 75px; object-fit: cover; border-radius: 8px; border: 2px solid #f57c00; flex-shrink: 0; }
 
+        /* ESTIMATIVA IA (NOVO) */
+        .estimativa-ia-box { background: #e8eaf6; color: #1565c0; border-left: 4px solid #1976d2; padding: 10px; border-radius: 6px; font-size: 13px; text-align: left; margin: 10px 0; display: none; font-weight: 500; }
+
         #modalPaywall .modal-content { background: linear-gradient(180deg, #ffffff 0%, #f0f2f5 100%); }
         .pw-icon { font-size: 40px; margin-bottom: 10px; }
         .pw-title { font-size: 22px; color: #004d40; font-weight: 700; margin: 0 0 10px 0; }
@@ -428,6 +431,7 @@
             <p style="font-size: 14px; color: #555; margin-bottom: 15px;">Item: <strong id="editItemNome" style="color:#000;"></strong></p>
             <input type="number" id="editItemPreco" class="input-form" placeholder="Novo preço real">
             <input type="hidden" id="editItemId">
+            <input type="hidden" id="isPremiumLugar">
             <button class="btn-salvar" id="btnSalvarEdicao" style="background:#f57c00;">Salvar e Resetar Votos</button>
             <button class="btn-cancelar" id="btnCancelarEdicao">Cancelar</button>
         </div>
@@ -464,8 +468,11 @@
             </div>
             <img id="imagemPreviewPergunta" class="imagem-preview" alt="Foto">
             <p id="iaStatusPergunta" class="ia-status">🤖 IA...</p>
+            
             <input type="text" id="nomeProdutoPergunta" class="input-form" placeholder="Nome do Produto (Ex: Cadeira)">
             
+            <div id="estimativaIA" class="estimativa-ia-box"></div>
+
             <select id="tipoLocalPergunta" class="input-form">
                 <option value="Fixo" id="t_optFixo">🏪 Estabelecimento Fixo</option>
                 <option value="Ambulante" id="t_optAmbulante">🚶 Vendedor Ambulante</option>
@@ -502,6 +509,17 @@
         };
         const taxasCambio = { 'BRL': { sim: 'R$', taxa: 1 }, 'USD': { sim: 'US$', taxa: 0.20 }, 'EUR': { sim: '€', taxa: 0.18 }, 'ARS': { sim: '$', taxa: 170.0 } };
         
+        // 🧠 O CÉREBRO DE PREÇOS DA IA (BASE PREDITIVA) 🧠
+        const basePrecosIA = {
+            'água': { min: 4, max: 7 }, 'agua': { min: 4, max: 7 }, 'water': { min: 4, max: 7 },
+            'cerveja': { min: 8, max: 15 }, 'beer': { min: 8, max: 15 },
+            'cadeira': { min: 15, max: 30 }, 'chair': { min: 15, max: 30 }, 'silla': { min: 15, max: 30 },
+            'guarda-sol': { min: 20, max: 40 }, 'umbrella': { min: 20, max: 40 }, 'barraca': { min: 20, max: 40 },
+            'coco': { min: 8, max: 12 }, 'coconut': { min: 8, max: 12 },
+            'caipirinha': { min: 15, max: 30 },
+            'espetinho': { min: 30, max: 60 }, 'porção': { min: 30, max: 60 }, 'skewer': { min: 30, max: 60 }
+        };
+
         const dicionario = {
             pt: { splashSub: "Preço Justo em Qualquer Lugar", menuRoute: "🗺️ Roteiro Premium", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Trocar de Perfil", menuLojista: "🏢 Área do Lojista", menuWallet: "💰 Minha Carteira", walletTitle: "Saque via PIX", walletSub: "Saque mínimo de R$ 20,00.", btnWithdraw: "Solicitar Saque PIX", level: "⭐ Nvl 1", formTitle: "Novo Registro", optNewPlace: "➕ Adicionar Novo Local", placeNewLocal: "Nome do Novo Local", placeName: "Produto (Ex: Água)", placePrice: "Preço", catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Salvar", btnCancel: "Cancelar", alertaSalvo: "Salvo com sucesso!", alertaFalta: "Preencha todos os campos!", alertaDuplicado: "Este produto já está cadastrado!", statusGreen: "✅ Confiável", statusYellow: "⏳ Em Análise", statusRed: "🚨 Alerta de Golpe", btnYes: "👍", btnNo: "👎", searchTitle: "Buscar Local ou Produto", searchPlaceholder: "Ex: Quiosque, Água...", searchClose: "Fechar", roleTitle: "Como você quer usar o App?", roleTourist: "Sou Turista", roleTouristSub: "Pesquisar lugares e perguntar preços.", roleLocal: "Sou Avaliador Local", roleLocalSub: "Registrar preços e responder turistas.", roleLojista: "Sou Lojista", roleLojistaSub: "Quero cadastrar meu negócio e atrair turistas.", btnAddCam: "📸 Câmera", btnAddGal: "🖼️ Galeria", btnLogin: "Entrar com Google", btnLogout: "Sair da Conta", pwTitle: "Acesso Premium", pwSub: "Buscas ilimitadas e Roteiros Seguros.", pwPlan1: "Pass de 7 Dias", pwPlan2: "Pass de 15 Dias", pwPlan3: "Pass de 30 Dias", pwCancel: "Talvez depois", badgeMedia: "⚖️ Preço na Média", badgeCaro: "📈 Acima da Média", badgeBom: "✨ Melhor Preço", askTitle: "O que você quer comprar?", askSub: "A comunidade local vai te dizer se o preço está justo.", btnAskCam: "📸 Câmera", btnAskGal: "🖼️ Galeria", btnSendAsk: "Enviar Pergunta", btnCancelAsk: "Cancelar", ansTitle: "Responder Turista", btnSendAns: "Responder", optFixo: "🏪 Estabelecimento Fixo", optAmbulante: "🚶 Vendedor Ambulante", btnCancelAns: "Cancelar", placeNewLocalAsk: "Nome do Local ou Vendedor", alertReqLogin: "⚠️ Faça login no menu (☰) para usar esta função!", alertVoted: "🚫 Você já votou neste item!", lockTitle: "Mapa Protegido", lockSub: "Faça login gratuitamente para visualizar preços y locais.", lockBtn: "Entrar com Google", notifTitle: "🔔 Notificações", notifEmpty: "Nenhuma notificação nova.", posHint: "📍 Aponte para a barraca (Dica: Faça de uma distância segura)", btnPosCancel: "Cancelar", btnPosConfirm: "Confirmar Local", btnReqFoto: "📷 Pedir Foto ao Turista", notifReqFoto: "Um Avaliador pediu uma foto do item para dar o preço exato. 📍 Clique aqui para enviar.", radarBtn: "Radar", radarActive: "Radar ligado! Os locais estão visíveis.", radarCool: "O radar esfriou. Os locais não premium foram ocultados.", makePremium: "⭐ Destacar Meu Negócio", lojistaTitle: "Destaque seu Negócio", lojistaSub: "Atraia turistas 24h por dia. Pinos Premium nunca somem do mapa, mesmo sem radar!", kycAlert: "🛡️ Segurança KYC: Apenas Avaliadores Nível 5+ (Verificados com Documento) podem alterar preços de Estabelecimentos Premium Oficiais!" },
             en: { splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Premium Route", menuLang: "🌐 Languages", menuChangeRole: "👤 Change Role", menuLojista: "🏢 Store Owner Area", menuWallet: "💰 My Wallet", walletTitle: "Withdraw Funds", walletSub: "Minimum withdrawal: $ 20.00.", btnWithdraw: "Request Withdrawal", level: "⭐ Lvl 1", formTitle: "New Record", optNewPlace: "➕ Add New Place", placeNewLocal: "New Place Name", placeName: "Product (Ex: Water)", placePrice: "Price", catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save", btnCancel: "Cancel", alertaSalvo: "Saved successfully!", alertaFalta: "Fill in all fields!", alertaDuplicado: "Product already exists!", statusGreen: "✅ Trusted", statusYellow: "⏳ Under Review", statusRed: "🚨 Scam Alert", btnYes: "👍", btnNo: "👎", searchTitle: "Search Place or Product", searchPlaceholder: "Ex: Kiosk, Water...", searchClose: "Close", roleTitle: "How do you want to use the App?", roleTourist: "I'm a Tourist", roleTouristSub: "Search safe places and ask prices.", roleLocal: "I'm a Local Evaluator", roleLocalSub: "Register prices and answer tourists.", roleLojista: "I'm a Store Owner", roleLojistaSub: "Register my business and attract tourists.", btnAddCam: "📸 Camera", btnAddGal: "🖼️ Gallery", btnLogin: "Sign in with Google", btnLogout: "Sign Out", pwTitle: "Premium Access", pwSub: "Unlimited searches and Safe Routes.", pwPlan1: "7-Day Pass", pwPlan2: "15-Day Pass", pwPlan3: "30-Day Pass", pwCancel: "Maybe later", badgeMedia: "⚖️ Average Price", badgeCaro: "📈 Above Average", badgeBom: "✨ Best Price", askTitle: "What do you want to buy?", askSub: "The local community will tell you the fair price.", btnAskCam: "📸 Camera", btnAskGal: "🖼️ Gallery", btnSendAsk: "Send Question", btnCancelAsk: "Cancel", ansTitle: "Answer Tourist", btnSendAns: "Answer", optFixo: "🏪 Fixed Establishment", optAmbulante: "🚶 Mobile Vendor", btnCancelAns: "Cancel", placeNewLocalAsk: "Location or Vendor Name", alertReqLogin: "⚠️ Please login in the menu (☰) to use this feature!", alertVoted: "🚫 You already voted on this item!", lockTitle: "Protected Map", lockSub: "Log in for free to view prices and places.", lockBtn: "Sign in with Google", notifTitle: "🔔 Notifications", notifEmpty: "No new notifications.", posHint: "📍 Point to the vendor (Tip: Do it from a safe distance)", btnPosCancel: "Cancel", btnPosConfirm: "Confirm Location", btnReqFoto: "📷 Request Photo", notifReqFoto: "An Evaluator requested a photo to give the exact price. 📍 Click here to send.", radarBtn: "Radar", radarActive: "Radar active! Places are visible.", radarCool: "Radar cooled down. Non-premium places hidden.", makePremium: "⭐ Highlight My Business", lojistaTitle: "Highlight your Business", lojistaSub: "Attract tourists 24/7. Premium Pins never disappear!", kycAlert: "🛡️ KYC Security: Only Level 5+ Evaluators (ID Verified) can change prices of Official Premium Stores!" },
@@ -521,7 +539,9 @@
 
             setTxt('t_splashSub', t.splashSub); setTxt('t_menuRoute', t.menuRoute); setTxt('t_menuLang', t.menuLang); setTxt('t_menuChangeRole', t.menuChangeRole); setTxt('t_level', t.level); setTxt('t_formTitle', t.formTitle); setTxt('t_catDrink', t.catDrink); setTxt('t_catFood', t.catFood); setTxt('t_catService', t.catService); setTxt('t_catTicket', t.catTicket); setTxt('t_btnCancel', t.btnCancel); setTxt('t_optNewPlace', t.optNewPlace); setTxt('t_searchTitle', t.searchTitle); setTxt('t_searchClose', t.searchClose); setTxt('t_roleTitle', t.roleTitle); setTxt('t_roleTourist', t.roleTourist); setTxt('t_roleTouristSub', t.roleTouristSub); setTxt('t_roleLocal', t.roleLocal); setTxt('t_roleLocalSub', t.roleLocalSub); setTxt('t_btnLogin', t.btnLogin); setTxt('t_btnLogout', t.btnLogout); setTxt('t_pwTitle', t.pwTitle); setTxt('t_pwSub', t.pwSub); setTxt('t_pwPlan1', t.pwPlan1); setTxt('t_pwPlan2', t.pwPlan2); setTxt('t_pwPlan3', t.pwPlan3); setTxt('t_pwCancel', t.pwCancel); setTxt('t_askTitle', t.askTitle); setTxt('t_askSub', t.askSub); setTxt('t_btnSendAsk', t.btnSendAsk); setTxt('t_btnCancelAsk', t.btnCancelAsk); setTxt('t_ansTitle', t.ansTitle); setTxt('t_btnCancelAns', t.btnCancelAns); setTxt('t_btnAddCam', t.btnAddCam); setTxt('t_btnAddGal', t.btnAddGal); setTxt('t_btnAskCam', t.btnAskCam); setTxt('t_btnAskGal', t.btnAskGal); setTxt('t_optFixo', t.optFixo); setTxt('t_optAmbulante', t.optAmbulante); setTxt('t_lockTitle', t.lockTitle); setTxt('t_lockSub', t.lockSub); setTxt('t_lockBtn', t.lockBtn); setTxt('t_notifTitle', t.notifTitle); setTxt('t_posHint', t.posHint); setTxt('t_btnPosCancel', t.btnPosCancel); setTxt('t_btnPosConfirm', t.btnPosConfirm); setPlc('nomeLocalInput', t.placeNewLocal); setPlc('nomeProduto', t.placeName); setPlc('precoProduto', t.placePrice); setPlc('inputBusca', t.searchPlaceholder); setPlc('nomeLocalPergunta', t.placeNewLocalAsk);
             setTxt('t_menuLojista', t.menuLojista); setTxt('t_btnRadarText', t.radarBtn); setTxt('t_lojistaTitle', t.lojistaTitle); setTxt('t_lojistaSub', t.lojistaSub); setTxt('t_roleLojista', t.roleLojista); setTxt('t_roleLojistaSub', t.roleLojistaSub);
+            
             setTxt('t_menuWallet', t.menuWallet); setTxt('t_walletTitle', t.walletTitle); setTxt('t_walletSub', t.walletSub); setTxt('t_btnWithdraw', t.btnWithdraw);
+
             getEl('langSubMenu')?.classList.remove('open'); getEl('sideMenu')?.classList.remove('open'); if(getEl('menuOverlay')) getEl('menuOverlay').style.display = 'none';
             desenharPinos(); 
         }
@@ -658,7 +678,6 @@
             }
         });
 
-        // ROTA PREMIUM IA (ROTEIRO)
         let rotaAtiva = null;
         bindClick('btnCarregarRoteiro', async () => {
             getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none';
@@ -693,7 +712,6 @@
                 }
             }
 
-            // Pega os 4 locais mais próximos e seguros
             locaisSeguros.sort((a,b) => a.dist - b.dist);
             locaisSeguros.slice(0, 4).forEach(loc => pontosRota.push([loc.lat, loc.lng]));
 
@@ -875,6 +893,8 @@
         }
 
         let fotoAtualBase64 = null;
+        
+        // 🚨 FUNÇÃO ATUALIZADA: Puxa o valor do banco de dados preditivo da IA 🚨
         const processarImagem = (e, idPreview, idStatus, idNomeInput) => {
             if (e.target.files.length > 0) {
                 comprimirImagemBase64(e.target.files[0], (base64) => {
@@ -882,11 +902,47 @@
                     const inpNome = getEl(idNomeInput); if(inpNome) inpNome.value = '';
                     if (modeloIA) {
                         const status = getEl(idStatus); if(status) { status.style.display = 'block'; setTxt(idStatus, '🤖 IA...'); }
-                        if(img) img.onload = () => { modeloIA.classify(img).then(prev => { if(status) status.style.display = 'none'; const tIngles = prev[0].className.split(',')[0].toLowerCase().trim(); if(estadoApp.idioma === 'en') { if(inpNome) inpNome.value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } else { const tTrad = dicionario['pt'][tIngles]; if(inpNome) inpNome.value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } }); }
+                        if(img) img.onload = () => { 
+                            modeloIA.classify(img).then(prev => { 
+                                if(status) status.style.display = 'none'; 
+                                const tIngles = prev[0].className.split(',')[0].toLowerCase().trim(); 
+                                if(estadoApp.idioma === 'en') { if(inpNome) inpNome.value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } 
+                                else { const tTrad = dicionario['pt'][tIngles]; if(inpNome) inpNome.value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } 
+                                
+                                // Aciona a estimativa IA na hora se for o input de pergunta
+                                if(idNomeInput === 'nomeProdutoPergunta') {
+                                    const event = new Event('input');
+                                    inpNome.dispatchEvent(event);
+                                }
+                            }); 
+                        }
                     }
                 });
             }
         };
+
+        // 🚨 LISTENER DO ORÁCULO DE PREÇOS IA 🚨
+        bindInput('nomeProdutoPergunta', (e) => {
+            const termo = e.target.value.toLowerCase().trim();
+            const estimativaEl = getEl('estimativaIA');
+            let achou = false;
+            
+            if (termo.length > 2) {
+                for (let key in basePrecosIA) {
+                    if (termo.includes(key)) {
+                        const cotacao = taxasCambio[estadoApp.moeda].taxa;
+                        const sim = taxasCambio[estadoApp.moeda].sim;
+                        const min = (basePrecosIA[key].min * cotacao).toFixed(2);
+                        const max = (basePrecosIA[key].max * cotacao).toFixed(2);
+                        estimativaEl.innerHTML = `💡 <strong>Estimativa da IA:</strong> ${sim} ${min} a ${sim} ${max}`;
+                        estimativaEl.style.display = 'block';
+                        achou = true;
+                        break;
+                    }
+                }
+            }
+            if(!achou) estimativaEl.style.display = 'none';
+        });
 
         let fotosLojista = []; const maxFotosLojista = 3;
         const uploadFotoLojista = (e) => {
@@ -924,7 +980,7 @@
                 getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; 
             } 
             else if (acaoPendente === 'ask') { 
-                getEl('nomeProdutoPergunta').value = ''; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; 
+                getEl('nomeProdutoPergunta').value = ''; getEl('estimativaIA').style.display = 'none'; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; 
             }
             else if (acaoPendente === 'addLojista') {
                 fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex';
@@ -1051,7 +1107,6 @@
 
         bindClick('btnCancelarEdicao', () => getEl('modalEditar').style.display = 'none');
         
-        // ESCUDO KYC
         window.abrirEdicao = function(id, nome, precoAtualBRL, isPremium) { 
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
             if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
@@ -1150,7 +1205,6 @@
                     btnPromover = `<button onclick="window.prepararPromocao('${nomeL}')" class="btn-laranja" style="margin-top:8px; background:#ffc107; color:#333; box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);">${dicionario[estadoApp.idioma].makePremium}</button>`;
                 }
 
-                // CÁLCULO DAS ESTRELAS (REVIEWS)
                 let estrelasStr = "⭐ Novo";
                 if(estadoApp.avaliacoes && estadoApp.avaliacoes[nomeL]) {
                     const revs = estadoApp.avaliacoes[nomeL];
