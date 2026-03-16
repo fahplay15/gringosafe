@@ -554,6 +554,7 @@
             estadoApp.idioma = lang; const t = dicionario[lang];
             document.querySelectorAll('.sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; });
             const opt = getEl('lang_' + lang); if(opt) { opt.classList.add('ativo-option'); opt.querySelector('.check').style.display = 'inline'; }
+
             setTxt('t_splashSub', t.splashSub); setTxt('t_menuRoute', rotaAtiva ? t.menuRouteOff : t.menuRoute); 
             setTxt('t_menuLang', t.menuLang); setTxt('t_menuChangeRole', t.menuChangeRole); setTxt('t_level', t.level); setTxt('t_formTitle', t.formTitle); setTxt('t_catDrink', t.catDrink); setTxt('t_catFood', t.catFood); setTxt('t_catService', t.catService); setTxt('t_catTicket', t.catTicket); setTxt('t_btnCancel', t.btnCancel); setTxt('t_optNewPlace', t.optNewPlace); setTxt('t_searchTitle', t.searchTitle); setTxt('t_searchClose', t.searchClose); setTxt('t_roleTitle', t.roleTitle); setTxt('t_roleTourist', t.roleTourist); setTxt('t_roleTouristSub', t.roleTouristSub); setTxt('t_roleLocal', t.roleLocal); setTxt('t_roleLocalSub', t.roleLocalSub); setTxt('t_btnLogin', t.btnLogin); setTxt('t_btnLogout', t.btnLogout); setTxt('t_pwTitle', t.pwTitle); setTxt('t_pwSub', t.pwSub); setTxt('t_pwPlan1', t.pwPlan1); setTxt('t_pwPlan2', t.pwPlan2); setTxt('t_pwPlan3', t.pwPlan3); setTxt('t_pwCancel', t.pwCancel); setTxt('t_askTitle', t.askTitle); setTxt('t_askSub', t.askSub); setTxt('t_btnSendAsk', t.btnSendAsk); setTxt('t_btnCancelAsk', t.btnCancelAsk); setTxt('t_ansTitle', t.ansTitle); setTxt('t_btnCancelAns', t.btnCancelAns); setTxt('t_btnAddCam', t.btnAddCam); setTxt('t_btnAddGal', t.btnAddGal); setTxt('t_btnAskCam', t.btnAskCam); setTxt('t_btnAskGal', t.btnAskGal); setTxt('t_optFixo', t.optFixo); setTxt('t_optAmbulante', t.optAmbulante); setTxt('t_lockTitle', t.lockTitle); setTxt('t_lockSub', t.lockSub); setTxt('t_lockBtn', t.lockBtn); setTxt('t_notifTitle', t.notifTitle); setTxt('t_posHint', t.posHint); setTxt('t_btnPosCancel', t.btnPosCancel); setTxt('t_btnPosConfirm', t.btnPosConfirm); setPlc('nomeLocalInput', t.placeNewLocal); setPlc('nomeProduto', t.placeName); setPlc('precoProduto', t.placePrice); setPlc('inputBusca', t.searchPlaceholder); setPlc('nomeLocalPergunta', t.placeNewLocalAsk);
             setTxt('t_menuLojista', t.menuLojista); setTxt('t_btnRadarText', t.radarBtn); setTxt('t_lojistaTitle', t.lojistaTitle); setTxt('t_lojistaSub', t.lojistaSub); setTxt('t_roleLojista', t.roleLojista); setTxt('t_roleLojistaSub', t.roleLojistaSub);
@@ -733,7 +734,7 @@
             let locaisSeguros = [];
             for (const nomeL in estadoApp.dadosHospedados) {
                 const dados = estadoApp.dadosHospedados[nomeL];
-                if (!dados.lat || !dados.lng) continue; // Blindagem
+                if (!dados.lat || !dados.lng) continue;
                 const isPremium = dados.itens.some(i => i.premium); let temAprovado = false;
                 dados.itens.forEach(i => { let vUp = i.votos_up || 0; let vDown = i.votos_down || 0; if((vUp+vDown) >= 5 && (vUp/(vUp+vDown)) >= 0.6) temAprovado = true; });
                 if(isPremium || temAprovado) { const dist = Math.sqrt(Math.pow(dados.lat - userLat, 2) + Math.pow(dados.lng - userLng, 2)); locaisSeguros.push({lat: dados.lat, lng: dados.lng, nome: nomeL, dist: dist}); }
@@ -952,6 +953,7 @@
             acaoPendente = acao; getEl('bottomActions').style.display = 'none'; getEl('posicionamentoUI').style.display = 'block'; getEl('alfineteCentral').style.display = 'flex'; getEl('alfineteAlvo').style.display = 'block';
         }
 
+        // 🚨 FUNÇÃO DE CADASTRAR DIRETO DO BALÃO AGORA PROTEGIDA 🚨
         window.abrirAdicionarItemDireto = function(nomeLocal, isLojista) {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             mapa.closePopup();
@@ -970,8 +972,19 @@
             else { setTxt('t_btnSave', dicionario[estadoApp.idioma].btnSave + " (+R$ 0,25)"); getEl('t_formTitle').innerText = dicionario[estadoApp.idioma].formTitle; }
             
             const placeData = estadoApp.dadosHospedados[nomeLocal];
-            coordSelecionada = { lat: placeData.lat, lng: placeData.lng };
+            if (placeData) {
+                coordSelecionada = { lat: placeData.lat, lng: placeData.lng };
+            } else {
+                coordSelecionada = mapa.getCenter();
+            }
             getEl('modalForm').style.display = 'flex';
+        };
+
+        window.prepararPromocao = function(nomeLocal) {
+            mapa.closePopup(); // Evita conflitos no mapa
+            localParaPromover = nomeLocal;
+            if(!estadoApp.isLojistaPremium) { getEl('modalLojista').style.display = 'flex'; } 
+            else { window.executarPromocao(nomeLocal); }
         };
         
         bindClick('btnAdicionar', () => { if (estadoApp.perfil === 'lojista') { iniciarModoPosicionamento('addLojista'); } else { iniciarModoPosicionamento('add'); } });
@@ -1015,7 +1028,9 @@
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const nomeNegocio = getEl('nomeLojistaInput').value.trim(); const catNegocio = getEl('categoriaLojista').value;
             if(!nomeNegocio) return alert("Por favor, digite o nome do seu negócio.");
+            
             const centro = coordSelecionada || mapa.getCenter(); const aMail = estadoApp.usuario.email;
+            
             await addDoc(collection(db, "precos"), { local: nomeNegocio, nome: "Acesso ao Local", preco: 0, isLojistaPlace: true, categoria: catNegocio, lat: centro.lat, lng: centro.lng, status: "aprovado", premium: estadoApp.isLojistaPremium, fotosLocal: fotosLojista, autor: aMail, data: new Date() });
             getEl('modalFormLojista').style.display = 'none'; alert("Seu negócio foi cadastrado com sucesso e já está no mapa como Negócio Local! Clique no pino para destacá-lo.");
         });
@@ -1031,9 +1046,16 @@
             if (localTipo === 'Ambulante') { localNome = 'Vendedor Ambulante da Região'; } else if (!localNome) { return alert("Digite o nome do local!"); }
             if(!itemDesejado) return alert("Digite o nome do item!");
             
-            const centro = coordSelecionada || mapa.getCenter(); let fuzzyLat = centro.lat; let fuzzyLng = centro.lng;
-            if (localTipo === 'Ambulante') { const angle = Math.random() * Math.PI * 2; const radius = 0.0004 + (Math.random() * 0.0004); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); } 
-            else { const angle = Math.random() * Math.PI * 2; const radius = 0.0001 + (Math.random() * 0.00015); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); }
+            const centro = coordSelecionada || mapa.getCenter(); 
+            let fuzzyLat = centro.lat; let fuzzyLng = centro.lng;
+
+            if (localTipo === 'Ambulante') {
+                const angle = Math.random() * Math.PI * 2; const radius = 0.0004 + (Math.random() * 0.0004); 
+                fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle));
+            } else {
+                const angle = Math.random() * Math.PI * 2; const radius = 0.0001 + (Math.random() * 0.00015); 
+                fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle));
+            }
             
             await addDoc(collection(db, "perguntas"), { nomeItem: itemDesejado, nomeLocal: localNome, tipoLocal: localTipo, lat: fuzzyLat, lng: fuzzyLng, status: "aberta", respostas: [], autorUid: estadoApp.usuario.uid, fotoUrl: fotoAtualBase64, fotoSolicitada: false, data: new Date() });
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
@@ -1046,7 +1068,14 @@
         };
 
         let idPerguntaParaFotoExtra = null; window.abrirEnvioFotoExtra = function(idPergunta) { idPerguntaParaFotoExtra = idPergunta; getEl('inputCamExtra').click(); };
-        const uploadFotoExtra = async (e) => { if (e.target.files.length > 0 && idPerguntaParaFotoExtra) { comprimirImagemBase64(e.target.files[0], async (base64) => { await updateDoc(doc(db, "perguntas", idPerguntaParaFotoExtra), { fotoUrl: base64, fotoSolicitada: false }); alert("📸 Foto enviada com sucesso! Os avaliadores já podem ver."); idPerguntaParaFotoExtra = null; }); } };
+        const uploadFotoExtra = async (e) => {
+            if (e.target.files.length > 0 && idPerguntaParaFotoExtra) {
+                comprimirImagemBase64(e.target.files[0], async (base64) => {
+                    await updateDoc(doc(db, "perguntas", idPerguntaParaFotoExtra), { fotoUrl: base64, fotoSolicitada: false });
+                    alert("📸 Foto enviada com sucesso! Os avaliadores já podem ver."); idPerguntaParaFotoExtra = null;
+                });
+            }
+        };
         bindChange('inputCamExtra', uploadFotoExtra); bindChange('inputGalExtra', uploadFotoExtra);
 
         window.resolverPerguntaConsenso = async function(idPergunta, pergData, respostas) {
@@ -1062,6 +1091,7 @@
                 await updateDoc(doc(db, "usuarios", vencedor.uid), { saldo: increment(1.00) });
                 if (pergData.autorUid && pergData.autorUid !== 'undefined') { 
                     await addDoc(collection(db, "notificacoes"), { userId: pergData.autorUid, tipo: 'resposta', titulo: "✅ Dúvida Respondida!", nomeItem: pergData.nomeItem, nomeLocal: pergData.nomeLocal, precoReal: precoFinal, lat: pergData.lat, lng: pergData.lng, lida: false, data: new Date() }); 
+                    
                     if (estadoApp.usuario && pergData.autorUid === estadoApp.usuario.uid) { window.piscarNoMapa(pergData.lat, pergData.lng); }
                 }
             } catch(e) { console.log(e); }
@@ -1121,22 +1151,12 @@
             try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
         };
 
-        window.promoverLugar = async function(nomeLocal) {
-            try {
-                const q = query(collection(db, "precos"), where("local", "==", nomeLocal));
-                const snapshot = await getDocs(q);
-                let atualizouAlgo = false;
-                snapshot.forEach((docSnap) => { updateDoc(doc(db, "precos", docSnap.id), { premium: true }); atualizouAlgo = true; });
-                if(atualizouAlgo){ alert(`✅ O local "${nomeLocal}" agora é Oficial e Premium!\n\nEle ficará com uma estrela dourada visível 24h por dia para os turistas (sem precisar de radar). Seus preços agora estão protegidos pelo Escudo KYC.`); }
-            } catch(e) { console.error(e); }
-        };
-
-        // 🚨 O LEITOR DE DADOS 100% BLINDADO CONTRA NULOS 🚨
         onSnapshot(collection(db, "precos"), (snapshot) => {
             estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
             snapshot.forEach((doc) => {
                 const item = doc.data(); 
                 
+                // 🚨 BLINDAGEM NÍVEL 2: Previne nomes vazios quebrarem o código
                 const nomeItemSeguro = item.nome || "Item Não Nomeado";
                 const precoSeguro = item.preco || 0;
                 
@@ -1151,6 +1171,7 @@
                     estadoApp.mediaPrecos[nl] += precoSeguro; estadoApp.contagemPrecos[nl]++;
                 }
             });
+            
             let h = `<option value="NEW" id="t_optNewPlace">${dicionario[estadoApp.idioma].optNewPlace}</option>`; 
             Object.keys(estadoApp.dadosHospedados).sort().forEach(n => { if(n !== "Desconhecido" && !n.includes("🚶 Ambulante")) h += `<option value="${n}">${n}</option>`; }); 
             getEl('selectLocal').innerHTML = h;
@@ -1161,14 +1182,13 @@
             estadoApp.perguntasAbertas = {}; snapshot.forEach((doc) => { const p = doc.data(); if(p.status === "aberta") estadoApp.perguntasAbertas[doc.id] = p; }); desenharPinos(); 
         });
 
-        // 🚨 O DESENHO DO MAPA (BLINDADO CONTRA CÁLCULOS QUEBRADOS) 🚨
         function desenharPinos() {
             camadaDePinos.clearLayers(); marcadoresNoMapa = {}; const t = dicionario[estadoApp.idioma]; const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
 
             for (const nomeL in estadoApp.dadosHospedados) {
                 const dadosL = estadoApp.dadosHospedados[nomeL]; 
                 
-                // SE O PINO NÃO TEM COORDENADA (Item salvo errado antes), IGNORA ELE E NÃO TRAVA O APP!
+                // 🚨 BLINDAGEM NÍVEL 1: Ignora dados sem GPS do Firebase
                 if (!dadosL.lat || !dadosL.lng) continue; 
                 
                 const avaliacoesValidas = dadosL.itens.filter(i => !i.isLojistaPlace);
@@ -1191,14 +1211,16 @@
                         let vUp = item.votos_up || 0; let vDown = item.votos_down || 0; let totalV = vUp + vDown; let stAtual = 'pendente'; let minVotosRequeridos = 5; 
                         if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
                         let ic = stAtual === 'aprovado' ? '✅' : (stAtual === 'abusivo' ? '🚨' : '⏳'); 
-                        let btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:#2e7d32;" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#c62828;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${item.nome}', ${item.preco}, ${isPremium})">✏️</button></div>`;
+                        let btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:#2e7d32;" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#c62828;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${item.nome.replace(/'/g, "\\'")}', ${item.preco}, ${isPremium})">✏️</button></div>`;
                         
                         let bgDestaque = ((item.nome || "").toLowerCase() === estadoApp.filtroProduto.toLowerCase()) ? 'background:#e8f5e9; border: 2px solid #00e676;' : '';
                         htmlLista += `<div class="item-card" style="${bgDestaque}"><div class="item-row"><div class="item-detalhes"><span class="item-nome">${ic} ${item.nome}</span></div><span class="item-preco">${sim} ${(item.preco * cotacao).toFixed(2)}</span></div>${btns}</div>`;
                     });
 
                     let btnAdicionarItem = '';
-                    if (estadoApp.perfil === 'avaliador') { btnAdicionarItem = `<button onclick="window.abrirAdicionarItemDireto('${nomeL.replace(/'/g, "\\'")}', false)" class="btn-roxo" style="margin-top:8px; background:#4caf50; padding:8px; font-size:13px; width:100%;"><span style="font-size:16px;">➕</span> Cadastrar Novo Item Aqui</button>`; }
+                    if (estadoApp.perfil === 'avaliador') { 
+                        btnAdicionarItem = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${nomeL.replace(/'/g, "\\'")}', false)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(76, 175, 80, 0.3);">➕ Cadastrar Novo Item Aqui</button>`; 
+                    }
 
                     let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3><div class="lista-itens">${htmlLista}</div>${btnAdicionarItem}</div>`;
                     pinoDinheiro.bindPopup(popupHtml); camadaDePinos.addLayer(pinoDinheiro); continue; 
@@ -1220,7 +1242,7 @@
                     let btns = '';
 
                     if (isCongelado) { ic = '🧊'; btns = `<div class="item-acoes"><span style="color:#c62828; font-size:12px; font-weight:bold;">🚨 Suspenso por Fraude</span></div>`; } 
-                    else { btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:#2e7d32;" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#c62828;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${item.nome}', ${item.preco}, ${isPremium})">✏️</button></div>`; }
+                    else { btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:#2e7d32;" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#c62828;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${item.nome.replace(/'/g, "\\'")}', ${item.preco}, ${isPremium})">✏️</button></div>`; }
                     
                     let badge = ""; const nl = (item.nome || "").toLowerCase().trim(); const ctg = estadoApp.contagemPrecos[nl];
                     if (ctg > 1 && !isCongelado) { const m = estadoApp.mediaPrecos[nl] / ctg; const pM = (m * cotacao).toFixed(2); if (item.preco > m * 1.15) badge = `<span style="font-size:10px;background:#ffebee;color:#c62828;padding:2px 5px;border-radius:4px;margin-top:3px;display:inline-block;">${t.badgeCaro} (${sim} ${pM})</span>`; else if (item.preco <= m * 0.9) badge = `<span style="font-size:10px;background:#e8f5e9;color:#2e7d32;padding:2px 5px;border-radius:4px;margin-top:3px;display:inline-block;">${t.badgeBom} (${sim} ${pM})</span>`; else badge = `<span style="font-size:10px;background:#fff3e0;color:#ef6c00;padding:2px 5px;border-radius:4px;margin-top:3px;display:inline-block;">${t.badgeMedia}</span>`; }
@@ -1237,15 +1259,16 @@
                     else if (txAprov >= 60) { icP = iGreen; st = `<p style="color:#2e7d32;font-weight:700;font-size:13px;margin:0 0 10px 0;">${t.statusGreen} (${txAprov.toFixed(0)}% Seguro)</p>`; }
                 }
 
+                // 🚨 UX BOTÕES NO BALÃO DO MAPA 🚨
                 let btnPromover = ''; let btnAdicionarItem = '';
                 if (estadoApp.perfil === 'lojista' && !isPremium && lugarLojista && lugarLojista.autor === (estadoApp.usuario ? estadoApp.usuario.email : '')) {
-                    btnPromover = `<button onclick="window.prepararPromocao('${nomeL.replace(/'/g, "\\'")}')" class="btn-laranja" style="margin-top:8px; background:#ffc107; color:#333; box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);">${dicionario[estadoApp.idioma].makePremium}</button>`;
+                    btnPromover = `<button onclick="event.stopPropagation(); window.prepararPromocao('${nomeL.replace(/'/g, "\\'")}')" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:linear-gradient(135deg, #ffc107, #ff9800); color:#000; font-weight:900; font-size:14px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(255, 193, 7, 0.4);">⭐ DESTACAR MEU NEGÓCIO</button>`;
                 }
 
                 if (estadoApp.perfil === 'avaliador') {
-                    btnAdicionarItem = `<button onclick="window.abrirAdicionarItemDireto('${nomeL.replace(/'/g, "\\'")}', false)" class="btn-roxo" style="margin-top:8px; background:#4caf50; padding:8px; font-size:13px; width:100%;"><span style="font-size:16px;">➕</span> Cadastrar Novo Item Aqui</button>`;
+                    btnAdicionarItem = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${nomeL.replace(/'/g, "\\'")}', false)" style="width:100%; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(76, 175, 80, 0.3);">➕ Cadastrar Novo Item Aqui</button>`;
                 } else if (estadoApp.perfil === 'lojista' && lugarLojista && lugarLojista.autor === (estadoApp.usuario ? estadoApp.usuario.email : '')) {
-                    btnAdicionarItem = `<button onclick="window.abrirAdicionarItemDireto('${nomeL.replace(/'/g, "\\'")}', true)" class="btn-roxo" style="margin-top:8px; background:#f57c00; padding:8px; font-size:13px; width:100%;"><span style="font-size:16px;">➕</span> Adicionar Produto ao Menu</button>`;
+                    btnAdicionarItem = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${nomeL.replace(/'/g, "\\'")}', true)" style="width:100%; margin-bottom:8px; padding:12px; background:#004d40; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(0, 77, 64, 0.3);">📋 Adicionar Produto ao Menu</button>`;
                 }
 
                 let estrelasStr = "⭐ Novo";
@@ -1253,7 +1276,7 @@
                     const revs = estadoApp.avaliacoes[nomeL]; let soma = 0; revs.forEach(r => soma += r.nota); const media = (soma / revs.length).toFixed(1);
                     estrelasStr = `⭐ ${media} (${revs.length} avaliações)`;
                 }
-                const btnVerAvaliacoes = `<button onclick="window.abrirAvaliacoes('${nomeL.replace(/'/g, "\\'")}')" class="btn-laranja" style="margin-top:8px; background:#1976d2; border-radius:8px; font-size:13px;">Ver / Deixar Avaliação</button>`;
+                const btnVerAvaliacoes = `<button onclick="event.stopPropagation(); window.abrirAvaliacoes('${nomeL.replace(/'/g, "\\'")}')" style="width:100%; margin-bottom:5px; padding:10px; background:#1976d2; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(25, 118, 210, 0.3);">💬 Ver / Deixar Avaliação</button>`;
 
                 if (htmlLista === '' && !lugarLojista) continue; 
 
@@ -1282,7 +1305,7 @@
                     const areaSegura = L.circle([perg.lat, perg.lng], { color: corArea, fillColor: corArea, fillOpacity: 0.15, radius: raio, weight: 2, dashArray: '5, 5', className: 'area-segura-anim' });
                     
                     let btnFoto = '';
-                    if (!perg.fotoUrl && !perg.fotoSolicitada) { btnFoto = `<button onclick="window.solicitarFoto('${idPerg}', '${autorP}', '${perg.nomeItem.replace(/'/g, "\\'")}', '${perg.nomeLocal.replace(/'/g, "\\'")}')" class="btn-laranja">${t.btnReqFoto}</button>`; } 
+                    if (!perg.fotoUrl && !perg.fotoSolicitada) { btnFoto = `<button onclick="window.solicitarFoto('${idPerg}', '${autorP}', '${(perg.nomeItem||'').replace(/'/g, "\\'")}', '${(perg.nomeLocal||'').replace(/'/g, "\\'")}')" class="btn-laranja">${t.btnReqFoto}</button>`; } 
                     else if (perg.fotoSolicitada) { btnFoto = `<p style="font-size:12px; color:#f57c00; font-weight:bold;">⏳ Aguardando envio de foto...</p>`; }
                     
                     htmlPopup = `<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:${corArea};">Dúvida na Área</h3><p style="margin:0 0 5px 0; font-size:14px;">Procurar por: <strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}<p style="font-size:12px; color:#f57c00; font-weight:bold;">Respostas: ${qtdResps}/3</p><button onclick="window.abrirModalResposta('${idPerg}')" style="background:#2e7d32; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:5px; width:100%;">Responder e Ganhar</button>${btnFoto}</div>`; 
