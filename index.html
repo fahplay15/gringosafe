@@ -118,7 +118,7 @@
         .notif-titulo { font-weight: 700; font-size: 14px; color: #004d40; margin-bottom: 4px; }
         .notif-msg { font-size: 13px; color: #444; line-height: 1.4; }
 
-        .popup-info { font-family: 'Poppins', sans-serif; min-width: 250px; }
+        .popup-info { font-family: 'Poppins', sans-serif; min-width: 260px; }
         .popup-info h3 { margin: 0 0 5px 0; font-size: 18px; color: #1a1a1a; border-bottom: 2px solid #eee; padding-bottom: 5px;}
         .lista-itens { max-height: 220px; overflow-y: auto; margin-top: 10px; }
         .item-card { background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #eee; position: relative; }
@@ -245,7 +245,6 @@
             <button class="btn-sair" id="btnLogout" style="display: none;"><span id="t_btnLogout">Sair da Conta</span></button>
         </div>
         <div class="menu-item" id="btnMinhaCarteira" style="color: #2e7d32;"><span id="t_menuWallet">💰 Minha Carteira</span></div>
-        
         <div class="menu-item" id="btnAreaLojista" style="color: #f57c00;"><span id="t_menuLojista">🏢 Área do Lojista</span></div>
         <div class="menu-item" id="btnCarregarRoteiro" style="color: #9c27b0;"><span id="t_menuRoute">🗺️ Roteiro Premium Seguro</span></div>
         <div class="menu-item" id="btnLangToggle"><span id="t_menuLang">🌐 Idiomas</span><span>▼</span></div>
@@ -340,9 +339,7 @@
     <div class="modal-overlay" id="modalFormLojista">
         <div class="modal-content">
             <h3 style="color:#f57c00; margin-bottom:15px;">🏢 Cadastrar Meu Negócio</h3>
-            
             <input type="text" id="nomeLojistaInput" class="input-form" placeholder="Nome Oficial do Estabelecimento">
-            
             <select id="categoriaLojista" class="input-form">
                 <option value="Restaurante">🍽️ Restaurante</option>
                 <option value="Bar">🍻 Bar / Pub</option>
@@ -350,17 +347,36 @@
                 <option value="Quiosque">🏖️ Quiosque de Praia</option>
                 <option value="Turismo">🚤 Agência de Passeios / Turismo</option>
             </select>
-
             <div style="font-size:13px; color:#555; margin:15px 0 5px 0; font-weight:600;">Adicione até 3 fotos para atrair turistas:</div>
             <div class="linha-botoes-foto">
                 <button class="btn-laranja" id="btnCamLojista" style="flex: 1;">📸 Câmera</button>
                 <button class="btn-laranja" id="btnGalLojista" style="flex: 1; background: #e0e0e0; color: #333;">🖼️ Galeria</button>
             </div>
-            
             <div id="previewFotosLojista" class="galeria-lojista"></div>
-
             <button class="btn-salvar" id="btnSalvarLojista" style="background:#f57c00; margin-top:15px;">Salvar Meu Negócio no Mapa</button>
             <button class="btn-cancelar" id="btnCancelarLojista">Cancelar</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalAvaliacoes">
+        <div class="modal-content">
+            <h3 style="color:#f57c00; margin-bottom:5px;">Avaliações ⭐</h3>
+            <h4 id="revNomeLocal" style="margin-top:0; color:#333;">Nome Local</h4>
+            <div id="listaReviews" style="max-height:30vh; overflow-y:auto; margin-bottom:15px; font-size:13px; text-align:left;"></div>
+            
+            <div style="border-top:1px solid #eee; padding-top:10px;">
+                <select id="notaReview" class="input-form" style="margin-bottom:5px;">
+                    <option value="5">⭐⭐⭐⭐⭐ Excelente</option>
+                    <option value="4">⭐⭐⭐⭐ Muito Bom</option>
+                    <option value="3">⭐⭐⭐ Bom</option>
+                    <option value="2">⭐⭐ Ruim</option>
+                    <option value="1">⭐ Péssimo</option>
+                </select>
+                <textarea id="textoReview" class="input-form" placeholder="Deixe seu comentário..." style="height:60px; resize:none;"></textarea>
+                <input type="hidden" id="localAlvoReview">
+                <button class="btn-salvar" id="btnEnviarReview" style="background:#f57c00; margin-top:5px;">Enviar Avaliação</button>
+            </div>
+            <button class="btn-cancelar" id="btnFecharAvaliacoes">Fechar</button>
         </div>
     </div>
 
@@ -412,7 +428,6 @@
             <p style="font-size: 14px; color: #555; margin-bottom: 15px;">Item: <strong id="editItemNome" style="color:#000;"></strong></p>
             <input type="number" id="editItemPreco" class="input-form" placeholder="Novo preço real">
             <input type="hidden" id="editItemId">
-            <input type="hidden" id="isPremiumLugar">
             <button class="btn-salvar" id="btnSalvarEdicao" style="background:#f57c00;">Salvar e Resetar Votos</button>
             <button class="btn-cancelar" id="btnCancelarEdicao">Cancelar</button>
         </div>
@@ -483,7 +498,7 @@
         let estadoApp = { 
             moeda: 'BRL', idioma: 'pt', perfil: 'turista', buscasRestantes: 3, planoPrecoUSD: 4.99, saldo: 0.00, 
             usuario: null, dadosHospedados: {}, mediaPrecos: {}, contagemPrecos: {}, perguntasAbertas: {}, notificacoes: [], 
-            radarAtivo: false, isLojistaPremium: false, nivelAvaliador: 1 
+            radarAtivo: false, isLojistaPremium: false, nivelAvaliador: 1, avaliacoes: {} 
         };
         const taxasCambio = { 'BRL': { sim: 'R$', taxa: 1 }, 'USD': { sim: 'US$', taxa: 0.20 }, 'EUR': { sim: '€', taxa: 0.18 }, 'ARS': { sim: '$', taxa: 170.0 } };
         
@@ -506,10 +521,7 @@
 
             setTxt('t_splashSub', t.splashSub); setTxt('t_menuRoute', t.menuRoute); setTxt('t_menuLang', t.menuLang); setTxt('t_menuChangeRole', t.menuChangeRole); setTxt('t_level', t.level); setTxt('t_formTitle', t.formTitle); setTxt('t_catDrink', t.catDrink); setTxt('t_catFood', t.catFood); setTxt('t_catService', t.catService); setTxt('t_catTicket', t.catTicket); setTxt('t_btnCancel', t.btnCancel); setTxt('t_optNewPlace', t.optNewPlace); setTxt('t_searchTitle', t.searchTitle); setTxt('t_searchClose', t.searchClose); setTxt('t_roleTitle', t.roleTitle); setTxt('t_roleTourist', t.roleTourist); setTxt('t_roleTouristSub', t.roleTouristSub); setTxt('t_roleLocal', t.roleLocal); setTxt('t_roleLocalSub', t.roleLocalSub); setTxt('t_btnLogin', t.btnLogin); setTxt('t_btnLogout', t.btnLogout); setTxt('t_pwTitle', t.pwTitle); setTxt('t_pwSub', t.pwSub); setTxt('t_pwPlan1', t.pwPlan1); setTxt('t_pwPlan2', t.pwPlan2); setTxt('t_pwPlan3', t.pwPlan3); setTxt('t_pwCancel', t.pwCancel); setTxt('t_askTitle', t.askTitle); setTxt('t_askSub', t.askSub); setTxt('t_btnSendAsk', t.btnSendAsk); setTxt('t_btnCancelAsk', t.btnCancelAsk); setTxt('t_ansTitle', t.ansTitle); setTxt('t_btnCancelAns', t.btnCancelAns); setTxt('t_btnAddCam', t.btnAddCam); setTxt('t_btnAddGal', t.btnAddGal); setTxt('t_btnAskCam', t.btnAskCam); setTxt('t_btnAskGal', t.btnAskGal); setTxt('t_optFixo', t.optFixo); setTxt('t_optAmbulante', t.optAmbulante); setTxt('t_lockTitle', t.lockTitle); setTxt('t_lockSub', t.lockSub); setTxt('t_lockBtn', t.lockBtn); setTxt('t_notifTitle', t.notifTitle); setTxt('t_posHint', t.posHint); setTxt('t_btnPosCancel', t.btnPosCancel); setTxt('t_btnPosConfirm', t.btnPosConfirm); setPlc('nomeLocalInput', t.placeNewLocal); setPlc('nomeProduto', t.placeName); setPlc('precoProduto', t.placePrice); setPlc('inputBusca', t.searchPlaceholder); setPlc('nomeLocalPergunta', t.placeNewLocalAsk);
             setTxt('t_menuLojista', t.menuLojista); setTxt('t_btnRadarText', t.radarBtn); setTxt('t_lojistaTitle', t.lojistaTitle); setTxt('t_lojistaSub', t.lojistaSub); setTxt('t_roleLojista', t.roleLojista); setTxt('t_roleLojistaSub', t.roleLojistaSub);
-            
-            // Textos novos da Carteira
             setTxt('t_menuWallet', t.menuWallet); setTxt('t_walletTitle', t.walletTitle); setTxt('t_walletSub', t.walletSub); setTxt('t_btnWithdraw', t.btnWithdraw);
-
             getEl('langSubMenu')?.classList.remove('open'); getEl('sideMenu')?.classList.remove('open'); if(getEl('menuOverlay')) getEl('menuOverlay').style.display = 'none';
             desenharPinos(); 
         }
@@ -591,7 +603,108 @@
             }
         });
 
-        // ======================= SISTEMA DE SAQUE PIX =======================
+        // ======================= SISTEMA DE AVALIAÇÕES E ROTEIRO IA =======================
+        onSnapshot(collection(db, "avaliacoes"), (snapshot) => {
+            estadoApp.avaliacoes = {};
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                if(!estadoApp.avaliacoes[data.local]) estadoApp.avaliacoes[data.local] = [];
+                estadoApp.avaliacoes[data.local].push({...data, id: doc.id});
+            });
+            desenharPinos();
+        });
+
+        window.abrirAvaliacoes = function(nomeLocal) {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            getEl('revNomeLocal').innerText = nomeLocal;
+            getEl('localAlvoReview').value = nomeLocal;
+            const lista = getEl('listaReviews'); lista.innerHTML = '';
+            
+            if(estadoApp.avaliacoes[nomeLocal] && estadoApp.avaliacoes[nomeLocal].length > 0) {
+                estadoApp.avaliacoes[nomeLocal].forEach(r => {
+                    let stars = ''; for(let i=0;i<r.nota;i++) stars += '⭐';
+                    lista.innerHTML += `<div style="border-bottom:1px solid #ccc; padding:10px 0;"><strong>${r.nome}</strong> <span style="font-size:10px; color:#888;"></span><br>${stars}<br><span style="color:#555; display:block; margin-top:4px;">"${r.comentario}"</span></div>`;
+                });
+            } else {
+                lista.innerHTML = '<p style="color:#888; text-align:center; padding:20px 0;">Nenhuma avaliação ainda. Seja o primeiro a opinar!</p>';
+            }
+            getEl('modalAvaliacoes').style.display = 'flex';
+        };
+
+        bindClick('btnFecharAvaliacoes', () => getEl('modalAvaliacoes').style.display = 'none');
+
+        bindClick('btnEnviarReview', async () => {
+            if(!estadoApp.usuario) return;
+            const local = getEl('localAlvoReview').value;
+            const nota = getEl('notaReview').value;
+            const texto = getEl('textoReview').value.trim();
+            if(!texto) return alert("Por favor, escreva um comentário para ajudar os outros!");
+
+            try {
+                await addDoc(collection(db, "avaliacoes"), {
+                    local: local,
+                    uid: estadoApp.usuario.uid,
+                    nome: estadoApp.usuario.displayName.split(" ")[0],
+                    nota: parseInt(nota),
+                    comentario: texto,
+                    data: new Date()
+                });
+                getEl('textoReview').value = '';
+                getEl('modalAvaliacoes').style.display = 'none';
+                alert("⭐ Obrigado! Sua avaliação foi publicada e ajudará muitos turistas.");
+            } catch(e) {
+                console.error(e);
+                alert("Erro ao publicar avaliação.");
+            }
+        });
+
+        // ROTA PREMIUM IA (ROTEIRO)
+        let rotaAtiva = null;
+        bindClick('btnCarregarRoteiro', async () => {
+            getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none';
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            
+            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) {
+                getEl('modalPaywall').style.display = 'flex'; return;
+            }
+            
+            if(!pinoUsuario) return alert("Aguarde o GPS encontrar sua localização antes de traçar a rota.");
+
+            if(rotaAtiva) { mapa.removeLayer(rotaAtiva); rotaAtiva = null; }
+
+            const userLat = pinoUsuario.getLatLng().lat;
+            const userLng = pinoUsuario.getLatLng().lng;
+            let pontosRota = [[userLat, userLng]];
+
+            let locaisSeguros = [];
+            for (const nomeL in estadoApp.dadosHospedados) {
+                const dados = estadoApp.dadosHospedados[nomeL];
+                const isPremium = dados.itens.some(i => i.premium);
+                let temAprovado = false;
+                
+                dados.itens.forEach(i => {
+                    let vUp = i.votos_up || 0; let vDown = i.votos_down || 0;
+                    if((vUp+vDown) >= 5 && (vUp/(vUp+vDown)) >= 0.6) temAprovado = true;
+                });
+
+                if(isPremium || temAprovado) {
+                    const dist = Math.sqrt(Math.pow(dados.lat - userLat, 2) + Math.pow(dados.lng - userLng, 2));
+                    locaisSeguros.push({lat: dados.lat, lng: dados.lng, nome: nomeL, dist: dist});
+                }
+            }
+
+            // Pega os 4 locais mais próximos e seguros
+            locaisSeguros.sort((a,b) => a.dist - b.dist);
+            locaisSeguros.slice(0, 4).forEach(loc => pontosRota.push([loc.lat, loc.lng]));
+
+            if(pontosRota.length < 2) return alert("Desculpe! A IA não encontrou locais parceiros ou 100% seguros próximos a você para montar um roteiro.");
+
+            rotaAtiva = L.polyline(pontosRota, {color: '#9c27b0', weight: 5, dashArray: '10, 10'}).addTo(mapa);
+            mapa.fitBounds(rotaAtiva.getBounds());
+            alert("🗺️ Roteiro Seguro traçado pela IA!\n\nSiga a linha roxa no mapa para visitar apenas os locais mais seguros e recomendados da região.");
+        });
+        // ====================================================================================
+
         bindClick('btnMinhaCarteira', () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none';
@@ -604,15 +717,13 @@
         bindClick('btnSacarPix', async () => {
             if(!estadoApp.usuario) return;
             const chavePix = getEl('inputChavePix').value.trim();
-            const saldoBRL = estadoApp.saldo; // Saldo real interno sempre em BRL base
+            const saldoBRL = estadoApp.saldo; 
 
             if (saldoBRL < 20) return alert(`Saldo insuficiente!\nVocê precisa acumular o equivalente a R$ 20,00 para sacar. Continue avaliando locais no mapa!`);
             if (!chavePix) return alert("Por favor, digite a sua Chave PIX.");
 
             try {
-                // Deduz saldo no banco
                 await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(-saldoBRL) });
-                // Zera localmente
                 estadoApp.saldo = 0;
                 setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`);
                 setTxt('saldoCarteiraDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`);
@@ -625,7 +736,6 @@
                 alert("Erro ao solicitar saque. Tente novamente mais tarde.");
             }
         });
-        // ====================================================================
 
         bindClick('btnAbrirNotificacoes', () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
@@ -672,41 +782,23 @@
             } catch(e) { console.error(e); }
         };
 
-        // ======================= BOTÃO DE PÂNICO ANTI-GOLPE =======================
         window.denunciarItem = async function(idItem) {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
-            
-            const uid = estadoApp.usuario.uid;
-            let itemParaDenunciar = null;
-
-            // Procura o item nos dados hospedados
+            const uid = estadoApp.usuario.uid; let itemParaDenunciar = null;
             for (const loc in estadoApp.dadosHospedados) {
                 const encontrado = estadoApp.dadosHospedados[loc].itens.find(i => i.id === idItem);
                 if (encontrado) { itemParaDenunciar = encontrado; break; }
             }
-
             if (!itemParaDenunciar) return;
-
             const listaDenunciantes = itemParaDenunciar.denunciaram || [];
-            if (listaDenunciantes.includes(uid)) {
-                return alert("🚫 Você já denunciou este item! Nossa equipe está analisando.");
-            }
-
+            if (listaDenunciantes.includes(uid)) { return alert("🚫 Você já denunciou este item! Nossa equipe está analisando."); }
             const confirma = confirm("🚨 DENÚNCIA DE GOLPE\n\nVocê tem certeza que este preço é falso ou a barraca não existe?\nSe confirmarmos fraude, a conta do autor será banida.");
             if (!confirma) return;
-
             try {
-                await updateDoc(doc(db, "precos", idItem), {
-                    denuncias: increment(1),
-                    denunciaram: arrayUnion(uid)
-                });
+                await updateDoc(doc(db, "precos", idItem), { denuncias: increment(1), denunciaram: arrayUnion(uid) });
                 alert("🚩 Denúncia registrada com sucesso! Obrigado por manter a comunidade segura.");
-            } catch (error) {
-                console.error(error);
-                alert("Erro ao registrar denúncia.");
-            }
+            } catch (error) { console.error(error); alert("Erro ao registrar denúncia."); }
         };
-        // ===========================================================================
 
         bindClick('btnAreaLojista', () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); getEl('modalLojista').style.display = 'flex'; });
         bindClick('btnFecharLojista', () => getEl('modalLojista').style.display = 'none');
@@ -762,9 +854,7 @@
         const iYellow = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iGreen = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iRed = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
-        
         const iPremium = L.divIcon({ className: 'marker-premium', html: '⭐', iconSize: [36, 36], iconAnchor: [18, 36] });
-
         const iPurpleGhost = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-pergunta-anim">?</div></div>', iconSize: [36, 36], iconAnchor: [18, 18] });
         const iCameraGhost = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-camera-anim">📸</div></div>', iconSize: [36, 36], iconAnchor: [18, 18] });
         const iPhotoGhost  = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-foto-anim">🖼️</div></div>', iconSize: [36, 36], iconAnchor: [18, 18] });
@@ -1060,10 +1150,20 @@
                     btnPromover = `<button onclick="window.prepararPromocao('${nomeL}')" class="btn-laranja" style="margin-top:8px; background:#ffc107; color:#333; box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);">${dicionario[estadoApp.idioma].makePremium}</button>`;
                 }
 
+                // CÁLCULO DAS ESTRELAS (REVIEWS)
+                let estrelasStr = "⭐ Novo";
+                if(estadoApp.avaliacoes && estadoApp.avaliacoes[nomeL]) {
+                    const revs = estadoApp.avaliacoes[nomeL];
+                    let soma = 0; revs.forEach(r => soma += r.nota);
+                    const media = (soma / revs.length).toFixed(1);
+                    estrelasStr = `⭐ ${media} (${revs.length} avaliações)`;
+                }
+                const btnVerAvaliacoes = `<button onclick="window.abrirAvaliacoes('${nomeL}')" class="btn-laranja" style="margin-top:8px; background:#1976d2; border-radius:8px; font-size:13px;">Ver / Deixar Avaliação</button>`;
+
                 if (htmlLista === '' && !lugarLojista) continue; 
 
                 const pino = L.marker([dadosL.lat, dadosL.lng], {icon: icP}); 
-                pino.bindPopup(`<div class="popup-info"><h3>🏪 ${nomeL}</h3>${fotosLojistaHtml}${st}<div class="lista-itens">${htmlLista}</div>${btnPromover}</div>`); 
+                pino.bindPopup(`<div class="popup-info"><h3>🏪 ${nomeL}</h3><div style="font-size:12px; color:#555; font-weight:bold; margin-bottom:10px;">${estrelasStr}</div>${fotosLojistaHtml}${st}<div class="lista-itens">${htmlLista}</div>${btnPromover}${btnVerAvaliacoes}</div>`); 
                 camadaDePinos.addLayer(pino); marcadoresNoMapa[nomeL] = pino;
             }
 
