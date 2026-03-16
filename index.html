@@ -112,6 +112,7 @@
 
         .linha-botoes-foto { display: flex; gap: 10px; margin-bottom: 10px; }
 
+        /* NOTIFICAÇÕES (UX) */
         .notif-item { padding: 15px; border-bottom: 1px solid #eee; background: #f9f9f9; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
         .notif-content { flex: 1; }
         .notif-item:active { transform: scale(0.98); }
@@ -192,6 +193,7 @@
         @keyframes pulseBlueFoto { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(25, 118, 210, 0); transform: scale(1.15); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); transform: scale(1); } }
         @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.8); } 70% { box-shadow: 0 0 0 15px rgba(255, 193, 7, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
         
+        /* 🚨 MAPA DE CALOR E FLASH DE RESPOSTA 🚨 */
         @keyframes pulseDolarAnim { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .marker-dolar { background: #00e676; color: #004d40; border-radius: 8px; padding: 4px 8px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; font-family: 'Poppins', sans-serif; pointer-events: auto; font-weight: bold; line-height: 1.1; }
         .pulse-dolar { animation: pulseDolarAnim 1.5s infinite ease-in-out; }
@@ -552,7 +554,6 @@
             estadoApp.idioma = lang; const t = dicionario[lang];
             document.querySelectorAll('.sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; });
             const opt = getEl('lang_' + lang); if(opt) { opt.classList.add('ativo-option'); opt.querySelector('.check').style.display = 'inline'; }
-
             setTxt('t_splashSub', t.splashSub); setTxt('t_menuRoute', rotaAtiva ? t.menuRouteOff : t.menuRoute); 
             setTxt('t_menuLang', t.menuLang); setTxt('t_menuChangeRole', t.menuChangeRole); setTxt('t_level', t.level); setTxt('t_formTitle', t.formTitle); setTxt('t_catDrink', t.catDrink); setTxt('t_catFood', t.catFood); setTxt('t_catService', t.catService); setTxt('t_catTicket', t.catTicket); setTxt('t_btnCancel', t.btnCancel); setTxt('t_optNewPlace', t.optNewPlace); setTxt('t_searchTitle', t.searchTitle); setTxt('t_searchClose', t.searchClose); setTxt('t_roleTitle', t.roleTitle); setTxt('t_roleTourist', t.roleTourist); setTxt('t_roleTouristSub', t.roleTouristSub); setTxt('t_roleLocal', t.roleLocal); setTxt('t_roleLocalSub', t.roleLocalSub); setTxt('t_btnLogin', t.btnLogin); setTxt('t_btnLogout', t.btnLogout); setTxt('t_pwTitle', t.pwTitle); setTxt('t_pwSub', t.pwSub); setTxt('t_pwPlan1', t.pwPlan1); setTxt('t_pwPlan2', t.pwPlan2); setTxt('t_pwPlan3', t.pwPlan3); setTxt('t_pwCancel', t.pwCancel); setTxt('t_askTitle', t.askTitle); setTxt('t_askSub', t.askSub); setTxt('t_btnSendAsk', t.btnSendAsk); setTxt('t_btnCancelAsk', t.btnCancelAsk); setTxt('t_ansTitle', t.ansTitle); setTxt('t_btnCancelAns', t.btnCancelAns); setTxt('t_btnAddCam', t.btnAddCam); setTxt('t_btnAddGal', t.btnAddGal); setTxt('t_btnAskCam', t.btnAskCam); setTxt('t_btnAskGal', t.btnAskGal); setTxt('t_optFixo', t.optFixo); setTxt('t_optAmbulante', t.optAmbulante); setTxt('t_lockTitle', t.lockTitle); setTxt('t_lockSub', t.lockSub); setTxt('t_lockBtn', t.lockBtn); setTxt('t_notifTitle', t.notifTitle); setTxt('t_posHint', t.posHint); setTxt('t_btnPosCancel', t.btnPosCancel); setTxt('t_btnPosConfirm', t.btnPosConfirm); setPlc('nomeLocalInput', t.placeNewLocal); setPlc('nomeProduto', t.placeName); setPlc('precoProduto', t.placePrice); setPlc('inputBusca', t.searchPlaceholder); setPlc('nomeLocalPergunta', t.placeNewLocalAsk);
             setTxt('t_menuLojista', t.menuLojista); setTxt('t_btnRadarText', t.radarBtn); setTxt('t_lojistaTitle', t.lojistaTitle); setTxt('t_lojistaSub', t.lojistaSub); setTxt('t_roleLojista', t.roleLojista); setTxt('t_roleLojistaSub', t.roleLojistaSub);
@@ -630,14 +631,13 @@
             }
         });
 
-        // ======================= RECURSO: PISCAR NO MAPA =======================
         window.piscarNoMapa = function(lat, lng) {
+            if (!lat || !lng) return;
             const icDestaque = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="flash-resposta">✅</div>', iconSize: [50, 50], iconAnchor: [25, 25] });
             const pinoFlash = L.marker([lat, lng], {icon: icDestaque, zIndexOffset: 999999}).addTo(mapa);
             setTimeout(() => { mapa.removeLayer(pinoFlash); }, 6000);
         };
 
-        // ======================= RECURSO: GERENCIADOR DE NOTIFICAÇÕES =======================
         window.apagarNotificacao = async function(id, e) {
             e.stopPropagation(); 
             try { await deleteDoc(doc(db, "notificacoes", id)); } catch(e) { console.error(e); }
@@ -687,7 +687,6 @@
         });
         bindClick('btnFecharNotificacoes', () => getEl('modalNotificacoes').style.display = 'none');
 
-        // ======================= RECURSO: AVALIAÇÕES =======================
         onSnapshot(collection(db, "avaliacoes"), (snapshot) => {
             estadoApp.avaliacoes = {};
             snapshot.forEach((doc) => { const data = doc.data(); if(!estadoApp.avaliacoes[data.local]) estadoApp.avaliacoes[data.local] = []; estadoApp.avaliacoes[data.local].push({...data, id: doc.id}); }); desenharPinos();
@@ -718,7 +717,6 @@
             } catch(e) { console.error(e); alert("Erro ao publicar avaliação."); }
         });
 
-        // ======================= RECURSO: INTERRUPTOR ROTEIRO IA =======================
         bindClick('btnCarregarRoteiro', async () => {
             getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none';
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
@@ -734,7 +732,9 @@
             const userLat = pinoUsuario.getLatLng().lat; const userLng = pinoUsuario.getLatLng().lng; let pontosRota = [[userLat, userLng]];
             let locaisSeguros = [];
             for (const nomeL in estadoApp.dadosHospedados) {
-                const dados = estadoApp.dadosHospedados[nomeL]; const isPremium = dados.itens.some(i => i.premium); let temAprovado = false;
+                const dados = estadoApp.dadosHospedados[nomeL];
+                if (!dados.lat || !dados.lng) continue; // Blindagem
+                const isPremium = dados.itens.some(i => i.premium); let temAprovado = false;
                 dados.itens.forEach(i => { let vUp = i.votos_up || 0; let vDown = i.votos_down || 0; if((vUp+vDown) >= 5 && (vUp/(vUp+vDown)) >= 0.6) temAprovado = true; });
                 if(isPremium || temAprovado) { const dist = Math.sqrt(Math.pow(dados.lat - userLat, 2) + Math.pow(dados.lng - userLng, 2)); locaisSeguros.push({lat: dados.lat, lng: dados.lng, nome: nomeL, dist: dist}); }
             }
@@ -786,8 +786,7 @@
             const termo = e.target.value.toLowerCase().trim(); const estimativaEl = getEl('estimativaIA'); let achou = false;
             if (termo.length > 2) {
                 let precosReais = [];
-                for (let loc in estadoApp.dadosHospedados) { estadoApp.dadosHospedados[loc].itens.forEach(it => { if (!it.isLojistaPlace && it.nome.toLowerCase().includes(termo)) precosReais.push(it.preco); }); }
-
+                for (let loc in estadoApp.dadosHospedados) { estadoApp.dadosHospedados[loc].itens.forEach(it => { if (!it.isLojistaPlace && (it.nome || "").toLowerCase().includes(termo)) precosReais.push(it.preco); }); }
                 const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
                 
                 if (precosReais.length > 0) {
@@ -833,7 +832,7 @@
             let achouIA = false;
             if (termo.length > 2) {
                 let precosReais = [];
-                for (let loc in estadoApp.dadosHospedados) { estadoApp.dadosHospedados[loc].itens.forEach(it => { if (!it.isLojistaPlace && it.nome.toLowerCase().includes(termo)) precosReais.push(it.preco); }); }
+                for (let loc in estadoApp.dadosHospedados) { estadoApp.dadosHospedados[loc].itens.forEach(it => { if (!it.isLojistaPlace && (it.nome || "").toLowerCase().includes(termo)) precosReais.push(it.preco); }); }
 
                 if (precosReais.length > 0) {
                     const minReal = Math.min(...precosReais); const maxReal = Math.max(...precosReais); const minF = (minReal * cotacao).toFixed(2); const maxF = (maxReal * cotacao).toFixed(2);
@@ -854,10 +853,11 @@
 
             let achouLocais = false;
             for (const nLocal in estadoApp.dadosHospedados) {
-                const dLugar = estadoApp.dadosHospedados[nLocal]; const iMatch = dLugar.itens.filter(i => !i.isLojistaPlace && i.nome.toLowerCase().includes(termo));
+                const dLugar = estadoApp.dadosHospedados[nLocal]; const iMatch = dLugar.itens.filter(i => !i.isLojistaPlace && (i.nome || "").toLowerCase().includes(termo));
                 if (iMatch.length > 0) {
                     achouLocais = true; 
                     iMatch.forEach(item => {
+                        if (!dLugar.lat || !dLugar.lng) return;
                         const div = document.createElement('div'); div.className = 'resultado-item'; const prc = (item.preco * cotacao).toFixed(2);
                         div.innerHTML = `<span style="font-weight:700; color:#004d40;">🏪 ${nLocal}</span><span style="font-size:15px; color:#2e7d32; font-weight:bold; margin-top:2px;">${item.nome}: ${sim} ${prc}</span>`;
                         div.onclick = () => { estadoApp.filtroProduto = item.nome; getEl('btnLimparFiltro').style.display = 'block'; getEl('modalBusca').style.display = 'none'; mapa.flyTo([dLugar.lat, dLugar.lng], 18, { duration: 1.5 }); desenharPinos(); };
@@ -941,11 +941,7 @@
         bindClick('btnCamLojista', () => getEl('inputCamLojista')?.click()); bindClick('btnGalLojista', () => getEl('inputGalLojista')?.click());
         bindChange('inputCamLojista', uploadFotoLojista); bindChange('inputGalLojista', uploadFotoLojista);
         
-        // 🚨 PREENCHIMENTO DO LOCAL INPUT 🚨
-        bindChange('selectLocal', (e) => {
-             getEl('nomeLocalInput').style.display = e.target.value === 'NEW' ? 'block' : 'none';
-        });
-
+        bindChange('selectLocal', (e) => { getEl('nomeLocalInput').style.display = e.target.value === 'NEW' ? 'block' : 'none'; });
         bindChange('tipoLocalPergunta', (e) => { getEl('nomeLocalPergunta').style.display = e.target.value === 'Ambulante' ? 'none' : 'block'; });
 
         let coordSelecionada = null; let acaoPendente = null; 
@@ -956,33 +952,25 @@
             acaoPendente = acao; getEl('bottomActions').style.display = 'none'; getEl('posicionamentoUI').style.display = 'block'; getEl('alfineteCentral').style.display = 'flex'; getEl('alfineteAlvo').style.display = 'block';
         }
 
-        // 🚨 FUNÇÃO NOVA: ABRIR FORMULÁRIO DIRETO DO PINO 🚨
         window.abrirAdicionarItemDireto = function(nomeLocal, isLojista) {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             mapa.closePopup();
             
-            const sel = getEl('selectLocal');
-            let optionExists = false;
+            const sel = getEl('selectLocal'); let optionExists = false;
             for(let i=0; i<sel.options.length; i++){ if(sel.options[i].value === nomeLocal) optionExists = true; }
             if(!optionExists) { sel.innerHTML += `<option value="${nomeLocal}">${nomeLocal}</option>`; }
             
-            sel.value = nomeLocal;
-            getEl('nomeLocalInput').style.display = 'none';
+            sel.value = nomeLocal; getEl('nomeLocalInput').style.display = 'none';
             getEl('nomeProduto').value = ''; getEl('precoProduto').value = '';
-            getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none';
-            fotoAtualBase64 = null;
+            getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null;
             
             getEl('modalForm').dataset.modoLojista = isLojista ? "true" : "false";
             
-            if (isLojista) {
-                setTxt('t_btnSave', "Salvar no Menu"); getEl('t_formTitle').innerText = "Novo Produto no Menu";
-            } else {
-                setTxt('t_btnSave', dicionario[estadoApp.idioma].btnSave + " (+R$ 0,25)"); getEl('t_formTitle').innerText = dicionario[estadoApp.idioma].formTitle;
-            }
+            if (isLojista) { setTxt('t_btnSave', "Salvar no Menu"); getEl('t_formTitle').innerText = "Novo Produto no Menu"; } 
+            else { setTxt('t_btnSave', dicionario[estadoApp.idioma].btnSave + " (+R$ 0,25)"); getEl('t_formTitle').innerText = dicionario[estadoApp.idioma].formTitle; }
             
             const placeData = estadoApp.dadosHospedados[nomeLocal];
             coordSelecionada = { lat: placeData.lat, lng: placeData.lng };
-            
             getEl('modalForm').style.display = 'flex';
         };
         
@@ -1004,12 +992,11 @@
         bindClick('btnCamNormal', () => getEl('inputCamNormal')?.click()); bindClick('btnGalNormal', () => getEl('inputGalNormal')?.click());
         bindChange('inputCamNormal', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto')); bindChange('inputGalNormal', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto'));
 
-        // 🚨 SALVAR REGISTRO (ADAPTADO PARA LOJISTA OU AVALIADOR) 🚨
         bindClick('btnSalvar', async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const t = dicionario[estadoApp.idioma]; const vSel = getEl('selectLocal').value; const localFinal = (vSel === 'NEW') ? getEl('nomeLocalInput').value.trim() : vSel; const nProd = getEl('nomeProduto').value.trim(); const prc = getEl('precoProduto').value;
             if(!localFinal || !nProd || !prc) return alert(t.alertaFalta);
-            if (estadoApp.dadosHospedados[localFinal] && estadoApp.dadosHospedados[localFinal].itens.some(i => i.nome.toLowerCase() === nProd.toLowerCase())) return alert(t.alertaDuplicado);
+            if (estadoApp.dadosHospedados[localFinal] && estadoApp.dadosHospedados[localFinal].itens.some(i => (i.nome || "").toLowerCase() === nProd.toLowerCase())) return alert(t.alertaDuplicado);
             
             const centro = coordSelecionada || mapa.getCenter(); const aMail = estadoApp.usuario.email; const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc);
             const isLojistaAdd = getEl('modalForm').dataset.modoLojista === "true";
@@ -1062,21 +1049,140 @@
         const uploadFotoExtra = async (e) => { if (e.target.files.length > 0 && idPerguntaParaFotoExtra) { comprimirImagemBase64(e.target.files[0], async (base64) => { await updateDoc(doc(db, "perguntas", idPerguntaParaFotoExtra), { fotoUrl: base64, fotoSolicitada: false }); alert("📸 Foto enviada com sucesso! Os avaliadores já podem ver."); idPerguntaParaFotoExtra = null; }); } };
         bindChange('inputCamExtra', uploadFotoExtra); bindChange('inputGalExtra', uploadFotoExtra);
 
+        window.resolverPerguntaConsenso = async function(idPergunta, pergData, respostas) {
+            respostas.sort((a, b) => a.tempo - b.tempo); let vencedor = respostas[0]; let precoFinal = vencedor.preco;
+            if (respostas.length >= 3) {
+                const precos = respostas.map(r => r.preco).sort((a,b) => a-b); const median = precos[Math.floor(precos.length/2)];
+                const validos = respostas.filter(r => r.preco >= median * 0.7 && r.preco <= median * 1.3);
+                if (validos.length > 0) { vencedor = validos[0]; precoFinal = validos.reduce((acc, curr) => acc + curr.preco, 0) / validos.length; }
+            }
+            try {
+                await updateDoc(doc(db, "perguntas", idPergunta), { status: "respondida" });
+                await addDoc(collection(db, "precos"), { local: pergData.nomeLocal, nome: pergData.nomeItem, preco: precoFinal, categoria: "Serviço", lat: pergData.lat, lng: pergData.lng, status: "pendente", premium: false, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: "Consenso Comunitário", tipoLocal: pergData.tipoLocal || 'Fixo', data: new Date() });
+                await updateDoc(doc(db, "usuarios", vencedor.uid), { saldo: increment(1.00) });
+                if (pergData.autorUid && pergData.autorUid !== 'undefined') { 
+                    await addDoc(collection(db, "notificacoes"), { userId: pergData.autorUid, tipo: 'resposta', titulo: "✅ Dúvida Respondida!", nomeItem: pergData.nomeItem, nomeLocal: pergData.nomeLocal, precoReal: precoFinal, lat: pergData.lat, lng: pergData.lng, lida: false, data: new Date() }); 
+                    if (estadoApp.usuario && pergData.autorUid === estadoApp.usuario.uid) { window.piscarNoMapa(pergData.lat, pergData.lng); }
+                }
+            } catch(e) { console.log(e); }
+        };
+
+        setInterval(() => {
+            if(!estadoApp.usuario) return; const agora = Date.now();
+            for(const id in estadoApp.perguntasAbertas) {
+                const p = estadoApp.perguntasAbertas[id]; const resps = p.respostas || [];
+                if(p.data && (agora - p.data.toMillis()) > 20000 && resps.length > 0) { window.resolverPerguntaConsenso(id, p, resps); delete estadoApp.perguntasAbertas[id]; }
+            }
+        }, 5000);
+
+        window.abrirModalResposta = async function(idPergunta) {
+            if(estadoApp.perfil === 'turista' || estadoApp.perfil === 'lojista') return; 
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            const p = estadoApp.perguntasAbertas[idPergunta]; if(!p) return;
+            const uid = estadoApp.usuario.uid; const resps = p.respostas || [];
+            if(resps.some(r => r.uid === uid)) return alert("Você já respondeu esta dúvida! Aguardando o consenso.");
+            
+            setTxt('respItemNome', p.nomeItem); setTxt('respLocalNome', p.nomeLocal); setTxt('respLocalTipo', p.tipoLocal === 'Ambulante' ? '(Ambulante)' : '(Fixo)'); 
+            getEl('idPerguntaAtual').value = idPergunta; getEl('precoProdutoResposta').value = ''; getEl('modalResposta').style.display = 'flex';
+        };
+        
+        bindClick('btnCancelarResposta', () => getEl('modalResposta').style.display = 'none');
+        bindClick('btnEnviarResposta', async () => {
+            if(!estadoApp.usuario) return; const prc = getEl('precoProdutoResposta').value; if(!prc) return alert("Preencha o preço!");
+            const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc); 
+            const idPergunta = getEl('idPerguntaAtual').value; const p = estadoApp.perguntasAbertas[idPergunta]; if(!p) return;
+            let resps = p.respostas || []; resps.push({ uid: estadoApp.usuario.uid, preco: prcReal, tempo: Date.now() });
+            if(resps.length >= 3) { window.resolverPerguntaConsenso(idPergunta, p, resps); alert("Consenso atingido! Resultado enviado."); } 
+            else { await updateDoc(doc(db, "perguntas", idPergunta), { respostas: resps }); alert("Sua resposta foi registrada! ⏳ Aguardando mais avaliadores ou o tempo de 20s esgotar."); }
+            getEl('modalResposta').style.display = 'none'; 
+        });
+
+        bindClick('btnCancelarEdicao', () => getEl('modalEditar').style.display = 'none');
+        
+        window.abrirEdicao = function(id, nome, precoAtualBRL, isPremium) { 
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
+            if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
+            getEl('editItemId').value = id; getEl('editItemNome').innerText = nome; getEl('editItemPreco').value = (precoAtualBRL * taxasCambio[estadoApp.moeda].taxa).toFixed(2); getEl('modalEditar').style.display = 'flex'; 
+        };
+        
+        bindClick('btnSalvarEdicao', async () => { 
+            if(!estadoApp.usuario) return; 
+            const id = getEl('editItemId').value; const nvPreco = getEl('editItemPreco').value; if(!nvPreco) return alert("Digite o novo preço!"); 
+            try { const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(nvPreco) / taxasCambio[estadoApp.moeda].taxa : parseFloat(nvPreco); await updateDoc(doc(db, "precos", id), { preco: prcReal, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], status: "pendente" }); getEl('modalEditar').style.display = 'none'; alert("Preço atualizado e avaliações resetadas!"); } catch(e) { alert("Erro ao editar preço."); } 
+        });
+
+        window.votarItem = async function(id, tipo, isPremium) {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
+            if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
+
+            const uid = estadoApp.usuario.uid; let jaVotou = false;
+            for (const loc in estadoApp.dadosHospedados) { const iLocal = estadoApp.dadosHospedados[loc].itens.find(i => i.id === id); if (iLocal) { const upList = iLocal.votaram_up || []; const downList = iLocal.votaram_down || []; if (upList.includes(uid) || downList.includes(uid)) jaVotou = true; break; } }
+            if (jaVotou) return alert(dicionario[estadoApp.idioma].alertVoted);
+            try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
+        };
+
+        window.promoverLugar = async function(nomeLocal) {
+            try {
+                const q = query(collection(db, "precos"), where("local", "==", nomeLocal));
+                const snapshot = await getDocs(q);
+                let atualizouAlgo = false;
+                snapshot.forEach((docSnap) => { updateDoc(doc(db, "precos", docSnap.id), { premium: true }); atualizouAlgo = true; });
+                if(atualizouAlgo){ alert(`✅ O local "${nomeLocal}" agora é Oficial e Premium!\n\nEle ficará com uma estrela dourada visível 24h por dia para os turistas (sem precisar de radar). Seus preços agora estão protegidos pelo Escudo KYC.`); }
+            } catch(e) { console.error(e); }
+        };
+
+        // 🚨 O LEITOR DE DADOS 100% BLINDADO CONTRA NULOS 🚨
+        onSnapshot(collection(db, "precos"), (snapshot) => {
+            estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
+            snapshot.forEach((doc) => {
+                const item = doc.data(); 
+                
+                const nomeItemSeguro = item.nome || "Item Não Nomeado";
+                const precoSeguro = item.preco || 0;
+                
+                const nomeL = item.tipoLocal === 'Ambulante' ? `🚶 Ambulante (${doc.id.substring(0,4)})` : (item.local || "Desconhecido"); 
+                
+                if (!estadoApp.dadosHospedados[nomeL]) estadoApp.dadosHospedados[nomeL] = { lat: item.lat, lng: item.lng, itens: [] };
+                estadoApp.dadosHospedados[nomeL].itens.push({ ...item, nome: nomeItemSeguro, preco: precoSeguro, id: doc.id });
+                
+                if(!item.isLojistaPlace) {
+                    const nl = nomeItemSeguro.toString().toLowerCase().trim(); 
+                    if(!estadoApp.mediaPrecos[nl]) { estadoApp.mediaPrecos[nl] = 0; estadoApp.contagemPrecos[nl] = 0; }
+                    estadoApp.mediaPrecos[nl] += precoSeguro; estadoApp.contagemPrecos[nl]++;
+                }
+            });
+            let h = `<option value="NEW" id="t_optNewPlace">${dicionario[estadoApp.idioma].optNewPlace}</option>`; 
+            Object.keys(estadoApp.dadosHospedados).sort().forEach(n => { if(n !== "Desconhecido" && !n.includes("🚶 Ambulante")) h += `<option value="${n}">${n}</option>`; }); 
+            getEl('selectLocal').innerHTML = h;
+            desenharPinos();
+        });
+
+        onSnapshot(collection(db, "perguntas"), (snapshot) => {
+            estadoApp.perguntasAbertas = {}; snapshot.forEach((doc) => { const p = doc.data(); if(p.status === "aberta") estadoApp.perguntasAbertas[doc.id] = p; }); desenharPinos(); 
+        });
+
+        // 🚨 O DESENHO DO MAPA (BLINDADO CONTRA CÁLCULOS QUEBRADOS) 🚨
         function desenharPinos() {
             camadaDePinos.clearLayers(); marcadoresNoMapa = {}; const t = dicionario[estadoApp.idioma]; const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
 
             for (const nomeL in estadoApp.dadosHospedados) {
                 const dadosL = estadoApp.dadosHospedados[nomeL]; 
+                
+                // SE O PINO NÃO TEM COORDENADA (Item salvo errado antes), IGNORA ELE E NÃO TRAVA O APP!
+                if (!dadosL.lat || !dadosL.lng) continue; 
+                
                 const avaliacoesValidas = dadosL.itens.filter(i => !i.isLojistaPlace);
                 let tItens = avaliacoesValidas.length; let qAb = 0; let qAp = 0; let htmlLista = '';
-                
                 const isPremium = dadosL.itens.some(i => i.premium === true);
 
                 if (estadoApp.filtroProduto) {
-                    const itemFiltrado = avaliacoesValidas.find(i => i.nome.toLowerCase().includes(estadoApp.filtroProduto.toLowerCase()));
+                    const itemFiltrado = avaliacoesValidas.find(i => (i.nome || "").toLowerCase().includes(estadoApp.filtroProduto.toLowerCase()));
                     if (!itemFiltrado) continue; 
+                    
                     const precoLocal = (itemFiltrado.preco * cotacao).toFixed(2);
-                    const nomeCurto = itemFiltrado.nome.length > 15 ? itemFiltrado.nome.substring(0,12)+'...' : itemFiltrado.nome;
+                    const nomeStr = (itemFiltrado.nome || "");
+                    const nomeCurto = nomeStr.length > 15 ? nomeStr.substring(0,12)+'...' : nomeStr;
+                    
                     const htmlPino = `<div class="marker-dolar pulse-dolar"><span style="font-size:10px; font-weight:600; text-transform:uppercase; opacity:0.9; margin-bottom:2px;">${nomeCurto}</span><span>💲 ${sim} ${precoLocal}</span></div>`;
                     const icDolar = L.divIcon({ className: 'marker-pergunta-container', html: htmlPino, iconSize: [110, 45], iconAnchor: [55, 22] });
                     const pinoDinheiro = L.marker([dadosL.lat, dadosL.lng], {icon: icDolar, zIndexOffset: 9999});
@@ -1086,13 +1192,13 @@
                         if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
                         let ic = stAtual === 'aprovado' ? '✅' : (stAtual === 'abusivo' ? '🚨' : '⏳'); 
                         let btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:#2e7d32;" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#c62828;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${item.nome}', ${item.preco}, ${isPremium})">✏️</button></div>`;
-                        let bgDestaque = (item.nome.toLowerCase() === estadoApp.filtroProduto.toLowerCase()) ? 'background:#e8f5e9; border: 2px solid #00e676;' : '';
+                        
+                        let bgDestaque = ((item.nome || "").toLowerCase() === estadoApp.filtroProduto.toLowerCase()) ? 'background:#e8f5e9; border: 2px solid #00e676;' : '';
                         htmlLista += `<div class="item-card" style="${bgDestaque}"><div class="item-row"><div class="item-detalhes"><span class="item-nome">${ic} ${item.nome}</span></div><span class="item-preco">${sim} ${(item.preco * cotacao).toFixed(2)}</span></div>${btns}</div>`;
                     });
 
-                    // 🚨 BOTAO ADICIONAR NO MAPA DE CALOR 🚨
                     let btnAdicionarItem = '';
-                    if (estadoApp.perfil === 'avaliador') { btnAdicionarItem = `<button onclick="window.abrirAdicionarItemDireto('${nomeL}', false)" class="btn-roxo" style="margin-top:8px; background:#4caf50; padding:8px; font-size:13px; width:100%;"><span style="font-size:16px;">➕</span> Cadastrar Novo Item Aqui</button>`; }
+                    if (estadoApp.perfil === 'avaliador') { btnAdicionarItem = `<button onclick="window.abrirAdicionarItemDireto('${nomeL.replace(/'/g, "\\'")}', false)" class="btn-roxo" style="margin-top:8px; background:#4caf50; padding:8px; font-size:13px; width:100%;"><span style="font-size:16px;">➕</span> Cadastrar Novo Item Aqui</button>`; }
 
                     let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3><div class="lista-itens">${htmlLista}</div>${btnAdicionarItem}</div>`;
                     pinoDinheiro.bindPopup(popupHtml); camadaDePinos.addLayer(pinoDinheiro); continue; 
@@ -1101,7 +1207,9 @@
                 if (estadoApp.perfil === 'turista' && !estadoApp.radarAtivo && !isPremium) { continue; }
                 
                 let fotosLojistaHtml = ''; const lugarLojista = dadosL.itens.find(i => i.isLojistaPlace);
-                if (lugarLojista && lugarLojista.fotosLocal && lugarLojista.fotosLocal.length > 0) { fotosLojistaHtml = '<div class="galeria-lojista">'; lugarLojista.fotosLocal.forEach(f => { fotosLojistaHtml += `<img src="${f}">`; }); fotosLojistaHtml += '</div>'; }
+                if (lugarLojista && lugarLojista.fotosLocal && lugarLojista.fotosLocal.length > 0) {
+                    fotosLojistaHtml = '<div class="galeria-lojista">'; lugarLojista.fotosLocal.forEach(f => { fotosLojistaHtml += `<img src="${f}">`; }); fotosLojistaHtml += '</div>';
+                }
 
                 avaliacoesValidas.forEach(item => {
                     let qtdDenuncias = item.denuncias || 0; let isCongelado = qtdDenuncias >= 3;
@@ -1114,7 +1222,7 @@
                     if (isCongelado) { ic = '🧊'; btns = `<div class="item-acoes"><span style="color:#c62828; font-size:12px; font-weight:bold;">🚨 Suspenso por Fraude</span></div>`; } 
                     else { btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:#2e7d32;" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#c62828;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${item.nome}', ${item.preco}, ${isPremium})">✏️</button></div>`; }
                     
-                    let badge = ""; const nl = item.nome.toLowerCase().trim(); const ctg = estadoApp.contagemPrecos[nl];
+                    let badge = ""; const nl = (item.nome || "").toLowerCase().trim(); const ctg = estadoApp.contagemPrecos[nl];
                     if (ctg > 1 && !isCongelado) { const m = estadoApp.mediaPrecos[nl] / ctg; const pM = (m * cotacao).toFixed(2); if (item.preco > m * 1.15) badge = `<span style="font-size:10px;background:#ffebee;color:#c62828;padding:2px 5px;border-radius:4px;margin-top:3px;display:inline-block;">${t.badgeCaro} (${sim} ${pM})</span>`; else if (item.preco <= m * 0.9) badge = `<span style="font-size:10px;background:#e8f5e9;color:#2e7d32;padding:2px 5px;border-radius:4px;margin-top:3px;display:inline-block;">${t.badgeBom} (${sim} ${pM})</span>`; else badge = `<span style="font-size:10px;background:#fff3e0;color:#ef6c00;padding:2px 5px;border-radius:4px;margin-top:3px;display:inline-block;">${t.badgeMedia}</span>`; }
                     htmlLista += `<div class="item-card"><div class="item-row"><div class="item-detalhes"><span class="item-nome">${ic} ${item.nome}</span>${badge}</div><span class="item-preco">${sim} ${(item.preco * cotacao).toFixed(2)}</span></div>${btns}</div>`;
                 });
@@ -1131,14 +1239,13 @@
 
                 let btnPromover = ''; let btnAdicionarItem = '';
                 if (estadoApp.perfil === 'lojista' && !isPremium && lugarLojista && lugarLojista.autor === (estadoApp.usuario ? estadoApp.usuario.email : '')) {
-                    btnPromover = `<button onclick="window.prepararPromocao('${nomeL}')" class="btn-laranja" style="margin-top:8px; background:#ffc107; color:#333; box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);">${dicionario[estadoApp.idioma].makePremium}</button>`;
+                    btnPromover = `<button onclick="window.prepararPromocao('${nomeL.replace(/'/g, "\\'")}')" class="btn-laranja" style="margin-top:8px; background:#ffc107; color:#333; box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4);">${dicionario[estadoApp.idioma].makePremium}</button>`;
                 }
 
-                // 🚨 BOTAO DE ADICIONAR DIRETO NO BALAO 🚨
                 if (estadoApp.perfil === 'avaliador') {
-                    btnAdicionarItem = `<button onclick="window.abrirAdicionarItemDireto('${nomeL}', false)" class="btn-roxo" style="margin-top:8px; background:#4caf50; padding:8px; font-size:13px; width:100%;"><span style="font-size:16px;">➕</span> Cadastrar Novo Item Aqui</button>`;
+                    btnAdicionarItem = `<button onclick="window.abrirAdicionarItemDireto('${nomeL.replace(/'/g, "\\'")}', false)" class="btn-roxo" style="margin-top:8px; background:#4caf50; padding:8px; font-size:13px; width:100%;"><span style="font-size:16px;">➕</span> Cadastrar Novo Item Aqui</button>`;
                 } else if (estadoApp.perfil === 'lojista' && lugarLojista && lugarLojista.autor === (estadoApp.usuario ? estadoApp.usuario.email : '')) {
-                    btnAdicionarItem = `<button onclick="window.abrirAdicionarItemDireto('${nomeL}', true)" class="btn-roxo" style="margin-top:8px; background:#f57c00; padding:8px; font-size:13px; width:100%;"><span style="font-size:16px;">➕</span> Adicionar Produto ao Menu</button>`;
+                    btnAdicionarItem = `<button onclick="window.abrirAdicionarItemDireto('${nomeL.replace(/'/g, "\\'")}', true)" class="btn-roxo" style="margin-top:8px; background:#f57c00; padding:8px; font-size:13px; width:100%;"><span style="font-size:16px;">➕</span> Adicionar Produto ao Menu</button>`;
                 }
 
                 let estrelasStr = "⭐ Novo";
@@ -1146,7 +1253,7 @@
                     const revs = estadoApp.avaliacoes[nomeL]; let soma = 0; revs.forEach(r => soma += r.nota); const media = (soma / revs.length).toFixed(1);
                     estrelasStr = `⭐ ${media} (${revs.length} avaliações)`;
                 }
-                const btnVerAvaliacoes = `<button onclick="window.abrirAvaliacoes('${nomeL}')" class="btn-laranja" style="margin-top:8px; background:#1976d2; border-radius:8px; font-size:13px;">Ver / Deixar Avaliação</button>`;
+                const btnVerAvaliacoes = `<button onclick="window.abrirAvaliacoes('${nomeL.replace(/'/g, "\\'")}')" class="btn-laranja" style="margin-top:8px; background:#1976d2; border-radius:8px; font-size:13px;">Ver / Deixar Avaliação</button>`;
 
                 if (htmlLista === '' && !lugarLojista) continue; 
 
@@ -1159,10 +1266,13 @@
                 if (estadoApp.filtroProduto) continue;
 
                 const perg = estadoApp.perguntasAbertas[idPerg]; const autorP = perg.autorUid || '';
+                if (!perg.lat || !perg.lng) continue; // Blindagem 
                 if (estadoApp.perfil === 'lojista' || (estadoApp.perfil === 'turista' && (!estadoApp.usuario || autorP !== estadoApp.usuario.uid))) continue; 
 
                 let iconUsado = iPurpleGhost; let corArea = '#9c27b0';      
-                if (perg.fotoSolicitada) { iconUsado = iCameraGhost; corArea = '#f57c00'; } else if (perg.fotoUrl) { iconUsado = iPhotoGhost; corArea = '#1976d2'; }
+                if (perg.fotoSolicitada) { iconUsado = iCameraGhost; corArea = '#f57c00'; } 
+                else if (perg.fotoUrl) { iconUsado = iPhotoGhost; corArea = '#1976d2'; }
+
                 const pinoDuvida = L.marker([perg.lat, perg.lng], {icon: iconUsado, zIndexOffset: 9999}); 
                 const resps = perg.respostas || []; const qtdResps = resps.length; const tipoBadge = perg.tipoLocal === 'Ambulante' ? '🚶 Ambulante' : '🏪 Fixo';
                 let htmlPopup = ''; const imgHtml = perg.fotoUrl ? `<img src="${perg.fotoUrl}" style="width:100%; max-height:120px; object-fit:cover; border-radius:8px; border: 1px solid #ccc; margin-bottom:8px;">` : '';
@@ -1170,16 +1280,20 @@
                 if(estadoApp.perfil === 'avaliador') {
                     const raio = perg.tipoLocal === 'Ambulante' ? 80 : 35;
                     const areaSegura = L.circle([perg.lat, perg.lng], { color: corArea, fillColor: corArea, fillOpacity: 0.15, radius: raio, weight: 2, dashArray: '5, 5', className: 'area-segura-anim' });
+                    
                     let btnFoto = '';
-                    if (!perg.fotoUrl && !perg.fotoSolicitada) { btnFoto = `<button onclick="window.solicitarFoto('${idPerg}', '${autorP}', '${perg.nomeItem}', '${perg.nomeLocal}')" class="btn-laranja">${t.btnReqFoto}</button>`; } 
+                    if (!perg.fotoUrl && !perg.fotoSolicitada) { btnFoto = `<button onclick="window.solicitarFoto('${idPerg}', '${autorP}', '${perg.nomeItem.replace(/'/g, "\\'")}', '${perg.nomeLocal.replace(/'/g, "\\'")}')" class="btn-laranja">${t.btnReqFoto}</button>`; } 
                     else if (perg.fotoSolicitada) { btnFoto = `<p style="font-size:12px; color:#f57c00; font-weight:bold;">⏳ Aguardando envio de foto...</p>`; }
+                    
                     htmlPopup = `<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:${corArea};">Dúvida na Área</h3><p style="margin:0 0 5px 0; font-size:14px;">Procurar por: <strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}<p style="font-size:12px; color:#f57c00; font-weight:bold;">Respostas: ${qtdResps}/3</p><button onclick="window.abrirModalResposta('${idPerg}')" style="background:#2e7d32; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:5px; width:100%;">Responder e Ganhar</button>${btnFoto}</div>`; 
+                    
                     areaSegura.bindPopup(htmlPopup); pinoDuvida.bindPopup(htmlPopup); 
                     camadaDePinos.addLayer(areaSegura); camadaDePinos.addLayer(pinoDuvida); 
                 } else {
                     let btnEnviarExtra = ''; let statusMsg = `<p style="font-size:12px; color:#f57c00; font-weight:bold;">⏳ Aguardando avaliadores...</p>`;
                     if(perg.fotoSolicitada) { statusMsg = `<p style="font-size:12px; color:#c62828; font-weight:bold; line-height:1.2; margin-bottom:5px;">🚨 Os avaliadores precisam de uma foto para ajudar!</p>`; btnEnviarExtra = `<button onclick="window.abrirEnvioFotoExtra('${idPerg}')" style="background:#f57c00; color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:5px;">📸 Enviar Foto Agora</button>`; }
                     htmlPopup = `<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:${corArea};">Sua Dúvida</h3><p style="margin:0 0 5px 0; font-size:14px;"><strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}${statusMsg}${btnEnviarExtra}</div>`;
+                    
                     pinoDuvida.bindPopup(htmlPopup); camadaDePinos.addLayer(pinoDuvida);
                 }
             }
