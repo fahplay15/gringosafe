@@ -96,7 +96,7 @@
         .btn-confirmar-pos { flex: 1; background: #00e676; color: #004d40; border: none; padding: 12px; border-radius: 8px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 230, 118, 0.3); }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 3500; align-items: center; justify-content: center; }
-        .modal-content { background-color: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 360px; text-align: center; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .modal-content { background-color: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         
         #modalBusca .modal-content, #modalNotificacoes .modal-content { justify-content: flex-start; text-align: left; }
         .resultados-busca { max-height: 50vh; overflow-y: auto; margin-top: 10px; border-radius: 10px; }
@@ -112,11 +112,15 @@
 
         .linha-botoes-foto { display: flex; gap: 10px; margin-bottom: 10px; }
 
-        .notif-item { padding: 15px; border-bottom: 1px solid #eee; background: #f9f9f9; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; }
+        /* NOVA LÓGICA DE NOTIFICAÇÕES (UX) */
+        .notif-item { padding: 15px; border-bottom: 1px solid #eee; background: #f9f9f9; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .notif-content { flex: 1; }
         .notif-item:active { transform: scale(0.98); }
         .notif-item.nao-lida { background: #e8f5e9; border-left: 4px solid #2e7d32; }
         .notif-titulo { font-weight: 700; font-size: 14px; color: #004d40; margin-bottom: 4px; }
         .notif-msg { font-size: 13px; color: #444; line-height: 1.4; }
+        .btn-del-notif { background: transparent; border: none; font-size: 16px; cursor: pointer; padding: 5px; opacity: 0.5; transition: 0.2s; }
+        .btn-del-notif:hover { opacity: 1; color: #c62828; transform: scale(1.1); }
 
         .popup-info { font-family: 'Poppins', sans-serif; min-width: 260px; }
         .popup-info h3 { margin: 0 0 5px 0; font-size: 18px; color: #1a1a1a; border-bottom: 2px solid #eee; padding-bottom: 5px;}
@@ -189,9 +193,13 @@
         @keyframes pulseBlueFoto { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(25, 118, 210, 0); transform: scale(1.15); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); transform: scale(1); } }
         @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.8); } 70% { box-shadow: 0 0 0 15px rgba(255, 193, 7, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
         
-        @keyframes pulseDolarAnim { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        .marker-dolar { background: #00e676; color: #004d40; font-weight: 900; border-radius: 20px; padding: 5px 10px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; font-family: 'Poppins', sans-serif; pointer-events: auto; }
+        /* 🚨 MAPA DE CALOR E FLASH DE RESPOSTA 🚨 */
+        @keyframes pulseDolarAnim { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .marker-dolar { background: #00e676; color: #004d40; border-radius: 8px; padding: 4px 8px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; font-family: 'Poppins', sans-serif; pointer-events: auto; font-weight: bold; line-height: 1.1; }
         .pulse-dolar { animation: pulseDolarAnim 1.5s infinite ease-in-out; }
+
+        @keyframes pulseFlashAnim { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 40px rgba(0, 230, 118, 0); transform: scale(1.2); } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); transform: scale(1); } }
+        .flash-resposta { animation: pulseFlashAnim 1.5s infinite ease-in-out; background: linear-gradient(135deg, #00e676, #00c853); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 24px; border: 3px solid white; box-sizing: border-box; }
 
         .marker-pergunta-anim { width: 36px; height: 36px; background: linear-gradient(135deg, #ab47bc, #7b1fa2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 22px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.4); animation: pulsePurpleGigante 1.2s infinite ease-in-out; }
         .marker-camera-anim { width: 36px; height: 36px; background: linear-gradient(135deg, #ff9800, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.4); animation: pulseOrangeCamera 1.2s infinite ease-in-out; }
@@ -403,8 +411,14 @@
     </div>
 
     <div class="modal-overlay" id="modalNotificacoes">
-        <div class="modal-content" style="max-height: 80vh;">
-            <h3 id="t_notifTitle" style="color:#004d40; margin-bottom: 15px;">🔔 Notificações</h3>
+        <div class="modal-content" style="max-height: 80vh; width: 95%; max-width: 400px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                <h3 id="t_notifTitle" style="color:#004d40; margin:0;">🔔 Notificações</h3>
+                <div style="display:flex; gap:5px;">
+                    <button id="btnNotifLidas" style="font-size:11px; padding:6px 10px; border-radius:6px; border:none; background:#e0f2f1; color:#004d40; font-weight:bold; cursor:pointer;">✔️ Lidas</button>
+                    <button id="btnNotifApagarTodas" style="font-size:11px; padding:6px 10px; border-radius:6px; border:none; background:#ffebee; color:#c62828; font-weight:bold; cursor:pointer;">🗑️ Todas</button>
+                </div>
+            </div>
             <div id="listaNotificacoes" style="max-height: 50vh; overflow-y: auto;"></div>
             <button class="btn-cancelar" id="btnFecharNotificacoes" style="margin-top:15px;"><span>Fechar</span></button>
         </div>
@@ -503,14 +517,13 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         let estadoApp = { 
             moeda: 'BRL', idioma: 'pt', perfil: 'turista', buscasRestantes: 3, planoPrecoUSD: 4.99, saldo: 0.00, 
             usuario: null, dadosHospedados: {}, mediaPrecos: {}, contagemPrecos: {}, perguntasAbertas: {}, notificacoes: [], 
-            radarAtivo: false, isLojistaPremium: false, nivelAvaliador: 1, avaliacoes: {},
-            filtroProduto: null 
+            radarAtivo: false, isLojistaPremium: false, nivelAvaliador: 1, avaliacoes: {}, filtroProduto: null 
         };
         const taxasCambio = { 'BRL': { sim: 'R$', taxa: 1 }, 'USD': { sim: 'US$', taxa: 0.20 }, 'EUR': { sim: '€', taxa: 0.18 }, 'ARS': { sim: '$', taxa: 170.0 } };
         
@@ -531,16 +544,16 @@
         };
 
         const getEl = (id) => document.getElementById(id); const setTxt = (id, txt) => { const e = getEl(id); if(e) e.innerText = txt; }; const setPlc = (id, txt) => { const e = getEl(id); if(e) e.placeholder = txt; };
-        
         const bindClick = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('click', fn); };
         const bindChange = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('change', fn); };
         const bindInput = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('input', fn); };
+
+        let rotaAtiva = null;
 
         function aplicarIdioma(lang) {
             estadoApp.idioma = lang; const t = dicionario[lang];
             document.querySelectorAll('.sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; });
             const opt = getEl('lang_' + lang); if(opt) { opt.classList.add('ativo-option'); opt.querySelector('.check').style.display = 'inline'; }
-
             setTxt('t_splashSub', t.splashSub); setTxt('t_menuRoute', rotaAtiva ? t.menuRouteOff : t.menuRoute); 
             setTxt('t_menuLang', t.menuLang); setTxt('t_menuChangeRole', t.menuChangeRole); setTxt('t_level', t.level); setTxt('t_formTitle', t.formTitle); setTxt('t_catDrink', t.catDrink); setTxt('t_catFood', t.catFood); setTxt('t_catService', t.catService); setTxt('t_catTicket', t.catTicket); setTxt('t_btnCancel', t.btnCancel); setTxt('t_optNewPlace', t.optNewPlace); setTxt('t_searchTitle', t.searchTitle); setTxt('t_searchClose', t.searchClose); setTxt('t_roleTitle', t.roleTitle); setTxt('t_roleTourist', t.roleTourist); setTxt('t_roleTouristSub', t.roleTouristSub); setTxt('t_roleLocal', t.roleLocal); setTxt('t_roleLocalSub', t.roleLocalSub); setTxt('t_btnLogin', t.btnLogin); setTxt('t_btnLogout', t.btnLogout); setTxt('t_pwTitle', t.pwTitle); setTxt('t_pwSub', t.pwSub); setTxt('t_pwPlan1', t.pwPlan1); setTxt('t_pwPlan2', t.pwPlan2); setTxt('t_pwPlan3', t.pwPlan3); setTxt('t_pwCancel', t.pwCancel); setTxt('t_askTitle', t.askTitle); setTxt('t_askSub', t.askSub); setTxt('t_btnSendAsk', t.btnSendAsk); setTxt('t_btnCancelAsk', t.btnCancelAsk); setTxt('t_ansTitle', t.ansTitle); setTxt('t_btnCancelAns', t.btnCancelAns); setTxt('t_btnAddCam', t.btnAddCam); setTxt('t_btnAddGal', t.btnAddGal); setTxt('t_btnAskCam', t.btnAskCam); setTxt('t_btnAskGal', t.btnAskGal); setTxt('t_optFixo', t.optFixo); setTxt('t_optAmbulante', t.optAmbulante); setTxt('t_lockTitle', t.lockTitle); setTxt('t_lockSub', t.lockSub); setTxt('t_lockBtn', t.lockBtn); setTxt('t_notifTitle', t.notifTitle); setTxt('t_posHint', t.posHint); setTxt('t_btnPosCancel', t.btnPosCancel); setTxt('t_btnPosConfirm', t.btnPosConfirm); setPlc('nomeLocalInput', t.placeNewLocal); setPlc('nomeProduto', t.placeName); setPlc('precoProduto', t.placePrice); setPlc('inputBusca', t.searchPlaceholder); setPlc('nomeLocalPergunta', t.placeNewLocalAsk);
             setTxt('t_menuLojista', t.menuLojista); setTxt('t_btnRadarText', t.radarBtn); setTxt('t_lojistaTitle', t.lojistaTitle); setTxt('t_lojistaSub', t.lojistaSub); setTxt('t_roleLojista', t.roleLojista); setTxt('t_roleLojistaSub', t.roleLojistaSub);
@@ -618,6 +631,66 @@
             }
         });
 
+        // ======================= RECURSO: PISCAR NO MAPA =======================
+        window.piscarNoMapa = function(lat, lng) {
+            const icDestaque = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="flash-resposta">✅</div>', iconSize: [50, 50], iconAnchor: [25, 25] });
+            const pinoFlash = L.marker([lat, lng], {icon: icDestaque, zIndexOffset: 999999}).addTo(mapa);
+            setTimeout(() => { mapa.removeLayer(pinoFlash); }, 6000); // Fica piscando por 6 segundos
+        };
+
+        // ======================= RECURSO: GERENCIADOR DE NOTIFICAÇÕES =======================
+        window.apagarNotificacao = async function(id, e) {
+            e.stopPropagation(); // Evita clicar na notificação e abrir o mapa ao mesmo tempo
+            try { await deleteDoc(doc(db, "notificacoes", id)); } catch(e) { console.error(e); }
+        };
+
+        bindClick('btnNotifLidas', () => {
+            estadoApp.notificacoes.forEach(n => { if(!n.lida) updateDoc(doc(db, "notificacoes", n.id), { lida: true }); });
+        });
+
+        bindClick('btnNotifApagarTodas', () => {
+            if(estadoApp.notificacoes.length === 0) return;
+            const confirmou = confirm("Deseja realmente apagar todas as notificações?");
+            if(confirmou) { estadoApp.notificacoes.forEach(n => { deleteDoc(doc(db, "notificacoes", n.id)); }); }
+        });
+
+        bindClick('btnAbrirNotificacoes', () => {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            const lista = getEl('listaNotificacoes'); lista.innerHTML = '';
+            if(estadoApp.notificacoes.length === 0) {
+                lista.innerHTML = `<p style="text-align:center; color:#757575; font-size:14px; margin-top:20px;">${dicionario[estadoApp.idioma].notifEmpty}</p>`;
+            } else {
+                estadoApp.notificacoes.forEach(n => {
+                    const div = document.createElement('div'); div.className = `notif-item ${n.lida ? '' : 'nao-lida'}`;
+                    let iconDel = `<button class="btn-del-notif" onclick="window.apagarNotificacao('${n.id}', event)" title="Apagar">🗑️</button>`;
+                    let contentHtml = '';
+                    
+                    if (n.tipo === 'foto_req') { 
+                        contentHtml = `<div class="notif-titulo">${n.titulo}</div><div class="notif-msg">${dicionario[estadoApp.idioma].notifReqFoto}</div>`; 
+                    } else { 
+                        const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim; const precoFormatado = n.precoReal ? `${sim} ${(n.precoReal * cotacao).toFixed(2)}` : ''; 
+                        contentHtml = `<div class="notif-titulo">${n.titulo}</div><div class="notif-msg">O preço de <strong>${n.nomeItem}</strong> em ${n.nomeLocal} é <strong>${precoFormatado}</strong>.<br><span style="font-size:11px; color:#9c27b0; font-weight:bold; display:block; margin-top:5px;">📍 Clique para ver no mapa</span></div>`; 
+                    }
+                    
+                    div.innerHTML = `<div class="notif-content">${contentHtml}</div>${iconDel}`;
+                    
+                    div.onclick = () => { 
+                        getEl('modalNotificacoes').style.display = 'none'; 
+                        mapa.flyTo([n.lat, n.lng], 18, { duration: 1.5 }); 
+                        setTimeout(() => { 
+                            window.piscarNoMapa(n.lat, n.lng); // CHAMA O FLASH VERDE AQUI!
+                            if(marcadoresNoMapa[n.nomeLocal]) marcadoresNoMapa[n.nomeLocal].openPopup(); 
+                        }, 1500); 
+                        if(!n.lida) updateDoc(doc(db, "notificacoes", n.id), { lida: true }); 
+                    };
+                    lista.appendChild(div);
+                });
+            }
+            getEl('modalNotificacoes').style.display = 'flex';
+        });
+        bindClick('btnFecharNotificacoes', () => getEl('modalNotificacoes').style.display = 'none');
+
+        // ======================= RECURSO: AVALIAÇÕES =======================
         onSnapshot(collection(db, "avaliacoes"), (snapshot) => {
             estadoApp.avaliacoes = {};
             snapshot.forEach((doc) => { const data = doc.data(); if(!estadoApp.avaliacoes[data.local]) estadoApp.avaliacoes[data.local] = []; estadoApp.avaliacoes[data.local].push({...data, id: doc.id}); }); desenharPinos();
@@ -648,6 +721,7 @@
             } catch(e) { console.error(e); alert("Erro ao publicar avaliação."); }
         });
 
+        // ======================= RECURSO: INTERRUPTOR ROTEIRO IA =======================
         bindClick('btnCarregarRoteiro', async () => {
             getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none';
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
@@ -696,27 +770,10 @@
             } catch(e) { console.error(e); alert("Erro ao solicitar saque."); }
         });
 
-        bindClick('btnAbrirNotificacoes', () => {
-            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
-            const lista = getEl('listaNotificacoes'); lista.innerHTML = '';
-            if(estadoApp.notificacoes.length === 0) { lista.innerHTML = `<p style="text-align:center; color:#757575; font-size:14px; margin-top:20px;">${dicionario[estadoApp.idioma].notifEmpty}</p>`; } 
-            else {
-                estadoApp.notificacoes.forEach(n => {
-                    const div = document.createElement('div'); div.className = `notif-item ${n.lida ? '' : 'nao-lida'}`;
-                    if (n.tipo === 'foto_req') { div.innerHTML = `<div class="notif-titulo">${n.titulo}</div><div class="notif-msg">${dicionario[estadoApp.idioma].notifReqFoto}</div>`; } 
-                    else { const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim; const precoFormatado = n.precoReal ? `${sim} ${(n.precoReal * cotacao).toFixed(2)}` : ''; div.innerHTML = `<div class="notif-titulo">${n.titulo}</div><div class="notif-msg">O preço de <strong>${n.nomeItem}</strong> em ${n.nomeLocal} é <strong>${precoFormatado}</strong>.<br><span style="font-size:11px; color:#9c27b0; font-weight:bold; display:block; margin-top:5px;">📍 Clique para ver no mapa</span></div>`; }
-                    div.onclick = () => { getEl('modalNotificacoes').style.display = 'none'; mapa.flyTo([n.lat, n.lng], 18, { duration: 1.5 }); setTimeout(() => { if(marcadoresNoMapa[n.nomeLocal]) marcadoresNoMapa[n.nomeLocal].openPopup(); }, 1500); if(!n.lida) updateDoc(doc(db, "notificacoes", n.id), { lida: true }); };
-                    lista.appendChild(div);
-                });
-            }
-            getEl('modalNotificacoes').style.display = 'flex';
-        });
-        bindClick('btnFecharNotificacoes', () => getEl('modalNotificacoes').style.display = 'none');
-
         bindClick('btnRadar', () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             if(estadoApp.radarAtivo) return;
-            estadoApp.filtroProduto = null; getEl('btnLimparFiltro').style.display = 'none'; // Limpa mapa de calor
+            estadoApp.filtroProduto = null; getEl('btnLimparFiltro').style.display = 'none'; 
             estadoApp.radarAtivo = true; getEl('btnRadar').classList.add('radar-anim'); alert(dicionario[estadoApp.idioma].radarActive); desenharPinos();
             setTimeout(() => { estadoApp.radarAtivo = false; getEl('btnRadar').classList.remove('radar-anim'); desenharPinos(); alert(dicionario[estadoApp.idioma].radarCool); }, 15000); 
         });
@@ -728,13 +785,11 @@
             setTimeout(() => { getEl('nomeProdutoPergunta').value = termo.charAt(0).toUpperCase() + termo.slice(1); const event = new Event('input'); getEl('nomeProdutoPergunta').dispatchEvent(event); }, 500);
         };
 
-        // 🧠 ORÁCULO IA: Lê os dados do firebase e junta com offline 🧠
         bindInput('nomeProdutoPergunta', (e) => {
             const termo = e.target.value.toLowerCase().trim(); const estimativaEl = getEl('estimativaIA'); let achou = false;
             if (termo.length > 2) {
                 let precosReais = [];
                 for (let loc in estadoApp.dadosHospedados) { estadoApp.dadosHospedados[loc].itens.forEach(it => { if (!it.isLojistaPlace && it.nome.toLowerCase().includes(termo)) precosReais.push(it.preco); }); }
-
                 const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
                 
                 if (precosReais.length > 0) {
@@ -960,7 +1015,6 @@
         const uploadFotoExtra = async (e) => { if (e.target.files.length > 0 && idPerguntaParaFotoExtra) { comprimirImagemBase64(e.target.files[0], async (base64) => { await updateDoc(doc(db, "perguntas", idPerguntaParaFotoExtra), { fotoUrl: base64, fotoSolicitada: false }); alert("📸 Foto enviada com sucesso! Os avaliadores já podem ver."); idPerguntaParaFotoExtra = null; }); } };
         bindChange('inputCamExtra', uploadFotoExtra); bindChange('inputGalExtra', uploadFotoExtra);
 
-        // 🚨 NOVO: RESPOSTA DO CONSENSO AGORA SALVA TUDO (FIXO E AMBULANTE) 🚨
         window.resolverPerguntaConsenso = async function(idPergunta, pergData, respostas) {
             respostas.sort((a, b) => a.tempo - b.tempo); let vencedor = respostas[0]; let precoFinal = vencedor.preco;
             if (respostas.length >= 3) {
@@ -970,12 +1024,14 @@
             }
             try {
                 await updateDoc(doc(db, "perguntas", idPergunta), { status: "respondida" });
-                
-                // MÁGICA: Agora salva Fixo E Ambulante no banco de dados geral!
                 await addDoc(collection(db, "precos"), { local: pergData.nomeLocal, nome: pergData.nomeItem, preco: precoFinal, categoria: "Serviço", lat: pergData.lat, lng: pergData.lng, status: "pendente", premium: false, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: "Consenso Comunitário", tipoLocal: pergData.tipoLocal || 'Fixo', data: new Date() });
-                
                 await updateDoc(doc(db, "usuarios", vencedor.uid), { saldo: increment(1.00) });
-                if (pergData.autorUid && pergData.autorUid !== 'undefined') { await addDoc(collection(db, "notificacoes"), { userId: pergData.autorUid, tipo: 'resposta', titulo: "✅ Dúvida Respondida!", nomeItem: pergData.nomeItem, nomeLocal: pergData.nomeLocal, precoReal: precoFinal, lat: pergData.lat, lng: pergData.lng, lida: false, data: new Date() }); }
+                if (pergData.autorUid && pergData.autorUid !== 'undefined') { 
+                    await addDoc(collection(db, "notificacoes"), { userId: pergData.autorUid, tipo: 'resposta', titulo: "✅ Dúvida Respondida!", nomeItem: pergData.nomeItem, nomeLocal: pergData.nomeLocal, precoReal: precoFinal, lat: pergData.lat, lng: pergData.lng, lida: false, data: new Date() }); 
+                    
+                    // Se o autor da dúvida for o usuário logado agora, pisca na hora pra ele!
+                    if (estadoApp.usuario && pergData.autorUid === estadoApp.usuario.uid) { window.piscarNoMapa(pergData.lat, pergData.lng); }
+                }
             } catch(e) { console.log(e); }
         };
 
@@ -1043,13 +1099,10 @@
             } catch(e) { console.error(e); }
         };
 
-        // 🚨 NOVO: GERADOR DE PINOS DE AMBULANTES NO MAPA 🚨
         onSnapshot(collection(db, "precos"), (snapshot) => {
             estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
             snapshot.forEach((doc) => {
                 const item = doc.data(); 
-                
-                // MÁGICA: Se for ambulante, ele ganha um pino próprio espalhado na região usando o ID dele!
                 const nomeL = item.tipoLocal === 'Ambulante' ? `🚶 Ambulante (${doc.id.substring(0,4)})` : (item.local || "Desconhecido"); 
                 
                 if (!estadoApp.dadosHospedados[nomeL]) estadoApp.dadosHospedados[nomeL] = { lat: item.lat, lng: item.lng, itens: [] };
@@ -1059,8 +1112,6 @@
                     estadoApp.mediaPrecos[nl] += item.preco; estadoApp.contagemPrecos[nl]++;
                 }
             });
-            
-            // Tira os ambulantes da lista de criação manual do formulário "+"
             let h = `<option value="NEW" id="t_optNewPlace">${dicionario[estadoApp.idioma].optNewPlace}</option>`; 
             Object.keys(estadoApp.dadosHospedados).sort().forEach(n => { if(n !== "Desconhecido" && !n.includes("🚶 Ambulante")) h += `<option value="${n}">${n}</option>`; }); 
             getEl('selectLocal').innerHTML = h;
@@ -1078,14 +1129,18 @@
                 const dadosL = estadoApp.dadosHospedados[nomeL]; 
                 const avaliacoesValidas = dadosL.itens.filter(i => !i.isLojistaPlace);
                 let tItens = avaliacoesValidas.length; let qAb = 0; let qAp = 0; let htmlLista = '';
-                
                 const isPremium = dadosL.itens.some(i => i.premium === true);
 
+                // 🚨 1. SE TEM FILTRO DE PREÇO ATIVO (A PLACA AGORA TEM O NOME) 🚨
                 if (estadoApp.filtroProduto) {
                     const itemFiltrado = avaliacoesValidas.find(i => i.nome.toLowerCase().includes(estadoApp.filtroProduto.toLowerCase()));
                     if (!itemFiltrado) continue; 
+                    
                     const precoLocal = (itemFiltrado.preco * cotacao).toFixed(2);
-                    const icDolar = L.divIcon({ className: 'marker-pergunta-container', html: `<div class="marker-dolar pulse-dolar">💲 ${sim} ${precoLocal}</div>`, iconSize: [80, 30], iconAnchor: [40, 15] });
+                    const nomeCurto = itemFiltrado.nome.length > 15 ? itemFiltrado.nome.substring(0,12)+'...' : itemFiltrado.nome;
+                    
+                    const htmlPino = `<div class="marker-dolar pulse-dolar"><span style="font-size:10px; font-weight:600; text-transform:uppercase; opacity:0.9; margin-bottom:2px;">${nomeCurto}</span><span>💲 ${sim} ${precoLocal}</span></div>`;
+                    const icDolar = L.divIcon({ className: 'marker-pergunta-container', html: htmlPino, iconSize: [110, 45], iconAnchor: [55, 22] });
                     const pinoDinheiro = L.marker([dadosL.lat, dadosL.lng], {icon: icDolar, zIndexOffset: 9999});
                     
                     avaliacoesValidas.forEach(item => {
