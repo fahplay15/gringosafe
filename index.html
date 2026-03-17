@@ -17,8 +17,10 @@
 
     <style>
         body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; overflow: hidden; background-color: #f0f2f5; }
+        
         #splashScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #004d40; color: white; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s ease-out; }
         #splashScreen h1 { font-size: 36px; margin: 0; display: flex; align-items: center; gap: 10px; }
+        
         #telaPerfil { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 77, 64, 0.95); backdrop-filter: blur(10px); z-index: 9000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; padding: 20px; box-sizing: border-box; }
         .lang-selector-inicial { display: flex; gap: 15px; margin-bottom: 20px; background: rgba(255,255,255,0.15); padding: 10px 20px; border-radius: 30px; }
         .lang-selector-inicial div { cursor: pointer; font-size: 16px; font-weight: 600; padding: 5px 10px; border-radius: 15px; transition: 0.2s; }
@@ -30,17 +32,22 @@
         .btn-perfil.avaliador { background: #ffc107; color: #333; }
         .btn-perfil.lojista { background: #f57c00; color: white; }
         .btn-perfil.lojista span { color: #fffde7; }
+        
         .top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 65px; background-color: #004d40; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1600; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
         .top-bar-logo { font-weight: 700; font-size: 20px; margin-left: 15px; display: flex; align-items: center; gap: 8px; }
         .btn-menu { background: transparent; border: none; color: white; font-size: 26px; cursor: pointer; padding: 0 5px; line-height: 1; }
+        
         .top-bar-right { display: flex; align-items: center; margin-right: 15px; gap: 10px; }
         .user-level { background-color: #ffc107; color: #333; padding: 5px 10px; border-radius: 20px; font-size: 13px; font-weight: 600; }
         .user-balance { background-color: #1b5e20; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+        
         .notif-container { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; }
         .badge-notificacao { position: absolute; top: -2px; right: -2px; background: #c62828; color: white; font-size: 10px; font-weight: bold; width: 16px; height: 16px; border-radius: 50%; display: none; justify-content: center; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
         .bloqueio-login { position: fixed; top: 65px; left: 0; width: 100vw; height: calc(100vh - 65px); background: rgba(240, 242, 245, 0.6); backdrop-filter: blur(8px); z-index: 1500; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
         .bloqueio-login h3 { color: #004d40; font-size: 24px; margin: 10px 0; }
         .bloqueio-login p { color: #444; font-size: 15px; font-weight: 500; margin-bottom: 25px; }
+
         .side-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 3000; transition: left 0.3s ease; box-shadow: 4px 0 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow-y: auto; }
         .side-menu.open { left: 0; }
         .menu-header { background: #004d40; color: white; padding: 25px 20px; font-size: 22px; font-weight: bold; }
@@ -77,7 +84,8 @@
         .btn-radar { position: fixed; bottom: 120px; left: 20px; background-color: #004d40; color: white; border: none; border-radius: 50%; width: 55px; height: 55px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.3); z-index: 1000; pointer-events: auto; cursor: pointer; transition: 0.3s; }
         .btn-radar span { font-size: 9px; font-family: 'Poppins', sans-serif; font-weight: bold; margin-top: -2px; }
         .radar-anim { animation: radarPulseBtn 1.5s infinite; background: #1976d2 !important; }
-        
+        @keyframes radarPulseBtn { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(25, 118, 210, 0); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); } }
+
         .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: #c62828; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 2px white, 0 2px 6px rgba(0,0,0,0.5); }
         .alfinete-central { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; pointer-events: none; display: none; margin-top: -6px; filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.4)); }
 
@@ -89,6 +97,7 @@
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 3500; align-items: center; justify-content: center; }
         .modal-content { background-color: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        
         #modalBusca .modal-content, #modalNotificacoes .modal-content { justify-content: flex-start; text-align: left; }
         .resultados-busca { max-height: 50vh; overflow-y: auto; margin-top: 10px; border-radius: 10px; }
         .resultado-item { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; flex-direction: column; transition: 0.2s; }
@@ -126,8 +135,8 @@
         .btn-denuncia { background: transparent; border: none; font-size: 16px; cursor: pointer; opacity: 0.6; transition: 0.2s; padding: 5px; }
         .btn-denuncia:hover { opacity: 1; transform: scale(1.2); }
         
-        /* 🚨 O NOVO BADGE DE ESTRELAS 🚨 */
-        .badge-estrelas { font-size: 18px; color: #d84315; font-weight: 800; background: #fff3e0; padding: 8px 15px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 12px; box-shadow: 0 3px 8px rgba(245, 124, 0, 0.3); border: 2px solid #ffb74d; width: 100%; box-sizing: border-box; }
+        /* 🚨 NOVO: O BADGE DE ESTRELAS CORRIGIDO E GIGANTE 🚨 */
+        .badge-estrelas { background: #fff3e0; padding: 8px 15px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; box-shadow: 0 3px 8px rgba(245, 124, 0, 0.3); border: 2px solid #ffb74d; width: 100%; box-sizing: border-box; color: #d84315; font-weight: 800; }
 
         .imagem-preview { max-width: 100%; max-height: 140px; border-radius: 10px; display: none; margin: 10px auto; object-fit: cover; border: 2px solid #eee;}
         .ia-status { font-size: 12px; color: #004d40; font-weight: 600; display: none; margin: 5px 0; background: #e0f2f1; padding: 5px; border-radius: 8px; }
@@ -162,7 +171,7 @@
         
         body.modo-avaliador .notif-container { display: none !important; }
         body.modo-avaliador .btn-perguntar { display: none !important; }
-        body.modo-avaliador .btn-pesquisa { display: none !important; } /* A LUPA SOME AQUI */
+        body.modo-avaliador .btn-pesquisa { display: none !important; } /* LUPA OFF */
         body.modo-avaliador .btn-denuncia { display: inline-block !important; }
         
         body.modo-lojista #t_level { display: none !important; }
@@ -186,7 +195,11 @@
         @keyframes pulseBlueFoto { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(25, 118, 210, 0); transform: scale(1.15); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); transform: scale(1); } }
         @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.8); } 70% { box-shadow: 0 0 0 15px rgba(255, 193, 7, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
         
-        /* MAPA DE CALOR E FLASH DE RESPOSTA */
+        /* 🚨 NOVO: OS PINOS DE DÚVIDA MAIORES E MAIS DESTACADOS 🚨 */
+        .marker-pergunta-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #ab47bc, #7b1fa2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 28px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulsePurpleGigante 1.5s infinite ease-in-out; }
+        .marker-camera-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #ff9800, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 22px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulseOrangeCamera 1.5s infinite ease-in-out; }
+        .marker-foto-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #42a5f5, #1976d2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 22px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulseBlueFoto 1.5s infinite ease-in-out; }
+
         @keyframes pulseDolarAnim { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .marker-dolar { background: #00e676; color: #004d40; border-radius: 8px; padding: 4px 8px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; font-family: 'Poppins', sans-serif; pointer-events: auto; font-weight: bold; line-height: 1.1; }
         .pulse-dolar { animation: pulseDolarAnim 1.5s infinite ease-in-out; }
@@ -194,13 +207,11 @@
         @keyframes pulseFlashAnim { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 40px rgba(0, 230, 118, 0); transform: scale(1.2); } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); transform: scale(1); } }
         .flash-resposta { animation: pulseFlashAnim 1.5s infinite ease-in-out; background: linear-gradient(135deg, #00e676, #00c853); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 24px; border: 3px solid white; box-sizing: border-box; }
 
-        /* O PINO EXCLUSIVO PARA O DONO VER SUA LOJA */
         @keyframes pulseMinhaLoja { 0% { box-shadow: 0 0 0 0 rgba(2, 136, 209, 0.8); } 70% { box-shadow: 0 0 0 20px rgba(2, 136, 209, 0); } 100% { box-shadow: 0 0 0 0 rgba(2, 136, 209, 0); } }
         .marker-minha-loja { width: 46px; height: 46px; background: linear-gradient(135deg, #03a9f4, #01579b); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 22px; border: 3px solid white; box-shadow: 0 0 15px rgba(2, 136, 209, 0.8); animation: pulseMinhaLoja 2s infinite; position: relative; }
         .label-minha-loja { position: absolute; bottom: -24px; left: 50%; transform: translateX(-50%); background: #01579b; color: white; font-size: 11px; font-weight: 900; padding: 4px 8px; border-radius: 12px; white-space: nowrap; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 0.5px; }
         .minha-loja-container { display: flex; justify-content: center; align-items: center; }
-
-        @keyframes pulseArea { 0% { fill-opacity: 0.1; } 50% { fill-opacity: 0.3; } 100% { fill-opacity: 0.1; } }
+        .marker-premium { width: 36px; height: 36px; background: linear-gradient(135deg, #ffc107, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 18px; border: 3px solid white; box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); animation: pulseGold 2s infinite; }
         .area-segura-anim { animation: pulseArea 2s infinite; cursor: pointer; }
     </style>
 </head>
@@ -570,9 +581,7 @@
             return R * c; 
         }
 
-        // ==========================================
-        // 🚨 1. INICIALIZAÇÃO DO MAPA (PRIMEIRO DE TUDO) 🚨
-        // ==========================================
+        let rotaAtiva = null;
         window.mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14); 
         L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(window.mapa);
         
@@ -585,10 +594,12 @@
         const iGreen = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iRed = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
         const iPremium = L.divIcon({ className: 'marker-premium', html: '⭐', iconSize: [36, 36], iconAnchor: [18, 36] });
-        const iPurpleGhost = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-pergunta-anim">?</div></div>', iconSize: [36, 36], iconAnchor: [18, 18] });
-        const iCameraGhost = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-camera-anim">📸</div></div>', iconSize: [36, 36], iconAnchor: [18, 18] });
-        const iPhotoGhost  = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-foto-anim">🖼️</div></div>', iconSize: [36, 36], iconAnchor: [18, 18] });
         const iMinhaLoja = L.divIcon({ className: 'minha-loja-container', html: '<div class="marker-minha-loja">🏬<div class="label-minha-loja">SUA LOJA</div></div>', iconSize: [46, 70], iconAnchor: [23, 50] });
+
+        // 🚨 ÍCONES FANTASMAS COM O TAMANHO CORRETO AQUI 🚨
+        const iPurpleGhost = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-pergunta-anim">?</div></div>', iconSize: [44, 44], iconAnchor: [22, 22] });
+        const iCameraGhost = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-camera-anim">📸</div></div>', iconSize: [44, 44], iconAnchor: [22, 22] });
+        const iPhotoGhost  = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-foto-anim">🖼️</div></div>', iconSize: [44, 44], iconAnchor: [22, 22] });
 
         const buscarLoc = () => window.mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 }); 
         buscarLoc(); 
@@ -600,9 +611,6 @@
             if (estadoApp.perfil === 'avaliador') desenharPinos();
         });
 
-        // ==========================================
-        // 🚨 2. FUNÇÕES BASE (SÓ DEPOIS DO MAPA EXISTIR) 🚨
-        // ==========================================
         function aplicarIdioma(lang) {
             estadoApp.idioma = lang; const t = dicionario[lang];
             document.querySelectorAll('.sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; });
@@ -647,9 +655,6 @@
         bindClick('btnLangToggle', () => getEl('langSubMenu').classList.toggle('open')); bindClick('btnCurrencyToggle', () => getEl('currencySubMenu').classList.toggle('open'));
         bindClick('btnAbrirMenu', () => { getEl('sideMenu').classList.add('open'); getEl('menuOverlay').style.display = 'block'; }); bindClick('menuOverlay', () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; });
 
-        // ==========================================
-        // 🚨 3. INICIALIZAÇÃO DO FIREBASE E BANCO DE DADOS 🚨
-        // ==========================================
         const firebaseConfig = { apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs", authDomain: "gringosafe-1f434.firebaseapp.com", projectId: "gringosafe-1f434", storageBucket: "gringosafe-1f434.firebasestorage.app", messagingSenderId: "949745647794", appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); const provider = new GoogleAuthProvider();
         
@@ -686,9 +691,6 @@
             }
         });
 
-        // ==========================================
-        // 🚨 4. LÓGICA GERAL E FLUXOS DE BOTÕES 🚨
-        // ==========================================
         window.piscarNoMapa = function(lat, lng) {
             if (!lat || !lng) return;
             const icDestaque = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="flash-resposta">✅</div>', iconSize: [50, 50], iconAnchor: [25, 25] });
@@ -839,12 +841,10 @@
 
         window.addEventListener('load', () => { setTimeout(() => { getEl('splashScreen').style.opacity = '0'; setTimeout(() => { getEl('splashScreen').style.display = 'none'; atualizarPrecosPaywall(); }, 600); }, 2000); });
         
-        let modeloIA = null; mobilenet.load().then(m => modeloIA = m);
-        
         function comprimirImagemBase64(file, callback) { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const MAX_WIDTH = 400; const MAX_HEIGHT = 400; let width = img.width; let height = img.height; if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } } canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height); callback(canvas.toDataURL('image/jpeg', 0.6)); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
 
         let fotoAtualBase64 = null;
-        const processarImagem = (e, idPreview, idStatus, idNomeInput) => { if (e.target.files.length > 0) { comprimirImagemBase64(e.target.files[0], (base64) => { fotoAtualBase64 = base64; const img = getEl(idPreview); if(img) { img.src = base64; img.style.display = 'block'; } const inpNome = getEl(idNomeInput); if(inpNome) inpNome.value = ''; if (modeloIA) { const status = getEl(idStatus); if(status) { status.style.display = 'block'; setTxt(idStatus, '🤖 IA...'); } if(img) img.onload = () => { modeloIA.classify(img).then(prev => { if(status) status.style.display = 'none'; const tIngles = prev[0].className.split(',')[0].toLowerCase().trim(); if(estadoApp.idioma === 'en') { if(inpNome) inpNome.value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } else { const tTrad = dicionario['pt'][tIngles]; if(inpNome) inpNome.value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } if(idNomeInput === 'nomeProdutoPergunta') { const event = new Event('input'); inpNome.dispatchEvent(event); } }); } } }); } };
+        const processarImagem = (e, idPreview, idStatus, idNomeInput) => { if (e.target.files.length > 0) { comprimirImagemBase64(e.target.files[0], (base64) => { fotoAtualBase64 = base64; const img = getEl(idPreview); if(img) { img.src = base64; img.style.display = 'block'; } const inpNome = getEl(idNomeInput); if(inpNome) inpNome.value = ''; if (window.modeloIA) { const status = getEl(idStatus); if(status) { status.style.display = 'block'; setTxt(idStatus, '🤖 IA...'); } if(img) img.onload = () => { window.modeloIA.classify(img).then(prev => { if(status) status.style.display = 'none'; const tIngles = prev[0].className.split(',')[0].toLowerCase().trim(); if(estadoApp.idioma === 'en') { if(inpNome) inpNome.value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } else { const tTrad = dicionario['pt'][tIngles]; if(inpNome) inpNome.value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } if(idNomeInput === 'nomeProdutoPergunta') { const event = new Event('input'); inpNome.dispatchEvent(event); } }); } } }); } };
 
         let fotosLojista = []; const maxFotosLojista = 3;
         const uploadFotoLojista = (e) => { if (e.target.files.length > 0) { if (fotosLojista.length >= maxFotosLojista) return alert("Você já atingiu o máximo de 3 fotos!"); comprimirImagemBase64(e.target.files[0], (base64) => { fotosLojista.push(base64); atualizarPreviewLojista(); }); } };
@@ -905,7 +905,7 @@
         
         bindClick('btnConfirmarPos', () => {
             coordSelecionada = window.mapa.getCenter(); getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex';
-            if (acaoPendente === 'add') { getEl('modalForm').dataset.modoLojista = "false"; setTxt('t_btnSave', "Salvar (+R$ 0,25)"); getEl('t_formTitle').innerText = "Novo Registro"; getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; } 
+            if (acaoPendente === 'add') { delete getEl('modalForm').dataset.modoLojista; setTxt('t_btnSave', "Salvar (+R$ 0,25)"); getEl('t_formTitle').innerText = "Novo Registro"; getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; } 
             else if (acaoPendente === 'ask') { getEl('nomeProdutoPergunta').value = ''; getEl('estimativaIA').style.display = 'none'; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; }
             else if (acaoPendente === 'addLojista') { fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex'; }
         });
@@ -1063,9 +1063,6 @@
             } catch(e) { console.error(e); alert("Erro ao tentar destacar: " + e.message); }
         };
 
-        // ==========================================
-        // 🚨 5. LOOP DE DADOS (BLINDADO CONTRA CRASH) 🚨
-        // ==========================================
         onSnapshot(collection(db, "precos"), (snapshot) => {
             estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
             snapshot.forEach((doc) => {
@@ -1094,9 +1091,6 @@
             estadoApp.perguntasAbertas = {}; snapshot.forEach((doc) => { const p = doc.data(); if(p.status === "aberta") estadoApp.perguntasAbertas[doc.id] = p; }); desenharPinos(); 
         });
 
-        // ==========================================
-        // 🚨 6. DESENHO DO MAPA (GEOFENCING & KYC) 🚨
-        // ==========================================
         function desenharPinos() {
             camadaDePinos.clearLayers(); marcadoresNoMapa = {}; const t = dicionario[estadoApp.idioma]; const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
 
@@ -1175,7 +1169,14 @@
                         else if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#004d40; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer;">📋 Adicionar Produto ao Menu</button>`; }
                     }
 
-                    let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3>${btnPromoverHtml}<div class="lista-itens">${htmlLista}</div>${btnAdicionarItemHtml}</div>`;
+                    // 🚨 GERANDO AS ESTRELAS GIGANTES DO FILTRO 🚨
+                    let estrelasStr = `<span style="font-size: 24px; line-height: 1; margin-right: 5px; display: flex; align-items: center;">⭐</span> <span style="font-size: 15px;">Nova Loja</span>`;
+                    if(estadoApp.avaliacoes && estadoApp.avaliacoes[nomeL]) {
+                        const revs = estadoApp.avaliacoes[nomeL]; let soma = 0; revs.forEach(r => soma += r.nota); const media = (soma / revs.length).toFixed(1);
+                        estrelasStr = `<span style="font-size: 24px; line-height: 1; margin-right: 5px; display: flex; align-items: center;">⭐</span> <span style="font-size: 15px;">${media} (${revs.length} opiniões)</span>`;
+                    }
+
+                    let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3><div class="badge-estrelas">${estrelasStr}</div>${btnPromoverHtml}<div class="lista-itens">${htmlLista}</div>${btnAdicionarItemHtml}</div>`;
                     pinoDinheiro.bindPopup(popupHtml); camadaDePinos.addLayer(pinoDinheiro); continue; 
                 }
 
@@ -1248,18 +1249,20 @@
                     else if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#004d40; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer;">📋 Adicionar Produto ao Menu</button>`; }
                 }
 
-                let estrelasStr = "Nova Loja";
+                // 🚨 GERANDO AS ESTRELAS GIGANTES GERAIS 🚨
+                let estrelasStr = `<span style="font-size: 24px; line-height: 1; margin-right: 5px; display: flex; align-items: center;">⭐</span> <span style="font-size: 15px;">Nova Loja</span>`;
                 if(estadoApp.avaliacoes && estadoApp.avaliacoes[nomeL]) {
                     const revs = estadoApp.avaliacoes[nomeL]; let soma = 0; revs.forEach(r => soma += r.nota); const media = (soma / revs.length).toFixed(1);
-                    estrelasStr = `${media} (${revs.length} opiniões)`;
+                    estrelasStr = `<span style="font-size: 24px; line-height: 1; margin-right: 5px; display: flex; align-items: center;">⭐</span> <span style="font-size: 15px;">${media} (${revs.length} opiniões)</span>`;
                 }
+
                 const btnVerAvaliacoesHtml = `<button onclick="event.stopPropagation(); window.abrirAvaliacoes('${safeLocalName}')" style="width:100%; margin-bottom:5px; padding:10px; background:#1976d2; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(25, 118, 210, 0.3);">💬 Ver / Deixar Avaliação</button>`;
 
                 if (htmlLista === '' && !lugarLojista) continue; 
 
                 let popupHtml = `<div class="popup-info">
                     <h3 style="margin-bottom: 8px;">🏪 ${nomeL}</h3>
-                    <div class="badge-estrelas"><span style="font-size: 22px;">⭐</span> <span>${estrelasStr}</span></div>
+                    <div class="badge-estrelas">${estrelasStr}</div>
                     ${btnPromoverHtml}
                     ${fotosLojistaHtml}
                     ${st}
