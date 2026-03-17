@@ -112,6 +112,7 @@
 
         .linha-botoes-foto { display: flex; gap: 10px; margin-bottom: 10px; }
 
+        /* NOTIFICAÇÕES (UX) */
         .notif-item { padding: 15px; border-bottom: 1px solid #eee; background: #f9f9f9; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
         .notif-content { flex: 1; }
         .notif-item:active { transform: scale(0.98); }
@@ -135,7 +136,8 @@
         .btn-denuncia { background: transparent; border: none; font-size: 16px; cursor: pointer; opacity: 0.6; transition: 0.2s; padding: 5px; }
         .btn-denuncia:hover { opacity: 1; transform: scale(1.2); }
         
-        .badge-estrelas { font-size: 14px; color: #d84315; font-weight: 800; background: #fff3e0; padding: 6px 12px; border-radius: 20px; display: inline-block; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(245, 124, 0, 0.2); }
+        /* 🚨 NOVO: O BADGE DE ESTRELAS GIGANTE E CHAMATIVO 🚨 */
+        .badge-estrelas { font-size: 18px; color: #d84315; font-weight: 800; background: #fff3e0; padding: 8px 15px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 12px; box-shadow: 0 3px 8px rgba(245, 124, 0, 0.3); border: 2px solid #ffb74d; width: 100%; box-sizing: border-box; }
 
         .imagem-preview { max-width: 100%; max-height: 140px; border-radius: 10px; display: none; margin: 10px auto; object-fit: cover; border: 2px solid #eee;}
         .ia-status { font-size: 12px; color: #004d40; font-weight: 600; display: none; margin: 5px 0; background: #e0f2f1; padding: 5px; border-radius: 8px; }
@@ -194,6 +196,7 @@
         @keyframes pulseBlueFoto { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(25, 118, 210, 0); transform: scale(1.15); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); transform: scale(1); } }
         @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.8); } 70% { box-shadow: 0 0 0 15px rgba(255, 193, 7, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
         
+        /* MAPA DE CALOR E FLASH DE RESPOSTA */
         @keyframes pulseDolarAnim { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .marker-dolar { background: #00e676; color: #004d40; border-radius: 8px; padding: 4px 8px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; font-family: 'Poppins', sans-serif; pointer-events: auto; font-weight: bold; line-height: 1.1; }
         .pulse-dolar { animation: pulseDolarAnim 1.5s infinite ease-in-out; }
@@ -201,6 +204,18 @@
         @keyframes pulseFlashAnim { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 40px rgba(0, 230, 118, 0); transform: scale(1.2); } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); transform: scale(1); } }
         .flash-resposta { animation: pulseFlashAnim 1.5s infinite ease-in-out; background: linear-gradient(135deg, #00e676, #00c853); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 24px; border: 3px solid white; box-sizing: border-box; }
 
+        .marker-pergunta-anim { width: 36px; height: 36px; background: linear-gradient(135deg, #ab47bc, #7b1fa2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 22px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.4); animation: pulsePurpleGigante 1.2s infinite ease-in-out; }
+        .marker-camera-anim { width: 36px; height: 36px; background: linear-gradient(135deg, #ff9800, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.4); animation: pulseOrangeCamera 1.2s infinite ease-in-out; }
+        .marker-foto-anim { width: 36px; height: 36px; background: linear-gradient(135deg, #42a5f5, #1976d2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.4); animation: pulseBlueFoto 1.2s infinite ease-in-out; }
+        .marker-premium { width: 36px; height: 36px; background: linear-gradient(135deg, #ffc107, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 18px; border: 3px solid white; box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); animation: pulseGold 2s infinite; }
+        
+        /* 🚨 NOVO: O PINO EXCLUSIVO PARA O DONO VER SUA LOJA 🚨 */
+        @keyframes pulseMinhaLoja { 0% { box-shadow: 0 0 0 0 rgba(2, 136, 209, 0.8); } 70% { box-shadow: 0 0 0 20px rgba(2, 136, 209, 0); } 100% { box-shadow: 0 0 0 0 rgba(2, 136, 209, 0); } }
+        .marker-minha-loja { width: 46px; height: 46px; background: linear-gradient(135deg, #03a9f4, #01579b); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 22px; border: 3px solid white; box-shadow: 0 0 15px rgba(2, 136, 209, 0.8); animation: pulseMinhaLoja 2s infinite; position: relative; }
+        .label-minha-loja { position: absolute; bottom: -24px; left: 50%; transform: translateX(-50%); background: #01579b; color: white; font-size: 11px; font-weight: 900; padding: 4px 8px; border-radius: 12px; white-space: nowrap; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 0.5px; }
+        .minha-loja-container { display: flex; justify-content: center; align-items: center; }
+
+        @keyframes pulseArea { 0% { fill-opacity: 0.1; } 50% { fill-opacity: 0.3; } 100% { fill-opacity: 0.1; } }
         .area-segura-anim { animation: pulseArea 2s infinite; cursor: pointer; }
     </style>
 </head>
@@ -457,7 +472,6 @@
             <p style="font-size: 14px; color: #555; margin-bottom: 15px;">Item: <strong id="editItemNome" style="color:#000;"></strong></p>
             <input type="number" id="editItemPreco" class="input-form" placeholder="Novo preço real">
             <input type="hidden" id="editItemId">
-            <input type="hidden" id="isPremiumLugar">
             <button class="btn-salvar" id="btnSalvarEdicao" style="background:#f57c00;">Salvar e Resetar Votos</button>
             <button class="btn-cancelar" id="btnCancelarEdicao">Cancelar</button>
         </div>
@@ -805,6 +819,8 @@
         const iCameraGhost = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-camera-anim">📸</div></div>', iconSize: [36, 36], iconAnchor: [18, 18] });
         const iPhotoGhost  = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-foto-anim">🖼️</div></div>', iconSize: [36, 36], iconAnchor: [18, 18] });
 
+        const iMinhaLoja = L.divIcon({ className: 'minha-loja-container', html: '<div class="marker-minha-loja">🏬<div class="label-minha-loja">SUA LOJA</div></div>', iconSize: [46, 70], iconAnchor: [23, 50] });
+
         function comprimirImagemBase64(file, callback) { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const MAX_WIDTH = 400; const MAX_HEIGHT = 400; let width = img.width; let height = img.height; if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } } canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height); callback(canvas.toDataURL('image/jpeg', 0.6)); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
 
         let fotoAtualBase64 = null;
@@ -852,7 +868,6 @@
             getEl('modalForm').style.display = 'flex';
         };
 
-        // 🚨 FUNÇÕES DO NOVO SISTEMA KYC (VERIFICAÇÃO DE DOCUMENTO) 🚨
         window.iniciarVerificacaoLojista = function(nomeLocal) {
             try { if(window.mapa) window.mapa.closePopup(); } catch(e) {}
             localParaPromover = nomeLocal;
@@ -860,27 +875,8 @@
         };
 
         bindClick('btnUploadDocLojista', () => getEl('inputDocLojista').click());
-        
-        bindChange('inputDocLojista', (e) => {
-            if (e.target.files.length > 0) {
-                comprimirImagemBase64(e.target.files[0], (base64) => {
-                    const img = getEl('previewDocLojista');
-                    img.src = base64; img.style.display = 'block';
-                    getEl('btnEnviarVerificacao').style.display = 'block';
-                });
-            }
-        });
-
-        bindClick('btnEnviarVerificacao', () => {
-            getEl('modalVerificacaoLojista').style.display = 'none';
-            // Finge que aprovou o documento e joga pro Paywall
-            if(!estadoApp.isLojistaPremium) { 
-                getEl('modalLojista').style.display = 'flex'; 
-            } else { 
-                window.executarPromocao(localParaPromover); 
-            }
-        });
-
+        bindChange('inputDocLojista', (e) => { if (e.target.files.length > 0) { comprimirImagemBase64(e.target.files[0], (base64) => { const img = getEl('previewDocLojista'); img.src = base64; img.style.display = 'block'; getEl('btnEnviarVerificacao').style.display = 'block'; }); } });
+        bindClick('btnEnviarVerificacao', () => { getEl('modalVerificacaoLojista').style.display = 'none'; if(!estadoApp.isLojistaPremium) { getEl('modalLojista').style.display = 'flex'; } else { window.executarPromocao(localParaPromover); } });
         bindClick('btnFecharVerificacao', () => getEl('modalVerificacaoLojista').style.display = 'none');
         
         bindClick('btnAdicionar', () => { if (estadoApp.perfil === 'lojista') { iniciarModoPosicionamento('addLojista'); } else { iniciarModoPosicionamento('add'); } });
@@ -889,10 +885,7 @@
         
         bindClick('btnConfirmarPos', () => {
             coordSelecionada = window.mapa.getCenter(); getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex';
-            if (acaoPendente === 'add') { 
-                delete getEl('modalForm').dataset.modoLojista; setTxt('t_btnSave', "Salvar (+R$ 0,25)"); getEl('t_formTitle').innerText = "Novo Registro";
-                getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; 
-            } 
+            if (acaoPendente === 'add') { delete getEl('modalForm').dataset.modoLojista; setTxt('t_btnSave', "Salvar (+R$ 0,25)"); getEl('t_formTitle').innerText = "Novo Registro"; getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; } 
             else if (acaoPendente === 'ask') { getEl('nomeProdutoPergunta').value = ''; getEl('estimativaIA').style.display = 'none'; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; }
             else if (acaoPendente === 'addLojista') { fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex'; }
         });
@@ -910,23 +903,15 @@
             const centro = coordSelecionada || window.mapa.getCenter(); const aMail = estadoApp.usuario.email; const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc);
             const isLojistaAdd = getEl('modalForm').dataset.modoLojista === "true";
 
-            if (isLojistaAdd) {
-                await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: centro.lat, lng: centro.lng, status: "aprovado", premium: true, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: aMail, tipoLocal: 'Fixo', data: new Date() });
-                getEl('modalForm').style.display = 'none'; alert("✅ Produto adicionado ao seu Menu!");
-            } else {
-                await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: centro.lat, lng: centro.lng, status: "pendente", premium: false, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: aMail, tipoLocal: 'Fixo', data: new Date() });
-                await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(0.25) }); estadoApp.saldo += 0.25; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
-                getEl('modalForm').style.display = 'none'; alert(t.alertaSalvo);
-            }
+            if (isLojistaAdd) { await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: centro.lat, lng: centro.lng, status: "aprovado", premium: true, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: aMail, tipoLocal: 'Fixo', data: new Date() }); getEl('modalForm').style.display = 'none'; alert("✅ Produto adicionado ao seu Menu!"); } 
+            else { await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: centro.lat, lng: centro.lng, status: "pendente", premium: false, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: aMail, tipoLocal: 'Fixo', data: new Date() }); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(0.25) }); estadoApp.saldo += 0.25; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`); getEl('modalForm').style.display = 'none'; alert(t.alertaSalvo); }
         });
 
         bindClick('btnSalvarLojista', async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const nomeNegocio = getEl('nomeLojistaInput').value.trim(); const catNegocio = getEl('categoriaLojista').value;
             if(!nomeNegocio) return alert("Por favor, digite o nome do seu negócio.");
-            
             const centro = coordSelecionada || window.mapa.getCenter(); const aMail = estadoApp.usuario.email;
-            
             await addDoc(collection(db, "precos"), { local: nomeNegocio, nome: "Acesso ao Local", preco: 0, isLojistaPlace: true, categoria: catNegocio, lat: centro.lat, lng: centro.lng, status: "aprovado", premium: estadoApp.isLojistaPremium, fotosLocal: fotosLojista, autor: aMail, data: new Date() });
             getEl('modalFormLojista').style.display = 'none'; alert("Seu negócio foi cadastrado com sucesso e já está no mapa como Negócio Local! Clique no pino para destacá-lo.");
         });
@@ -941,11 +926,9 @@
             const itemDesejado = getEl('nomeProdutoPergunta').value.trim(); const localTipo = getEl('tipoLocalPergunta').value; let localNome = getEl('nomeLocalPergunta').value.trim();
             if (localTipo === 'Ambulante') { localNome = 'Vendedor Ambulante da Região'; } else if (!localNome) { return alert("Digite o nome do local!"); }
             if(!itemDesejado) return alert("Digite o nome do item!");
-            
             const centro = coordSelecionada || window.mapa.getCenter(); let fuzzyLat = centro.lat; let fuzzyLng = centro.lng;
             if (localTipo === 'Ambulante') { const angle = Math.random() * Math.PI * 2; const radius = 0.0004 + (Math.random() * 0.0004); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); } 
             else { const angle = Math.random() * Math.PI * 2; const radius = 0.0001 + (Math.random() * 0.00015); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); }
-            
             await addDoc(collection(db, "perguntas"), { nomeItem: itemDesejado, nomeLocal: localNome, tipoLocal: localTipo, lat: fuzzyLat, lng: fuzzyLng, status: "aberta", respostas: [], autorUid: estadoApp.usuario.uid, fotoUrl: fotoAtualBase64, fotoSolicitada: false, data: new Date() });
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
             getEl('modalPergunta').style.display = 'none'; alert("Pergunta enviada no mapa! Por segurança, sua localização exata foi ocultada dos Avaliadores.");
@@ -957,14 +940,7 @@
         };
 
         let idPerguntaParaFotoExtra = null; window.abrirEnvioFotoExtra = function(idPergunta) { idPerguntaParaFotoExtra = idPergunta; getEl('inputCamExtra').click(); };
-        const uploadFotoExtra = async (e) => {
-            if (e.target.files.length > 0 && idPerguntaParaFotoExtra) {
-                comprimirImagemBase64(e.target.files[0], async (base64) => {
-                    await updateDoc(doc(db, "perguntas", idPerguntaParaFotoExtra), { fotoUrl: base64, fotoSolicitada: false });
-                    alert("📸 Foto enviada com sucesso! Os avaliadores já podem ver."); idPerguntaParaFotoExtra = null;
-                });
-            }
-        };
+        const uploadFotoExtra = async (e) => { if (e.target.files.length > 0 && idPerguntaParaFotoExtra) { comprimirImagemBase64(e.target.files[0], async (base64) => { await updateDoc(doc(db, "perguntas", idPerguntaParaFotoExtra), { fotoUrl: base64, fotoSolicitada: false }); alert("📸 Foto enviada com sucesso! Os avaliadores já podem ver."); idPerguntaParaFotoExtra = null; }); } };
         bindChange('inputCamExtra', uploadFotoExtra); bindChange('inputGalExtra', uploadFotoExtra);
 
         window.resolverPerguntaConsenso = async function(idPergunta, pergData, respostas) {
@@ -1032,78 +1008,47 @@
         window.votarItem = async function(id, tipo, isPremium) {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
             if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
-
             const uid = estadoApp.usuario.uid; let jaVotou = false;
             for (const loc in estadoApp.dadosHospedados) { const iLocal = estadoApp.dadosHospedados[loc].itens.find(i => i.id === id); if (iLocal) { const upList = iLocal.votaram_up || []; const downList = iLocal.votaram_down || []; if (upList.includes(uid) || downList.includes(uid)) jaVotou = true; break; } }
             if (jaVotou) return alert(dicionario[estadoApp.idioma].alertVoted);
             try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
         };
 
-        // 🚨 A EXECUÇÃO DO DESTAQUE 🚨
         window.executarPromocao = async function(nomeLocal) {
             try {
                 const q = query(collection(db, "precos"), where("local", "==", nomeLocal));
                 const snapshot = await getDocs(q); let atualizouAlgo = false;
-                snapshot.forEach((docSnap) => { 
-                    updateDoc(doc(db, "precos", docSnap.id), { premium: true, autor: estadoApp.usuario.email }); 
-                    atualizouAlgo = true; 
-                });
-                if(atualizouAlgo){ alert(`✅ Sucesso! O local "${nomeLocal}" agora é Oficial e Premium!\n\nEle ficará com uma estrela dourada visível 24h por dia para os turistas!`); } 
-                else { alert(`⚠️ Erro ao encontrar os produtos para destacar.`); }
+                snapshot.forEach((docSnap) => { updateDoc(doc(db, "precos", docSnap.id), { premium: true, autor: estadoApp.usuario.email }); atualizouAlgo = true; });
+                if(atualizouAlgo){ alert(`✅ Sucesso! O local "${nomeLocal}" agora é Oficial e Premium!\n\nEle ficará com uma estrela dourada visível 24h por dia para os turistas!`); } else { alert(`⚠️ Erro ao encontrar os produtos para destacar.`); }
             } catch(e) { console.error(e); alert("Erro ao tentar destacar."); }
         };
 
         onSnapshot(collection(db, "precos"), (snapshot) => {
             estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
             snapshot.forEach((doc) => {
-                const item = doc.data(); 
-                const nomeItemSeguro = item.nome || "Item Não Nomeado";
-                const precoSeguro = item.preco || 0;
+                const item = doc.data(); const nomeItemSeguro = item.nome || "Item Não Nomeado"; const precoSeguro = item.preco || 0;
                 const nomeL = item.tipoLocal === 'Ambulante' ? `🚶 Ambulante (${doc.id.substring(0,4)})` : (item.local || "Desconhecido"); 
-                
                 if (!estadoApp.dadosHospedados[nomeL]) estadoApp.dadosHospedados[nomeL] = { lat: item.lat, lng: item.lng, itens: [] };
                 estadoApp.dadosHospedados[nomeL].itens.push({ ...item, nome: nomeItemSeguro, preco: precoSeguro, id: doc.id });
-                
-                if(!item.isLojistaPlace) {
-                    const nl = nomeItemSeguro.toString().toLowerCase().trim(); 
-                    if(!estadoApp.mediaPrecos[nl]) { estadoApp.mediaPrecos[nl] = 0; estadoApp.contagemPrecos[nl] = 0; }
-                    estadoApp.mediaPrecos[nl] += precoSeguro; estadoApp.contagemPrecos[nl]++;
-                }
+                if(!item.isLojistaPlace) { const nl = nomeItemSeguro.toString().toLowerCase().trim(); if(!estadoApp.mediaPrecos[nl]) { estadoApp.mediaPrecos[nl] = 0; estadoApp.contagemPrecos[nl] = 0; } estadoApp.mediaPrecos[nl] += precoSeguro; estadoApp.contagemPrecos[nl]++; }
             });
-            let h = `<option value="NEW" id="t_optNewPlace">${dicionario[estadoApp.idioma].optNewPlace}</option>`; 
-            Object.keys(estadoApp.dadosHospedados).sort().forEach(n => { if(n !== "Desconhecido" && !n.includes("🚶 Ambulante")) h += `<option value="${n}">${n}</option>`; }); 
-            getEl('selectLocal').innerHTML = h;
-            desenharPinos();
+            let h = `<option value="NEW" id="t_optNewPlace">${dicionario[estadoApp.idioma].optNewPlace}</option>`; Object.keys(estadoApp.dadosHospedados).sort().forEach(n => { if(n !== "Desconhecido" && !n.includes("🚶 Ambulante")) h += `<option value="${n}">${n}</option>`; }); getEl('selectLocal').innerHTML = h; desenharPinos();
         });
 
-        onSnapshot(collection(db, "perguntas"), (snapshot) => {
-            estadoApp.perguntasAbertas = {}; snapshot.forEach((doc) => { const p = doc.data(); if(p.status === "aberta") estadoApp.perguntasAbertas[doc.id] = p; }); desenharPinos(); 
-        });
+        onSnapshot(collection(db, "perguntas"), (snapshot) => { estadoApp.perguntasAbertas = {}; snapshot.forEach((doc) => { const p = doc.data(); if(p.status === "aberta") estadoApp.perguntasAbertas[doc.id] = p; }); desenharPinos(); });
 
-        // 🚨 A MÁGICA FINAL DO MAPA 🚨
         function desenharPinos() {
             camadaDePinos.clearLayers(); marcadoresNoMapa = {}; const t = dicionario[estadoApp.idioma]; const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
 
             for (const nomeL in estadoApp.dadosHospedados) {
-                const dadosL = estadoApp.dadosHospedados[nomeL]; 
-                
-                if (dadosL.lat == null || dadosL.lng == null) continue; 
-                
-                const avaliacoesValidas = dadosL.itens.filter(i => !i.isLojistaPlace);
-                let tItens = avaliacoesValidas.length; let qAb = 0; let qAp = 0; let htmlLista = '';
-                const isPremium = dadosL.itens.some(i => i.premium === true);
-                
-                const lugarLojista = dadosL.itens.find(i => i.isLojistaPlace);
-                const isDono = estadoApp.usuario && lugarLojista && lugarLojista.autor === estadoApp.usuario.email;
+                const dadosL = estadoApp.dadosHospedados[nomeL]; if (dadosL.lat == null || dadosL.lng == null) continue; 
+                const avaliacoesValidas = dadosL.itens.filter(i => !i.isLojistaPlace); let tItens = avaliacoesValidas.length; let qAb = 0; let qAp = 0; let htmlLista = ''; const isPremium = dadosL.itens.some(i => i.premium === true);
+                const lugarLojista = dadosL.itens.find(i => i.isLojistaPlace); const isDono = estadoApp.usuario && lugarLojista && lugarLojista.autor === estadoApp.usuario.email;
 
                 if (estadoApp.filtroProduto) {
                     const itemFiltrado = avaliacoesValidas.find(i => (i.nome || "").toLowerCase().includes(estadoApp.filtroProduto.toLowerCase()));
                     if (!itemFiltrado) continue; 
-                    
-                    const precoLocal = (itemFiltrado.preco * cotacao).toFixed(2);
-                    const nomeStr = (itemFiltrado.nome || "");
-                    const nomeCurto = nomeStr.length > 15 ? nomeStr.substring(0,12)+'...' : nomeStr;
-                    
+                    const precoLocal = (itemFiltrado.preco * cotacao).toFixed(2); const nomeStr = (itemFiltrado.nome || ""); const nomeCurto = nomeStr.length > 15 ? nomeStr.substring(0,12)+'...' : nomeStr;
                     const htmlPino = `<div class="marker-dolar pulse-dolar"><span style="font-size:10px; font-weight:600; text-transform:uppercase; opacity:0.9; margin-bottom:2px;">${nomeCurto}</span><span>💲 ${sim} ${precoLocal}</span></div>`;
                     const icDolar = L.divIcon({ className: 'marker-pergunta-container', html: htmlPino, iconSize: [110, 45], iconAnchor: [55, 22] });
                     const pinoDinheiro = L.marker([dadosL.lat, dadosL.lng], {icon: icDolar, zIndexOffset: 9999});
@@ -1112,48 +1057,21 @@
                         let vUp = item.votos_up || 0; let vDown = item.votos_down || 0; let totalV = vUp + vDown; let stAtual = 'pendente'; let minVotosRequeridos = 5; 
                         if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
                         let ic = stAtual === 'aprovado' ? '✅' : (stAtual === 'abusivo' ? '🚨' : '⏳'); 
-                        
                         const safeName = (item.nome || "Item").replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                        let btns = '';
-
-                        // 🚨 KYC NA LISTA DENTRO DO FILTRO 🚨
-                        if (isPremium && lugarLojista && !isDono) {
-                            btns = ``; // Esconde botoes de edicao
-                        } else {
-                            btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:#2e7d32;" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#c62828;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${safeName}', ${item.preco}, ${isPremium})">✏️</button></div>`;
-                        }
-
+                        let btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:#2e7d32;" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#c62828;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${safeName}', ${item.preco}, ${isPremium})">✏️</button></div>`;
                         let bgDestaque = ((item.nome || "").toLowerCase() === estadoApp.filtroProduto.toLowerCase()) ? 'background:#e8f5e9; border: 2px solid #00e676;' : '';
                         htmlLista += `<div class="item-card" style="${bgDestaque}"><div class="item-row"><div class="item-detalhes"><span class="item-nome">${ic} ${item.nome}</span></div><span class="item-preco">${sim} ${(item.preco * cotacao).toFixed(2)}</span></div>${btns}</div>`;
                     });
 
                     const safeLocalName = nomeL.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                    
-                    let btnPromoverHtml = ''; 
-                    if (isDono && !isPremium) {
-                        btnPromoverHtml = `<div style="background:#fff3e0; border:2px dashed #ff9800; padding:10px; border-radius:10px; margin-bottom:15px; text-align:center;"><button onclick="event.stopPropagation(); window.iniciarVerificacaoLojista('${safeLocalName}')" style="width:100%; padding:12px; background:linear-gradient(135deg, #ffc107, #ff9800); color:#000; font-weight:900; font-size:14px; border:none; border-radius:8px; cursor:pointer; box-shadow:0 4px 10px rgba(255, 193, 7, 0.4); animation: pulseGold 2s infinite;">⭐ VERIFICAR E DESTACAR</button></div>`;
-                    }
-
-                    // 🚨 A REGRA DE BLOQUEIO DE CADASTRO 🚨
-                    let btnAdicionarItemHtml = '';
-                    if (isPremium && lugarLojista) {
-                        if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#004d40; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer;">📋 Adicionar Produto ao Menu</button>`; } 
-                        else { btnAdicionarItemHtml = `<div style="text-align:center; padding:8px; background:#eee; border-radius:8px; font-size:11px; color:#666; margin-bottom:8px; font-weight:bold;">🔒 Loja Verificada (Menu bloqueado para edições externas)</div>`; }
-                    } else {
-                        if (estadoApp.perfil === 'avaliador') { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer;">➕ Cadastrar Novo Item Aqui</button>`; } 
-                        else if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#004d40; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer;">📋 Adicionar Produto ao Menu</button>`; }
-                    }
-
-                    let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3>${btnPromoverHtml}<div class="lista-itens">${htmlLista}</div>${btnAdicionarItemHtml}</div>`;
+                    let btnAdicionarItemHtml = ''; if (estadoApp.perfil === 'avaliador') { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(76, 175, 80, 0.3);">➕ Cadastrar Novo Item Aqui</button>`; }
+                    let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3><div class="lista-itens">${htmlLista}</div>${btnAdicionarItemHtml}</div>`;
                     pinoDinheiro.bindPopup(popupHtml); camadaDePinos.addLayer(pinoDinheiro); continue; 
                 }
 
                 if (estadoApp.perfil === 'turista' && !estadoApp.radarAtivo && !isPremium) { continue; }
                 
-                let fotosLojistaHtml = ''; 
-                if (lugarLojista && lugarLojista.fotosLocal && lugarLojista.fotosLocal.length > 0) {
-                    fotosLojistaHtml = '<div class="galeria-lojista">'; lugarLojista.fotosLocal.forEach(f => { fotosLojistaHtml += `<img src="${f}">`; }); fotosLojistaHtml += '</div>';
-                }
+                let fotosLojistaHtml = ''; if (lugarLojista && lugarLojista.fotosLocal && lugarLojista.fotosLocal.length > 0) { fotosLojistaHtml = '<div class="galeria-lojista">'; lugarLojista.fotosLocal.forEach(f => { fotosLojistaHtml += `<img src="${f}">`; }); fotosLojistaHtml += '</div>'; }
 
                 avaliacoesValidas.forEach(item => {
                     let qtdDenuncias = item.denuncias || 0; let isCongelado = qtdDenuncias >= 3;
@@ -1161,31 +1079,29 @@
                     if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
                     if (stAtual === "abusivo") qAb++; if (stAtual === "aprovado") qAp++; 
                     let ic = stAtual === 'aprovado' ? '✅' : (stAtual === 'abusivo' ? '🚨' : '⏳'); 
-                    let btns = '';
-                    
-                    const safeName = (item.nome || "Item").replace(/'/g, "\\'").replace(/"/g, '&quot;');
-
-                    // 🚨 KYC NA LISTA NORMAL 🚨
-                    if (isCongelado) { 
-                        ic = '🧊'; btns = `<div class="item-acoes"><span style="color:#c62828; font-size:12px; font-weight:bold;">🚨 Suspenso por Fraude</span></div>`; 
-                    } 
-                    else if (isPremium && lugarLojista && !isDono) {
-                        btns = ``; // Sem botões se não for o dono e a loja for premium!
-                    }
-                    else { 
-                        btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:#2e7d32;" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#c62828;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${safeName}', ${item.preco}, ${isPremium})">✏️</button></div>`; 
-                    }
-                    
+                    let btns = ''; const safeName = (item.nome || "Item").replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    if (isCongelado) { ic = '🧊'; btns = `<div class="item-acoes"><span style="color:#c62828; font-size:12px; font-weight:bold;">🚨 Suspenso por Fraude</span></div>`; } 
+                    else { btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:#2e7d32;" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#c62828;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${safeName}', ${item.preco}, ${isPremium})">✏️</button></div>`; }
                     let badge = ""; const nl = (item.nome || "").toLowerCase().trim(); const ctg = estadoApp.contagemPrecos[nl];
                     if (ctg > 1 && !isCongelado) { const m = estadoApp.mediaPrecos[nl] / ctg; const pM = (m * cotacao).toFixed(2); if (item.preco > m * 1.15) badge = `<span style="font-size:10px;background:#ffebee;color:#c62828;padding:2px 5px;border-radius:4px;margin-top:3px;display:inline-block;">${t.badgeCaro} (${sim} ${pM})</span>`; else if (item.preco <= m * 0.9) badge = `<span style="font-size:10px;background:#e8f5e9;color:#2e7d32;padding:2px 5px;border-radius:4px;margin-top:3px;display:inline-block;">${t.badgeBom} (${sim} ${pM})</span>`; else badge = `<span style="font-size:10px;background:#fff3e0;color:#ef6c00;padding:2px 5px;border-radius:4px;margin-top:3px;display:inline-block;">${t.badgeMedia}</span>`; }
                     htmlLista += `<div class="item-card"><div class="item-row"><div class="item-detalhes"><span class="item-nome">${ic} ${item.nome}</span>${badge}</div><span class="item-preco">${sim} ${(item.preco * cotacao).toFixed(2)}</span></div>${btns}</div>`;
                 });
                 
                 let txAbuso = tItens > 0 ? (qAb / tItens) * 100 : 0; let txAprov = tItens > 0 ? (qAp / tItens) * 100 : 0; 
+                
+                // 🚨 DECISÃO VISUAL DO PINO AQUI 🚨
                 let icP = iYellow; let st = `<p style="color:#f57c00;font-weight:700;font-size:13px;margin:0 0 10px 0;">${t.statusYellow}</p>`;
                 
-                if (isPremium) { icP = iPremium; st = `<p style="color:#f57c00;font-weight:900;font-size:13px;margin:0 0 10px 0;">⭐ Local Parceiro (Verificado)</p>`; } 
-                else if (lugarLojista) { icP = iGreen; st = `<p style="color:#2e7d32;font-weight:700;font-size:13px;margin:0 0 10px 0;">✅ Negócio Local (Aguardando Verificação)</p>`; } 
+                if (isDono) { 
+                    icP = iMinhaLoja; // 🟢 O PINO ESPECIAL DO DONO AQUI
+                    st = `<p style="color:#0288d1;font-weight:900;font-size:14px;margin:0 0 10px 0;">🏢 Sua Loja (Controle Total)</p>`; 
+                } 
+                else if (isPremium) { 
+                    icP = iPremium; st = `<p style="color:#f57c00;font-weight:900;font-size:13px;margin:0 0 10px 0;">⭐ Local Parceiro (Verificado)</p>`; 
+                } 
+                else if (lugarLojista) { 
+                    icP = iGreen; st = `<p style="color:#2e7d32;font-weight:700;font-size:13px;margin:0 0 10px 0;">✅ Negócio Local</p>`; 
+                } 
                 else {
                     if (txAbuso >= 30) { icP = iRed; st = `<p style="color:#c62828;font-weight:700;font-size:13px;margin:0 0 10px 0;">${t.statusRed} (${txAbuso.toFixed(0)}% Abusivo)</p>`; } 
                     else if (txAprov >= 60) { icP = iGreen; st = `<p style="color:#2e7d32;font-weight:700;font-size:13px;margin:0 0 10px 0;">${t.statusGreen} (${txAprov.toFixed(0)}% Seguro)</p>`; }
@@ -1193,7 +1109,6 @@
 
                 const safeLocalName = nomeL.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 
-                // 🚨 BOTÃO DE DESTACAR AQUI 🚨
                 let btnPromoverHtml = ''; 
                 if (isDono && !isPremium) {
                     btnPromoverHtml = `
@@ -1202,14 +1117,11 @@
                     </div>`;
                 }
 
-                // 🚨 REGRA DE BLOQUEIO DE CADASTRO 🚨
                 let btnAdicionarItemHtml = '';
-                if (isPremium && lugarLojista) {
-                    if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#004d40; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer;">📋 Adicionar Produto ao Menu</button>`; } 
-                    else { btnAdicionarItemHtml = `<div style="text-align:center; padding:8px; background:#eee; border-radius:8px; font-size:11px; color:#666; margin-bottom:8px; font-weight:bold;">🔒 Loja Verificada (Menu bloqueado para edições externas)</div>`; }
-                } else {
-                    if (estadoApp.perfil === 'avaliador') { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer;">➕ Cadastrar Novo Item Aqui</button>`; } 
-                    else if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#004d40; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer;">📋 Adicionar Produto ao Menu</button>`; }
+                if (estadoApp.perfil === 'avaliador') { 
+                    btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#4caf50; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(76, 175, 80, 0.3);">➕ Cadastrar Novo Item Aqui</button>`; 
+                } else if (isDono) {
+                    btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#004d40; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(0, 77, 64, 0.3);">📋 Adicionar Produto ao Menu</button>`;
                 }
 
                 let estrelasStr = "Nova Loja";
@@ -1223,7 +1135,7 @@
 
                 let popupHtml = `<div class="popup-info">
                     <h3 style="margin-bottom: 8px;">🏪 ${nomeL}</h3>
-                    <div class="badge-estrelas">⭐ ${estrelasStr}</div>
+                    <div class="badge-estrelas"><span style="font-size: 22px;">⭐</span> <span>${estrelasStr}</span></div>
                     ${btnPromoverHtml}
                     ${fotosLojistaHtml}
                     ${st}
