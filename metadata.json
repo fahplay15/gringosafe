@@ -1,8 +1,0 @@
-{
-  "name": "GringoSafeApp",
-  "description": "Inteligência Artificial para combater a exploração de preços e golpes turísticos. Transparência e segurança em tempo real.",
-  "requestFramePermissions": [
-    "camera",
-    "geolocation"
-  ]
-}
