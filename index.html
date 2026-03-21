@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GringoSafe - Preço Justo</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#004d40">
+    <meta name="theme-color" content="#f0f2f5">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="./logo.png">
@@ -24,166 +24,152 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest"></script>
 
     <style>
-        /* --- DESIGN SYSTEM MODERNO 2026 --- */
-        :root {
-            --primary: #004d40;
-            --secondary: #00e676;
-            --accent: #9c27b0;
-            --glass: rgba(255, 255, 255, 0.9);
-            --glass-dark: rgba(0, 77, 64, 0.92);
-            --shadow: 0 8px 32px rgba(0,0,0,0.12);
-        }
-
-        body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; overflow: hidden; background-color: #f8f9fa; color: #1a1a1a; }
+        body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; overflow: hidden; background-color: #f0f2f5; }
         
-        #mapa { position: absolute; top: 0; left: 0; height: 100vh; width: 100vw; z-index: 0; }
-
-        /* Splash Screen */
-        #splashScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, var(--primary), #00251a); color: white; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s ease-out; }
-        #splashScreen h1 { font-size: 38px; font-weight: 900; margin: 0; display: flex; align-items: center; gap: 10px; }
-
-        /* Top Bar Floating */
-        .top-bar { 
-            position: absolute; top: 15px; left: 15px; right: 15px; height: 60px; 
-            background: var(--glass-dark); backdrop-filter: blur(12px); color: white; 
-            display: flex; justify-content: space-between; align-items: center; 
-            box-shadow: var(--shadow); z-index: 1600; border-radius: 18px; padding: 0 15px;
-            border: 1px solid rgba(255,255,255,0.1); width: auto;
-        }
-        .top-bar-logo { font-weight: 800; font-size: 18px; display: flex; align-items: center; gap: 8px; }
-        .btn-menu { background: rgba(255,255,255,0.15); border: none; color: white; font-size: 22px; cursor: pointer; width: 35px; height: 35px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-
-        .top-bar-right { display: flex; align-items: center; gap: 8px; }
-        .user-level { background: #ffc107; color: #333; padding: 4px 10px; border-radius: 10px; font-size: 12px; font-weight: 700; }
-        .user-balance { background: var(--secondary); color: var(--primary); padding: 4px 10px; border-radius: 10px; font-size: 12px; font-weight: 800; }
-        .notif-container { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; }
-        .badge-notificacao { position: absolute; top: -2px; right: -2px; background: #c62828; color: white; font-size: 10px; font-weight: bold; width: 16px; height: 16px; border-radius: 50%; display: none; justify-content: center; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-
-        /* Bottom Actions (Floating) */
-        .bottom-actions { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; z-index: 3000; pointer-events: none; }
-        .btn-action { pointer-events: auto; border-radius: 22px; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 25px rgba(0,0,0,0.15); position: relative; z-index: 3001; }
-        .btn-action:active { transform: scale(0.9) translateY(5px); }
-        .btn-action svg { fill: currentColor; }
-        .btn-adicionar { width: 75px; height: 75px; background: linear-gradient(135deg, #00e676, #00c853); color: white; }
-        .btn-adicionar svg { width: 36px; height: 36px; }
-        .btn-perguntar { width: 75px; height: 75px; background: linear-gradient(135deg, #9c27b0, #6a1b9a); color: white; display: none; }
-        .btn-perguntar svg { width: 34px; height: 34px; }
-        .btn-pesquisa { width: 60px; height: 60px; background: white; color: var(--primary); }
-        .btn-pesquisa svg { width: 26px; height: 26px; }
-        .badge-buscas { position: absolute; top: -5px; right: -5px; background: #c62828; color: white; font-size: 11px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: none; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-
-        /* Botões Laterais */
-        .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 18px; width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; box-shadow: var(--shadow); z-index: 1000; pointer-events: auto; cursor: pointer; }
-        .btn-mira svg { width: 24px; height: 24px; fill: var(--primary); }
-        .btn-radar { position: fixed; bottom: 185px; right: 20px; background-color: var(--primary); color: white; border: none; border-radius: 18px; width: 50px; height: 50px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: var(--shadow); z-index: 1000; pointer-events: auto; cursor: pointer; transition: 0.3s; }
-        .btn-radar span { font-size: 9px; font-weight: bold; margin-top: -2px; }
-        .radar-anim { animation: pulseRadar 2s infinite; background: #1976d2 !important; }
-        @keyframes pulseRadar { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.6); } 100% { box-shadow: 0 0 0 30px rgba(25, 118, 210, 0); } }
-
-        /* Side Menu Moderno */
-        .side-menu { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: white; z-index: 4000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 10px 0 30px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow-y: auto; border-radius: 0 30px 30px 0; }
-        .side-menu.open { left: 0; }
-        .menu-header { background: var(--primary); color: white; padding: 40px 25px 25px; font-size: 22px; font-weight: bold; }
-        .user-card { margin: -25px 20px 20px; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; flex-direction: column; gap: 10px; }
-        .user-info { display: flex; align-items: center; gap: 12px; font-weight: 700; color: var(--primary); }
-        .user-avatar { width: 45px; height: 45px; border-radius: 50%; background: #eee; display: flex; justify-content: center; align-items: center; font-size: 20px; overflow: hidden; }
-        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .btn-google { background: #4285F4; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 15px; box-shadow: 0 4px 10px rgba(66, 133, 244, 0.3); }
-        .btn-sair { background: #ffebee; color: #c62828; border: none; padding: 10px; border-radius: 12px; font-weight: 700; cursor: pointer; }
-        .menu-item { padding: 16px 25px; color: #333; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; border-radius: 15px; margin: 0 10px; }
-        .menu-item:hover { background: #f0f7f4; color: var(--primary); }
-        .sub-menu { display: none; background: #f9f9f9; flex-direction: column; margin: 0 10px; border-radius: 15px; }
-        .sub-menu.open { display: flex; }
-        .sub-menu-item { padding: 12px 25px; border-bottom: 1px solid #eee; color: #555; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; }
-        .ativo-option { color: var(--primary); font-weight: 700; }
-        .menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(3px); z-index: 3500; }
-
-        /* Login Overlay */
-        .bloqueio-login { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(240, 242, 245, 0.8); backdrop-filter: blur(10px); z-index: 1500; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
-        .bloqueio-login h3 { color: var(--primary); font-size: 26px; margin: 10px 0; }
-        .bloqueio-login p { color: #444; font-size: 16px; font-weight: 500; margin-bottom: 25px; }
-
-        /* Tela de Perfil */
-        #telaPerfil { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--glass-dark); backdrop-filter: blur(15px); z-index: 9000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; padding: 20px; box-sizing: border-box; }
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #004d40; color: white; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s ease-out; }
+        #splashScreen h1 { font-size: 36px; margin: 0; display: flex; align-items: center; gap: 10px; }
+        
+        #telaPerfil { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 77, 64, 0.95); backdrop-filter: blur(10px); z-index: 9000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; padding: 20px; box-sizing: border-box; }
         .lang-selector-inicial { display: flex; gap: 15px; margin-bottom: 20px; background: rgba(255,255,255,0.15); padding: 10px 20px; border-radius: 30px; }
         .lang-selector-inicial div { cursor: pointer; font-size: 16px; font-weight: 600; padding: 5px 10px; border-radius: 15px; transition: 0.2s; }
         .lang-selector-inicial div:hover { background: rgba(255,255,255,0.3); }
-        #telaPerfil h2 { font-size: 28px; margin-bottom: 25px; }
-        .btn-perfil { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 20px; width: 100%; max-width: 320px; border-radius: 20px; font-size: 18px; font-weight: 700; margin-bottom: 15px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .btn-perfil span { font-size: 13px; font-weight: 400; opacity: 0.8; }
-        .btn-perfil:hover, .btn-perfil:active { background: white; color: var(--primary); transform: scale(0.98); }
-        .btn-perfil.avaliador { border-color: #ffc107; }
-        .btn-perfil.lojista { border-color: #f57c00; }
-
-        /* Modais */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); z-index: 5000; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 28px; width: 90%; max-width: 420px; text-align: center; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid rgba(0,0,0,0.05); }
-        #modalBusca .modal-content, #modalNotificacoes .modal-content { justify-content: flex-start; text-align: left; }
+        #telaPerfil h2 { font-size: 26px; margin-bottom: 20px; }
+        .btn-perfil { background: white; color: #004d40; border: none; padding: 15px; width: 100%; max-width: 320px; border-radius: 15px; font-size: 18px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-bottom: 12px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.2); transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .btn-perfil span { font-size: 12px; font-weight: 400; color: #555; }
+        .btn-perfil:active { transform: scale(0.95); }
+        .btn-perfil.avaliador { background: #ffc107; color: #333; }
+        .btn-perfil.lojista { background: #f57c00; color: white; }
+        .btn-perfil.lojista span { color: #fffde7; }
         
-        .input-form { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #f1f3f4; border-radius: 14px; font-size: 15px; font-family: 'Poppins', sans-serif; box-sizing: border-box; background: #f1f3f4; transition: 0.3s; }
-        .input-form:focus { background: white; border-color: var(--secondary); outline: none; }
+        .top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 65px; background-color: #004d40; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1600; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
+        .top-bar-logo { font-weight: 700; font-size: 20px; margin-left: 15px; display: flex; align-items: center; gap: 8px; }
+        .btn-menu { background: transparent; border: none; color: white; font-size: 26px; cursor: pointer; padding: 0 5px; line-height: 1; }
         
-        .btn-salvar { background: var(--primary); color: white; border: none; padding: 16px; width: 100%; border-radius: 14px; font-size: 16px; font-weight: 700; margin-top: 10px; cursor: pointer; transition: 0.2s; }
-        .btn-salvar:active { transform: scale(0.98); }
-        .btn-cancelar { background: transparent; color: #757575; border: none; padding: 12px; width: 100%; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 5px; }
-        .btn-roxo { background: var(--accent); color: white; border: none; padding: 16px; width: 100%; border-radius: 14px; font-size: 16px; font-weight: 700; margin-top: 10px; cursor: pointer; }
-        .btn-laranja { background: #f57c00; color: white; border: none; padding: 12px 14px; width: 100%; border-radius: 12px; font-size: 14px; font-weight: 700; margin-top: 5px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 5px; }
-        .btn-add-foto { background: #e0f2f1; color: var(--primary); border: 2px dashed var(--primary); padding: 14px; width: 100%; border-radius: 14px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 5px; }
-        .linha-botoes-foto { display: flex; gap: 10px; margin-bottom: 10px; }
+        .top-bar-right { display: flex; align-items: center; margin-right: 15px; gap: 10px; }
+        .user-level { background-color: #ffc107; color: #333; padding: 5px 10px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+        .user-balance { background-color: #1b5e20; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+        
+        .notif-container { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; }
+        .badge-notificacao { position: absolute; top: -2px; right: -2px; background: #c62828; color: white; font-size: 10px; font-weight: bold; width: 16px; height: 16px; border-radius: 50%; display: none; justify-content: center; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
-        /* Componentes de UI variados */
-        #toastAviso { display:none; position:fixed; top:85px; left:50%; transform:translateX(-50%); background:#1976d2; color:white; padding:12px 25px; border-radius:20px; z-index:9999; font-weight:700; font-size:14px; box-shadow:0 10px 20px rgba(0,0,0,0.2); animation: fadeInDown 0.3s ease-out; white-space: nowrap; }
+        .bloqueio-login { position: fixed; top: 65px; left: 0; width: 100vw; height: calc(100vh - 65px); background: rgba(240, 242, 245, 0.6); backdrop-filter: blur(8px); z-index: 1500; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
+        .bloqueio-login h3 { color: #004d40; font-size: 24px; margin: 10px 0; }
+        .bloqueio-login p { color: #444; font-size: 15px; font-weight: 500; margin-bottom: 25px; }
+
+        .side-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 3000; transition: left 0.3s ease; box-shadow: 4px 0 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow-y: auto; }
+        .side-menu.open { left: 0; }
+        .menu-header { background: #004d40; color: white; padding: 25px 20px; font-size: 22px; font-weight: bold; }
+        .user-card { padding: 20px; background: #e0f2f1; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid #ccc; }
+        .user-info { display: flex; align-items: center; gap: 12px; font-weight: 700; color: #004d40; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: #ccc; display: flex; justify-content: center; align-items: center; font-size: 20px; overflow: hidden; }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .btn-google { background: #4285F4; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; box-shadow: 0 4px 10px rgba(66, 133, 244, 0.3); }
+        .btn-sair { background: #c62828; color: white; border: none; padding: 8px; border-radius: 8px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+        .menu-item { padding: 18px 20px; border-bottom: 1px solid #f0f0f0; color: #333; font-size: 15px; font-weight: 600; display: flex; justify-content: space-between; cursor: pointer; }
+        .sub-menu { display: none; background: #f9f9f9; flex-direction: column; }
+        .sub-menu.open { display: flex; }
+        .sub-menu-item { padding: 12px 40px; border-bottom: 1px solid #eee; color: #555; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; }
+        .ativo-option { color: #004d40; font-weight: 700; }
+        .menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2500; }
+
+        #mapa { position: absolute; top: 0; left: 0; height: 100vh; width: 100vw; z-index: 0; } 
+
+        .bottom-actions { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; z-index: 3000; pointer-events: none; }
+        .btn-action { pointer-events: auto; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; position: relative; z-index: 3001; }
+        .btn-action:active { transform: scale(0.9); }
+        .btn-action svg { fill: currentColor; }
+        .btn-adicionar { width: 70px; height: 70px; background: linear-gradient(135deg, #00e676, #00c853); color: white; box-shadow: 0px 8px 25px rgba(0, 200, 83, 0.4); }
+        .btn-adicionar svg { width: 36px; height: 36px; }
+        .btn-perguntar { width: 70px; height: 70px; background: linear-gradient(135deg, #9c27b0, #6a1b9a); color: white; box-shadow: 0px 8px 25px rgba(156, 39, 176, 0.4); display: none; }
+        .btn-perguntar svg { width: 34px; height: 34px; }
+        .btn-pesquisa { width: 60px; height: 60px; background: white; color: #004d40; box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.15); }
+        .btn-pesquisa svg { width: 26px; height: 26px; }
+        .badge-buscas { position: absolute; top: -5px; right: -5px; background: #c62828; color: white; font-size: 11px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: none; }
+        
+        .btn-mira { position: fixed; bottom: 120px; right: 20px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.15); z-index: 1000; pointer-events: auto; cursor: pointer; }
+        .btn-mira svg { width: 22px; height: 22px; fill: #004d40; }
+
+        .btn-radar { position: fixed; bottom: 120px; left: 20px; background-color: #004d40; color: white; border: none; border-radius: 50%; width: 55px; height: 55px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(0,0,0,0.3); z-index: 1000; pointer-events: auto; cursor: pointer; transition: 0.3s; }
+        .btn-radar span { font-size: 9px; font-family: 'Poppins', sans-serif; font-weight: bold; margin-top: -2px; }
+        .radar-anim { animation: radarPulseBtn 1.5s infinite; background: #1976d2 !important; }
+        @keyframes radarPulseBtn { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(25, 118, 210, 0); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); } }
+
+        #toastAviso { display:none; position:fixed; top:80px; left:50%; transform:translateX(-50%); background:#1976d2; color:white; padding:10px 20px; border-radius:30px; z-index:9999; font-family:'Poppins', sans-serif; font-weight:700; font-size:14px; box-shadow:0 4px 15px rgba(0,0,0,0.3); animation: fadeInDown 0.3s ease-out; white-space: nowrap; }
         @keyframes fadeInDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }
 
-        .posicionamento-ui { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; background: white; padding: 20px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 4000; text-align: center; display: none; }
-        .posicionamento-aviso { font-size: 16px; font-weight: 600; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .posicionamento-botoes { display: flex; gap: 10px; }
-        .btn-cancel-pos { flex: 1; background: #f1f3f4; color: #333; border: none; padding: 14px; border-radius: 14px; font-weight: 600; cursor: pointer; }
-        .btn-confirm-pos { flex: 1; background: var(--secondary); color: var(--primary); border: none; padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3); }
-
-        .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 12px; height: 12px; background-color: #c62828; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 3px white, 0 4px 10px rgba(0,0,0,0.4); }
+        .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: #c62828; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 2px white, 0 2px 6px rgba(0,0,0,0.5); }
         .alfinete-central { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; pointer-events: none; display: none; margin-top: -6px; filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.4)); }
 
-        /* Mapbox Popups e Cards */
-        .mapboxgl-popup { z-index: 1000; }
-        .mapboxgl-popup-content { border-radius: 24px !important; padding: 20px !important; font-family: 'Poppins', sans-serif; box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important; width: 90vw; max-width: 340px; box-sizing: border-box; border: none !important; }
-        .mapboxgl-popup-close-button { font-size: 28px; font-weight: 900; color: #999; padding: 5px 10px; outline: none; right: 5px; top: 5px; border: none; background: transparent; transition: 0.2s; }
-        .mapboxgl-popup-close-button:hover { background: transparent; color: #c62828; }
-        
-        .popup-info h3 { margin: 0 0 12px 0; font-size: 20px; color: #1a1a1a; border-bottom: 2px solid #f1f3f4; padding-bottom: 10px; padding-right: 30px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .lista-itens { max-height: 240px; overflow-y: auto; margin-top: 10px; }
-        .item-card { background: #f8f9fa; padding: 15px; border-radius: 16px; margin-bottom: 10px; border: 1px solid #eee; transition: 0.3s; }
-        .item-card:hover { border-color: var(--secondary); transform: scale(1.02); }
-        .item-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
-        .item-nome { font-weight: 600; font-size: 15px; color: #333; line-height: 1.2; }
-        .item-preco { font-weight: 800; color: var(--primary); font-size: 16px; white-space: nowrap; }
-        
-        .item-acoes { display: flex; gap: 6px; justify-content: flex-end; margin-top: 10px; align-items: center; flex-wrap: wrap; }
-        .btn-voto { border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: white; display: flex; align-items: center; gap: 4px; }
-        .btn-editar { background: #f57c00; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        .btn-denuncia { background: transparent; border: none; font-size: 18px; cursor: pointer; opacity: 0.6; transition: 0.2s; padding: 5px; }
-        .btn-denuncia:hover { opacity: 1; transform: scale(1.2); }
+        .posicionamento-ui { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 4000; text-align: center; display: none; }
+        .posicionamento-aviso { font-size: 15px; font-weight: 600; color: #004d40; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1.2; }
+        .posicionamento-botoes { display: flex; gap: 10px; }
+        .btn-cancel-pos { flex: 1; background: #f5f5f5; color: #333; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; }
+        .btn-confirm-pos { flex: 1; background: #00e676; color: #004d40; border: none; padding: 12px; border-radius: 8px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 230, 118, 0.3); }
 
-        .badge-estrelas { background: #fff3e0; padding: 10px 15px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(245, 124, 0, 0.15); border: 2px solid #ffb74d; width: 100%; box-sizing: border-box; color: #d84315; font-weight: 800; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 3500; align-items: center; justify-content: center; }
+        .modal-content { background-color: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         
-        .imagem-preview { max-width: 100%; max-height: 150px; border-radius: 14px; display: none; margin: 10px auto; object-fit: cover; border: 2px solid #eee;}
-        .ia-status { font-size: 13px; color: var(--primary); font-weight: 600; display: none; margin: 5px 0; background: #e0f2f1; padding: 8px; border-radius: 10px; }
-        .galeria-lojista { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 5px; }
-        .galeria-lojista img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 2px solid #f57c00; flex-shrink: 0; }
-        .estimativa-ia-box { background: #e8eaf6; color: #1565c0; border-left: 4px solid #1976d2; padding: 12px; border-radius: 10px; font-size: 14px; text-align: left; margin: 10px 0; display: none; font-weight: 500; }
-
-        /* Notificações e Buscas */
-        .notif-item { padding: 15px; border-bottom: 1px solid #eee; background: #f9f9f9; border-radius: 14px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-        .notif-item.nao-lida { background: #e8f5e9; border-left: 4px solid #2e7d32; }
-        .notif-titulo { font-weight: 700; font-size: 15px; color: var(--primary); margin-bottom: 4px; }
-        .notif-msg { font-size: 14px; color: #444; line-height: 1.4; }
-        .btn-del-notif { background: transparent; border: none; font-size: 18px; cursor: pointer; padding: 5px; opacity: 0.5; transition: 0.2s; }
-        .btn-del-notif:hover { opacity: 1; color: #c62828; transform: scale(1.1); }
-        .resultados-busca { max-height: 50vh; overflow-y: auto; margin-top: 10px; border-radius: 14px; }
-        .resultado-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; flex-direction: column; transition: 0.2s; border-radius: 10px; margin-bottom: 5px; background: #f8f9fa;}
+        #modalBusca .modal-content, #modalNotificacoes .modal-content { justify-content: flex-start; text-align: left; }
+        .resultados-busca { max-height: 50vh; overflow-y: auto; margin-top: 10px; border-radius: 10px; }
+        .resultado-item { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; flex-direction: column; transition: 0.2s; }
         .resultado-item:active { transform: scale(0.98); }
 
-        /* Regras de Exibição por Perfil */
+        .input-form { width: 100%; padding: 12px; margin: 8px 0; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-family: 'Poppins', sans-serif; box-sizing: border-box; }
+        .btn-add-foto { background-color: #e0f2f1; color: #004d40; border: 1px dashed #004d40; padding: 12px; width: 100%; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 5px;}
+        .btn-salvar { background-color: #004d40; color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-top: 10px; cursor: pointer; }
+        .btn-cancelar { background-color: transparent; color: #757575; border: none; padding: 10px; width: 100%; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; }
+        .btn-roxo { background-color: #9c27b0; color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-top: 10px; cursor: pointer; }
+        .btn-laranja { background-color: #f57c00; color: white; border: none; padding: 10px 14px; width: 100%; border-radius: 8px; font-size: 14px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-top: 5px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 5px;}
+
+        .linha-botoes-foto { display: flex; gap: 10px; margin-bottom: 10px; }
+
+        .notif-item { padding: 15px; border-bottom: 1px solid #eee; background: #f9f9f9; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .notif-content { flex: 1; }
+        .notif-item:active { transform: scale(0.98); }
+        .notif-item.nao-lida { background: #e8f5e9; border-left: 4px solid #2e7d32; }
+        .notif-titulo { font-weight: 700; font-size: 14px; color: #004d40; margin-bottom: 4px; }
+        .notif-msg { font-size: 13px; color: #444; line-height: 1.4; }
+        .btn-del-notif { background: transparent; border: none; font-size: 16px; cursor: pointer; padding: 5px; opacity: 0.5; transition: 0.2s; }
+        .btn-del-notif:hover { opacity: 1; color: #c62828; transform: scale(1.1); }
+
+        .mapboxgl-popup { z-index: 1000; }
+        .mapboxgl-popup-content { 
+            border-radius: 16px; 
+            padding: 15px; 
+            font-family: 'Poppins', sans-serif; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3); 
+            width: 90vw; 
+            max-width: 320px; 
+            box-sizing: border-box;
+        }
+        .mapboxgl-popup-close-button { font-size: 26px; font-weight: 900; color: #999; padding: 5px 10px; outline: none; right: 5px; top: 5px; border: none; background: transparent; transition: 0.2s; }
+        .mapboxgl-popup-close-button:hover { background: transparent; color: #c62828; }
+
+        .popup-info { width: 100%; box-sizing: border-box; overflow: hidden; }
+        .popup-info h3 { margin: 0 0 10px 0; font-size: 18px; color: #1a1a1a; border-bottom: 2px solid #eee; padding-bottom: 8px; padding-right: 30px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .lista-itens { max-height: 220px; overflow-y: auto; margin-top: 10px; }
+        .item-card { background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #eee; position: relative; }
+        .item-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+        .item-detalhes { display: flex; flex-direction: column; text-align: left; max-width: 65%; } 
+        .item-nome { font-weight: 600; font-size: 14px; color: #333; line-height: 1.2; margin-bottom: 4px; word-break: break-word; }
+        .item-preco { font-weight: 700; color: #004d40; font-size: 14px; white-space: nowrap; }
+        
+        .item-acoes { display: flex; gap: 5px; justify-content: flex-end; margin-top: 8px; align-items: center; flex-wrap: wrap; }
+        .btn-voto { border: none; padding: 6px 10px; border-radius: 5px; font-size: 12px; font-weight: 600; cursor: pointer; color: white; display: flex; align-items: center; gap: 4px; }
+        .btn-editar { background: #f57c00; color: white; border: none; padding: 6px 10px; border-radius: 5px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .btn-denuncia { background: transparent; border: none; font-size: 16px; cursor: pointer; opacity: 0.6; transition: 0.2s; padding: 5px; }
+        .btn-denuncia:hover { opacity: 1; transform: scale(1.2); }
+        
+        .badge-estrelas { background: #fff3e0; padding: 8px 15px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; box-shadow: 0 3px 8px rgba(245, 124, 0, 0.3); border: 2px solid #ffb74d; width: 100%; box-sizing: border-box; color: #d84315; font-weight: 800; }
+
+        .imagem-preview { max-width: 100%; max-height: 140px; border-radius: 10px; display: none; margin: 10px auto; object-fit: cover; border: 2px solid #eee;}
+        .ia-status { font-size: 12px; color: #004d40; font-weight: 600; display: none; margin: 5px 0; background: #e0f2f1; padding: 5px; border-radius: 8px; }
+        
+        .galeria-lojista { display: flex; gap: 5px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 5px; }
+        .galeria-lojista img { width: 75px; height: 75px; object-fit: cover; border-radius: 8px; border: 2px solid #f57c00; flex-shrink: 0; }
+        .estimativa-ia-box { background: #e8eaf6; color: #1565c0; border-left: 4px solid #1976d2; padding: 10px; border-radius: 6px; font-size: 13px; text-align: left; margin: 10px 0; display: none; font-weight: 500; }
+
         body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista #t_level { display: none !important; }
         body.modo-turista #saldoDisplay { display: none !important; }
@@ -211,12 +197,17 @@
         body:not(.modo-lojista) #btnAreaLojista { display: none !important; }
         body:not(.modo-avaliador) #btnMinhaCarteira { display: none !important; }
 
-        /* Pins Mapbox Específicos */
         .mapboxgl-marker { pointer-events: auto !important; cursor: pointer !important; }
-        .marker-pergunta-container { width: 80px; height: 80px; background: transparent; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; pointer-events: auto; }
-        .minha-loja-container { width: 50px; height: 75px; background: transparent; display: flex; justify-content: center; align-items: center; pointer-events: auto; cursor: pointer; }
         
-        @keyframes wanderGhost { 0% { transform: translate(0px, 0px); } 33% { transform: translate(25px, -20px); } 66% { transform: translate(-20px, 25px); } 100% { transform: translate(0px, 0px); } }
+        .marker-pergunta-container { width: 80px; height: 80px; background: transparent; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; pointer-events: auto; }
+        .minha-loja-container { width: 46px; height: 70px; background: transparent; display: flex; justify-content: center; align-items: center; pointer-events: auto; cursor: pointer; }
+        
+        @keyframes wanderGhost { 
+            0% { transform: translate(0px, 0px); } 
+            33% { transform: translate(25px, -20px); } 
+            66% { transform: translate(-20px, 25px); } 
+            100% { transform: translate(0px, 0px); } 
+        }
         .ghost-anim { animation: wanderGhost 6s infinite ease-in-out; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; pointer-events: none; }
 
         @keyframes pulsePurpleGigante { 0% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.8); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(156, 39, 176, 0); transform: scale(1.15); } 100% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0); transform: scale(1); } }
@@ -224,22 +215,22 @@
         @keyframes pulseBlueFoto { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(25, 118, 210, 0); transform: scale(1.15); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); transform: scale(1); } }
         @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.8); } 70% { box-shadow: 0 0 0 15px rgba(255, 193, 7, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
         
-        .marker-pergunta-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #ab47bc, #7b1fa2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 28px; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulsePurpleGigante 1.5s infinite ease-in-out; pointer-events: none; }
-        .marker-camera-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #ff9800, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 22px; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulseOrangeCamera 1.5s infinite ease-in-out; pointer-events: none; }
-        .marker-foto-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #42a5f5, #1976d2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 22px; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulseBlueFoto 1.5s infinite ease-in-out; pointer-events: none; }
+        .marker-pergunta-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #ab47bc, #7b1fa2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 28px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulsePurpleGigante 1.5s infinite ease-in-out; pointer-events: none; }
+        .marker-camera-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #ff9800, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 22px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulseOrangeCamera 1.5s infinite ease-in-out; pointer-events: none; }
+        .marker-foto-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #42a5f5, #1976d2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 22px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulseBlueFoto 1.5s infinite ease-in-out; pointer-events: none; }
 
         @keyframes pulseDolarAnim { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        .marker-dolar { background: var(--secondary); color: var(--primary); border-radius: 12px; padding: 6px 10px; border: 2px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 15px; white-space: nowrap; font-weight: 800; cursor: pointer; }
+        .marker-dolar { background: #00e676; color: #004d40; border-radius: 8px; padding: 4px 8px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; font-family: 'Poppins', sans-serif; pointer-events: auto; font-weight: bold; line-height: 1.1; cursor: pointer; }
         .pulse-dolar { animation: pulseDolarAnim 1.5s infinite ease-in-out; }
 
         @keyframes pulseFlashAnim { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 40px rgba(0, 230, 118, 0); transform: scale(1.2); } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); transform: scale(1); } }
-        .flash-resposta { animation: pulseFlashAnim 1.5s infinite ease-in-out; background: linear-gradient(135deg, #00e676, #00c853); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 24px; border: 3px solid white; pointer-events: none; }
+        .flash-resposta { animation: pulseFlashAnim 1.5s infinite ease-in-out; background: linear-gradient(135deg, #00e676, #00c853); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 24px; border: 3px solid white; box-sizing: border-box; pointer-events: none; }
 
         @keyframes pulseMinhaLoja { 0% { box-shadow: 0 0 0 0 rgba(2, 136, 209, 0.8); } 70% { box-shadow: 0 0 0 20px rgba(2, 136, 209, 0); } 100% { box-shadow: 0 0 0 0 rgba(2, 136, 209, 0); } }
-        .marker-minha-loja { width: 50px; height: 50px; background: linear-gradient(135deg, #03a9f4, #01579b); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 24px; border: 3px solid white; box-shadow: 0 0 15px rgba(2, 136, 209, 0.8); animation: pulseMinhaLoja 2s infinite; position: relative; pointer-events: none; }
-        .label-minha-loja { position: absolute; bottom: -26px; left: 50%; transform: translateX(-50%); background: #01579b; color: white; font-size: 11px; font-weight: 900; padding: 4px 10px; border-radius: 12px; white-space: nowrap; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); pointer-events: none; }
+        .marker-minha-loja { width: 46px; height: 46px; background: linear-gradient(135deg, #03a9f4, #01579b); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 22px; border: 3px solid white; box-shadow: 0 0 15px rgba(2, 136, 209, 0.8); animation: pulseMinhaLoja 2s infinite; position: relative; pointer-events: none; }
+        .label-minha-loja { position: absolute; bottom: -24px; left: 50%; transform: translateX(-50%); background: #01579b; color: white; font-size: 11px; font-weight: 900; padding: 4px 8px; border-radius: 12px; white-space: nowrap; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 0.5px; pointer-events: none; }
         
-        .marker-premium { width: 44px; height: 44px; background: linear-gradient(135deg, #ffc107, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 22px; border: 3px solid white; box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); animation: pulseGold 2s infinite; pointer-events: auto; }
+        .marker-premium { width: 40px; height: 40px; background: linear-gradient(135deg, #ffc107, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; border: 3px solid white; box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); animation: pulseGold 2s infinite; pointer-events: auto; }
     </style>
 </head>
 <body class="modo-turista"> 
@@ -267,7 +258,7 @@
 
     <div class="alfinete-alvo" id="alfineteAlvo"></div>
     <div class="alfinete-central" id="alfineteCentral">
-        <svg width="50" height="50" viewBox="0 0 24 24" fill="#2196F3">
+        <svg width="45" height="45" viewBox="0 0 24 24" fill="#2196F3">
             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
         </svg>
     </div>
@@ -296,7 +287,6 @@
     <div class="menu-overlay" id="menuOverlay"></div>
     
     <div class="side-menu" id="sideMenu">
-        <div class="menu-header">GringoSafe</div>
         <div class="user-card">
             <div class="user-info">
                 <div class="user-avatar" id="menuAvatar">👤</div>
@@ -328,16 +318,16 @@
     </div>
 
     <div class="bloqueio-login" id="bloqueioLoginOverlay" style="display: none;">
-        <div style="font-size: 55px; margin-bottom: 10px;">🔒</div>
-        <h3 id="t_lockTitle">Mapa Protegido</h3>
-        <p id="t_lockSub">Faça login gratuitamente para visualizar preços e locais.</p>
+        <div style="font-size: 50px; margin-bottom: 10px;">🔒</div>
+        <h3 id="t_lockTitle" style="color: #004d40; margin:0 0 10px 0;">Mapa Protegido</h3>
+        <p id="t_lockSub" style="color: #444; font-size: 14px; margin-bottom: 25px;">Faça login gratuitamente para visualizar preços y locais.</p>
         <button class="btn-google" id="btnLoginGoogleOverlay">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="white" style="margin-right: 8px;"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
             <span id="t_lockBtn">Entrar com Google</span>
         </button>
     </div>
 
-    <button id="btnLimparFiltro" style="display:none; position:fixed; top:85px; left:50%; transform:translateX(-50%); z-index:4000; background:#c62828; color:white; border:none; padding:12px 25px; border-radius:20px; font-weight:bold; cursor:pointer; box-shadow:0 10px 20px rgba(0,0,0,0.2); font-family: 'Poppins', sans-serif;">❌ Limpar Mapa</button>
+    <button id="btnLimparFiltro" style="display:none; position:fixed; top:80px; left:50%; transform:translateX(-50%); z-index:4000; background:#c62828; color:white; border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.3); font-family: 'Poppins', sans-serif;">❌ Limpar Mapa</button>
     
     <input type="file" id="inputCamNormal" accept="image/*" capture="environment" style="display: none;">
     <input type="file" id="inputGalNormal" accept="image/*" style="display: none;">
@@ -384,7 +374,7 @@
             </div>
             <p style="font-size:13px; color:#666; margin-bottom:15px;" id="t_walletSub">Saque mínimo de R$ 20,00.</p>
             <input type="text" id="inputChavePix" class="input-form" placeholder="Sua Chave PIX (CPF, E-mail, Celular)">
-            <button class="btn-salvar" id="btnSacarPix" style="background:#2e7d32;"><span id="t_btnWithdraw">Solicitar Saque PIX</span></button>
+            <button class="btn-salvar" id="btnSacarPix" style="background:#2e7d32; margin-top:10px;"><span id="t_btnWithdraw">Solicitar Saque PIX</span></button>
             <button class="btn-cancelar" id="btnFecharCarteira">Cancelar</button>
         </div>
     </div>
@@ -406,7 +396,7 @@
                 <button class="btn-laranja" id="btnGalLojista" style="flex: 1; background: #e0e0e0; color: #333;">🖼️ Galeria</button>
             </div>
             <div id="previewFotosLojista" class="galeria-lojista"></div>
-            <button class="btn-salvar" id="btnSalvarLojista" style="background:#f57c00;">Guardar o Meu Negócio no Mapa</button>
+            <button class="btn-salvar" id="btnSalvarLojista" style="background:#f57c00; margin-top:15px;">Guardar o Meu Negócio no Mapa</button>
             <button class="btn-cancelar" id="btnCancelarLojista">Cancelar</button>
         </div>
     </div>
@@ -414,11 +404,11 @@
     <div class="modal-overlay" id="modalVerificacaoLojista">
         <div class="modal-content">
             <h3 style="color:#f57c00; margin-bottom:10px;">🛡️ Verificação do Negócio</h3>
-            <p style="font-size:14px; color:#555; margin-bottom:15px;">Para proteger o seu negocio contra edições externas, precisamos de uma foto do seu <strong>Alvará de Funcionamento</strong> ou <strong>Cartão CNPJ</strong>.</p>
+            <p style="font-size:13px; color:#555; margin-bottom:15px;">Para proteger o seu negocio contra edições externas, precisamos de uma foto do seu <strong>Alvará de Funcionamento</strong> ou <strong>Cartão CNPJ</strong>.</p>
             <button class="btn-add-foto" id="btnUploadDocLojista">📸 Enviar Documento</button>
             <img id="previewDocLojista" class="imagem-preview" style="display:none; width:100%; border:2px solid #ccc;">
-            <button class="btn-salvar" id="btnEnviarVerificacao" style="background:#f57c00; display:none;">Avançar para Destaque Premium</button>
-            <button class="btn-cancelar" id="btnFecharVerificacao">Cancelar</button>
+            <button class="btn-salvar" id="btnEnviarVerificacao" style="background:#f57c00; display:none; margin-top:15px;">Avançar para Destaque Premium</button>
+            <button class="btn-cancelar" id="btnFecharVerificacao" style="margin-top:10px;">Cancelar</button>
         </div>
     </div>
 
@@ -436,9 +426,9 @@
                     <option value="2">⭐⭐ Ruim</option>
                     <option value="1">⭐ Péssimo</option>
                 </select>
-                <textarea id="textoReview" class="input-form" placeholder="Deixe o seu comentário..." style="height:80px; resize:none;"></textarea>
+                <textarea id="textoReview" class="input-form" placeholder="Deixe o seu comentário..." style="height:60px; resize:none;"></textarea>
                 <input type="hidden" id="localAlvoReview">
-                <button class="btn-salvar" id="btnEnviarReview" style="background:#f57c00;">Enviar Avaliação</button>
+                <button class="btn-salvar" id="btnEnviarReview" style="background:#f57c00; margin-top:5px;">Enviar Avaliação</button>
             </div>
             <button class="btn-cancelar" id="btnFecharAvaliacoes">Fechar</button>
         </div>
@@ -447,55 +437,72 @@
     <div class="modal-overlay" id="modalLojista">
         <div class="modal-content">
             <h3>Destacar o seu Negócio 🌟</h3>
-            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">Atraia mais turistas. O seu local ficará com um pino dourado e ganhará a prioridade absoluta nas pesquisas da região.</p>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+                Atraia mais turistas. O seu local ficará com um pino dourado e ganhará a prioridade absoluta nas pesquisas da região.
+            </p>
 
-            <div class="plan-card active" style="border: 2px solid #f57c00; border-radius: 16px; padding: 20px; margin-bottom: 20px; background: #fff3e0; display: flex; flex-direction: column; gap: 12px;">
+            <div class="plan-card active" style="border: 2px solid #f57c00; border-radius: 8px; padding: 15px; margin-bottom: 20px; background: #fff3e0; display: flex; flex-direction: column; gap: 12px;">
                 <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
                     <span class="plan-days" style="font-weight: bold; color: #333; font-size: 16px;">Plano Ouro Mensal</span>
-                    <span style="font-size:11px; background:#c62828; color:white; padding:4px 8px; border-radius:12px; font-weight:900;">🔥 OFERTA PIONEIRO</span>
+                    <span style="font-size:11px; background:#c62828; color:white; padding:4px 8px; border-radius:12px; font-weight:900; white-space: nowrap;">🔥 OFERTA PIONEIRO</span>
                 </div>
                 <div style="display:flex; flex-direction:column; text-align:right;">
                     <span style="font-size:12px; color:#999; text-decoration:line-through;">De R$ 99,90</span>
-                    <span class="plan-price" style="color:#f57c00; font-size: 26px; font-weight: bold;">R$ 19,99<span style="font-size:14px; font-weight: normal;">/mês</span></span>
+                    <span class="plan-price" style="color:#f57c00; font-size: 24px; font-weight: bold;">R$ 19,99<span style="font-size:14px; font-weight: normal;">/mês</span></span>
                 </div>
             </div>
 
-            <button id="btnTesteGratis" class="btn-salvar" style="background:#f57c00; margin-bottom:10px; display:none;" onclick="window.ativarTesteGratis()">🎁 Começar 30 Dias Grátis</button>
-            <button class="btn-salvar" style="background:#004d40; margin-bottom: 10px;" onclick="document.getElementById('modalLojista').style.display='none'; window.location.href='https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=de968d42bc404eee9a7df4fb1870f153';">Assinar Plano Ouro</button>
-            <button class="btn-cancelar" onclick="document.getElementById('modalLojista').style.display='none';">Talvez depois</button>
+            <button id="btnTesteGratis" style="background:#f57c00; font-size:16px; width: 100%; padding: 14px; color: white; border: none; border-radius: 8px; font-weight: bold; margin-bottom: 10px; cursor: pointer; display: none;" onclick="window.ativarTesteGratis()">
+                🎁 Começar 30 Dias Grátis
+            </button>
+
+            <button class="btn-salvar" style="background:#004d40; font-size:16px; width: 100%; padding: 12px; color: white; border: none; border-radius: 8px; font-weight: bold; margin-bottom: 10px; cursor: pointer;" onclick="document.getElementById('modalLojista').style.display='none'; window.location.href='https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=de968d42bc404eee9a7df4fb1870f153';">
+                Assinar Plano Ouro
+            </button>
+            
+            <button class="btn-cancelar" style="width: 100%; padding: 12px; background: #eee; border: none; border-radius: 8px; color: #333; cursor: pointer;" onclick="document.getElementById('modalLojista').style.display='none';">
+                Talvez depois
+            </button>
         </div>
     </div>
 
     <div class="modal-overlay" id="modalAssinatura">
         <div class="modal-content">
-            <div style="font-size: 40px; margin-bottom: 10px;">🛡️</div>
+            <div style="font-size: 30px; margin-bottom: 10px;">🛡️</div>
             <h3>GringoSafe Pass</h3>
-            <p style="font-size: 15px; color: #666; margin-bottom: 20px;">Unlock unlimited safe searches and real-time price guides for 7 days.</p>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+                Unlock unlimited safe searches and real-time price guides for 7 days.
+            </p>
 
-            <div class="plan-card active" style="border: 2px solid #004d40; border-radius: 16px; padding: 20px; margin-bottom: 20px; background: #e0f2f1; text-align: left;">
-                <span class="plan-days" style="font-weight: bold; color: #333; font-size:16px;">7-Day Full Access</span>
+            <div class="plan-card active" style="border: 2px solid #004d40; border-radius: 8px; padding: 15px; margin-bottom: 20px; background: #e0f2f1; text-align: left;">
+                <span class="plan-days" style="font-weight: bold; color: #333;">7-Day Full Access</span>
                 <div style="display:flex; flex-direction:column; text-align:right; margin-top: 10px;">
-                    <span class="plan-price" style="color:#004d40; font-size: 24px; font-weight: bold;">$ 4.99</span>
-                    <span style="font-size:12px; color:#666;">One-time payment</span>
+                    <span class="plan-price" style="color:#004d40; font-size: 22px; font-weight: bold;">$ 4.99</span>
+                    <span style="font-size:11px; color:#666;">One-time payment</span>
                 </div>
             </div>
 
-            <button class="btn-salvar" style="background:#004d40; margin-bottom:10px;" onclick="document.getElementById('modalAssinatura').style.display='none'; window.location.href='https://buy.stripe.com/test_00w4gyeLNe5se8o5s4dIA00';">Pay with Apple/Google Pay</button>
-            <button class="btn-cancelar" onclick="document.getElementById('modalAssinatura').style.display='none';">Maybe later</button>
+            <button class="btn-salvar" style="background:#004d40; font-size:16px; width: 100%; padding: 14px; color: white; border: none; border-radius: 8px; font-weight: bold; margin-bottom: 10px; cursor: pointer;" onclick="document.getElementById('modalAssinatura').style.display='none'; window.location.href='https://buy.stripe.com/test_00w4gyeLNe5se8o5s4dIA00';">
+                Pay with Apple/Google Pay
+            </button>
+            
+            <button class="btn-cancelar" style="width: 100%; padding: 12px; background: #eee; border: none; border-radius: 8px; color: #333; cursor: pointer;" onclick="document.getElementById('modalAssinatura').style.display='none';">
+                Maybe later
+            </button>
         </div>
     </div>
 
     <div class="modal-overlay" id="modalNotificacoes">
-        <div class="modal-content" style="max-height: 80vh; width: 95%; max-width: 420px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                <h3 id="t_notifTitle" style="color:var(--primary); margin:0;">🔔 Notificações</h3>
-                <div style="display:flex; gap:8px;">
-                    <button id="btnNotifLidas" style="font-size:12px; padding:8px 12px; border-radius:10px; border:none; background:#e0f2f1; color:var(--primary); font-weight:bold; cursor:pointer;">✔️ Lidas</button>
-                    <button id="btnNotifApagarTodas" style="font-size:12px; padding:8px 12px; border-radius:10px; border:none; background:#ffebee; color:#c62828; font-weight:bold; cursor:pointer;">🗑️ Todas</button>
+        <div class="modal-content" style="max-height: 80vh; width: 95%; max-width: 400px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                <h3 id="t_notifTitle" style="color:#004d40; margin:0;">🔔 Notificações</h3>
+                <div style="display:flex; gap:5px;">
+                    <button id="btnNotifLidas" style="font-size:11px; padding:6px 10px; border-radius:6px; border:none; background:#e0f2f1; color:#004d40; font-weight:bold; cursor:pointer;">✔️ Lidas</button>
+                    <button id="btnNotifApagarTodas" style="font-size:11px; padding:6px 10px; border-radius:6px; border:none; background:#ffebee; color:#c62828; font-weight:bold; cursor:pointer;">🗑️ Todas</button>
                 </div>
             </div>
             <div id="listaNotificacoes" style="max-height: 50vh; overflow-y: auto;"></div>
-            <button class="btn-cancelar" id="btnFecharNotificacoes" style="margin-top:20px;"><span>Fechar</span></button>
+            <button class="btn-cancelar" id="btnFecharNotificacoes" style="margin-top:15px;"><span>Fechar</span></button>
         </div>
     </div>
 
@@ -504,14 +511,14 @@
             <h3 id="t_searchTitle">Procurar Local ou Produto</h3>
             <input type="text" id="inputBusca" class="input-form" placeholder="Ex: Quiosque, Água...">
             <div class="resultados-busca" id="resultadosBusca"></div>
-            <button class="btn-cancelar" id="btnFecharBusca" style="margin-top:20px;"><span id="t_searchClose">Fechar</span></button>
+            <button class="btn-cancelar" id="btnFecharBusca" style="margin-top:15px;"><span id="t_searchClose">Fechar</span></button>
         </div>
     </div>
     
     <div class="modal-overlay" id="modalEditar">
         <div class="modal-content">
             <h3 style="color:#f57c00;">✏️ Atualizar Preço</h3>
-            <p style="font-size: 15px; color: #555; margin-bottom: 15px;">Item: <strong id="editItemNome" style="color:#000;"></strong></p>
+            <p style="font-size: 14px; color: #555; margin-bottom: 15px;">Item: <strong id="editItemNome" style="color:#000;"></strong></p>
             <input type="number" id="editItemPreco" class="input-form" placeholder="Novo preço real">
             <input type="hidden" id="editItemId">
             <button class="btn-salvar" id="btnSalvarEdicao" style="background:#f57c00;">Guardar e Resetar Votos</button>
@@ -542,14 +549,14 @@
 
     <div class="modal-overlay" id="modalPergunta">
         <div class="modal-content">
-            <h3 id="t_askTitle" style="color:var(--accent);">O que quer comprar?</h3>
-            <p style="font-size: 14px; color: #555; margin-bottom: 20px;" id="t_askSub">A comunidade local dirá se o preço é justo.</p>
+            <h3 id="t_askTitle" style="color:#9c27b0;">O que quer comprar?</h3>
+            <p style="font-size: 13px; color: #555; margin-bottom: 15px;" id="t_askSub">A comunidade local dirá se o preço é justo.</p>
             <div class="linha-botoes-foto">
-                <button class="btn-add-foto" id="btnCamPergunta" style="border-color:var(--accent); color:var(--accent); flex: 1;"><span id="t_btnAskCam">📸 Câmara</span></button>
-                <button class="btn-add-foto" id="btnGalPergunta" style="border-color:var(--accent); color:var(--accent); flex: 1;"><span id="t_btnAskGal">🖼️ Galeria</span></button>
+                <button class="btn-add-foto" id="btnCamPergunta" style="border-color:#9c27b0; color:#9c27b0; flex: 1;"><span id="t_btnAskCam">📸 Câmara</span></button>
+                <button class="btn-add-foto" id="btnGalPergunta" style="border-color:#9c27b0; color:#9c27b0; flex: 1;"><span id="t_btnAskGal">🖼️ Galeria</span></button>
             </div>
             <img id="imagemPreviewPergunta" class="imagem-preview" alt="Foto">
-            <p id="iaStatusPergunta" class="ia-status" style="color:var(--accent); background:#f3e5f5;">🤖 IA...</p>
+            <p id="iaStatusPergunta" class="ia-status">🤖 IA...</p>
             
             <input type="text" id="nomeProdutoPergunta" class="input-form" placeholder="Nome do Produto (Ex: Cadeira)">
             <div id="estimativaIA" class="estimativa-ia-box"></div>
@@ -568,8 +575,8 @@
     <div class="modal-overlay" id="modalResposta">
         <div class="modal-content">
             <h3 style="color:#2e7d32;" id="t_ansTitle">Responder ao Turista</h3>
-            <p style="font-size: 15px; color: #555; margin-bottom: 5px; text-align: left;">Local: <strong id="respLocalNome" style="color:#000;"></strong> <span id="respLocalTipo" style="font-size: 13px; color:#666;"></span></p>
-            <p style="font-size: 15px; color: #555; margin-bottom: 20px; text-align: left;">Item: <strong id="respItemNome" style="color:#000;"></strong></p>
+            <p style="font-size: 14px; color: #555; margin-bottom: 5px; text-align: left;">Local: <strong id="respLocalNome" style="color:#000;"></strong> <span id="respLocalTipo" style="font-size: 12px; color:#666;"></span></p>
+            <p style="font-size: 14px; color: #555; margin-bottom: 15px; text-align: left;">Item: <strong id="respItemNome" style="color:#000;"></strong></p>
             <input type="number" id="precoProdutoResposta" class="input-form" placeholder="Qual o preço real/justo?">
             <input type="hidden" id="idPerguntaAtual">
             <input type="hidden" id="uidAutorPergunta"> 
@@ -586,11 +593,13 @@
         // 🚨 O SEU TOKEN DO MAPBOX AQUI 🚨
         mapboxgl.accessToken = 'pk.eyJ1IjoiZmFocGxheTE1IiwiYSI6ImNtbXk2Z3UzMDB2YnYyb3BsMTA2ZzV2NmkifQ.Tvdrpof80mAktc3Z3dB3cw';
 
+        // 🟢 MODO DE SEGURANÇA: Mapa CLARO e LEVE (Sem 3D) 🟢
         window.mapa = new mapboxgl.Map({
             container: 'mapa',
-            style: 'mapbox://styles/mapbox/streets-v12', 
+            style: 'mapbox://styles/mapbox/streets-v12', // Mantivemos o estilo claro e super colorido (Streets)
             center: [-43.2302, -22.9121], 
             zoom: 15.5
+            // Removemos pitch, bearing e antialias que travavam a memória dos telemóveis!
         });
 
         window.mapa.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'top-left');
@@ -627,6 +636,7 @@
             timeoutDesenho = setTimeout(desenharPinos, 200); 
         };
 
+        // Usa o carregamento seguro do estilo (sem forçar camadas 3D que quebram o código)
         let isMapStyleLoaded = false;
         window.mapa.on('style.load', () => { 
             isMapStyleLoaded = true;
