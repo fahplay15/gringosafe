@@ -1,16 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GringoSafe - Preço Justo</title>
-    
+    <title>GringoSafe 3D - Preço Justo</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f0f2f5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="./logo.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js'></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest"></script>
@@ -64,7 +72,7 @@
         .ativo-option { color: #004d40; font-weight: 700; }
         .menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2500; }
 
-        #mapa { position: absolute; top: 0; left: 0; height: 100vh; width: 100vw; z-index: 1; } 
+        #mapa { position: absolute; top: 0; left: 0; height: 100vh; width: 100vw; z-index: 0; } 
 
         .bottom-actions { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; z-index: 3000; pointer-events: none; }
         .btn-action { pointer-events: auto; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; position: relative; z-index: 3001; }
@@ -86,14 +94,18 @@
         .radar-anim { animation: radarPulseBtn 1.5s infinite; background: #1976d2 !important; }
         @keyframes radarPulseBtn { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(25, 118, 210, 0); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); } }
 
+        /* 🚨 TOAST MODERNO DO RADAR (Sem travar a tela) 🚨 */
+        #toastAviso { display:none; position:fixed; top:80px; left:50%; transform:translateX(-50%); background:#1976d2; color:white; padding:10px 20px; border-radius:30px; z-index:9999; font-family:'Poppins', sans-serif; font-weight:700; font-size:14px; box-shadow:0 4px 15px rgba(0,0,0,0.3); animation: fadeInDown 0.3s ease-out; white-space: nowrap; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
         .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: #c62828; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 2px white, 0 2px 6px rgba(0,0,0,0.5); }
         .alfinete-central { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; pointer-events: none; display: none; margin-top: -6px; filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.4)); }
 
         .posicionamento-ui { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 4000; text-align: center; display: none; }
         .posicionamento-aviso { font-size: 15px; font-weight: 600; color: #004d40; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; line-height: 1.2; }
         .posicionamento-botoes { display: flex; gap: 10px; }
-        .btn-cancelar-pos { flex: 1; background: #f5f5f5; color: #333; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; }
-        .btn-confirmar-pos { flex: 1; background: #00e676; color: #004d40; border: none; padding: 12px; border-radius: 8px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 230, 118, 0.3); }
+        .btn-cancel-pos { flex: 1; background: #f5f5f5; color: #333; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; }
+        .btn-confirm-pos { flex: 1; background: #00e676; color: #004d40; border: none; padding: 12px; border-radius: 8px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 230, 118, 0.3); }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 3500; align-items: center; justify-content: center; }
         .modal-content { background-color: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
@@ -121,21 +133,36 @@
         .btn-del-notif { background: transparent; border: none; font-size: 16px; cursor: pointer; padding: 5px; opacity: 0.5; transition: 0.2s; }
         .btn-del-notif:hover { opacity: 1; color: #c62828; transform: scale(1.1); }
 
-        .popup-info { font-family: 'Poppins', sans-serif; min-width: 260px; }
-        .popup-info h3 { margin: 0 0 5px 0; font-size: 18px; color: #1a1a1a; border-bottom: 2px solid #eee; padding-bottom: 5px;}
+        /* 🚨 AJUSTE DE POPUPS DO MAPBOX E BUGS VISUAIS 🚨 */
+        .mapboxgl-popup { z-index: 1000; }
+        .mapboxgl-popup-content { 
+            border-radius: 16px; 
+            padding: 15px; 
+            font-family: 'Poppins', sans-serif; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3); 
+            width: 90vw; 
+            max-width: 320px; 
+            box-sizing: border-box;
+        }
+        .mapboxgl-popup-close-button { font-size: 26px; font-weight: 900; color: #999; padding: 5px 10px; outline: none; right: 5px; top: 5px; border: none; background: transparent; transition: 0.2s; }
+        .mapboxgl-popup-close-button:hover { background: transparent; color: #c62828; }
+
+        .popup-info { width: 100%; box-sizing: border-box; overflow: hidden; }
+        .popup-info h3 { margin: 0 0 10px 0; font-size: 18px; color: #1a1a1a; border-bottom: 2px solid #eee; padding-bottom: 8px; padding-right: 30px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
         .lista-itens { max-height: 220px; overflow-y: auto; margin-top: 10px; }
         .item-card { background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #eee; position: relative; }
         .item-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
-        .item-detalhes { display: flex; flex-direction: column; text-align: left; }
-        .item-nome { font-weight: 600; font-size: 14px; color: #333; }
-        .item-preco { font-weight: 700; color: #004d40; font-size: 14px; }
-        .item-acoes { display: flex; gap: 5px; justify-content: flex-end; margin-top: 8px; align-items: center; }
+        .item-detalhes { display: flex; flex-direction: column; text-align: left; max-width: 65%; } 
+        .item-nome { font-weight: 600; font-size: 14px; color: #333; line-height: 1.2; margin-bottom: 4px; word-break: break-word; }
+        .item-preco { font-weight: 700; color: #004d40; font-size: 14px; white-space: nowrap; }
+        
+        .item-acoes { display: flex; gap: 5px; justify-content: flex-end; margin-top: 8px; align-items: center; flex-wrap: wrap; }
         .btn-voto { border: none; padding: 6px 10px; border-radius: 5px; font-size: 12px; font-weight: 600; cursor: pointer; color: white; display: flex; align-items: center; gap: 4px; }
         .btn-editar { background: #f57c00; color: white; border: none; padding: 6px 10px; border-radius: 5px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .btn-denuncia { background: transparent; border: none; font-size: 16px; cursor: pointer; opacity: 0.6; transition: 0.2s; padding: 5px; }
         .btn-denuncia:hover { opacity: 1; transform: scale(1.2); }
         
-        /* 🚨 NOVO: O BADGE DE ESTRELAS CORRIGIDO E GIGANTE 🚨 */
         .badge-estrelas { background: #fff3e0; padding: 8px 15px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; box-shadow: 0 3px 8px rgba(245, 124, 0, 0.3); border: 2px solid #ffb74d; width: 100%; box-sizing: border-box; color: #d84315; font-weight: 800; }
 
         .imagem-preview { max-width: 100%; max-height: 140px; border-radius: 10px; display: none; margin: 10px auto; object-fit: cover; border: 2px solid #eee;}
@@ -145,20 +172,7 @@
         .galeria-lojista img { width: 75px; height: 75px; object-fit: cover; border-radius: 8px; border: 2px solid #f57c00; flex-shrink: 0; }
         .estimativa-ia-box { background: #e8eaf6; color: #1565c0; border-left: 4px solid #1976d2; padding: 10px; border-radius: 6px; font-size: 13px; text-align: left; margin: 10px 0; display: none; font-weight: 500; }
 
-        #modalPaywall .modal-content { background: linear-gradient(180deg, #ffffff 0%, #f0f2f5 100%); }
-        .pw-icon { font-size: 40px; margin-bottom: 10px; }
-        .pw-title { font-size: 22px; color: #004d40; font-weight: 700; margin: 0 0 10px 0; }
-        .pw-sub { font-size: 14px; color: #555; margin-bottom: 20px; }
-        .plan-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .plan-card { border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; background: white; }
-        .plan-card.active { border-color: #ffc107; background: #fffdf2; box-shadow: 0 4px 10px rgba(255, 193, 7, 0.2); }
-        .plan-days { font-weight: 700; font-size: 16px; color: #333; }
-        .plan-price { font-weight: 700; font-size: 18px; color: #004d40; }
-        .payment-methods { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
-        .btn-apple-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
-        .btn-google-pay { background-color: #000; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: 500; font-family: "Product Sans", Roboto, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
-
-        /* MÁGICA CSS DE PERFIS BLINDADA (LUPA REMOVIDA DO AVALIADOR) */
+        /* MÁGICA CSS DE PERFIS */
         body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista #t_level { display: none !important; }
         body.modo-turista #saldoDisplay { display: none !important; }
@@ -168,10 +182,11 @@
         body.modo-turista .notif-container { display: flex !important; }
         body.modo-turista .btn-radar { display: flex !important; }
         body.modo-turista .btn-denuncia { display: inline-block !important; } 
+        body.modo-turista #bloqueioLoginOverlay { display: none !important; } /* O Turista não sofre bloqueio de login para ver o mapa */
         
         body.modo-avaliador .notif-container { display: none !important; }
         body.modo-avaliador .btn-perguntar { display: none !important; }
-        body.modo-avaliador .btn-pesquisa { display: none !important; } /* LUPA OFF */
+        body.modo-avaliador .btn-pesquisa { display: none !important; } 
         body.modo-avaliador .btn-denuncia { display: inline-block !important; }
         
         body.modo-lojista #t_level { display: none !important; }
@@ -185,34 +200,40 @@
         body:not(.modo-lojista) #btnAreaLojista { display: none !important; }
         body:not(.modo-avaliador) #btnMinhaCarteira { display: none !important; }
 
-        /* PINOS MÁGICOS E ANIMAÇÕES */
-        .marker-pergunta-container { background: transparent; border: none; pointer-events: none; }
-        @keyframes wanderGhost { 0% { transform: translate(0px, 0px); } 20% { transform: translate(25px, -20px); } 40% { transform: translate(-15px, 25px); } 60% { transform: translate(-25px, -10px); } 80% { transform: translate(15px, -25px); } 100% { transform: translate(0px, 0px); } }
-        .ghost-anim { animation: wanderGhost 8s infinite linear; pointer-events: auto; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        .mapboxgl-marker { pointer-events: auto !important; cursor: pointer !important; }
+        
+        .marker-pergunta-container { width: 80px; height: 80px; background: transparent; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; pointer-events: auto; }
+        .minha-loja-container { width: 46px; height: 70px; background: transparent; display: flex; justify-content: center; align-items: center; pointer-events: auto; cursor: pointer; }
+        
+        @keyframes wanderGhost { 
+            0% { transform: translate(0px, 0px); } 
+            33% { transform: translate(25px, -20px); } 
+            66% { transform: translate(-20px, 25px); } 
+            100% { transform: translate(0px, 0px); } 
+        }
+        .ghost-anim { animation: wanderGhost 6s infinite ease-in-out; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; pointer-events: none; }
 
         @keyframes pulsePurpleGigante { 0% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0.8); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(156, 39, 176, 0); transform: scale(1.15); } 100% { box-shadow: 0 0 0 0 rgba(156, 39, 176, 0); transform: scale(1); } }
         @keyframes pulseOrangeCamera { 0% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(245, 124, 0, 0); transform: scale(1.15); } 100% { box-shadow: 0 0 0 0 rgba(245, 124, 0, 0); transform: scale(1); } }
         @keyframes pulseBlueFoto { 0% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(25, 118, 210, 0); transform: scale(1.15); } 100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); transform: scale(1); } }
         @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.8); } 70% { box-shadow: 0 0 0 15px rgba(255, 193, 7, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); } }
         
-        /* 🚨 NOVO: OS PINOS DE DÚVIDA MAIORES E MAIS DESTACADOS 🚨 */
-        .marker-pergunta-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #ab47bc, #7b1fa2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 28px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulsePurpleGigante 1.5s infinite ease-in-out; }
-        .marker-camera-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #ff9800, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 22px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulseOrangeCamera 1.5s infinite ease-in-out; }
-        .marker-foto-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #42a5f5, #1976d2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 22px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulseBlueFoto 1.5s infinite ease-in-out; }
+        .marker-pergunta-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #ab47bc, #7b1fa2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 28px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulsePurpleGigante 1.5s infinite ease-in-out; pointer-events: none; }
+        .marker-camera-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #ff9800, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 22px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulseOrangeCamera 1.5s infinite ease-in-out; pointer-events: none; }
+        .marker-foto-anim { width: 44px; height: 44px; background: linear-gradient(135deg, #42a5f5, #1976d2); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 22px; font-family: 'Poppins', sans-serif; border: 3px solid white; box-sizing: border-box; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: pulseBlueFoto 1.5s infinite ease-in-out; pointer-events: none; }
 
         @keyframes pulseDolarAnim { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        .marker-dolar { background: #00e676; color: #004d40; border-radius: 8px; padding: 4px 8px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; font-family: 'Poppins', sans-serif; pointer-events: auto; font-weight: bold; line-height: 1.1; }
+        .marker-dolar { background: #00e676; color: #004d40; border-radius: 8px; padding: 4px 8px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; white-space: nowrap; font-family: 'Poppins', sans-serif; pointer-events: auto; font-weight: bold; line-height: 1.1; cursor: pointer; }
         .pulse-dolar { animation: pulseDolarAnim 1.5s infinite ease-in-out; }
 
         @keyframes pulseFlashAnim { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.9); transform: scale(1); } 50% { box-shadow: 0 0 0 40px rgba(0, 230, 118, 0); transform: scale(1.2); } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); transform: scale(1); } }
-        .flash-resposta { animation: pulseFlashAnim 1.5s infinite ease-in-out; background: linear-gradient(135deg, #00e676, #00c853); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 24px; border: 3px solid white; box-sizing: border-box; }
+        .flash-resposta { animation: pulseFlashAnim 1.5s infinite ease-in-out; background: linear-gradient(135deg, #00e676, #00c853); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 24px; border: 3px solid white; box-sizing: border-box; pointer-events: none; }
 
         @keyframes pulseMinhaLoja { 0% { box-shadow: 0 0 0 0 rgba(2, 136, 209, 0.8); } 70% { box-shadow: 0 0 0 20px rgba(2, 136, 209, 0); } 100% { box-shadow: 0 0 0 0 rgba(2, 136, 209, 0); } }
-        .marker-minha-loja { width: 46px; height: 46px; background: linear-gradient(135deg, #03a9f4, #01579b); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 22px; border: 3px solid white; box-shadow: 0 0 15px rgba(2, 136, 209, 0.8); animation: pulseMinhaLoja 2s infinite; position: relative; }
-        .label-minha-loja { position: absolute; bottom: -24px; left: 50%; transform: translateX(-50%); background: #01579b; color: white; font-size: 11px; font-weight: 900; padding: 4px 8px; border-radius: 12px; white-space: nowrap; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 0.5px; }
-        .minha-loja-container { display: flex; justify-content: center; align-items: center; }
-        .marker-premium { width: 36px; height: 36px; background: linear-gradient(135deg, #ffc107, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 18px; border: 3px solid white; box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); animation: pulseGold 2s infinite; }
-        .area-segura-anim { animation: pulseArea 2s infinite; cursor: pointer; }
+        .marker-minha-loja { width: 46px; height: 46px; background: linear-gradient(135deg, #03a9f4, #01579b); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 22px; border: 3px solid white; box-shadow: 0 0 15px rgba(2, 136, 209, 0.8); animation: pulseMinhaLoja 2s infinite; position: relative; pointer-events: none; }
+        .label-minha-loja { position: absolute; bottom: -24px; left: 50%; transform: translateX(-50%); background: #01579b; color: white; font-size: 11px; font-weight: 900; padding: 4px 8px; border-radius: 12px; white-space: nowrap; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 0.5px; pointer-events: none; }
+        
+        .marker-premium { width: 40px; height: 40px; background: linear-gradient(135deg, #ffc107, #f57c00); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; border: 3px solid white; box-shadow: 0 0 15px rgba(255, 193, 7, 0.8); animation: pulseGold 2s infinite; pointer-events: auto; }
     </style>
 </head>
 <body class="modo-turista"> 
@@ -222,7 +243,21 @@
         <p id="t_splashSub">Preço Justo em Qualquer Lugar</p>
     </div>
 
-    <button id="btnLimparFiltro" style="display:none; position:fixed; top:80px; left:50%; transform:translateX(-50%); z-index:4000; background:#c62828; color:white; border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.3); font-family: 'Poppins', sans-serif;">❌ Limpar Mapa de Preços</button>
+    <div id="toastAviso">📡 Radar Ativado!</div>
+
+    <div id="mapa"></div>
+
+    <div class="top-bar">
+        <div class="top-bar-logo"><button class="btn-menu" id="btnAbrirMenu">☰</button> GringoSafe</div>
+        <div class="top-bar-right">
+            <span class="user-level" id="t_level">⭐ Nvl 1</span>
+            <span class="user-balance" id="saldoDisplay">R$ 0,00</span>
+            <div class="notif-container" id="btnAbrirNotificacoes">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                <span class="badge-notificacao" id="badgeNotificacoes">0</span>
+            </div>
+        </div>
+    </div>
 
     <div class="alfinete-alvo" id="alfineteAlvo"></div>
     <div class="alfinete-central" id="alfineteCentral">
@@ -231,7 +266,7 @@
         </svg>
     </div>
 
-    <div id="telaPerfil">
+    <div id="telaPerfil" style="display: none;">
         <div class="lang-selector-inicial">
             <div id="btnLangPtInicio">🇧🇷 PT</div>
             <div id="btnLangEnInicio">🇺🇸 EN</div>
@@ -244,7 +279,7 @@
         </button>
         <button class="btn-perfil avaliador" id="btnPerfilAvaliador">
             ⭐ <strong id="t_roleLocal">Sou Avaliador Local</strong>
-            <span id="t_roleLocalSub">Quero registrar preços, responder turistas e ganhar dinheiro.</span>
+            <span id="t_roleLocalSub">Quero registrar preços e responder turistas.</span>
         </button>
         <button class="btn-perfil lojista" id="btnPerfilLojista">
             🏢 <strong id="t_roleLojista">Sou Lojista</strong>
@@ -285,29 +320,17 @@
         <div class="menu-item" id="btnTrocarPerfil"><span id="t_menuChangeRole">👤 Trocar de Perfil</span></div>
     </div>
 
-    <div class="top-bar">
-        <div class="top-bar-logo"><button class="btn-menu" id="btnAbrirMenu">☰</button> GringoSafe</div>
-        <div class="top-bar-right">
-            <span class="user-level" id="t_level">⭐ Nvl 1</span>
-            <span class="user-balance" id="saldoDisplay">R$ 0,00</span>
-            <div class="notif-container" id="btnAbrirNotificacoes">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-                <span class="badge-notificacao" id="badgeNotificacoes">0</span>
-            </div>
-        </div>
-    </div>
-    
-    <div id="mapa"></div>
-
     <div class="bloqueio-login" id="bloqueioLoginOverlay" style="display: none;">
         <div style="font-size: 50px; margin-bottom: 10px;">🔒</div>
         <h3 id="t_lockTitle" style="color: #004d40; margin:0 0 10px 0;">Mapa Protegido</h3>
-        <p id="t_lockSub" style="color: #555; font-size: 14px; margin-bottom: 25px;">Faça login gratuitamente para visualizar preços y locais.</p>
+        <p id="t_lockSub" style="color: #444; font-size: 14px; margin-bottom: 25px;">Faça login gratuitamente para visualizar preços y locais.</p>
         <button class="btn-google" id="btnLoginGoogleOverlay">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="white" style="margin-right: 8px;"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
             <span id="t_lockBtn">Entrar com Google</span>
         </button>
     </div>
+
+    <button id="btnLimparFiltro" style="display:none; position:fixed; top:80px; left:50%; transform:translateX(-50%); z-index:4000; background:#c62828; color:white; border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.3); font-family: 'Poppins', sans-serif;">❌ Limpar Mapa</button>
     
     <input type="file" id="inputCamNormal" accept="image/*" capture="environment" style="display: none;">
     <input type="file" id="inputGalNormal" accept="image/*" style="display: none;">
@@ -341,7 +364,7 @@
         <div class="posicionamento-aviso" id="t_posHint">📍 Aponte para o local exato</div>
         <div class="posicionamento-botoes">
             <button class="btn-cancel-pos" id="btnCancelarPos"><span id="t_btnPosCancel">Cancelar</span></button>
-            <button class="btn-confirmar-pos" id="btnConfirmarPos"><span id="t_btnPosConfirm">Confirmar Local</span></button>
+            <button class="btn-confirm-pos" id="btnConfirmarPos"><span id="t_btnPosConfirm">Confirmar Local</span></button>
         </div>
     </div>
 
@@ -384,7 +407,7 @@
     <div class="modal-overlay" id="modalVerificacaoLojista">
         <div class="modal-content">
             <h3 style="color:#f57c00; margin-bottom:10px;">🛡️ Verificação de Negócio</h3>
-            <p style="font-size:13px; color:#555; margin-bottom:15px;">Para proteger o seu negócio contra edições externas, precisamos de uma foto do seu <strong>Alvará de Funcionamento</strong> ou <strong>Cartão CNPJ</strong>.</p>
+            <p style="font-size:13px; color:#555; margin-bottom:15px;">Para proteger o seu negocio contra edições externas, precisamos de uma foto do seu <strong>Alvará de Funcionamento</strong> ou <strong>Cartão CNPJ</strong>.</p>
             <button class="btn-add-foto" id="btnUploadDocLojista">📸 Enviar Documento</button>
             <img id="previewDocLojista" class="imagem-preview" style="display:none; width:100%; border:2px solid #ccc;">
             <button class="btn-salvar" id="btnEnviarVerificacao" style="background:#f57c00; display:none; margin-top:15px;">Avançar para Destaque Premium</button>
@@ -406,7 +429,7 @@
                     <option value="2">⭐⭐ Ruim</option>
                     <option value="1">⭐ Péssimo</option>
                 </select>
-                <textarea id="textoReview" class="input-form" placeholder="Deixe seu comentário..." style="height:60px; resize:none;"></textarea>
+                <textarea id="textoReview" class="input-form" placeholder="Deixe seu comentario..." style="height:60px; resize:none;"></textarea>
                 <input type="hidden" id="localAlvoReview">
                 <button class="btn-salvar" id="btnEnviarReview" style="background:#f57c00; margin-top:5px;">Enviar Avaliação</button>
             </div>
@@ -416,15 +439,59 @@
 
     <div class="modal-overlay" id="modalLojista">
         <div class="modal-content">
-            <div class="pw-icon">⭐</div>
-            <h3 class="pw-title" style="color:#f57c00;" id="t_lojistaTitle">Destaque seu Negócio</h3>
-            <p class="pw-sub" id="t_lojistaSub">Atraia turistas 24h por dia. Pinos Premium nunca somem do mapa, mesmo sem radar!</p>
-            <div class="plan-card active" style="border-color:#f57c00; margin-bottom:20px;">
-                <span class="plan-days">Plano Ouro Mensal</span>
-                <span class="plan-price" style="color:#f57c00;">R$ 99,90</span>
+            <h3>Destacar seu Negócio 🌟</h3>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+                Atraia mais turistas. Seu local ficará com um pino dourado y ganar a prioridade absoluta nas buscas da região.
+            </p>
+
+            <div class="plan-card active" style="border: 2px solid #f57c00; border-radius: 8px; padding: 15px; margin-bottom: 20px; background: #fff3e0; display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                    <span class="plan-days" style="font-weight: bold; color: #333; font-size: 16px;">Plano Ouro Mensal</span>
+                    <span style="font-size:11px; background:#c62828; color:white; padding:4px 8px; border-radius:12px; font-weight:900; white-space: nowrap;">🔥 OFERTA PIONEIRO</span>
+                </div>
+                <div style="display:flex; flex-direction:column; text-align:right;">
+                    <span style="font-size:12px; color:#999; text-decoration:line-through;">De R$ 99,90</span>
+                    <span class="plan-price" style="color:#f57c00; font-size: 24px; font-weight: bold;">R$ 19,99<span style="font-size:14px; font-weight: normal;">/mês</span></span>
+                </div>
             </div>
-            <button class="btn-salvar" id="btnPagarLojista" style="background:#f57c00; font-size:15px;">Assinar e Destacar (Simulação)</button>
-            <button class="btn-cancelar" id="btnFecharLojista">Talvez depois</button>
+
+            <button id="btnTesteGratis" style="background:#f57c00; font-size:16px; width: 100%; padding: 14px; color: white; border: none; border-radius: 8px; font-weight: bold; margin-bottom: 10px; cursor: pointer; display: none;" onclick="window.ativarTesteGratis()">
+                🎁 Começar 30 Dias Grátis
+            </button>
+
+            <button class="btn-salvar" style="background:#004d40; font-size:16px; width: 100%; padding: 12px; color: white; border: none; border-radius: 8px; font-weight: bold; margin-bottom: 10px; cursor: pointer;" onclick="document.getElementById('modalLojista').style.display='none'; window.location.href='https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=de968d42bc404eee9a7df4fb1870f153';">
+                Assinar Plano Ouro
+            </button>
+            
+            <button class="btn-cancelar" style="width: 100%; padding: 12px; background: #eee; border: none; border-radius: 8px; color: #333; cursor: pointer;" onclick="document.getElementById('modalLojista').style.display='none';">
+                Talvez depois
+            </button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalAssinatura">
+        <div class="modal-content">
+            <div style="font-size: 30px; margin-bottom: 10px;">🛡️</div>
+            <h3>GringoSafe Pass</h3>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">
+                Unlock unlimited safe searches and real-time price guides for 7 days.
+            </p>
+
+            <div class="plan-card active" style="border: 2px solid #004d40; border-radius: 8px; padding: 15px; margin-bottom: 20px; background: #e0f2f1; text-align: left;">
+                <span class="plan-days" style="font-weight: bold; color: #333;">7-Day Full Access</span>
+                <div style="display:flex; flex-direction:column; text-align:right; margin-top: 10px;">
+                    <span class="plan-price" style="color:#004d40; font-size: 22px; font-weight: bold;">$ 4.99</span>
+                    <span style="font-size:11px; color:#666;">One-time payment</span>
+                </div>
+            </div>
+
+            <button class="btn-salvar" style="background:#004d40; font-size:16px; width: 100%; padding: 14px; color: white; border: none; border-radius: 8px; font-weight: bold; margin-bottom: 10px; cursor: pointer;" onclick="document.getElementById('modalAssinatura').style.display='none'; window.location.href='https://buy.stripe.com/test_00w4gyeLNe5se8o5s4dIA00';">
+                Pay with Apple/Google Pay
+            </button>
+            
+            <button class="btn-cancelar" style="width: 100%; padding: 12px; background: #eee; border: none; border-radius: 8px; color: #333; cursor: pointer;" onclick="document.getElementById('modalAssinatura').style.display='none';">
+                Maybe later
+            </button>
         </div>
     </div>
 
@@ -439,24 +506,6 @@
             </div>
             <div id="listaNotificacoes" style="max-height: 50vh; overflow-y: auto;"></div>
             <button class="btn-cancelar" id="btnFecharNotificacoes" style="margin-top:15px;"><span>Fechar</span></button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modalPaywall">
-        <div class="modal-content">
-            <div class="pw-icon">💎</div>
-            <h3 class="pw-title" id="t_pwTitle">Acesso Premium</h3>
-            <p class="pw-sub" id="t_pwSub">Buscas ilimitadas e Roteiros Seguros.</p>
-            <div class="plan-options">
-                <div class="plan-card active" id="btnPlan1"><span class="plan-days" id="t_pwPlan1">Pass de 7 Dias</span><span class="plan-price" id="precoPlan1">R$ 24,90</span></div>
-                <div class="plan-card" id="btnPlan2"><span class="plan-days" id="t_pwPlan2">Pass de 15 Dias</span><span class="plan-price" id="precoPlan2">R$ 39,90</span></div>
-                <div class="plan-card" id="btnPlan3"><span class="plan-days" id="t_pwPlan3">Pass de 30 Dias</span><span class="plan-price" id="precoPlan3">R$ 64,90</span></div>
-            </div>
-            <div class="payment-methods">
-                <button class="btn-apple-pay" id="btnApplePay"><span style="font-size: 24px; margin-bottom: 4px;"></span> Pay</button>
-                <button class="btn-google-pay" id="btnGooglePay"><span style="font-weight: 700; font-size: 22px;">G</span> Pay</button>
-            </div>
-            <button class="btn-cancelar" id="btnFecharPaywall"><span id="t_pwCancel">Talvez depois</span></button>
         </div>
     </div>
 
@@ -544,10 +593,117 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
+        // 🚨 O SEU TOKEN DA FERRARI (MAPBOX) AQUI 🚨
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZmFocGxheTE1IiwiYSI6ImNtbXh6b21kejB0OXMycW9zaGphcjhpc2kifQ.wwqo4UaXvqDYHXsxv-244w';
+
+        window.mapa = new mapboxgl.Map({
+            container: 'mapa',
+            style: 'mapbox://styles/mapbox/streets-v12', 
+            center: [-43.2302, -22.9121], 
+            zoom: 15.5,
+            pitch: 60, 
+            bearing: -17.6, 
+            antialias: true 
+        });
+
+        window.mapa.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'top-left');
+
+        window.mapa.on('style.load', () => {
+            const layers = window.mapa.getStyle().layers;
+            const labelLayerId = layers.find(layer => layer.type === 'symbol' && layer.layout['text-field']).id;
+
+            window.mapa.addLayer({
+                'id': 'add-3d-buildings',
+                'source': 'composite',
+                'source-layer': 'building',
+                'filter': ['==', 'extrude', 'true'],
+                'type': 'fill-extrusion',
+                'minzoom': 15,
+                'paint': {
+                    'fill-extrusion-color': '#d0d0d0', 
+                    'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 15, 0, 15.05, ['get', 'height']],
+                    'fill-extrusion-base': ['interpolate', ['linear'], ['zoom'], 15, 0, 15.05, ['get', 'min_height']],
+                    'fill-extrusion-opacity': 0.8
+                }
+            }, labelLayerId);
+        });
+
+        const getEl = (id) => document.getElementById(id); const setTxt = (id, txt) => { const e = getEl(id); if(e) e.innerText = txt; }; const setPlc = (id, txt) => { const e = getEl(id); if(e) e.placeholder = txt; };
+        const bindClick = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('click', fn); };
+        const bindChange = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('change', fn); };
+        const bindInput = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('input', fn); };
+
+        function calcularDistancia(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; 
+            const φ1 = lat1 * Math.PI/180; const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180; const Δλ = (lon2-lon1) * Math.PI/180;
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c; 
+        }
+
+        let rotaAtiva = false;
+        window.marcadoresAtuais = [];
+
+        let myLat = null; let myLng = null;
+        const geolocate = new mapboxgl.GeolocateControl({
+            positionOptions: { enableHighAccuracy: true },
+            trackUserLocation: true,
+            showUserHeading: true
+        });
+        window.mapa.addControl(geolocate);
+        
+        let timeoutDesenho = null;
+        window.agendarDesenho = function() {
+            if(timeoutDesenho) clearTimeout(timeoutDesenho);
+            timeoutDesenho = setTimeout(desenharPinos, 150); 
+        };
+
+        window.mapa.on('load', () => { 
+            geolocate.trigger(); 
+            window.agendarDesenho();
+        });
+
+        geolocate.on('geolocate', (e) => { 
+            myLat = e.coords.latitude; 
+            myLng = e.coords.longitude; 
+        });
+
+        bindClick('btnMira', () => {
+            geolocate.trigger();
+            if(myLat && myLng) {
+                window.mapa.flyTo({center: [myLng, myLat], zoom: 17, duration: 1500});
+            }
+        });
+
+        window.addEventListener('load', () => { 
+            setTimeout(() => { 
+                const splash = getEl('splashScreen');
+                if(splash) {
+                    splash.style.opacity = '0'; 
+                    setTimeout(() => { 
+                        splash.style.display = 'none'; 
+                        atualizarPrecosPaywall(); 
+                    }, 600); 
+                }
+            }, 1000); 
+        });
+
+        // 🚨 FUNÇÃO DO TOAST DE AVISO (Para não travar a tela)
+        window.mostrarToast = function(msg, cor = '#1976d2') {
+            const toast = getEl('toastAviso');
+            if(!toast) return;
+            toast.innerText = msg;
+            toast.style.background = cor;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3500);
+        };
+
         let estadoApp = { 
             moeda: 'BRL', idioma: 'pt', perfil: 'turista', buscasRestantes: 3, planoPrecoUSD: 4.99, saldo: 0.00, 
             usuario: null, dadosHospedados: {}, mediaPrecos: {}, contagemPrecos: {}, perguntasAbertas: {}, notificacoes: [], 
-            radarAtivo: false, isLojistaPremium: false, nivelAvaliador: 1, avaliacoes: {}, filtroProduto: null 
+            radarAtivo: false, isLojistaPremium: false, nivelAvaliador: 1, avaliacoes: {}, filtroProduto: null,
+            fimTrial: null
         };
         const taxasCambio = { 'BRL': { sim: 'R$', taxa: 1 }, 'USD': { sim: 'US$', taxa: 0.20 }, 'EUR': { sim: '€', taxa: 0.18 }, 'ARS': { sim: '$', taxa: 170.0 } };
         
@@ -567,50 +723,6 @@
             es: { splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Activar Ruta Premium", menuRouteOff: "❌ Apagar Ruta", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Cambiar Perfil", menuLojista: "🏢 Área del Comerciante", menuWallet: "💰 Mi Billetera", walletTitle: "Retiro de Fondos", walletSub: "Retiro mínimo: $ 20.00.", btnWithdraw: "Solicitar Retiro", level: "⭐ Nvl 1", formTitle: "Nuevo Registro", optNewPlace: "➕ Añadir Nuevo Lugar", placeNewLocal: "Nombre del Nuevo Lugar", placeName: "Producto (Ej: Agua)", placePrice: "Precio", catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa todos los campos!", alertaDuplicado: "¡Producto ya existe!", statusGreen: "✅ Confiable", statusYellow: "⏳ En Revisión", statusRed: "🚨 Alerta de Estafa", btnYes: "👍", btnNo: "👎", searchTitle: "Buscar Lugar o Producto", searchPlaceholder: "Ej: Kiosco, Agua...", searchClose: "Cerrar", roleTitle: "¿Cómo quieres usar la App?", roleTourist: "Soy Turista", roleTouristSub: "Buscar lugares seguros y preguntar precios.", roleLocal: "Soy Evaluador Local", roleLocalSub: "Registrar precios y responder turistas.", roleLojista: "Soy Comerciante", roleLojistaSub: "Registrar mi negocio y atraer turistas.", btnAddCam: "📸 Cámara", btnAddGal: "🖼️ Galería", btnLogin: "Entrar con Google", btnLogout: "Cerrar Sesión", pwTitle: "Acceso Premium", pwSub: "Búsquedas ilimitadas y Rutas Seguras.", pwPlan1: "Pase de 7 Días", pwPlan2: "Pase de 15 Días", pwPlan3: "Pase de 30 Días", pwCancel: "Quizás después", badgeMedia: "⚖️ Precio Promedio", badgeCaro: "📈 Por Encima de Media", badgeBom: "✨ Mejor Precio", askTitle: "¿Qué quieres comprar?", askSub: "La comunidad local te dirá el precio justo.", btnAskCam: "📸 Cámara", btnAskGal: "🖼️ Galería", btnSendAsk: "Enviar Pregunta", btnCancelAsk: "Cancelar", ansTitle: "Responder al Turista", btnSendAns: "Responder", optFixo: "🏪 Establecimiento Fijo", optAmbulante: "🚶 Vendedor Ambulante", btnCancelAns: "Cancelar", placeNewLocalAsk: "Nombre del Lugar o Vendedor", alertReqLogin: "⚠️ ¡Inicia sesión en el menú (☰) para usar esta función!", alertVoted: "🚫 ¡Ya votaste por este artículo!", lockTitle: "Mapa Protegido", lockSub: "Inicia sesión gratis para ver precios y lugares.", lockBtn: "Entrar con Google", notifTitle: "🔔 Notificaciones", notifEmpty: "No hay notificaciones nuevas.", posHint: "📍 Apunta al vendedor (Consejo: Hazlo desde una distancia segura)", btnPosCancel: "Cancelar", btnPosConfirm: "Confirmar Lugar", btnReqFoto: "📷 Pedir Foto", notifReqFoto: "Un Evaluador Local pidió una foto para dar el precio exacto. 📍 Clic para enviar.", radarBtn: "Radar", radarActive: "Radar encendido! Lugares visibles.", radarCool: "Radar apagado. Lugares ocultos.", makePremium: "⭐ Destacar Mi Negocio", lojistaTitle: "Destaca tu Negocio", lojistaSub: "Atrae turistas 24/7. ¡Los pines premium nunca desaparecen!", kycAlert: "🛡️ Seguridad KYC: ¡Solo Evaluadores de Nivel 5+ (Identificación Verificada) pueden cambiar los precios de las Tiendas Premium!" }
         };
 
-        const getEl = (id) => document.getElementById(id); const setTxt = (id, txt) => { const e = getEl(id); if(e) e.innerText = txt; }; const setPlc = (id, txt) => { const e = getEl(id); if(e) e.placeholder = txt; };
-        const bindClick = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('click', fn); };
-        const bindChange = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('change', fn); };
-        const bindInput = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('input', fn); };
-
-        function calcularDistancia(lat1, lon1, lat2, lon2) {
-            const R = 6371e3; 
-            const φ1 = lat1 * Math.PI/180; const φ2 = lat2 * Math.PI/180;
-            const Δφ = (lat2-lat1) * Math.PI/180; const Δλ = (lon2-lon1) * Math.PI/180;
-            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return R * c; 
-        }
-
-        let rotaAtiva = null;
-        window.mapa = L.map('mapa', {zoomControl: false}).setView([-22.9121, -43.2302], 14); 
-        L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'] }).addTo(window.mapa);
-        
-        let camadaDePinos = L.layerGroup().addTo(window.mapa); 
-        let pinoUsuario = null; 
-        let marcadoresNoMapa = {};
-        let circuloAvaliador = null;
-
-        const iYellow = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
-        const iGreen = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
-        const iRed = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
-        const iPremium = L.divIcon({ className: 'marker-premium', html: '⭐', iconSize: [36, 36], iconAnchor: [18, 36] });
-        const iMinhaLoja = L.divIcon({ className: 'minha-loja-container', html: '<div class="marker-minha-loja">🏬<div class="label-minha-loja">SUA LOJA</div></div>', iconSize: [46, 70], iconAnchor: [23, 50] });
-
-        // 🚨 ÍCONES FANTASMAS COM O TAMANHO CORRETO AQUI 🚨
-        const iPurpleGhost = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-pergunta-anim">?</div></div>', iconSize: [44, 44], iconAnchor: [22, 22] });
-        const iCameraGhost = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-camera-anim">📸</div></div>', iconSize: [44, 44], iconAnchor: [22, 22] });
-        const iPhotoGhost  = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="ghost-anim"><div class="marker-foto-anim">🖼️</div></div>', iconSize: [44, 44], iconAnchor: [22, 22] });
-
-        const buscarLoc = () => window.mapa.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true, timeout: 10000 }); 
-        buscarLoc(); 
-        bindClick('btnMira', buscarLoc);
-        
-        window.mapa.on('locationfound', (e) => { 
-            if(pinoUsuario) window.mapa.removeLayer(pinoUsuario); 
-            pinoUsuario = L.marker(e.latlng).addTo(window.mapa).bindPopup("📍 Você está aqui!"); 
-            if (estadoApp.perfil === 'avaliador') desenharPinos();
-        });
-
         function aplicarIdioma(lang) {
             estadoApp.idioma = lang; const t = dicionario[lang];
             document.querySelectorAll('.sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; });
@@ -620,14 +732,14 @@
             setTxt('t_menuLojista', t.menuLojista); setTxt('t_btnRadarText', t.radarBtn); setTxt('t_lojistaTitle', t.lojistaTitle); setTxt('t_lojistaSub', t.lojistaSub); setTxt('t_roleLojista', t.roleLojista); setTxt('t_roleLojistaSub', t.roleLojistaSub);
             setTxt('t_menuWallet', t.menuWallet); setTxt('t_walletTitle', t.walletTitle); setTxt('t_walletSub', t.walletSub); setTxt('t_btnWithdraw', t.btnWithdraw);
             getEl('langSubMenu')?.classList.remove('open'); getEl('sideMenu')?.classList.remove('open'); if(getEl('menuOverlay')) getEl('menuOverlay').style.display = 'none';
-            desenharPinos(); 
+            window.agendarDesenho(); 
         }
 
         function aplicarMoeda(moeda) {
             estadoApp.moeda = moeda; document.querySelectorAll('#currencySubMenu .sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; });
             const opt = getEl('cur_' + moeda); if(opt) { opt.classList.add('ativo-option'); opt.querySelector('.check').style.display = 'inline'; }
             getEl('currencySubMenu')?.classList.remove('open'); getEl('sideMenu')?.classList.remove('open'); if(getEl('menuOverlay')) getEl('menuOverlay').style.display = 'none';
-            desenharPinos(); atualizarPrecosPaywall();
+            window.agendarDesenho(); atualizarPrecosPaywall();
             if(estadoApp.usuario) setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
         }
 
@@ -641,10 +753,17 @@
             if(estadoApp.perfil === 'turista') { b.style.display = 'flex'; if(estadoApp.buscasRestantes >= 999) { b.innerText = '♾️'; b.style.background = '#ffc107'; b.style.color = '#333'; } else { b.innerText = estadoApp.buscasRestantes; b.style.background = '#c62828'; b.style.color = 'white'; } } else { b.style.display = 'none'; }
         }
 
-        function definirPerfil(tipo) { estadoApp.perfil = tipo; document.body.className = 'modo-' + tipo; localStorage.setItem('gringosafe_perfil', tipo); if(getEl('telaPerfil')) getEl('telaPerfil').style.display = 'none'; desenharPinos(); window.atualizarBadgeBuscas(); }
+        function definirPerfil(tipo) { 
+            estadoApp.perfil = tipo; 
+            document.body.className = 'modo-' + tipo; 
+            localStorage.setItem('gringosafe_ja_acessou', 'sim'); 
+            if(getEl('telaPerfil')) getEl('telaPerfil').style.display = 'none'; 
+            window.agendarDesenho(); 
+            window.atualizarBadgeBuscas(); 
+        }
 
-        const perfilSalvo = localStorage.getItem('gringosafe_perfil'); if(perfilSalvo) estadoApp.perfil = perfilSalvo;
-        setTimeout(() => { if(!localStorage.getItem('gringosafe_perfil')) { if(getEl('telaPerfil')) getEl('telaPerfil').style.display = 'flex'; } else { definirPerfil(estadoApp.perfil); } }, 2500);
+        // 🟢 FORÇA O APP A SEMPRE ABRIR COMO TURISTA NATIVAMENTE
+        definirPerfil('turista'); 
 
         bindClick('btnLangPtInicio', () => aplicarIdioma('pt')); bindClick('btnLangEnInicio', () => aplicarIdioma('en')); bindClick('btnLangEsInicio', () => aplicarIdioma('es'));
         bindClick('lang_pt', () => aplicarIdioma('pt')); bindClick('lang_en', () => aplicarIdioma('en')); bindClick('lang_es', () => aplicarIdioma('es'));
@@ -658,6 +777,36 @@
         const firebaseConfig = { apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs", authDomain: "gringosafe-1f434.firebaseapp.com", projectId: "gringosafe-1f434", storageBucket: "gringosafe-1f434.firebasestorage.app", messagingSenderId: "949745647794", appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); const provider = new GoogleAuthProvider();
         
+        let versaoAtualApp = null;
+        onSnapshot(doc(db, "sistema", "configuracoes"), (docSnap) => {
+            if (docSnap.exists()) {
+                const dadosSistema = docSnap.data();
+                if (versaoAtualApp === null) {
+                    versaoAtualApp = dadosSistema.versaoPWA;
+                } 
+                else if (dadosSistema.versaoPWA !== versaoAtualApp) {
+                    console.log("⚠️ Nova versão detectada! Recarregando...");
+                    if ('serviceWorker' in navigator) navigator.serviceWorker.ready.then(reg => reg.update());
+                    setTimeout(() => window.location.reload(true), 1000);
+                }
+            }
+        });
+
+        window.ativarTesteGratis = async function() {
+            if (!estadoApp.usuario) return;
+            try {
+                const agora = Date.now();
+                const fimTrial = agora + (30 * 24 * 60 * 60 * 1000);
+                await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { fimTrial: fimTrial });
+                getEl('modalLojista').style.display = 'none';
+                alert("🎉 Teste de 30 dias ativado com sucesso! Seu local já pode receber turistas.");
+                window.location.reload();
+            } catch (error) {
+                console.error(error);
+                alert("Erro ao ativar o teste.");
+            }
+        };
+
         const fazerLogin = () => signInWithPopup(auth, provider).catch(() => alert("Erro no login."));
         bindClick('btnLoginGoogle', fazerLogin); bindClick('btnLoginGoogleMenu', fazerLogin); bindClick('btnLoginGoogleOverlay', fazerLogin);
         bindClick('btnLogout', () => signOut(auth).then(() => alert("Deslogado.")));
@@ -671,9 +820,14 @@
                 const docRef = doc(db, "usuarios", user.uid); const docSnap = await getDoc(docRef);
                 
                 if (docSnap.exists()) { 
-                    estadoApp.saldo = docSnap.data().saldo || 0.00; estadoApp.buscasRestantes = docSnap.data().buscas !== undefined ? docSnap.data().buscas : 3; estadoApp.isLojistaPremium = docSnap.data().isLojistaPremium || false;
+                    const dadosUsuario = docSnap.data();
+                    estadoApp.saldo = dadosUsuario.saldo || 0.00; 
+                    estadoApp.buscasRestantes = dadosUsuario.buscas !== undefined ? dadosUsuario.buscas : 3; 
+                    estadoApp.isLojistaPremium = dadosUsuario.isLojistaPremium || false;
+                    estadoApp.fimTrial = dadosUsuario.fimTrial || null;
                 } else { 
-                    estadoApp.saldo = 0.00; estadoApp.buscasRestantes = 3; await setDoc(docRef, { nome: user.displayName, email: user.email, saldo: 0, buscas: 3, isLojistaPremium: false, dataCadastro: new Date() }); 
+                    estadoApp.saldo = 0.00; estadoApp.buscasRestantes = 3; estadoApp.fimTrial = null;
+                    await setDoc(docRef, { nome: user.displayName, email: user.email, saldo: 0, buscas: 3, isLojistaPremium: false, dataCadastro: new Date() }); 
                 }
                 setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`); window.atualizarBadgeBuscas();
 
@@ -685,17 +839,53 @@
                     const bN = getEl('badgeNotificacoes'); if(qtdNaoLidas > 0) { bN.style.display = 'flex'; bN.innerText = qtdNaoLidas; } else { bN.style.display = 'none'; }
                 });
             } else {
-                estadoApp.usuario = null; estadoApp.saldo = 0.00; estadoApp.buscasRestantes = 3; estadoApp.isLojistaPremium = false; setTxt('saldoDisplay', `R$ 0,00`); setTxt('menuNome', `Visitante`); 
+                estadoApp.usuario = null; estadoApp.saldo = 0.00; estadoApp.buscasRestantes = 3; estadoApp.isLojistaPremium = false; estadoApp.fimTrial = null; setTxt('saldoDisplay', `R$ 0,00`); setTxt('menuNome', `Visitante`); 
                 getEl('menuAvatar').innerHTML = `👤`; getEl('btnLoginGoogleMenu').style.display = 'flex'; getEl('btnLogout').style.display = 'none'; getEl('bloqueioLoginOverlay').style.display = 'flex'; window.atualizarBadgeBuscas();
                 if(listenerNotificacoes) { listenerNotificacoes(); listenerNotificacoes = null; } getEl('badgeNotificacoes').style.display = 'none';
             }
         });
 
+        window.iniciarVerificacaoLojista = async function(nomeLocal) {
+            try { window.marcadoresAtuais.forEach(m => { if(m.getPopup() && m.getPopup().isOpen()) m.togglePopup(); }); } catch(e) {}
+            localParaPromover = nomeLocal;
+
+            if (estadoApp.usuario && estadoApp.perfil === 'lojista' && !estadoApp.isLojistaPremium) {
+                try {
+                    const docSnap = await getDoc(doc(db, "usuarios", estadoApp.usuario.uid));
+                    if (docSnap.exists()) {
+                        const dadosUsuario = docSnap.data();
+                        const agora = Date.now();
+                        const fimTrial = dadosUsuario.fimTrial;
+                        
+                        const modalLojista = getEl('modalLojista');
+                        const btnTesteGratis = getEl('btnTesteGratis');
+                        const btnCancelar = modalLojista.querySelector('.btn-cancelar');
+
+                        if (!fimTrial) {
+                            modalLojista.style.display = 'flex';
+                            if (btnTesteGratis) btnTesteGratis.style.display = 'block'; 
+                            if (btnCancelar) btnCancelar.style.display = 'none'; 
+                            return; 
+                        } 
+                        else if (agora > fimTrial) {
+                            modalLojista.style.display = 'flex';
+                            if (btnTesteGratis) btnTesteGratis.style.display = 'none'; 
+                            if (btnCancelar) btnCancelar.style.display = 'none'; 
+                            return; 
+                        }
+                    }
+                } catch(e) { console.error(e); }
+            }
+            getEl('modalVerificacaoLojista').style.display = 'flex';
+        };
+
         window.piscarNoMapa = function(lat, lng) {
             if (!lat || !lng) return;
-            const icDestaque = L.divIcon({ className: 'marker-pergunta-container', html: '<div class="flash-resposta">✅</div>', iconSize: [50, 50], iconAnchor: [25, 25] });
-            const pinoFlash = L.marker([lat, lng], {icon: icDestaque, zIndexOffset: 999999}).addTo(window.mapa);
-            setTimeout(() => { window.mapa.removeLayer(pinoFlash); }, 6000);
+            const el = document.createElement('div');
+            el.className = 'marker-pergunta-container';
+            el.innerHTML = '<div class="flash-resposta">✅</div>';
+            const marker = new mapboxgl.Marker(el).setLngLat([lng, lat]).addTo(window.mapa);
+            setTimeout(() => marker.remove(), 6000);
         };
 
         window.apagarNotificacao = async function(id, e) { e.stopPropagation(); try { await deleteDoc(doc(db, "notificacoes", id)); } catch(e) { console.error(e); } };
@@ -704,6 +894,8 @@
             if(estadoApp.notificacoes.length === 0) return;
             if(confirm("Deseja realmente apagar todas as notificações?")) { estadoApp.notificacoes.forEach(n => { deleteDoc(doc(db, "notificacoes", n.id)); }); }
         });
+
+        window.marcadoresMapboxGlobais = {}; 
 
         bindClick('btnAbrirNotificacoes', () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
@@ -718,7 +910,14 @@
                     if (n.tipo === 'foto_req') { contentHtml = `<div class="notif-titulo">${n.titulo}</div><div class="notif-msg">${dicionario[estadoApp.idioma].notifReqFoto}</div>`; } 
                     else { const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim; const precoFormatado = n.precoReal ? `${sim} ${(n.precoReal * cotacao).toFixed(2)}` : ''; contentHtml = `<div class="notif-titulo">${n.titulo}</div><div class="notif-msg">O preço de <strong>${n.nomeItem}</strong> em ${n.nomeLocal} é <strong>${precoFormatado}</strong>.<br><span style="font-size:11px; color:#9c27b0; font-weight:bold; display:block; margin-top:5px;">📍 Clique para ver no mapa</span></div>`; }
                     div.innerHTML = `<div class="notif-content">${contentHtml}</div>${iconDel}`;
-                    div.onclick = () => { getEl('modalNotificacoes').style.display = 'none'; window.mapa.flyTo([n.lat, n.lng], 18, { duration: 1.5 }); setTimeout(() => { window.piscarNoMapa(n.lat, n.lng); if(marcadoresNoMapa[n.nomeLocal]) marcadoresNoMapa[n.nomeLocal].openPopup(); }, 1500); if(!n.lida) updateDoc(doc(db, "notificacoes", n.id), { lida: true }); };
+                    div.onclick = () => { 
+                        getEl('modalNotificacoes').style.display = 'none'; 
+                        window.mapa.flyTo({center: [n.lng, n.lat], zoom: 18, duration: 1500}); 
+                        setTimeout(() => { 
+                            window.piscarNoMapa(n.lat, n.lng); 
+                        }, 1500); 
+                        if(!n.lida) updateDoc(doc(db, "notificacoes", n.id), { lida: true }); 
+                    };
                     lista.appendChild(div);
                 });
             }
@@ -728,7 +927,7 @@
 
         onSnapshot(collection(db, "avaliacoes"), (snapshot) => {
             estadoApp.avaliacoes = {};
-            snapshot.forEach((doc) => { const data = doc.data(); if(!estadoApp.avaliacoes[data.local]) estadoApp.avaliacoes[data.local] = []; estadoApp.avaliacoes[data.local].push({...data, id: doc.id}); }); desenharPinos();
+            snapshot.forEach((doc) => { const data = doc.data(); if(!estadoApp.avaliacoes[data.local]) estadoApp.avaliacoes[data.local] = []; estadoApp.avaliacoes[data.local].push({...data, id: doc.id}); }); window.agendarDesenho();
         });
 
         window.abrirAvaliacoes = function(nomeLocal) {
@@ -752,20 +951,37 @@
         bindClick('btnCarregarRoteiro', async () => {
             getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none';
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
-            if(rotaAtiva) { window.mapa.removeLayer(rotaAtiva); rotaAtiva = null; setTxt('t_menuRoute', dicionario[estadoApp.idioma].menuRoute); alert("Roteiro Premium desligado."); return; }
-            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { getEl('modalPaywall').style.display = 'flex'; return; }
-            if(!pinoUsuario) return alert("Aguarde o GPS encontrar sua localização antes de traçar a rota.");
+            if(rotaAtiva) { 
+                if(window.mapa.getLayer('route')) window.mapa.removeLayer('route');
+                if(window.mapa.getSource('route')) window.mapa.removeSource('route');
+                rotaAtiva = false; setTxt('t_menuRoute', dicionario[estadoApp.idioma].menuRoute); alert("Roteiro Premium desligado."); return; 
+            }
+            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { getEl('modalAssinatura').style.display = 'flex'; return; }
+            if(!myLat) return alert("Aguarde o GPS encontrar sua localização antes de traçar a rota.");
 
-            const userLat = pinoUsuario.getLatLng().lat; const userLng = pinoUsuario.getLatLng().lng; let pontosRota = [[userLat, userLng]]; let locaisSeguros = [];
+            const userLat = myLat; const userLng = myLng; let pontosRota = [[userLng, userLat]]; let locaisSeguros = [];
             for (const nomeL in estadoApp.dadosHospedados) {
                 const dados = estadoApp.dadosHospedados[nomeL]; if (!dados.lat || !dados.lng) continue;
                 const isPremium = dados.itens.some(i => i.premium); let temAprovado = false;
                 dados.itens.forEach(i => { let vUp = i.votos_up || 0; let vDown = i.votos_down || 0; if((vUp+vDown) >= 5 && (vUp/(vUp+vDown)) >= 0.6) temAprovado = true; });
                 if(isPremium || temAprovado) { const dist = Math.sqrt(Math.pow(dados.lat - userLat, 2) + Math.pow(dados.lng - userLng, 2)); locaisSeguros.push({lat: dados.lat, lng: dados.lng, nome: nomeL, dist: dist}); }
             }
-            locaisSeguros.sort((a,b) => a.dist - b.dist); locaisSeguros.slice(0, 4).forEach(loc => pontosRota.push([loc.lat, loc.lng]));
+            locaisSeguros.sort((a,b) => a.dist - b.dist); locaisSeguros.slice(0, 4).forEach(loc => pontosRota.push([loc.lng, loc.lat])); 
+            
             if(pontosRota.length < 2) return alert("Desculpe! A IA não encontrou locais parceiros ou 100% seguros próximos a você.");
-            rotaAtiva = L.polyline(pontosRota, {color: '#9c27b0', weight: 5, dashArray: '10, 10'}).addTo(window.mapa); window.mapa.fitBounds(rotaAtiva.getBounds());
+            
+            if (window.mapa.getSource('route')) {
+                window.mapa.getSource('route').setData({ type: 'Feature', geometry: { type: 'LineString', coordinates: pontosRota } });
+            } else {
+                window.mapa.addSource('route', { type: 'geojson', data: { type: 'Feature', geometry: { type: 'LineString', coordinates: pontosRota } } });
+                window.mapa.addLayer({ id: 'route', type: 'line', source: 'route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#9c27b0', 'line-width': 5, 'line-dasharray': [2, 2] } });
+            }
+            
+            const bounds = new mapboxgl.LngLatBounds(pontosRota[0], pontosRota[0]);
+            for (const coord of pontosRota) { bounds.extend(coord); }
+            window.mapa.fitBounds(bounds, { padding: 50 });
+
+            rotaAtiva = true;
             setTxt('t_menuRoute', dicionario[estadoApp.idioma].menuRouteOff); alert("🗺️ Roteiro Seguro traçado pela IA!\n\nSiga a linha roxa no mapa.");
         });
 
@@ -778,19 +994,31 @@
         bindClick('btnFecharCarteira', () => getEl('modalCarteira').style.display = 'none');
 
         bindClick('btnSacarPix', async () => {
-            if(!estadoApp.usuario) return;
+            if(!estadoApp.usuario) return alert("Faça login");
             const chavePix = getEl('inputChavePix').value.trim(); const saldoBRL = estadoApp.saldo; 
             if (saldoBRL < 20) return alert(`Saldo insuficiente!\nVocê precisa acumular o equivalente a R$ 20,00 para sacar.`);
             if (!chavePix) return alert("Por favor, digite a sua Chave PIX.");
             try { await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(-saldoBRL) }); estadoApp.saldo = 0; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`); setTxt('saldoCarteiraDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`); alert(`✅ Saque Solicitado!\n\nUm PIX no valor de R$ ${saldoBRL.toFixed(2)} foi programado.`); getEl('inputChavePix').value = ''; getEl('modalCarteira').style.display = 'none'; } catch(e) { console.error(e); alert("Erro ao solicitar saque."); }
         });
 
+        // 🚨 FUNÇÃO RADAR (CORRIGIDA E SILENCIOSA) 🚨
         bindClick('btnRadar', () => {
-            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
-            if(estadoApp.radarAtivo) return; estadoApp.filtroProduto = null; getEl('btnLimparFiltro').style.display = 'none'; estadoApp.radarAtivo = true; getEl('btnRadar').classList.add('radar-anim'); alert(dicionario[estadoApp.idioma].radarActive); desenharPinos(); setTimeout(() => { estadoApp.radarAtivo = false; getEl('btnRadar').classList.remove('radar-anim'); desenharPinos(); alert(dicionario[estadoApp.idioma].radarCool); }, 15000); 
+            if(estadoApp.radarAtivo) return; 
+            estadoApp.filtroProduto = null; 
+            getEl('btnLimparFiltro').style.display = 'none'; 
+            estadoApp.radarAtivo = true; 
+            getEl('btnRadar').classList.add('radar-anim'); 
+            window.mostrarToast("📡 Radar Ativado! Revelando locais...", "#1976d2");
+            window.agendarDesenho(); 
+            setTimeout(() => { 
+                estadoApp.radarAtivo = false; 
+                getEl('btnRadar').classList.remove('radar-anim'); 
+                window.mostrarToast("❄️ Radar esgotado. Locais ocultos.", "#555");
+                window.agendarDesenho(); 
+            }, 15000); 
         });
 
-        bindClick('btnLimparFiltro', () => { estadoApp.filtroProduto = null; getEl('btnLimparFiltro').style.display = 'none'; desenharPinos(); });
+        bindClick('btnLimparFiltro', () => { estadoApp.filtroProduto = null; getEl('btnLimparFiltro').style.display = 'none'; window.agendarDesenho(); });
 
         window.pesquisarComLocal = function(termo) { getEl('modalBusca').style.display = 'none'; iniciarModoPosicionamento('ask'); setTimeout(() => { getEl('nomeProdutoPergunta').value = termo.charAt(0).toUpperCase() + termo.slice(1); const event = new Event('input'); getEl('nomeProdutoPergunta').dispatchEvent(event); }, 500); };
 
@@ -807,7 +1035,7 @@
 
         bindClick('btnAbrirBusca', async () => {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
-            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { if (estadoApp.buscasRestantes <= 0) { getEl('modalPaywall').style.display = 'flex'; return; } estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
+            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { if (estadoApp.buscasRestantes <= 0) { getEl('modalAssinatura').style.display = 'flex'; return; } estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
             getEl('modalBusca').style.display = 'flex'; getEl('inputBusca').value = ''; getEl('resultadosBusca').innerHTML = ''; getEl('inputBusca').focus();
         });
         
@@ -817,7 +1045,7 @@
             const termo = e.target.value.toLowerCase().trim(); getEl('resultadosBusca').innerHTML = ''; if(!termo) return;
             const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
             
-            if (termo.length > 2) { const divMapa = document.createElement('div'); divMapa.className = 'resultado-item'; divMapa.style.background = '#e8f5e9'; divMapa.style.borderLeft = '4px solid #2e7d32'; divMapa.innerHTML = `<span style="font-weight:bold; color:#2e7d32;">💲 Ver todos os preços de "${termo.toUpperCase()}" no mapa</span>`; divMapa.onclick = () => { estadoApp.filtroProduto = termo; getEl('modalBusca').style.display = 'none'; getEl('btnLimparFiltro').style.display = 'block'; desenharPinos(); }; getEl('resultadosBusca').appendChild(divMapa); }
+            if (termo.length > 2) { const divMapa = document.createElement('div'); divMapa.className = 'resultado-item'; divMapa.style.background = '#e8f5e9'; divMapa.style.borderLeft = '4px solid #2e7d32'; divMapa.innerHTML = `<span style="font-weight:bold; color:#2e7d32;">💲 Ver todos os preços de "${termo.toUpperCase()}" no mapa</span>`; divMapa.onclick = () => { estadoApp.filtroProduto = termo; getEl('modalBusca').style.display = 'none'; getEl('btnLimparFiltro').style.display = 'block'; window.agendarDesenho(); }; getEl('resultadosBusca').appendChild(divMapa); }
 
             let achouIA = false;
             if (termo.length > 2) {
@@ -829,17 +1057,15 @@
             let achouLocais = false;
             for (const nLocal in estadoApp.dadosHospedados) {
                 const dLugar = estadoApp.dadosHospedados[nLocal]; const iMatch = dLugar.itens.filter(i => !i.isLojistaPlace && (i.nome || "").toLowerCase().includes(termo));
-                if (iMatch.length > 0) { achouLocais = true; iMatch.forEach(item => { if (!dLugar.lat || !dLugar.lng) return; const div = document.createElement('div'); div.className = 'resultado-item'; const prc = (item.preco * cotacao).toFixed(2); div.innerHTML = `<span style="font-weight:700; color:#004d40;">🏪 ${nLocal}</span><span style="font-size:15px; color:#2e7d32; font-weight:bold; margin-top:2px;">${item.nome}: ${sim} ${prc}</span>`; div.onclick = () => { estadoApp.filtroProduto = item.nome; getEl('btnLimparFiltro').style.display = 'block'; getEl('modalBusca').style.display = 'none'; window.mapa.flyTo([dLugar.lat, dLugar.lng], 18, { duration: 1.5 }); desenharPinos(); }; getEl('resultadosBusca').appendChild(div); }); }
+                if (iMatch.length > 0) { achouLocais = true; iMatch.forEach(item => { if (!dLugar.lat || !dLugar.lng) return; const div = document.createElement('div'); div.className = 'resultado-item'; const prc = (item.preco * cotacao).toFixed(2); div.innerHTML = `<span style="font-weight:700; color:#004d40;">🏪 ${nLocal}</span><span style="font-size:15px; color:#2e7d32; font-weight:bold; margin-top:2px;">${item.nome}: ${sim} ${prc}</span>`; div.onclick = () => { estadoApp.filtroProduto = item.nome; getEl('btnLimparFiltro').style.display = 'block'; getEl('modalBusca').style.display = 'none'; window.mapa.flyTo({center: [dLugar.lng, dLugar.lat], zoom: 18, duration: 1500}); window.agendarDesenho(); }; getEl('resultadosBusca').appendChild(div); }); }
             }
 
             if (!achouLocais && !achouIA && termo.length > 2) { const divVazio = document.createElement('div'); divVazio.className = 'resultado-item'; divVazio.style.textAlign = 'center'; divVazio.style.cursor = 'default'; divVazio.innerHTML = `<span style="color:#666; margin-bottom:10px; display:block;">Ainda não temos dados sobre "${termo}" por aqui.</span><button class="btn-roxo" style="padding:8px; font-size:13px;" onclick="window.pesquisarComLocal('${termo.replace(/'/g, "\\'")}')">Pergunte aos Moradores Agora!</button>`; getEl('resultadosBusca').appendChild(divVazio); }
         });
 
         const planos = [getEl('btnPlan1'), getEl('btnPlan2'), getEl('btnPlan3')]; const precos = [4.99, 7.99, 12.99]; planos.forEach((p, i) => { bindClick(p?.id, () => { planos.forEach(pl => pl?.classList.remove('active')); p.classList.add('active'); estadoApp.planoPrecoUSD = precos[i]; }); });
-        const processarPgto = async (m) => { alert(`✅ Simulação: ${m}\n\nO cartão seria debitado em US$ ${estadoApp.planoPrecoUSD}.\n\nAcesso Premium liberado!`); estadoApp.buscasRestantes = 999; if(estadoApp.usuario) { await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: 999 }); } window.atualizarBadgeBuscas(); getEl('modalPaywall').style.display = 'none'; };
-        bindClick('btnApplePay', () => processarPgto('Apple Pay')); bindClick('btnGooglePay', () => processarPgto('Google Pay')); bindClick('btnFecharPaywall', () => getEl('modalPaywall').style.display = 'none');
-
-        window.addEventListener('load', () => { setTimeout(() => { getEl('splashScreen').style.opacity = '0'; setTimeout(() => { getEl('splashScreen').style.display = 'none'; atualizarPrecosPaywall(); }, 600); }, 2000); });
+        const processarPgto = async (m) => { alert(`✅ Simulação: ${m}\n\nO cartão seria debitado em US$ ${estadoApp.planoPrecoUSD}.\n\nAcesso Premium liberado!`); estadoApp.buscasRestantes = 999; if(estadoApp.usuario) { await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: 999 }); } window.atualizarBadgeBuscas(); getEl('modalAssinatura').style.display = 'none'; };
+        bindClick('btnApplePay', () => processarPgto('Apple Pay')); bindClick('btnGooglePay', () => processarPgto('Google Pay')); bindClick('btnFecharPaywall', () => getEl('modalAssinatura').style.display = 'none');
         
         function comprimirImagemBase64(file, callback) { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const MAX_WIDTH = 400; const MAX_HEIGHT = 400; let width = img.width; let height = img.height; if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } } canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height); callback(canvas.toDataURL('image/jpeg', 0.6)); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
 
@@ -860,13 +1086,13 @@
         
         window.iniciarModoPosicionamento = function(acao) {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
-            if (acao === 'ask' && estadoApp.perfil === 'turista' && estadoApp.buscasRestantes <= 0) { getEl('modalPaywall').style.display = 'flex'; return; }
+            if (acao === 'ask' && estadoApp.perfil === 'turista' && estadoApp.buscasRestantes <= 0) { getEl('modalAssinatura').style.display = 'flex'; return; }
             acaoPendente = acao; getEl('bottomActions').style.display = 'none'; getEl('posicionamentoUI').style.display = 'block'; getEl('alfineteCentral').style.display = 'flex'; getEl('alfineteAlvo').style.display = 'block';
         }
 
         window.abrirAdicionarItemDireto = function(nomeLocal, isLojista) {
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
-            try { if(window.mapa) window.mapa.closePopup(); } catch(e) {}
+            try { window.marcadoresAtuais.forEach(m => { if(m.getPopup() && m.getPopup().isOpen()) m.togglePopup(); }); } catch(e) {}
             
             const sel = getEl('selectLocal'); let optionExists = false;
             for(let i=0; i<sel.options.length; i++){ if(sel.options[i].value === nomeLocal) optionExists = true; }
@@ -883,15 +1109,9 @@
             
             const placeData = estadoApp.dadosHospedados[nomeLocal];
             if (placeData) { coordSelecionada = { lat: placeData.lat, lng: placeData.lng }; } 
-            else { coordSelecionada = window.mapa.getCenter(); }
+            else { coordSelecionada = window.mapa.getCenter(); } 
             
             getEl('modalForm').style.display = 'flex';
-        };
-
-        window.iniciarVerificacaoLojista = function(nomeLocal) {
-            try { if(window.mapa) window.mapa.closePopup(); } catch(e) {}
-            localParaPromover = nomeLocal;
-            getEl('modalVerificacaoLojista').style.display = 'flex';
         };
 
         bindClick('btnUploadDocLojista', () => getEl('inputDocLojista').click());
@@ -904,7 +1124,8 @@
         bindClick('btnCancelarPos', () => { getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex'; });
         
         bindClick('btnConfirmarPos', () => {
-            coordSelecionada = window.mapa.getCenter(); getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex';
+            coordSelecionada = window.mapa.getCenter(); 
+            getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex';
             if (acaoPendente === 'add') { delete getEl('modalForm').dataset.modoLojista; setTxt('t_btnSave', "Salvar (+R$ 0,25)"); getEl('t_formTitle').innerText = "Novo Registro"; getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; } 
             else if (acaoPendente === 'ask') { getEl('nomeProdutoPergunta').value = ''; getEl('estimativaIA').style.display = 'none'; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; }
             else if (acaoPendente === 'addLojista') { fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex'; }
@@ -1084,35 +1305,25 @@
             let h = `<option value="NEW" id="t_optNewPlace">${dicionario[estadoApp.idioma].optNewPlace}</option>`; 
             Object.keys(estadoApp.dadosHospedados).sort().forEach(n => { if(n !== "Desconhecido" && !n.includes("🚶 Ambulante")) h += `<option value="${n}">${n}</option>`; }); 
             getEl('selectLocal').innerHTML = h;
-            desenharPinos();
+            window.agendarDesenho();
         });
 
         onSnapshot(collection(db, "perguntas"), (snapshot) => {
-            estadoApp.perguntasAbertas = {}; snapshot.forEach((doc) => { const p = doc.data(); if(p.status === "aberta") estadoApp.perguntasAbertas[doc.id] = p; }); desenharPinos(); 
+            estadoApp.perguntasAbertas = {}; snapshot.forEach((doc) => { const p = doc.data(); if(p.status === "aberta") estadoApp.perguntasAbertas[doc.id] = p; }); window.agendarDesenho(); 
         });
 
         function desenharPinos() {
-            camadaDePinos.clearLayers(); marcadoresNoMapa = {}; const t = dicionario[estadoApp.idioma]; const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
-
-            let myLat = pinoUsuario ? pinoUsuario.getLatLng().lat : null;
-            let myLng = pinoUsuario ? pinoUsuario.getLatLng().lng : null;
-            
-            if (estadoApp.perfil === 'avaliador' && myLat && myLng) {
-                if(circuloAvaliador) window.mapa.removeLayer(circuloAvaliador);
-                circuloAvaliador = L.circle([myLat, myLng], { color: '#ffc107', fillColor: '#ffc107', fillOpacity: 0.1, radius: 400, weight: 2, dashArray: '5, 5' }).addTo(window.mapa);
-            } else if (circuloAvaliador) {
-                window.mapa.removeLayer(circuloAvaliador); circuloAvaliador = null;
+            if(window.marcadoresAtuais) {
+                window.marcadoresAtuais.forEach(m => m.remove());
             }
+            window.marcadoresAtuais = [];
+            window.marcadoresMapboxGlobais = {};
+            
+            const t = dicionario[estadoApp.idioma]; const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
 
             for (const nomeL in estadoApp.dadosHospedados) {
                 const dadosL = estadoApp.dadosHospedados[nomeL]; 
-                
                 if (dadosL.lat == null || dadosL.lng == null) continue; 
-                
-                if (estadoApp.perfil === 'avaliador' && myLat && myLng) {
-                    const dist = calcularDistancia(myLat, myLng, dadosL.lat, dadosL.lng);
-                    if (dist > 400) continue; 
-                }
 
                 const avaliacoesValidas = dadosL.itens.filter(i => !i.isLojistaPlace);
                 let tItens = avaliacoesValidas.length; let qAb = 0; let qAp = 0; let htmlLista = '';
@@ -1130,9 +1341,11 @@
                     const nomeCurto = nomeStr.length > 15 ? nomeStr.substring(0,12)+'...' : nomeStr;
                     
                     const htmlPino = `<div class="marker-dolar pulse-dolar"><span style="font-size:10px; font-weight:600; text-transform:uppercase; opacity:0.9; margin-bottom:2px;">${nomeCurto}</span><span>💲 ${sim} ${precoLocal}</span></div>`;
-                    const icDolar = L.divIcon({ className: 'marker-pergunta-container', html: htmlPino, iconSize: [110, 45], iconAnchor: [55, 22] });
-                    const pinoDinheiro = L.marker([dadosL.lat, dadosL.lng], {icon: icDolar, zIndexOffset: 9999});
                     
+                    const elFiltro = document.createElement('div');
+                    elFiltro.className = 'marker-pergunta-container';
+                    elFiltro.innerHTML = htmlPino;
+
                     avaliacoesValidas.forEach(item => {
                         let vUp = item.votos_up || 0; let vDown = item.votos_down || 0; let totalV = vUp + vDown; let stAtual = 'pendente'; let minVotosRequeridos = 5; 
                         if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
@@ -1169,7 +1382,6 @@
                         else if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#004d40; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer;">📋 Adicionar Produto ao Menu</button>`; }
                     }
 
-                    // 🚨 GERANDO AS ESTRELAS GIGANTES DO FILTRO 🚨
                     let estrelasStr = `<span style="font-size: 24px; line-height: 1; margin-right: 5px; display: flex; align-items: center;">⭐</span> <span style="font-size: 15px;">Nova Loja</span>`;
                     if(estadoApp.avaliacoes && estadoApp.avaliacoes[nomeL]) {
                         const revs = estadoApp.avaliacoes[nomeL]; let soma = 0; revs.forEach(r => soma += r.nota); const media = (soma / revs.length).toFixed(1);
@@ -1177,7 +1389,18 @@
                     }
 
                     let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3><div class="badge-estrelas">${estrelasStr}</div>${btnPromoverHtml}<div class="lista-itens">${htmlLista}</div>${btnAdicionarItemHtml}</div>`;
-                    pinoDinheiro.bindPopup(popupHtml); camadaDePinos.addLayer(pinoDinheiro); continue; 
+                    
+                    try {
+                        const markerFiltro = new mapboxgl.Marker({element: elFiltro}).setLngLat([dadosL.lng, dadosL.lat]).addTo(window.mapa);
+                        elFiltro.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+                            new mapboxgl.Popup({offset: 25, closeOnClick: true}).setLngLat([dadosL.lng, dadosL.lat]).setHTML(popupHtml).addTo(window.mapa);
+                        });
+                        window.marcadoresAtuais.push(markerFiltro);
+                        window.marcadoresMapboxGlobais[nomeL] = markerFiltro;
+                    } catch(err) { console.error("Erro ao desenhar pino", err); }
+                    continue; 
                 }
 
                 if (estadoApp.perfil === 'turista' && !estadoApp.radarAtivo && !isPremium) { continue; }
@@ -1214,30 +1437,47 @@
                 });
                 
                 let txAbuso = tItens > 0 ? (qAb / tItens) * 100 : 0; let txAprov = tItens > 0 ? (qAp / tItens) * 100 : 0; 
-                let icP = iYellow; let st = `<p style="color:#f57c00;font-weight:700;font-size:13px;margin:0 0 10px 0;">${t.statusYellow}</p>`;
+                let colorPino = '#f57c00'; let st = `<p style="color:#f57c00;font-weight:700;font-size:13px;margin:0 0 10px 0;">${t.statusYellow}</p>`;
                 
                 if (isDono) { 
-                    icP = iMinhaLoja; st = `<p style="color:#0288d1;font-weight:900;font-size:14px;margin:0 0 10px 0;">🏢 Sua Loja (Controle Total)</p>`; 
+                    st = `<p style="color:#0288d1;font-weight:900;font-size:14px;margin:0 0 10px 0;">🏢 Sua Loja (Controle Total)</p>`; 
                 } 
                 else if (isPremium) { 
-                    icP = iPremium; st = `<p style="color:#f57c00;font-weight:900;font-size:13px;margin:0 0 10px 0;">⭐ Local Parceiro (Verificado)</p>`; 
+                    st = `<p style="color:#f57c00;font-weight:900;font-size:13px;margin:0 0 10px 0;">⭐ Local Parceiro (Verificado)</p>`; 
                 } 
                 else if (lugarLojista) { 
-                    icP = iGreen; st = `<p style="color:#2e7d32;font-weight:700;font-size:13px;margin:0 0 10px 0;">✅ Negócio Local</p>`; 
+                    colorPino = '#2e7d32'; st = `<p style="color:#2e7d32;font-weight:700;font-size:13px;margin:0 0 10px 0;">✅ Negócio Local</p>`; 
                 } 
                 else {
-                    if (txAbuso >= 30) { icP = iRed; st = `<p style="color:#c62828;font-weight:700;font-size:13px;margin:0 0 10px 0;">${t.statusRed} (${txAbuso.toFixed(0)}% Abusivo)</p>`; } 
-                    else if (txAprov >= 60) { icP = iGreen; st = `<p style="color:#2e7d32;font-weight:700;font-size:13px;margin:0 0 10px 0;">${t.statusGreen} (${txAprov.toFixed(0)}% Seguro)</p>`; }
+                    if (txAbuso >= 30) { colorPino = '#c62828'; st = `<p style="color:#c62828;font-weight:700;font-size:13px;margin:0 0 10px 0;">${t.statusRed} (${txAbuso.toFixed(0)}% Abusivo)</p>`; } 
+                    else if (txAprov >= 60) { colorPino = '#2e7d32'; st = `<p style="color:#2e7d32;font-weight:700;font-size:13px;margin:0 0 10px 0;">${t.statusGreen} (${txAprov.toFixed(0)}% Seguro)</p>`; }
                 }
 
                 const safeLocalName = nomeL.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 
                 let btnPromoverHtml = ''; 
                 if (isDono && !isPremium) {
-                    btnPromoverHtml = `
-                    <div style="background:#fff3e0; border:2px dashed #ff9800; padding:10px; border-radius:10px; margin-bottom:15px; text-align:center;">
-                        <button onclick="event.stopPropagation(); window.iniciarVerificacaoLojista('${safeLocalName}')" style="width:100%; padding:12px; background:linear-gradient(135deg, #ffc107, #ff9800); color:#000; font-weight:900; font-size:14px; border:none; border-radius:8px; cursor:pointer; box-shadow:0 4px 10px rgba(255, 193, 7, 0.4); animation: pulseGold 2s infinite;">⭐ VERIFICAR E DESTACAR</button>
-                    </div>`;
+                    let emTeste = false;
+                    let diasRestantes = 0;
+                    if (estadoApp.fimTrial) {
+                        const agora = Date.now();
+                        if (agora <= estadoApp.fimTrial) {
+                            emTeste = true;
+                            diasRestantes = Math.ceil((estadoApp.fimTrial - agora) / (1000 * 60 * 60 * 24));
+                        }
+                    }
+                    if (emTeste) {
+                        btnPromoverHtml = `
+                        <div style="background:#e8f5e9; border:2px dashed #4caf50; padding:10px; border-radius:10px; margin-bottom:15px; text-align:center;">
+                            <p style="color:#2e7d32; font-weight:900; font-size:14px; margin:0;">🎁 30 Dias Grátis Ativos!</p>
+                            <p style="color:#555; font-size:11px; margin:5px 0 0 0;">Aproveite. Restam ${diasRestantes} dias de destaque.</p>
+                        </div>`;
+                    } else {
+                        btnPromoverHtml = `
+                        <div style="background:#fff3e0; border:2px dashed #ff9800; padding:10px; border-radius:10px; margin-bottom:15px; text-align:center;">
+                            <button onclick="event.stopPropagation(); window.iniciarVerificacaoLojista('${safeLocalName}')" style="width:100%; padding:12px; background:linear-gradient(135deg, #ffc107, #ff9800); color:#000; font-weight:900; font-size:14px; border:none; border-radius:8px; cursor:pointer; box-shadow:0 4px 10px rgba(255, 193, 7, 0.4); animation: pulseGold 2s infinite;">⭐ VERIFICAR E DESTACAR</button>
+                        </div>`;
+                    }
                 }
 
                 let btnAdicionarItemHtml = '';
@@ -1249,16 +1489,11 @@
                     else if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:10px; margin-bottom:8px; padding:12px; background:#004d40; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer;">📋 Adicionar Produto ao Menu</button>`; }
                 }
 
-                // 🚨 GERANDO AS ESTRELAS GIGANTES GERAIS 🚨
                 let estrelasStr = `<span style="font-size: 24px; line-height: 1; margin-right: 5px; display: flex; align-items: center;">⭐</span> <span style="font-size: 15px;">Nova Loja</span>`;
                 if(estadoApp.avaliacoes && estadoApp.avaliacoes[nomeL]) {
                     const revs = estadoApp.avaliacoes[nomeL]; let soma = 0; revs.forEach(r => soma += r.nota); const media = (soma / revs.length).toFixed(1);
                     estrelasStr = `<span style="font-size: 24px; line-height: 1; margin-right: 5px; display: flex; align-items: center;">⭐</span> <span style="font-size: 15px;">${media} (${revs.length} opiniões)</span>`;
                 }
-
-                const btnVerAvaliacoesHtml = `<button onclick="event.stopPropagation(); window.abrirAvaliacoes('${safeLocalName}')" style="width:100%; margin-bottom:5px; padding:10px; background:#1976d2; color:white; font-weight:bold; font-size:13px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(25, 118, 210, 0.3);">💬 Ver / Deixar Avaliação</button>`;
-
-                if (htmlLista === '' && !lugarLojista) continue; 
 
                 let popupHtml = `<div class="popup-info">
                     <h3 style="margin-bottom: 8px;">🏪 ${nomeL}</h3>
@@ -1271,52 +1506,83 @@
                     ${btnVerAvaliacoesHtml}
                 </div>`;
 
-                const pino = L.marker([dadosL.lat, dadosL.lng], {icon: icP}); 
-                pino.bindPopup(popupHtml); 
-                camadaDePinos.addLayer(pino); marcadoresNoMapa[nomeL] = pino;
+                let pinoMapbox;
+                let elPinoBase = null;
+
+                if (isPremium) {
+                    elPinoBase = document.createElement('div');
+                    elPinoBase.className = 'marker-premium'; elPinoBase.innerHTML = '⭐';
+                } else if (isDono) {
+                    elPinoBase = document.createElement('div');
+                    elPinoBase.className = 'minha-loja-container'; elPinoBase.innerHTML = '<div class="marker-minha-loja">🏬<div class="label-minha-loja">SUA LOJA</div></div>';
+                }
+
+                try {
+                    if (elPinoBase) {
+                        pinoMapbox = new mapboxgl.Marker({element: elPinoBase}).setLngLat([dadosL.lng, dadosL.lat]).addTo(window.mapa);
+                        elPinoBase.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+                            new mapboxgl.Popup({offset: 25, closeOnClick: true}).setLngLat([dadosL.lng, dadosL.lat]).setHTML(popupHtml).addTo(window.mapa);
+                        });
+                    } else {
+                        const popupNormal = new mapboxgl.Popup({ offset: 25 }).setHTML(popupHtml);
+                        pinoMapbox = new mapboxgl.Marker({color: colorPino}).setLngLat([dadosL.lng, dadosL.lat]).setPopup(popupNormal).addTo(window.mapa);
+                        pinoMapbox.getElement().addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            pinoMapbox.togglePopup();
+                        });
+                    }
+                    window.marcadoresAtuais.push(pinoMapbox);
+                    window.marcadoresMapboxGlobais[nomeL] = pinoMapbox;
+                } catch(err) { console.error(err); }
             }
 
             for (const idPerg in estadoApp.perguntasAbertas) {
                 if (estadoApp.filtroProduto) continue;
 
                 const perg = estadoApp.perguntasAbertas[idPerg]; const autorP = perg.autorUid || '';
-                
                 if (!perg.lat || !perg.lng) continue; 
-
-                if (estadoApp.perfil === 'avaliador' && myLat && myLng) {
-                    const dist = calcularDistancia(myLat, myLng, perg.lat, perg.lng);
-                    if (dist > 400) continue; 
-                }
 
                 if (estadoApp.perfil === 'lojista' || (estadoApp.perfil === 'turista' && (!estadoApp.usuario || autorP !== estadoApp.usuario.uid))) continue; 
 
-                let iconUsado = iPurpleGhost; let corArea = '#9c27b0';      
-                if (perg.fotoSolicitada) { iconUsado = iCameraGhost; corArea = '#f57c00'; } 
-                else if (perg.fotoUrl) { iconUsado = iPhotoGhost; corArea = '#1976d2'; }
+                let corArea = '#9c27b0';      
+                let typeAnim = 'marker-pergunta-anim'; let typeIcon = '?';
+                if (perg.fotoSolicitada) { typeAnim = 'marker-camera-anim'; typeIcon = '📸'; corArea = '#f57c00'; } 
+                else if (perg.fotoUrl) { typeAnim = 'marker-foto-anim'; typeIcon = '🖼️'; corArea = '#1976d2'; }
 
-                const pinoDuvida = L.marker([perg.lat, perg.lng], {icon: iconUsado, zIndexOffset: 9999}); 
-                const resps = perg.respostas || []; const qtdResps = resps.length; const tipoBadge = perg.tipoLocal === 'Ambulante' ? '🚶 Ambulante' : '🏪 Fixo';
-                let htmlPopup = ''; const imgHtml = perg.fotoUrl ? `<img src="${perg.fotoUrl}" style="width:100%; max-height:120px; object-fit:cover; border-radius:8px; border: 1px solid #ccc; margin-bottom:8px;">` : '';
+                const elDuvida = document.createElement('div');
+                elDuvida.className = 'marker-pergunta-container';
+                elDuvida.innerHTML = `<div class="ghost-anim"><div class="${typeAnim}">${typeIcon}</div></div>`;
 
-                if(estadoApp.perfil === 'avaliador') {
-                    const raio = perg.tipoLocal === 'Ambulante' ? 80 : 35;
-                    const areaSegura = L.circle([perg.lat, perg.lng], { color: corArea, fillColor: corArea, fillOpacity: 0.15, radius: raio, weight: 2, dashArray: '5, 5', className: 'area-segura-anim' });
-                    
-                    let btnFoto = '';
-                    if (!perg.fotoUrl && !perg.fotoSolicitada) { btnFoto = `<button onclick="window.solicitarFoto('${idPerg}', '${autorP}', '${(perg.nomeItem||'').replace(/'/g, "\\'").replace(/"/g, '&quot;')}', '${(perg.nomeLocal||'').replace(/'/g, "\\'").replace(/"/g, '&quot;')}')" class="btn-laranja">${t.btnReqFoto}</button>`; } 
-                    else if (perg.fotoSolicitada) { btnFoto = `<p style="font-size:12px; color:#f57c00; font-weight:bold;">⏳ Aguardando envio de foto...</p>`; }
-                    
-                    htmlPopup = `<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:${corArea};">Dúvida na Área</h3><p style="margin:0 0 5px 0; font-size:14px;">Procurar por: <strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}<p style="font-size:12px; color:#f57c00; font-weight:bold;">Respostas: ${qtdResps}/3</p><button onclick="window.abrirModalResposta('${idPerg}')" style="background:#2e7d32; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:5px; width:100%;">Responder e Ganhar</button>${btnFoto}</div>`; 
-                    
-                    areaSegura.bindPopup(htmlPopup); pinoDuvida.bindPopup(htmlPopup); 
-                    camadaDePinos.addLayer(areaSegura); camadaDePinos.addLayer(pinoDuvida); 
-                } else {
-                    let btnEnviarExtra = ''; let statusMsg = `<p style="font-size:12px; color:#f57c00; font-weight:bold;">⏳ Aguardando avaliadores...</p>`;
-                    if(perg.fotoSolicitada) { statusMsg = `<p style="font-size:12px; color:#c62828; font-weight:bold; line-height:1.2; margin-bottom:5px;">🚨 Os avaliadores precisam de uma foto para ajudar!</p>`; btnEnviarExtra = `<button onclick="window.abrirEnvioFotoExtra('${idPerg}')" style="background:#f57c00; color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:5px;">📸 Enviar Foto Agora</button>`; }
-                    htmlPopup = `<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:${corArea};">Sua Dúvida</h3><p style="margin:0 0 5px 0; font-size:14px;"><strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}${statusMsg}${btnEnviarExtra}</div>`;
-                    
-                    pinoDuvida.bindPopup(htmlPopup); camadaDePinos.addLayer(pinoDuvida);
-                }
+                try {
+                    const pinoDuvida = new mapboxgl.Marker({element: elDuvida}).setLngLat([perg.lng, perg.lat]).addTo(window.mapa);
+                    window.marcadoresAtuais.push(pinoDuvida);
+
+                    const resps = perg.respostas || []; const qtdResps = resps.length; const tipoBadge = perg.tipoLocal === 'Ambulante' ? '🚶 Ambulante' : '🏪 Fixo';
+                    let htmlPopup = ''; const imgHtml = perg.fotoUrl ? `<img src="${perg.fotoUrl}" style="width:100%; max-height:120px; object-fit:cover; border-radius:8px; border: 1px solid #ccc; margin-bottom:8px;">` : '';
+
+                    if(estadoApp.perfil === 'avaliador') {
+                        let btnFoto = '';
+                        if (!perg.fotoUrl && !perg.fotoSolicitada) { btnFoto = `<button onclick="window.solicitarFoto('${idPerg}', '${autorP}', '${(perg.nomeItem||'').replace(/'/g, "\\'").replace(/"/g, '&quot;')}', '${(perg.nomeLocal||'').replace(/'/g, "\\'").replace(/"/g, '&quot;')}')" class="btn-laranja">${t.btnReqFoto}</button>`; } 
+                        else if (perg.fotoSolicitada) { btnFoto = `<p style="font-size:12px; color:#f57c00; font-weight:bold;">⏳ Aguardando envio de foto...</p>`; }
+                        
+                        htmlPopup = `<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:${corArea};">Dúvida na Área</h3><p style="margin:0 0 5px 0; font-size:14px;">Procurar por: <strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}<p style="font-size:12px; color:#f57c00; font-weight:bold;">Respostas: ${qtdResps}/3</p><button onclick="window.abrirModalResposta('${idPerg}')" style="background:#2e7d32; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold; margin-top:5px; width:100%;">Responder e Ganhar</button>${btnFoto}</div>`; 
+                    } else {
+                        let btnEnviarExtra = ''; let statusMsg = `<p style="font-size:12px; color:#f57c00; font-weight:bold;">⏳ Aguardando avaliadores...</p>`;
+                        if(perg.fotoSolicitada) { statusMsg = `<p style="font-size:12px; color:#c62828; font-weight:bold; line-height:1.2; margin-bottom:5px;">🚨 Os avaliadores precisam de uma foto para ajudar!</p>`; btnEnviarExtra = `<button onclick="window.abrirEnvioFotoExtra('${idPerg}')" style="background:#f57c00; color:white; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:5px;">📸 Enviar Foto Agora</button>`; }
+                        htmlPopup = `<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 5px 0; color:${corArea};">Sua Dúvida</h3><p style="margin:0 0 5px 0; font-size:14px;"><strong>${perg.nomeLocal}</strong> <span style="font-size:10px; background:#eee; padding:2px 4px; border-radius:4px;">${tipoBadge}</span></p><p style="margin:0 0 10px 0; font-size:14px;">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}${statusMsg}${btnEnviarExtra}</div>`;
+                    }
+
+                    elDuvida.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+                        new mapboxgl.Popup({offset: 25, closeOnClick: true})
+                            .setLngLat([perg.lng, perg.lat])
+                            .setHTML(htmlPopup)
+                            .addTo(window.mapa);
+                    });
+                } catch (err) { console.error(err); }
             }
             if(estadoApp.usuario) setTxt('saldoDisplay', `${sim} ${(estadoApp.saldo * cotacao).toFixed(2)}`);
         }
