@@ -1,0 +1,106 @@
+{
+  "entities": {
+    "user": {
+      "title": "User Profile",
+      "description": "User profile data including balance and role.",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "saldo": { "type": "number" },
+        "buscas": { "type": "number" },
+        "isLojistaPremium": { "type": "boolean" },
+        "fimTrial": { "type": "number" },
+        "dataCadastro": { "type": "string", "format": "date-time" },
+        "role": { "type": "string", "enum": ["tourist", "local", "merchant", "admin"] }
+      },
+      "required": ["nome", "email", "saldo", "buscas"]
+    },
+    "price": {
+      "title": "Price Record",
+      "description": "A record of a price for a product at a specific location.",
+      "type": "object",
+      "properties": {
+        "local": { "type": "string" },
+        "nome": { "type": "string" },
+        "preco": { "type": "number" },
+        "categoria": { "type": "string" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "status": { "type": "string", "enum": ["pendente", "aprovado", "abusivo"] },
+        "premium": { "type": "boolean" },
+        "votos_up": { "type": "number" },
+        "votos_down": { "type": "number" },
+        "votaram_up": { "type": "array", "items": { "type": "string" } },
+        "votaram_down": { "type": "array", "items": { "type": "string" } },
+        "denuncias": { "type": "number" },
+        "denunciaram": { "type": "array", "items": { "type": "string" } },
+        "autor": { "type": "string" },
+        "autorUid": { "type": "string" },
+        "tipoLocal": { "type": "string", "enum": ["Fixo", "Ambulante"] },
+        "isLojistaPlace": { "type": "boolean" },
+        "fotosLocal": { "type": "array", "items": { "type": "string" } },
+        "data": { "type": "string", "format": "date-time" }
+      },
+      "required": ["local", "nome", "preco", "lat", "lng", "autor"]
+    },
+    "question": {
+      "title": "Tourist Question",
+      "description": "A question from a tourist about a price.",
+      "type": "object",
+      "properties": {
+        "nomeItem": { "type": "string" },
+        "nomeLocal": { "type": "string" },
+        "tipoLocal": { "type": "string" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "status": { "type": "string", "enum": ["aberta", "respondida"] },
+        "respostas": { "type": "array", "items": { "type": "object" } },
+        "autorUid": { "type": "string" },
+        "fotoUrl": { "type": "string" },
+        "fotoSolicitada": { "type": "boolean" },
+        "data": { "type": "string", "format": "date-time" }
+      },
+      "required": ["nomeItem", "nomeLocal", "lat", "lng", "autorUid"]
+    },
+    "notification": {
+      "title": "Notification",
+      "description": "A notification for a user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "tipo": { "type": "string" },
+        "titulo": { "type": "string" },
+        "nomeItem": { "type": "string" },
+        "nomeLocal": { "type": "string" },
+        "precoReal": { "type": "number" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "lida": { "type": "boolean" },
+        "data": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "tipo", "titulo", "lida"]
+    },
+    "review": {
+      "title": "Review",
+      "description": "A review for a location.",
+      "type": "object",
+      "properties": {
+        "local": { "type": "string" },
+        "uid": { "type": "string" },
+        "nome": { "type": "string" },
+        "nota": { "type": "number" },
+        "comentario": { "type": "string" },
+        "data": { "type": "string", "format": "date-time" }
+      },
+      "required": ["local", "uid", "nome", "nota"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "user", "description": "User profiles" },
+    "/precos/{priceId}": { "schema": "price", "description": "Price records" },
+    "/perguntas/{questionId}": { "schema": "question", "description": "Tourist questions" },
+    "/notificacoes/{notifId}": { "schema": "notification", "description": "User notifications" },
+    "/avaliacoes/{reviewId}": { "schema": "review", "description": "Location reviews" }
+  }
+}
