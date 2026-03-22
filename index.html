@@ -6,20 +6,19 @@
     <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GringoSafe • Smart Travel</title>
-    
+    <title>GringoSafe 3D - Preço Justo</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#FFFFFF">
+    <meta name="theme-color" content="#f0f2f5">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="./logo.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js'></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest"></script>
@@ -28,194 +27,184 @@
         :root {
             --brand-primary: #10B981;
             --brand-secondary: #6366F1;
-            --brand-accent: #F59E0B;
-            --bg-glass: rgba(255, 255, 255, 0.85);
+            --bg-light: #F8FAFC;
             --text-dark: #0F172A;
             --text-muted: #64748B;
-            --border-glass: rgba(255, 255, 255, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.85);
             --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-            --radius-ui: 24px;
+            --radius-ui: 20px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body, html { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #FFFFFF; 
-            color: var(--text-dark);
-            height: 100%; width: 100%; overflow: hidden;
-        }
-
-        /* --- SPLASH SCREEN --- */
-        #splashScreen { 
-            position: fixed; inset: 0; background: #FFFFFF; z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.8s ease;
-        }
-        #splashScreen h1 {
-            font-family: 'Poppins', sans-serif; font-size: 38px; font-weight: 800;
-            background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
-            background-clip: text; -webkit-background-clip: text;
-            color: transparent; -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
-        }
-        #t_splashSub { color: var(--text-muted); font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
-
-        /* --- MAPA --- */
-        #mapa { position: absolute; inset: 0; z-index: 0; }
-
-        /* --- TELA DE PERFIL INICIAL --- */
-        #telaPerfil { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); z-index: 9000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; font-family: 'Inter', sans-serif; overflow: hidden; background-color: var(--bg-light); color: var(--text-dark); }
+        
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: white; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s ease-out; }
+        #splashScreen h1 { font-family: 'Poppins', sans-serif; font-size: 38px; font-weight: 800; background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary)); -webkit-background-clip: text; color: transparent; margin: 0; }
+        #t_splashSub { font-size: 14px; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; margin-top: 5px; text-transform: uppercase; }
+        
+        #telaPerfil { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); z-index: 9000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
         .lang-selector-inicial { display: flex; gap: 15px; margin-bottom: 25px; background: #F1F5F9; padding: 8px 16px; border-radius: 30px; }
         .lang-selector-inicial div { cursor: pointer; font-size: 15px; font-weight: 600; padding: 8px 16px; border-radius: 20px; transition: 0.2s; color: var(--text-muted); }
         .lang-selector-inicial div:hover, .lang-selector-inicial div.ativo-option { background: white; color: var(--brand-primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         #t_roleTitle { font-family: 'Poppins', sans-serif; font-size: 24px; margin-bottom: 25px; color: var(--text-dark); }
-        
-        .btn-perfil { background: white; color: var(--text-dark); border: 2px solid #E2E8F0; padding: 20px; width: 100%; max-width: 320px; border-radius: 20px; font-size: 18px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-bottom: 12px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .btn-perfil { background: white; color: var(--text-dark); border: 2px solid #E2E8F0; padding: 20px; width: 100%; max-width: 320px; border-radius: var(--radius-ui); font-size: 18px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-bottom: 12px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .btn-perfil span { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-muted); }
         .btn-perfil:active { transform: scale(0.96); border-color: var(--brand-primary); }
         .btn-perfil.avaliador { border-color: #FDE68A; background: #FFFBEB; }
         .btn-perfil.lojista { border-color: #FED7AA; background: #FFF7ED; }
-
-        /* --- GLASS PANELS (Ilhas Flutuantes) --- */
-        .glass-island {
-            background: var(--bg-glass);
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid var(--border-glass);
-            box-shadow: var(--shadow-float);
-        }
-
-        /* --- TOP NAV --- */
-        .header-island {
-            position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-            width: calc(100% - 30px); max-width: 500px; height: 60px;
-            border-radius: var(--radius-ui); display: flex; align-items: center;
-            padding: 0 20px; z-index: 5000; justify-content: space-between;
-        }
-        .brand-logo { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-dark); }
-        .brand-logo b { color: var(--brand-primary); font-weight: 800; font-size: 22px; }
+        
+        .header-island { position: absolute; top: 15px; left: 15px; right: 15px; height: 60px; background-color: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: var(--text-dark); display: flex; justify-content: space-between; align-items: center; border-radius: var(--radius-ui); box-shadow: var(--shadow-float); z-index: 1600; border: 1px solid rgba(255,255,255,0.4); padding: 0 15px; }
+        .brand-logo { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 18px; display: flex; align-items: center; gap: 8px; color: var(--text-dark); }
+        .btn-menu { background: transparent; border: none; color: var(--brand-primary); font-size: 24px; cursor: pointer; font-weight: bold; }
         
         .user-meta { display: flex; align-items: center; gap: 10px; }
-        .balance-pill { background: #F1F5F9; padding: 8px 16px; border-radius: 40px; font-weight: 700; font-size: 13px; color: var(--brand-primary); }
-        .notif-container { font-size: 22px; cursor: pointer; position: relative; }
-        .badge-notificacao { position: absolute; top: -2px; right: -2px; background: #EF4444; width: 10px; height: 10px; border-radius: 50%; display: none; box-shadow: 0 0 0 2px white; }
+        .user-level { background-color: #FEF3C7; color: #D97706; padding: 6px 12px; border-radius: 30px; font-size: 12px; font-weight: 700; }
+        .balance-pill { background-color: #ECFDF5; color: #059669; padding: 6px 12px; border-radius: 30px; font-size: 13px; font-weight: 700; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        
+        .notif-container { position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 5px; }
+        .badge-notificacao { position: absolute; top: -2px; right: -2px; background: #EF4444; color: white; font-size: 10px; font-weight: bold; width: 16px; height: 16px; border-radius: 50%; display: none; justify-content: center; align-items: center; box-shadow: 0 2px 4px rgba(239, 68, 68, 0.4); }
 
-        /* --- MENU LATERAL --- */
-        .side-menu { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: white; z-index: 8000; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 10px 0 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow-y: auto; border-top-right-radius: 30px; border-bottom-right-radius: 30px; }
+        .bloqueio-login { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); z-index: 1500; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        .bloqueio-login h3 { font-family: 'Poppins', sans-serif; color: var(--text-dark); font-size: 26px; margin: 10px 0; }
+        .bloqueio-login p { color: var(--text-muted); font-size: 15px; font-weight: 500; margin-bottom: 25px; }
+
+        .side-menu { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: white; z-index: 3000; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 10px 0 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow-y: auto; border-top-right-radius: 30px; border-bottom-right-radius: 30px; }
         .side-menu.open { left: 0; }
-        .menu-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 7500; }
         .user-card { padding: 30px 20px; background: #F8FAFC; display: flex; flex-direction: column; gap: 15px; border-bottom: 1px solid #E2E8F0; border-top-right-radius: 30px; }
         .user-info { display: flex; align-items: center; gap: 12px; font-family: 'Poppins', sans-serif; font-weight: 700; color: var(--text-dark); font-size: 18px; }
         .user-avatar { width: 48px; height: 48px; border-radius: 50%; background: #E2E8F0; display: flex; justify-content: center; align-items: center; font-size: 24px; overflow: hidden; }
         .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .btn-google { background: white; color: var(--text-dark); border: 1px solid #E2E8F0; padding: 12px; border-radius: 12px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .btn-sair { background: #FEE2E2; color: #DC2626; border: none; padding: 10px; border-radius: 12px; font-weight: 600; cursor: pointer; }
-        .menu-item { padding: 18px 25px; border-bottom: 1px solid #F1F5F9; color: var(--text-dark); font-size: 15px; font-weight: 600; display: flex; justify-content: space-between; cursor: pointer; transition: 0.2s; }
+        .menu-item { padding: 18px 25px; border-bottom: 1px solid #F1F5F9; color: var(--text-dark); font-size: 15px; font-weight: 600; display: flex; justify-content: space-between; cursor: pointer; transition: background 0.2s; }
         .menu-item:hover { background: #F8FAFC; }
         .sub-menu { display: none; background: #F8FAFC; flex-direction: column; border-bottom: 1px solid #F1F5F9; }
         .sub-menu.open { display: flex; }
         .sub-menu-item { padding: 14px 40px; color: var(--text-muted); font-size: 14px; font-weight: 500; cursor: pointer; display: flex; justify-content: space-between; }
-        .sub-menu-item.ativo-option { color: var(--brand-primary); font-weight: 700; }
+        .ativo-option { color: var(--brand-primary); font-weight: 700; }
+        .menu-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 2500; }
 
-        /* --- DOCK DE AÇÕES --- */
-        .action-dock { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 40px; z-index: 6000; }
-        .btn-dock { width: 54px; height: 54px; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1); font-size: 22px; }
+        #mapa { position: absolute; inset: 0; z-index: 0; } 
+
+        .action-dock { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; align-items: center; background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 10px 20px; border-radius: 40px; box-shadow: var(--shadow-float); border: 1px solid rgba(255,255,255,0.4); z-index: 3000; pointer-events: none; }
+        .btn-dock { pointer-events: auto; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); position: relative; z-index: 3001; }
         .btn-dock:active { transform: scale(0.85); }
-        .btn-add { width: 66px; height: 66px; background: linear-gradient(135deg, var(--brand-primary), #059669); color: white; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3); margin: 0 5px; }
-        .btn-util { background: white; color: var(--text-dark); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .btn-perguntar { background: linear-gradient(135deg, var(--brand-secondary), #4F46E5); color: white; display: none; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
-        .badge-buscas { position: absolute; top: -2px; right: -2px; background: #EF4444; color: white; font-size: 11px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid white; display: none; }
-
-        .btn-mira { position: fixed; bottom: 100px; right: 15px; background: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 1000; cursor: pointer; font-size: 20px; color: var(--text-dark); }
         
-        .btn-radar { position: fixed; bottom: 100px; left: 15px; background: var(--text-dark); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 15px rgba(0,0,0,0.2); z-index: 1000; cursor: pointer; transition: 0.3s; }
-        .btn-radar span { font-size: 9px; font-weight: 700; margin-top: -2px; }
-        .radar-anim { animation: radarPulseBtn 1.5s infinite; background: var(--brand-secondary) !important; }
-        @keyframes radarPulseBtn { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
+        .btn-adicionar { width: 64px; height: 64px; background: linear-gradient(135deg, var(--brand-primary), #059669); color: white; box-shadow: 0px 8px 20px rgba(16, 185, 129, 0.4); margin: 0 5px; }
+        .btn-perguntar { width: 64px; height: 64px; background: linear-gradient(135deg, #8B5CF6, #6366F1); color: white; box-shadow: 0px 8px 20px rgba(99, 102, 241, 0.4); display: none; margin: 0 5px; }
+        .btn-pesquisa { width: 50px; height: 50px; background: white; color: var(--text-dark); box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); border: 1px solid #E2E8F0; }
+        .badge-buscas { position: absolute; top: -5px; right: -5px; background: #EF4444; color: white; font-size: 11px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(239, 68, 68, 0.4); display: none; }
+        
+        .btn-mira { position: fixed; bottom: 110px; right: 15px; background-color: white; border: 1px solid #E2E8F0; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 8px 15px rgba(0,0,0,0.1); z-index: 1000; pointer-events: auto; cursor: pointer; color: var(--text-dark); }
 
-        /* --- UI DE POSICIONAMENTO --- */
+        .btn-radar { position: fixed; bottom: 110px; left: 15px; background-color: var(--text-dark); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0px 8px 15px rgba(0,0,0,0.2); z-index: 1000; pointer-events: auto; cursor: pointer; transition: 0.3s; }
+        .btn-radar span { font-size: 9px; font-family: 'Inter', sans-serif; font-weight: 700; margin-top: -2px; }
+        .radar-anim { animation: radarPulseBtn 1.5s infinite; background: var(--brand-secondary) !important; }
+        @keyframes radarPulseBtn { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
+
+        #toastAviso { display:none; position:fixed; top:85px; left:50%; transform:translateX(-50%); background:var(--text-dark); color:white; padding:12px 24px; border-radius:30px; z-index:9999; font-weight:600; font-size:14px; box-shadow:0 10px 25px rgba(0,0,0,0.2); animation: fadeInDown 0.3s ease-out; white-space: nowrap; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
         .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 8px; height: 8px; background-color: #EF4444; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 3px white, 0 4px 8px rgba(0,0,0,0.3); }
         .alfinete-central { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; pointer-events: none; display: none; margin-top: -6px; filter: drop-shadow(0px 8px 6px rgba(0,0,0,0.3)); }
-        
-        #posicionamentoUI { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: calc(100% - 30px); max-width: 400px; padding: 20px; z-index: 4000; text-align: center; display: none; }
-        #t_posHint { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .posicionamento-botoes { display: flex; gap: 12px; }
-        #btnCancelarPos { flex: 1; background: #F1F5F9; color: var(--text-muted); border: none; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; }
-        #btnConfirmarPos { flex: 1; background: var(--brand-primary); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
 
-        /* --- MODAIS MODERNOS (BENTO) --- */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(6px); z-index: 9500; align-items: flex-end; justify-content: center; padding: 10px; }
-        .modal-sheet { background-color: white; padding: 30px 25px; border-radius: 32px; width: 100%; max-width: 450px; text-align: center; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); animation: sheetUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        #posicionamentoUI { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: calc(100% - 30px); max-width: 400px; background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--border-glass); padding: 18px; border-radius: 24px; box-shadow: var(--shadow-float); z-index: 4000; text-align: center; display: none; }
+        .posicionamento-aviso { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .posicionamento-botoes { display: flex; gap: 12px; }
+        .btn-cancel-pos { flex: 1; background: #F1F5F9; color: var(--text-muted); border: none; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; }
+        .btn-confirm-pos { flex: 1; background: var(--brand-primary); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(6px); z-index: 3500; align-items: flex-end; justify-content: center; padding: 10px; }
+        .modal-content { background-color: white; padding: 30px 25px; border-radius: 32px; width: 100%; max-width: 450px; text-align: center; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); animation: sheetUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
-        .modal-sheet h3 { font-family: 'Poppins', sans-serif; font-size: 22px; color: var(--text-dark); margin-bottom: 5px; }
-        
-        .input-form { width: 100%; background: #F8FAFC; border: 2px solid transparent; padding: 16px; margin: 8px 0; border-radius: 16px; font-size: 15px; font-family: 'Inter', sans-serif; color: var(--text-dark); transition: all 0.3s ease; }
+        #modalBusca .modal-content, #modalNotificacoes .modal-content { justify-content: flex-start; text-align: left; }
+        .modal-content h3 { font-family: 'Poppins', sans-serif; font-size: 22px; color: var(--text-dark); margin-bottom: 5px; }
+
+        .resultados-busca { max-height: 50vh; overflow-y: auto; margin-top: 15px; display: grid; gap: 10px; }
+        .resultado-item { background: #F8FAFC; padding: 16px; border-radius: 16px; border: 1px solid #F1F5F9; cursor: pointer; display: flex; flex-direction: column; transition: 0.2s; }
+        .resultado-item:active { transform: scale(0.98); background: #F1F5F9; }
+
+        .input-form { width: 100%; background: #F8FAFC; border: 2px solid transparent; padding: 16px; margin: 8px 0; border-radius: 16px; font-size: 15px; font-family: 'Inter', sans-serif; color: var(--text-dark); box-sizing: border-box; transition: all 0.3s ease; }
         .input-form:focus { background: white; border-color: var(--brand-primary); outline: none; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
         
-        .bento-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; padding: 16px; transition: 0.2s; }
-        
-        .btn-salvar { background-color: var(--text-dark); color: white; border: none; padding: 16px; width: 100%; border-radius: 16px; font-size: 16px; font-weight: 700; margin-top: 15px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: 0.2s; }
-        .btn-salvar:active { transform: scale(0.98); }
-        .btn-cancelar { background: transparent; color: var(--text-muted); border: none; padding: 14px; width: 100%; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 5px; }
-
-        .btn-add-foto { background: #F8FAFC; color: var(--text-dark); border: 2px dashed #CBD5E1; padding: 16px; width: 100%; border-radius: 16px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-add-foto { background-color: #F8FAFC; color: var(--text-dark); border: 2px dashed #CBD5E1; padding: 16px; width: 100%; border-radius: 16px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
         .btn-add-foto:active { background: #F1F5F9; }
-        .linha-botoes-foto { display: flex; gap: 12px; margin: 15px 0; }
-        .imagem-preview { max-width: 100%; max-height: 140px; border-radius: 12px; display: none; margin: 10px auto; object-fit: cover; border: 1px solid #E2E8F0; }
-        .ia-status { font-size: 12px; color: var(--brand-secondary); font-weight: 600; display: none; margin: 5px 0; background: #EEF2FF; padding: 6px 10px; border-radius: 8px; }
+        
+        .btn-salvar { background-color: var(--text-dark); color: white; border: none; padding: 16px; width: 100%; border-radius: 16px; font-size: 16px; font-weight: 700; font-family: 'Inter', sans-serif; margin-top: 15px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: 0.2s; }
+        .btn-salvar:active { transform: scale(0.98); }
+        .btn-cancelar { background-color: transparent; color: var(--text-muted); border: none; padding: 14px; width: 100%; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 5px; }
 
         .btn-roxo { background-color: var(--brand-secondary); color: white; border: none; padding: 16px; width: 100%; border-radius: 16px; font-size: 16px; font-weight: 700; margin-top: 10px; cursor: pointer; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2); }
         .btn-laranja { background-color: var(--brand-accent); color: white; border: none; padding: 12px 16px; width: 100%; border-radius: 12px; font-size: 14px; font-weight: 700; margin-top: 5px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 5px; }
 
-        /* RESULTADOS DE BUSCA */
-        .resultados-busca { max-height: 50vh; overflow-y: auto; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; text-align: left; }
-        .resultado-item { background: #F8FAFC; padding: 16px; border-radius: 16px; border: 1px solid #F1F5F9; cursor: pointer; display: flex; flex-direction: column; transition: 0.2s; }
-        .resultado-item:active { transform: scale(0.98); background: #F1F5F9; }
-        .estimativa-ia-box { background: #ECFDF5; color: var(--brand-primary); border: 1px solid #A7F3D0; padding: 12px; border-radius: 12px; font-size: 13px; text-align: left; margin: 15px 0; display: none; font-weight: 600; }
+        .linha-botoes-foto { display: flex; gap: 12px; margin: 15px 0; }
 
-        /* NOTIFICAÇÕES */
-        .notif-item { padding: 16px; background: #F8FAFC; border: 1px solid #F1F5F9; border-radius: 16px; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-        .notif-item.nao-lida { background: #EEF2FF; border-color: #C7D2FE; }
+        .notif-item { padding: 16px; background: #F8FAFC; border: 1px solid #F1F5F9; border-radius: 16px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .notif-content { flex: 1; }
+        .notif-item.nao-lida { background: #ECFDF5; border-color: #A7F3D0; }
         .notif-titulo { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 14px; color: var(--text-dark); margin-bottom: 4px; }
         .notif-msg { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
         .btn-del-notif { background: transparent; border: none; font-size: 18px; cursor: pointer; padding: 5px; color: #CBD5E1; transition: 0.2s; }
         .btn-del-notif:hover { color: #EF4444; }
 
-        /* 🚨 CORREÇÃO DOS BUGS DO POPUP MAPBOX 🚨 */
+        /* 🚨 OCULTAR CONTROLOS NATIVOS DO MAPBOX QUE CAUSAM BUG VISUAL 🚨 */
+        .mapboxgl-ctrl-top-left, 
+        .mapboxgl-ctrl-top-right, 
+        .mapboxgl-ctrl-bottom-left, 
+        .mapboxgl-ctrl-bottom-right { 
+            display: none !important; 
+        }
+
+        /* 🚨 AJUSTE DE POPUPS DO MAPBOX E BUGS VISUAIS CORRIGIDOS 🚨 */
         .mapboxgl-popup { z-index: 1000; }
         .mapboxgl-popup-content { 
             border-radius: 20px; padding: 16px; font-family: 'Inter', sans-serif; 
             box-shadow: 0 20px 40px rgba(0,0,0,0.15); width: 320px; max-width: 90vw; border: 1px solid #E2E8F0;
         }
-        .mapboxgl-popup-close-button { font-size: 24px; color: #94A3B8; padding: 6px 10px; right: 4px; top: 4px; outline: none; border: none; background: transparent; transition: 0.2s; border-radius: 50%; }
+        .mapboxgl-popup-close-button { 
+            font-size: 24px; color: #94A3B8; padding: 6px 12px; 
+            position: absolute; right: 5px; top: 5px; z-index: 10; /* Mantém o X acima do texto */
+            outline: none; border: none; background: transparent; transition: 0.2s; border-radius: 50%; 
+        }
         .mapboxgl-popup-close-button:hover { background: #F1F5F9; color: #EF4444; }
 
         .popup-info { width: 100%; box-sizing: border-box; overflow: hidden; }
-        /* Correção: Título não encavala no X */
-        .popup-info h3 { font-family: 'Poppins', sans-serif; margin: 0 0 10px 0; font-size: 16px; color: var(--text-dark); border-bottom: 1px solid #E2E8F0; padding-bottom: 10px; padding-right: 25px; line-height: 1.3; white-space: normal; word-wrap: break-word; }
+        /* Correção Bug Visual: Título a não sobrepor-se ao botão X */
+        .popup-info h3 { 
+            font-family: 'Poppins', sans-serif; margin: 0 0 10px 0; font-size: 16px; color: var(--text-dark); 
+            border-bottom: 1px solid #E2E8F0; padding-bottom: 10px; 
+            padding-right: 35px; line-height: 1.3; word-wrap: break-word; 
+        }
         
         .lista-itens { max-height: 240px; overflow-y: auto; margin-top: 10px; padding-right: 4px; }
         .item-card { background: #F8FAFC; padding: 12px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #E2E8F0; position: relative; }
-        /* Correção: Nome e Preço não se esmagam */
-        .item-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 5px; }
-        .item-detalhes { display: flex; flex-direction: column; text-align: left; flex: 1; min-width: 0; } 
-        .item-nome { font-weight: 600; font-size: 14px; color: var(--text-dark); line-height: 1.3; margin-bottom: 2px; word-break: break-word; white-space: normal; }
-        .item-preco { font-weight: 800; color: var(--brand-primary); font-size: 15px; white-space: nowrap; flex-shrink: 0; }
+        /* Correção Bug Visual: Flex-start para não esmagar Nome e Preço */
+        .item-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
+        .item-detalhes { flex: 1; min-width: 0; text-align: left; } 
+        .item-nome { font-weight: 600; font-size: 14px; color: var(--text-dark); line-height: 1.3; margin: 0; }
+        .item-preco { font-weight: 800; color: var(--brand-primary); font-size: 15px; white-space: nowrap; flex-shrink: 0; text-align: right; }
         
         .item-acoes { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; align-items: center; flex-wrap: wrap; }
         .btn-voto { border: none; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: white; display: flex; align-items: center; gap: 4px; }
         .btn-editar { background: #E2E8F0; color: var(--text-dark); border: none; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        .btn-denuncia { background: transparent; border: none; font-size: 16px; cursor: pointer; color: #94A3B8; padding: 4px; }
+        .btn-denuncia { background: transparent; border: none; font-size: 14px; cursor: pointer; color: #94A3B8; padding: 4px; }
         
-        /* Correção: Botão não fica gigante */
-        .badge-estrelas { background: #FFFBEB; border: 1px solid #FDE68A; padding: 6px 12px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; color: #D97706; font-weight: 700; font-size: 13px; width: fit-content; }
+        /* Correção Bug Visual: O botão de "Nova Loja" e estrelas com tamanho exato ao centro */
+        .badge-estrelas { 
+            background: #FFFBEB; border: 1px solid #FDE68A; padding: 6px 14px; 
+            border-radius: 20px; display: flex; align-items: center; justify-content: center; 
+            margin: 0 auto 15px auto; color: #D97706; font-weight: 700; font-size: 13px; 
+            width: max-content; max-width: 100%; gap: 6px;
+        }
 
+        .imagem-preview { max-width: 100%; max-height: 140px; border-radius: 12px; display: none; margin: 10px auto; object-fit: cover; border: 1px solid #E2E8F0;}
+        .ia-status { font-size: 12px; color: var(--brand-secondary); font-weight: 600; display: none; margin: 5px 0; background: #EEF2FF; padding: 6px 10px; border-radius: 8px; }
+        
         .galeria-lojista { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 5px; }
         .galeria-lojista img { width: 75px; height: 75px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand-accent); flex-shrink: 0; }
+        .estimativa-ia-box { background: #ECFDF5; color: var(--brand-primary); border: 1px solid #A7F3D0; padding: 12px; border-radius: 12px; font-size: 13px; text-align: left; margin: 15px 0; display: none; font-weight: 600; }
 
-        /* PERFIS (MÁGICA CSS ORIGINAL MANTIDA) */
+        /* MÁGICA CSS DE PERFIS */
         body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista #t_level { display: none !important; }
         body.modo-turista #saldoDisplay { display: none !important; }
@@ -243,24 +232,28 @@
         body:not(.modo-lojista) #btnAreaLojista { display: none !important; }
         body:not(.modo-avaliador) #btnMinhaCarteira { display: none !important; }
 
-        /* PINOS DO MAPBOX MODERNO */
         .mapboxgl-marker { pointer-events: auto !important; cursor: pointer !important; }
         .marker-pergunta-container { width: 80px; height: 80px; background: transparent; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; pointer-events: auto; }
         .minha-loja-container { width: 50px; height: 75px; background: transparent; display: flex; justify-content: center; align-items: center; pointer-events: auto; cursor: pointer; }
         
+        @keyframes wanderGhost { 0% { transform: translate(0px, 0px); } 33% { transform: translate(25px, -20px); } 66% { transform: translate(-20px, 25px); } 100% { transform: translate(0px, 0px); } }
+        .ghost-anim { animation: wanderGhost 6s infinite ease-in-out; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; pointer-events: none; }
+
         @keyframes pulsePurpleGigante { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(99, 102, 241, 0); transform: scale(1.1); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); transform: scale(1); } }
         
         .marker-pergunta-anim { width: 48px; height: 48px; background: var(--brand-secondary); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); animation: pulsePurpleGigante 2s infinite ease-in-out; pointer-events: none; }
         .marker-camera-anim { width: 48px; height: 48px; background: #F97316; border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); animation: pulsePurpleGigante 2s infinite ease-in-out; pointer-events: none; }
         .marker-foto-anim { width: 48px; height: 48px; background: #3B82F6; border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); animation: pulsePurpleGigante 2s infinite ease-in-out; pointer-events: none; }
 
-        .marker-dolar { background: white; color: var(--text-dark); border-radius: 14px; padding: 6px 12px; border: 2px solid var(--brand-primary); box-shadow: 0 8px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; font-size: 14px; white-space: nowrap; font-weight: 800; cursor: pointer; }
+        .marker-dolar { background: white; color: var(--text-dark); border-radius: 12px; padding: 6px 10px; border: 2px solid var(--brand-primary); box-shadow: 0 8px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; font-size: 14px; white-space: nowrap; font-weight: bold; cursor: pointer; }
         .flash-resposta { background: var(--brand-primary); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 24px; border: 4px solid white; width: 50px; height: 50px; pointer-events: none; box-shadow: 0 0 20px rgba(16,185,129,0.6); }
 
-        .marker-premium { width: 40px; height: 40px; background: var(--brand-accent); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; border: 4px solid white; box-shadow: 0 10px 20px rgba(245, 158, 11, 0.4); pointer-events: auto; }
+        .marker-minha-loja { width: 50px; height: 50px; background: var(--text-dark); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 24px; border: 3px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.3); position: relative; pointer-events: none; }
+        .label-minha-loja { position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%); background: var(--text-dark); color: white; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px; white-space: nowrap; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); text-transform: uppercase; letter-spacing: 1px; }
+        
+        .marker-premium { width: 44px; height: 44px; background: var(--brand-accent); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 22px; border: 4px solid white; box-shadow: 0 10px 20px rgba(245, 158, 11, 0.4); pointer-events: auto; }
         .marker-base { width: 28px; height: 28px; border-radius: 50%; background: var(--brand-primary); border: 4px solid white; box-shadow: 0 8px 15px rgba(0,0,0,0.15); pointer-events: auto; }
         
-        .bloqueio-login { display: none; }
         #btnLimparFiltro { background: #0F172A; }
     </style>
 </head>
@@ -275,10 +268,10 @@
 
     <div id="mapa"></div>
 
-    <div class="header-island glass-panel" id="topBarInfo">
+    <div class="header-island glass-island" id="topBarInfo">
         <div class="brand-logo" id="btnAbrirMenu">
-            <span style="font-size: 22px;">☰</span>
-            <span style="font-weight: 800; color: var(--text-dark);">Gringo<b style="color: var(--brand-primary);">Safe</b></span>
+            <span style="font-size: 22px; color: var(--brand-primary);">☰</span>
+            <span>Gringo<b style="color: var(--brand-primary);">Safe</b></span>
         </div>
         <div class="user-meta">
             <span class="user-level" id="t_level" style="display: none;">⭐ Nvl 1</span>
@@ -359,7 +352,7 @@
         </button>
     </div>
 
-    <button id="btnLimparFiltro">❌ Limpar Mapa</button>
+    <button id="btnLimparFiltro" style="display:none; position:fixed; top:85px; left:50%; transform:translateX(-50%); z-index:4000; background:var(--text-dark); color:white; border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.15);">❌ Limpar Mapa</button>
     
     <input type="file" id="inputCamNormal" accept="image/*" capture="environment" style="display: none;">
     <input type="file" id="inputGalNormal" accept="image/*" style="display: none;">
@@ -377,7 +370,7 @@
             <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" style="width:24px;height:24px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
         <button class="btn-dock btn-perguntar" id="btnPerguntar">
-            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" style="width: 26px; height: 26px;"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
         </button>
         <button class="btn-dock btn-dock-main btn-adicionar" id="btnAdicionar">
             <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" style="width:34px;height:34px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -392,7 +385,7 @@
     </button>
 
     <div class="posicionamento-ui glass-island" id="posicionamentoUI">
-        <div class="posicionamento-aviso" id="t_posHint">📍 Aponte para o local exato</div>
+        <div class="posicionamento-aviso" id="t_posHint">📍 Aponte para o local exato no mapa</div>
         <div class="posicionamento-botoes">
             <button class="btn-cancel-pos" id="btnCancelarPos"><span id="t_btnPosCancel">Cancelar</span></button>
             <button class="btn-confirm-pos" id="btnConfirmarPos"><span id="t_btnPosConfirm">Confirmar Local</span></button>
@@ -626,7 +619,6 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // MANTENDO A LÓGICA E TOKENS INTACTOS
         mapboxgl.accessToken = 'pk.eyJ1IjoiZmFocGxheTE1IiwiYSI6ImNtbXk2Z3UzMDB2YnYyb3BsMTA2ZzV2NmkifQ.Tvdrpof80mAktc3Z3dB3cw';
         const firebaseConfig = { apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs", authDomain: "gringosafe-1f434.firebaseapp.com", projectId: "gringosafe-1f434", storageBucket: "gringosafe-1f434.firebasestorage.app", messagingSenderId: "949745647794", appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab" };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); const provider = new GoogleAuthProvider();
@@ -637,8 +629,6 @@
             center: [-43.2302, -22.9121], 
             zoom: 15.5
         });
-
-        window.mapa.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'top-left');
 
         const getEl = (id) => document.getElementById(id); const setTxt = (id, txt) => { const e = getEl(id); if(e) e.innerText = txt; }; const setPlc = (id, txt) => { const e = getEl(id); if(e) e.placeholder = txt; };
         const bindClick = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('click', fn); };
@@ -895,7 +885,7 @@
         const processarImagem = (e, idPreview, idStatus, idNomeInput) => { if (e.target.files.length > 0) { comprimirImagemBase64(e.target.files[0], (base64) => { fotoAtualBase64 = base64; const img = getEl(idPreview); if(img) { img.src = base64; img.style.display = 'block'; } const inpNome = getEl(idNomeInput); if(inpNome) inpNome.value = ''; if (window.modeloIA) { const status = getEl(idStatus); if(status) { status.style.display = 'block'; setTxt(idStatus, '🤖 IA...'); } if(img) img.onload = () => { window.modeloIA.classify(img).then(prev => { if(status) status.style.display = 'none'; const tIngles = prev[0].className.split(',')[0].toLowerCase().trim(); if(estadoApp.idioma === 'en') { if(inpNome) inpNome.value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } else { const tTrad = dicionario['pt'][tIngles]; if(inpNome) inpNome.value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } if(idNomeInput === 'nomeProdutoPergunta') { const event = new Event('input'); inpNome.dispatchEvent(event); } }); } } }); } };
 
         let fotosLojista = []; const maxFotosLojista = 3;
-        const uploadFotoLojista = (e) => { if (e.target.files.length > 0) { if (fotosLojista.length >= maxFotosLojista) return alert("Você já atingiu o máximo de 3 fotos!"); comprimirImagemBase64(e.target.files[0], (base64) => { fotosLojista.push(base64); atualizarPreviewLojista(); }); } };
+        const uploadFotoLojista = (e) => { if (e.target.files.length > 0) { if (fotosLojista.length >= maxFotosLojista) return alert("Já atingiu o máximo de 3 fotos!"); comprimirImagemBase64(e.target.files[0], (base64) => { fotosLojista.push(base64); atualizarPreviewLojista(); }); } };
         function atualizarPreviewLojista() { const container = getEl('previewFotosLojista'); container.innerHTML = ''; fotosLojista.forEach((f) => { container.innerHTML += `<img src="${f}">`; }); }
 
         bindClick('btnCamLojista', () => getEl('inputCamLojista')?.click()); bindClick('btnGalLojista', () => getEl('inputGalLojista')?.click());
@@ -926,7 +916,7 @@
             
             getEl('modalForm').dataset.modoLojista = isLojista ? "true" : "false";
             
-            if (isLojista) { setTxt('t_btnSave', "Salvar no Menu"); getEl('t_formTitle').innerText = "Novo Produto no Menu"; } 
+            if (isLojista) { setTxt('t_btnSave', "Guardar no Menu"); getEl('t_formTitle').innerText = "Novo Produto no Menu"; } 
             else { setTxt('t_btnSave', dicionario[estadoApp.idioma].btnSave + " (+R$ 0,25)"); getEl('t_formTitle').innerText = dicionario[estadoApp.idioma].formTitle; }
             
             const placeData = estadoApp.dadosHospedados[nomeLocal];
@@ -948,7 +938,7 @@
         bindClick('btnConfirmarPos', () => {
             coordSelecionada = window.mapa.getCenter(); 
             getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex';
-            if (acaoPendente === 'add') { delete getEl('modalForm').dataset.modoLojista; setTxt('t_btnSave', "Salvar (+R$ 0,25)"); getEl('t_formTitle').innerText = "Novo Registro"; getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; } 
+            if (acaoPendente === 'add') { delete getEl('modalForm').dataset.modoLojista; setTxt('t_btnSave', "Guardar (+R$ 0,25)"); getEl('t_formTitle').innerText = "Novo Registo"; getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; } 
             else if (acaoPendente === 'ask') { getEl('nomeProdutoPergunta').value = ''; getEl('estimativaIA').style.display = 'none'; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; }
             else if (acaoPendente === 'addLojista') { fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex'; }
         });
@@ -982,7 +972,7 @@
             if(!nomeNegocio) return alert("Por favor, digite o nome do seu negócio.");
             const centro = coordSelecionada || window.mapa.getCenter(); const aMail = estadoApp.usuario.email;
             await addDoc(collection(db, "precos"), { local: nomeNegocio, nome: "Acesso ao Local", preco: 0, isLojistaPlace: true, categoria: catNegocio, lat: parseFloat(centro.lat), lng: parseFloat(centro.lng), status: "aprovado", premium: estadoApp.isLojistaPremium, fotosLocal: fotosLojista, autor: aMail, data: new Date() });
-            getEl('modalFormLojista').style.display = 'none'; alert("Seu negócio foi cadastrado com sucesso e já está no mapa como Negócio Local! Clique no pino para destacá-lo.");
+            getEl('modalFormLojista').style.display = 'none'; alert("O seu negócio foi registado com sucesso e já está no mapa como Negócio Local! Clique no pino para destacá-lo.");
         });
 
         bindClick('btnCancelarPergunta', () => getEl('modalPergunta').style.display = 'none');
@@ -1002,7 +992,7 @@
             
             await addDoc(collection(db, "perguntas"), { nomeItem: itemDesejado, nomeLocal: localNome, tipoLocal: localTipo, lat: fuzzyLat, lng: fuzzyLng, status: "aberta", respostas: [], autorUid: estadoApp.usuario.uid, fotoUrl: fotoAtualBase64, fotoSolicitada: false, data: new Date() });
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
-            getEl('modalPergunta').style.display = 'none'; alert("Pergunta enviada no mapa! Por segurança, sua localização exata foi oculta dos Avaliadores.");
+            getEl('modalPergunta').style.display = 'none'; alert("Pergunta enviada no mapa! Por segurança, a sua localização exata foi oculta dos Avaliadores.");
         });
 
         window.solicitarFoto = async function(idPergunta, autorUid, nomeItem, nomeLocal) {
@@ -1052,7 +1042,7 @@
             if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
             const p = estadoApp.perguntasAbertas[idPergunta]; if(!p) return;
             const uid = estadoApp.usuario.uid; const resps = p.respostas || [];
-            if(resps.some(r => r.uid === uid)) return alert("Já respondeu a esta dúvida! Aguardando o consenso.");
+            if(resps.some(r => r.uid === uid)) return alert("Já respondeu a esta dúvida! A aguardar o consenso.");
             
             setTxt('respItemNome', p.nomeItem); setTxt('respLocalNome', p.nomeLocal); setTxt('respLocalTipo', p.tipoLocal === 'Ambulante' ? '(Ambulante)' : '(Fixo)'); 
             getEl('idPerguntaAtual').value = idPergunta; getEl('precoProdutoResposta').value = ''; getEl('modalResposta').style.display = 'flex';
@@ -1065,7 +1055,7 @@
             const idPergunta = getEl('idPerguntaAtual').value; const p = estadoApp.perguntasAbertas[idPergunta]; if(!p) return;
             let resps = p.respostas || []; resps.push({ uid: estadoApp.usuario.uid, preco: prcReal, tempo: Date.now() });
             if(resps.length >= 3) { window.resolverPerguntaConsenso(idPergunta, p, resps); alert("Consenso atingido! Resultado enviado."); } 
-            else { await updateDoc(doc(db, "perguntas", idPergunta), { respostas: resps }); alert("Sua resposta foi registrada! ⏳ Aguardando mais avaliadores ou o tempo de 20s esgotar."); }
+            else { await updateDoc(doc(db, "perguntas", idPergunta), { respostas: resps }); alert("A sua resposta foi registada! ⏳ A aguardar mais avaliadores ou o tempo de 20s esgotar."); }
             getEl('modalResposta').style.display = 'none'; 
         });
 
@@ -1154,6 +1144,7 @@
                     
                     const latNum = parseFloat(dadosL.lat);
                     const lngNum = parseFloat(dadosL.lng);
+                    
                     if (isNaN(latNum) || isNaN(lngNum)) continue;
 
                     const avaliacoesValidas = dadosL.itens.filter(i => !i.isLojistaPlace);
@@ -1219,7 +1210,17 @@
                             estrelasStr = `<span style="font-size: 20px; margin-right: 6px;">⭐</span> <span style="font-size: 15px;">${media} (${revs.length} opiniões)</span>`;
                         }
 
-                        let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3><div class="badge-estrelas">${estrelasStr}</div>${btnPromoverHtml}<div class="lista-itens">${htmlLista}</div>${btnAdicionarItemHtml}</div>`;
+                        let btnVerAvaliacoesHtml = `<button onclick="event.stopPropagation(); window.abrirAvaliacoes('${safeLocalName}')" style="width:100%; margin-top:5px; padding:14px; background:transparent; color:var(--text-dark); font-weight:700; font-size:14px; border:2px solid #E2E8F0; border-radius:14px; cursor:pointer; transition:0.2s;">⭐ Ver/Deixar Avaliação</button>`;
+
+                        let popupHtml = `<div class="popup-info">
+                            <h3 style="margin-bottom: 10px;">🏪 ${nomeL}</h3>
+                            <div class="badge-estrelas">${estrelasStr}</div>
+                            ${btnPromoverHtml}
+                            ${fotosLojistaHtml}
+                            <div class="lista-itens">${htmlLista}</div>
+                            ${btnAdicionarItemHtml}
+                            ${btnVerAvaliacoesHtml}
+                        </div>`;
                         
                         const markerFiltro = new mapboxgl.Marker({element: elFiltro}).setLngLat([lngNum, latNum]).addTo(window.mapa);
                         elFiltro.addEventListener('click', (e) => {
@@ -1313,7 +1314,7 @@
                     let btnAdicionarItemHtml = '';
                     if (isPremium && lugarLojista) {
                         if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:var(--text-dark); color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1);">📋 Adicionar ao Menu</button>`; } 
-                        else { btnAdicionarItemHtml = `<div style="text-align:center; padding:12px; background:#F1F5F9; border-radius:12px; font-size:12px; color:var(--text-muted); margin-bottom:8px; font-weight:600;">🔒 Menu Fechado Oficial</div>`; }
+                        else { btnAdicionarItemHtml = `<div style="text-align:center; padding:10px; background:#F1F5F9; border-radius:12px; font-size:12px; color:var(--text-muted); margin-bottom:8px; font-weight:600;">🔒 Menu Fechado Oficial</div>`; }
                     } else {
                         if (estadoApp.perfil === 'avaliador') { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:var(--brand-primary); color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(16, 185, 129, 0.3);">➕ Cadastrar Novo Item</button>`; } 
                         else if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:var(--text-dark); color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1);">📋 Adicionar ao Menu</button>`; }
@@ -1328,7 +1329,7 @@
                     let btnVerAvaliacoesHtml = `<button onclick="event.stopPropagation(); window.abrirAvaliacoes('${safeLocalName}')" style="width:100%; margin-top:5px; padding:14px; background:transparent; color:var(--text-dark); font-weight:700; font-size:14px; border:2px solid #E2E8F0; border-radius:14px; cursor:pointer; transition:0.2s;">⭐ Ver/Deixar Avaliação</button>`;
 
                     let popupHtml = `<div class="popup-info">
-                        <h3 style="margin-bottom: 12px;">🏪 ${nomeL}</h3>
+                        <h3 style="margin-bottom: 10px;">🏪 ${nomeL}</h3>
                         <div class="badge-estrelas">${estrelasStr}</div>
                         ${btnPromoverHtml}
                         ${fotosLojistaHtml}
@@ -1360,13 +1361,17 @@
                             document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
                             new mapboxgl.Popup({offset: 25, closeOnClick: true}).setLngLat([lngNum, latNum]).setHTML(popupHtml).addTo(window.mapa);
                         });
+                    } else {
+                        const popupNormal = new mapboxgl.Popup({ offset: 25 }).setHTML(popupHtml);
+                        pinoMapbox = new mapboxgl.Marker({color: colorPino}).setLngLat([lngNum, latNum]).setPopup(popupNormal).addTo(window.mapa);
+                        pinoMapbox.getElement().addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            pinoMapbox.togglePopup();
+                        });
                     }
                     window.marcadoresAtuais.push(pinoMapbox);
                     window.marcadoresMapboxGlobais[nomeL] = pinoMapbox;
-                    
-                } catch(err) { 
-                    console.error("Falha ao desenhar o pino:", nomeL, err); 
-                }
+                } catch(err) { console.error(err); }
             }
 
             for (const idPerg in estadoApp.perguntasAbertas) {
