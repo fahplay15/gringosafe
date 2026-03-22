@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -16,7 +16,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
@@ -39,34 +39,20 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        body, html { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #FFFFFF; 
-            color: var(--text-dark);
-            height: 100%; width: 100%; overflow: hidden;
-        }
+        body, html { font-family: 'Inter', sans-serif; background-color: #FFFFFF; color: var(--text-dark); height: 100%; width: 100%; overflow: hidden; }
 
         /* --- UI LAYER: MAPA --- */
         #mapa { position: absolute; inset: 0; z-index: 0; }
 
         /* --- COMPONENTE: SPLASH SCREEN --- */
-        #splashScreen { 
-            position: fixed; inset: 0; background: #FFFFFF; z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.8s ease-in-out;
-        }
-        #splashScreen h1 {
-            font-family: 'Poppins', sans-serif; font-size: 36px; font-weight: 800;
-            background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
-            background-clip: text; -webkit-background-clip: text;
-            color: transparent; -webkit-text-fill-color: transparent;
-        }
-        #t_splashSub { color: var(--text-muted); font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px;}
+        #splashScreen { position: fixed; inset: 0; background: #FFFFFF; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease-in-out; }
+        #splashScreen h1 { font-family: 'Poppins', sans-serif; font-size: 38px; font-weight: 800; background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary)); -webkit-background-clip: text; color: transparent; margin: 0; }
+        #t_splashSub { color: var(--text-muted); font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px; }
 
         /* --- TELA DE PERFIL INICIAL --- */
-        #telaPerfil { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); z-index: 9000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
+        #telaPerfil { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); z-index: 9000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
         .lang-selector-inicial { display: flex; gap: 15px; margin-bottom: 25px; background: #F1F5F9; padding: 8px 16px; border-radius: 30px; }
-        .lang-selector-inicial div { cursor: pointer; font-size: 15px; font-weight: 600; padding: 8px 16px; border-radius: 20px; transition: 0.2s; color: var(--text-muted); }
+        .lang-selector-inicial div { cursor: pointer; font-size: 15px; font-weight: 700; padding: 8px 16px; border-radius: 20px; transition: 0.2s; color: var(--text-muted); }
         .lang-selector-inicial div:hover, .lang-selector-inicial div.ativo-option { background: white; color: var(--brand-primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         #t_roleTitle { font-family: 'Poppins', sans-serif; font-size: 24px; margin-bottom: 25px; color: var(--text-dark); }
         
@@ -77,32 +63,20 @@
         .btn-perfil.lojista { border-color: #FED7AA; background: #FFF7ED; }
 
         /* --- COMPONENTE: ILHAS FLUTUANTES (GLASS) --- */
-        .glass-island {
-            background: var(--bg-glass);
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid var(--border-glass);
-            box-shadow: var(--shadow-float);
-        }
+        .glass-island { background: var(--bg-glass); backdrop-filter: blur(16px) saturate(180%); -webkit-backdrop-filter: blur(16px) saturate(180%); border: 1px solid var(--border-glass); box-shadow: var(--shadow-float); }
 
-        /* TOP NAVIGATION */
-        .header-island {
-            position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-            width: calc(100% - 30px); max-width: 500px; height: 64px;
-            border-radius: var(--radius-ui); display: flex; align-items: center;
-            padding: 0 20px; z-index: 5000; justify-content: space-between;
-        }
-        .brand-logo { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-dark); }
-        .brand-logo b { color: var(--brand-primary); font-weight: 800; font-size: 22px; }
+        /* --- TOP NAV (CORRIGIDO ALINHAMENTO DO SINO) --- */
+        .header-island { position: absolute; top: 15px; left: 15px; right: 15px; height: 60px; border-radius: var(--radius-ui); display: flex; align-items: center; padding: 0 15px; z-index: 5000; justify-content: space-between; }
+        .brand-logo { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 18px; display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-dark); }
+        .brand-logo span { color: var(--brand-primary); font-size: 22px; }
         
-        .user-meta { display: flex; align-items: center; gap: 10px; }
-        .balance-pill {
-            background: white; padding: 8px 16px; border-radius: 40px;
-            font-weight: 600; font-size: 13px; color: var(--brand-primary);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        }
-        .notif-container { font-size: 22px; cursor: pointer; position: relative; }
-        .badge-notificacao { position: absolute; top: -2px; right: -2px; background: #EF4444; width: 10px; height: 10px; border-radius: 50%; display: none; box-shadow: 0 0 0 2px white; }
+        .user-meta { display: flex; align-items: center; gap: 12px; }
+        .balance-pill { background: #F1F5F9; padding: 8px 16px; border-radius: 40px; font-weight: 700; font-size: 13px; color: var(--brand-primary); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        
+        /* Estrutura 100% centrada para o ícone do sino */
+        .notif-container { position: relative; cursor: pointer; display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; }
+        .notif-container svg { width: 26px; height: 26px; stroke: var(--text-dark); fill: none; }
+        .badge-notificacao { position: absolute; top: 0px; right: 0px; background: #EF4444; color: white; font-size: 11px; font-weight: 800; width: 18px; height: 18px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid white; }
 
         /* --- MENU LATERAL --- */
         .side-menu { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: white; z-index: 8000; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 10px 0 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow-y: auto; border-top-right-radius: 30px; border-bottom-right-radius: 30px; }
@@ -126,31 +100,22 @@
         .bloqueio-login h3 { font-family: 'Poppins', sans-serif; color: var(--text-dark); font-size: 26px; margin: 10px 0; }
         .bloqueio-login p { color: var(--text-muted); font-size: 15px; font-weight: 500; margin-bottom: 25px; }
 
-        /* BOTTOM ACTION DOCK */
-        .action-dock {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-            display: flex; align-items: center; gap: 12px; padding: 12px;
-            border-radius: 40px; z-index: 6000;
-        }
-        .btn-dock {
-            width: 56px; height: 56px; border-radius: 50%; border: none;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        .btn-dock:active { transform: scale(0.88); }
-        .btn-dock-main {
-            width: 68px; height: 68px; 
-            background: linear-gradient(135deg, var(--brand-primary), #059669);
-            color: white; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3); margin: 0 5px;
-        }
-        .btn-perguntar { width: 68px; height: 68px; background: linear-gradient(135deg, #8B5CF6, #6366F1); color: white; display: none; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); margin: 0 5px; }
-        .btn-dock-util { background: white; color: var(--text-main); font-size: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        /* --- BOTTOM ACTION DOCK (CORRIGIDO SVG) --- */
+        .action-dock { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 40px; z-index: 6000; }
+        .btn-dock { width: 56px; height: 56px; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1); position: relative; }
+        .btn-dock:active { transform: scale(0.85); }
+        .btn-dock-main { width: 68px; height: 68px; background: linear-gradient(135deg, var(--brand-primary), #059669); color: white; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3); margin: 0 5px; }
         
-        .badge-buscas { position: absolute; top: -5px; right: -5px; background: #EF4444; color: white; font-size: 11px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: none; justify-content: center; align-items: center; border: 2px solid white; }
+        /* Corrigido: SVG sólido do botão Perguntar */
+        .btn-perguntar { width: 68px; height: 68px; background: linear-gradient(135deg, #8B5CF6, #6366F1); color: white; display: none; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); margin: 0 5px; }
+        .btn-perguntar svg { fill: currentColor; stroke: none; }
+        
+        .btn-dock-util { background: white; color: var(--text-dark); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .badge-buscas { position: absolute; top: -2px; right: -2px; background: #EF4444; color: white; font-size: 11px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid white; display: none; }
 
         /* CONTROLES FLUTUANTES LATERAIS */
-        .btn-mira { position: fixed; bottom: 110px; right: 15px; background-color: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0px 8px 15px rgba(0,0,0,0.1); z-index: 1000; cursor: pointer; color: var(--text-dark); }
-        .btn-radar { position: fixed; bottom: 110px; left: 15px; background-color: var(--text-dark); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0px 8px 15px rgba(0,0,0,0.2); z-index: 1000; cursor: pointer; transition: 0.3s; }
+        .btn-mira { position: fixed; bottom: 110px; right: 15px; background: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 1000; cursor: pointer; color: var(--text-dark); }
+        .btn-radar { position: fixed; bottom: 110px; left: 15px; background: var(--text-dark); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 15px rgba(0,0,0,0.2); z-index: 1000; cursor: pointer; transition: 0.3s; }
         .btn-radar span { font-size: 9px; font-weight: 700; margin-top: -2px; font-family: 'Inter', sans-serif;}
         .radar-anim { animation: radarPulseBtn 1.5s infinite; background: var(--brand-secondary) !important; }
         @keyframes radarPulseBtn { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
@@ -169,16 +134,14 @@
         .btn-cancel-pos { flex: 1; background: #F1F5F9; color: var(--text-muted); border: none; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; }
         .btn-confirm-pos { flex: 1; background: var(--brand-primary); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
 
-        /* --- MODAIS MODERNOS (BENTO) --- */
+        /* --- MODAIS --- */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(6px); z-index: 9500; align-items: flex-end; justify-content: center; padding: 10px; }
         .modal-sheet { background-color: white; padding: 30px 25px; border-radius: 32px; width: 100%; max-width: 450px; text-align: center; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); animation: sheetUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        
         .modal-sheet h3 { font-family: 'Poppins', sans-serif; font-size: 22px; color: var(--text-dark); margin-bottom: 5px; }
         
         .input-form { width: 100%; background: #F8FAFC; border: 2px solid transparent; padding: 16px; margin: 8px 0; border-radius: 16px; font-size: 15px; font-family: 'Inter', sans-serif; color: var(--text-dark); transition: all 0.3s ease; }
         .input-form:focus { background: white; border-color: var(--brand-primary); outline: none; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
-        
         .bento-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; padding: 16px; transition: 0.2s; }
         
         .btn-salvar { background-color: var(--text-dark); color: white; border: none; padding: 16px; width: 100%; border-radius: 16px; font-size: 16px; font-weight: 700; margin-top: 15px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: 0.2s; }
@@ -186,10 +149,12 @@
         .btn-cancelar { background: transparent; color: var(--text-muted); border: none; padding: 14px; width: 100%; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 5px; }
 
         .btn-add-foto { background: #F8FAFC; color: var(--text-dark); border: 2px dashed #CBD5E1; padding: 16px; width: 100%; border-radius: 16px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .btn-add-foto:active { background: #F1F5F9; }
         .linha-botoes-foto { display: flex; gap: 12px; margin: 15px 0; }
         .imagem-preview { max-width: 100%; max-height: 140px; border-radius: 12px; display: none; margin: 10px auto; object-fit: cover; border: 1px solid #E2E8F0; }
         .ia-status { font-size: 12px; color: var(--brand-secondary); font-weight: 600; display: none; margin: 5px 0; background: #EEF2FF; padding: 6px 10px; border-radius: 8px; }
+
+        .btn-roxo { background-color: var(--brand-secondary); color: white; border: none; padding: 16px; width: 100%; border-radius: 16px; font-size: 16px; font-weight: 700; margin-top: 10px; cursor: pointer; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2); }
+        .btn-laranja { background-color: var(--brand-accent); color: white; border: none; padding: 12px 16px; width: 100%; border-radius: 12px; font-size: 14px; font-weight: 700; margin-top: 5px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 5px; }
 
         /* RESULTADOS DE BUSCA */
         .resultados-busca { max-height: 50vh; overflow-y: auto; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; text-align: left; }
@@ -205,15 +170,16 @@
         .btn-del-notif { background: transparent; border: none; font-size: 18px; cursor: pointer; padding: 5px; color: #CBD5E1; transition: 0.2s; }
         .btn-del-notif:hover { color: #EF4444; }
 
-        /* 🚨 CORREÇÃO DOS BUGS DO POPUP MAPBOX & OCULTAR NATIVOS 🚨 */
+        /* 🚨 OCULTAR CONTROLOS NATIVOS DO MAPBOX QUE CAUSAM BUG VISUAL 🚨 */
         .mapboxgl-ctrl-top-left, .mapboxgl-ctrl-top-right, .mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right { display: none !important; }
         
+        /* 🚨 CORREÇÕES DOS POPUPS E MARCADORES MAPBOX 🚨 */
         .mapboxgl-popup { z-index: 1000; }
         .mapboxgl-popup-content { 
             border-radius: 20px; padding: 16px; font-family: 'Inter', sans-serif; 
             box-shadow: 0 20px 40px rgba(0,0,0,0.15); width: 320px; max-width: 90vw; border: 1px solid #E2E8F0;
         }
-        /* Correção Bug Visual: O "X" não atrapalha o texto */
+        
         .mapboxgl-popup-close-button { 
             font-size: 24px; color: #94A3B8; padding: 6px 12px; 
             position: absolute; right: 5px; top: 5px; z-index: 10;
@@ -222,7 +188,7 @@
         .mapboxgl-popup-close-button:hover { background: #F1F5F9; color: #EF4444; }
 
         .popup-info { width: 100%; box-sizing: border-box; overflow: hidden; }
-        /* Correção Bug Visual: Título com padding à direita */
+        
         .popup-info h3 { 
             font-family: 'Poppins', sans-serif; margin: 0 0 10px 0; font-size: 16px; color: var(--text-dark); 
             border-bottom: 1px solid #E2E8F0; padding-bottom: 10px; 
@@ -231,7 +197,7 @@
         
         .lista-itens { max-height: 240px; overflow-y: auto; margin-top: 10px; padding-right: 4px; }
         .item-card { background: #F8FAFC; padding: 12px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #E2E8F0; position: relative; }
-        /* Correção Bug Visual: Flex-start e Flex-shrink impedem que o Preço e Nome se esmaguem */
+        
         .item-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
         .item-detalhes { flex: 1; min-width: 0; text-align: left; } 
         .item-nome { font-weight: 600; font-size: 14px; color: var(--text-dark); line-height: 1.3; margin: 0; }
@@ -242,7 +208,6 @@
         .btn-editar { background: #E2E8F0; color: var(--text-dark); border: none; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .btn-denuncia { background: transparent; border: none; font-size: 14px; cursor: pointer; color: #94A3B8; padding: 4px; }
         
-        /* Correção Bug Visual: Botão Nova Loja não fica gigante e centralizado */
         .badge-estrelas { 
             background: #FFFBEB; border: 1px solid #FDE68A; padding: 6px 14px; 
             border-radius: 20px; display: flex; align-items: center; justify-content: center; 
@@ -253,7 +218,7 @@
         .galeria-lojista { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 5px; }
         .galeria-lojista img { width: 75px; height: 75px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand-accent); flex-shrink: 0; }
 
-        /* PERFIS MÁGICA CSS */
+        /* PERFIS */
         body.modo-turista .btn-adicionar { display: none !important; }
         body.modo-turista #t_level { display: none !important; }
         body.modo-turista #saldoDisplay { display: none !important; }
@@ -264,12 +229,10 @@
         body.modo-turista .btn-radar { display: flex !important; }
         body.modo-turista .btn-denuncia { display: inline-block !important; } 
         body.modo-turista #bloqueioLoginOverlay { display: none !important; } 
-        
         body.modo-avaliador .notif-container { display: none !important; }
         body.modo-avaliador .btn-perguntar { display: none !important; }
         body.modo-avaliador .btn-pesquisa { display: none !important; } 
         body.modo-avaliador .btn-denuncia { display: inline-block !important; }
-        
         body.modo-lojista #t_level { display: none !important; }
         body.modo-lojista #saldoDisplay { display: none !important; }
         body.modo-lojista .notif-container { display: none !important; }
@@ -277,11 +240,10 @@
         body.modo-lojista .badge-buscas { display: none !important; }
         body.modo-lojista .btn-radar { display: none !important; }
         body.modo-lojista .item-acoes { display: none !important; } 
-
         body:not(.modo-lojista) #btnAreaLojista { display: none !important; }
         body:not(.modo-avaliador) #btnMinhaCarteira { display: none !important; }
 
-        /* ESTILOS DE MARCADORES (MAPBOX) */
+        /* MARCADORES MAPBOX */
         .mapboxgl-marker { pointer-events: auto !important; cursor: pointer !important; }
         .marker-pergunta-container { width: 80px; height: 80px; background: transparent; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; pointer-events: auto; }
         .minha-loja-container { width: 50px; height: 75px; background: transparent; display: flex; justify-content: center; align-items: center; pointer-events: auto; cursor: pointer; }
@@ -295,15 +257,16 @@
         .marker-camera-anim { width: 48px; height: 48px; background: #F97316; border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); animation: pulsePurpleGigante 2s infinite ease-in-out; pointer-events: none; }
         .marker-foto-anim { width: 48px; height: 48px; background: #3B82F6; border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); animation: pulsePurpleGigante 2s infinite ease-in-out; pointer-events: none; }
 
-        @keyframes pulseDolarAnim { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        .marker-dolar { background: white; color: var(--text-dark); border-radius: 14px; padding: 6px 12px; border: 2px solid var(--brand-primary); box-shadow: 0 8px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; font-size: 14px; white-space: nowrap; font-weight: 800; cursor: pointer; }
-        .pulse-dolar { animation: pulseDolarAnim 1.5s infinite ease-in-out; }
+        /* Corrigido: Fundo Verde Sólido para os Preços Pesquisados */
+        .marker-dolar { background: var(--brand-primary); color: white; border-radius: 12px; padding: 6px 12px; border: 2px solid white; box-shadow: 0 8px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; font-size: 14px; white-space: nowrap; font-weight: 800; cursor: pointer; }
+        
         .flash-resposta { background: var(--brand-primary); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 24px; border: 4px solid white; width: 50px; height: 50px; pointer-events: none; box-shadow: 0 0 20px rgba(16,185,129,0.6); }
 
-        .marker-premium { width: 40px; height: 40px; background: var(--brand-accent); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; border: 4px solid white; box-shadow: 0 10px 20px rgba(245, 158, 11, 0.4); pointer-events: auto; }
-        .marker-base { width: 28px; height: 28px; border-radius: 50%; background: var(--brand-primary); border: 4px solid white; box-shadow: 0 8px 15px rgba(0,0,0,0.15); pointer-events: auto; }
         .marker-minha-loja { width: 50px; height: 50px; background: var(--text-dark); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 24px; border: 3px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.3); position: relative; pointer-events: none; }
         .label-minha-loja { position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%); background: var(--text-dark); color: white; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px; white-space: nowrap; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); text-transform: uppercase; letter-spacing: 1px; }
+        
+        .marker-premium { width: 40px; height: 40px; background: var(--brand-accent); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; border: 4px solid white; box-shadow: 0 10px 20px rgba(245, 158, 11, 0.4); pointer-events: auto; }
+        .marker-base { width: 28px; height: 28px; border-radius: 50%; border: 4px solid white; box-shadow: 0 8px 15px rgba(0,0,0,0.15); pointer-events: auto; }
         
         #btnLimparFiltro { background: #0F172A; }
     </style>
@@ -328,7 +291,7 @@
             <span class="user-level" id="t_level" style="display: none;">⭐ Nvl 1</span>
             <div class="balance-pill" id="saldoDisplay">R$ 0,00</div>
             <div class="notif-container" id="btnAbrirNotificacoes">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                 <span class="badge-notificacao" id="badgeNotificacoes"></span>
             </div>
         </div>
@@ -421,7 +384,7 @@
             <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" style="width:24px;height:24px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
         <button class="btn-dock btn-perguntar" id="btnPerguntar">
-            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" style="width: 26px; height: 26px;"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 28px; height: 28px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
         </button>
         <button class="btn-dock btn-dock-main btn-adicionar" id="btnAdicionar">
             <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" style="width:34px;height:34px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -735,7 +698,7 @@
         }
 
         function aplicarMoeda(moeda) { estadoApp.moeda = moeda; document.querySelectorAll('#currencySubMenu .sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; }); const opt = getEl('cur_' + moeda); if(opt) { opt.classList.add('ativo-option'); opt.querySelector('.check').style.display = 'inline'; } getEl('currencySubMenu')?.classList.remove('open'); getEl('sideMenu')?.classList.remove('open'); if(getEl('menuOverlay')) getEl('menuOverlay').style.display = 'none'; window.agendarDesenho(); atualizarPrecosPaywall(); if(estadoApp.usuario) setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`); }
-        function atualizarPrecosPaywall() { const usdRates = [4.99, 7.99, 12.99]; const taxa = taxasCambio[estadoApp.moeda].taxa / taxasCambio['USD'].taxa; /* Ignorando UI do Paywall pois está estática agora */ }
+        function atualizarPrecosPaywall() { const usdRates = [4.99, 7.99, 12.99]; const taxa = taxasCambio[estadoApp.moeda].taxa / taxasCambio['USD'].taxa; /* UI estática no momento */ }
 
         window.atualizarBadgeBuscas = function() {
             const b = getEl('badgeBuscas'); if(!b) return;
@@ -967,7 +930,7 @@
             
             getEl('modalForm').dataset.modoLojista = isLojista ? "true" : "false";
             
-            if (isLojista) { setTxt('t_btnSave', "Guardar no Menu"); getEl('t_formTitle').innerText = "Novo Produto no Menu"; } 
+            if (isLojista) { setTxt('t_btnSave', "Salvar no Menu"); getEl('t_formTitle').innerText = "Novo Produto no Menu"; } 
             else { setTxt('t_btnSave', dicionario[estadoApp.idioma].btnSave + " (+R$ 0,25)"); getEl('t_formTitle').innerText = dicionario[estadoApp.idioma].formTitle; }
             
             const placeData = estadoApp.dadosHospedados[nomeLocal];
@@ -989,7 +952,7 @@
         bindClick('btnConfirmarPos', () => {
             coordSelecionada = window.mapa.getCenter(); 
             getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex';
-            if (acaoPendente === 'add') { delete getEl('modalForm').dataset.modoLojista; setTxt('t_btnSave', "Guardar (+R$ 0,25)"); getEl('t_formTitle').innerText = "Novo Registo"; getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; } 
+            if (acaoPendente === 'add') { delete getEl('modalForm').dataset.modoLojista; setTxt('t_btnSave', "Salvar (+R$ 0,25)"); getEl('t_formTitle').innerText = "Novo Registro"; getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; } 
             else if (acaoPendente === 'ask') { getEl('nomeProdutoPergunta').value = ''; getEl('estimativaIA').style.display = 'none'; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; }
             else if (acaoPendente === 'addLojista') { fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex'; }
         });
@@ -1023,7 +986,7 @@
             if(!nomeNegocio) return alert("Por favor, digite o nome do seu negócio.");
             const centro = coordSelecionada || window.mapa.getCenter(); const aMail = estadoApp.usuario.email;
             await addDoc(collection(db, "precos"), { local: nomeNegocio, nome: "Acesso ao Local", preco: 0, isLojistaPlace: true, categoria: catNegocio, lat: parseFloat(centro.lat), lng: parseFloat(centro.lng), status: "aprovado", premium: estadoApp.isLojistaPremium, fotosLocal: fotosLojista, autor: aMail, data: new Date() });
-            getEl('modalFormLojista').style.display = 'none'; alert("O seu negócio foi registado com sucesso e já está no mapa como Negócio Local! Clique no pino para destacá-lo.");
+            getEl('modalFormLojista').style.display = 'none'; alert("Seu negócio foi cadastrado com sucesso e já está no mapa como Negócio Local! Clique no pino para destacá-lo.");
         });
 
         bindClick('btnCancelarPergunta', () => getEl('modalPergunta').style.display = 'none');
@@ -1043,7 +1006,7 @@
             
             await addDoc(collection(db, "perguntas"), { nomeItem: itemDesejado, nomeLocal: localNome, tipoLocal: localTipo, lat: fuzzyLat, lng: fuzzyLng, status: "aberta", respostas: [], autorUid: estadoApp.usuario.uid, fotoUrl: fotoAtualBase64, fotoSolicitada: false, data: new Date() });
             if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
-            getEl('modalPergunta').style.display = 'none'; alert("Pergunta enviada no mapa! Por segurança, a sua localização exata foi oculta dos Avaliadores.");
+            getEl('modalPergunta').style.display = 'none'; alert("Pergunta enviada no mapa! Por segurança, sua localização exata foi oculta dos Avaliadores.");
         });
 
         window.solicitarFoto = async function(idPergunta, autorUid, nomeItem, nomeLocal) {
@@ -1261,17 +1224,7 @@
                             estrelasStr = `<span style="font-size: 20px; margin-right: 6px;">⭐</span> <span style="font-size: 15px;">${media} (${revs.length} opiniões)</span>`;
                         }
 
-                        let btnVerAvaliacoesHtml = `<button onclick="event.stopPropagation(); window.abrirAvaliacoes('${safeLocalName}')" style="width:100%; margin-top:5px; padding:14px; background:transparent; color:var(--text-dark); font-weight:700; font-size:14px; border:2px solid #E2E8F0; border-radius:14px; cursor:pointer; transition:0.2s;">⭐ Ver/Deixar Avaliação</button>`;
-
-                        let popupHtml = `<div class="popup-info">
-                            <h3 style="margin-bottom: 10px;">🏪 ${nomeL}</h3>
-                            <div class="badge-estrelas">${estrelasStr}</div>
-                            ${btnPromoverHtml}
-                            ${fotosLojistaHtml}
-                            <div class="lista-itens">${htmlLista}</div>
-                            ${btnAdicionarItemHtml}
-                            ${btnVerAvaliacoesHtml}
-                        </div>`;
+                        let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3><div class="badge-estrelas">${estrelasStr}</div>${btnPromoverHtml}<div class="lista-itens">${htmlLista}</div>${btnAdicionarItemHtml}</div>`;
                         
                         const markerFiltro = new mapboxgl.Marker({element: elFiltro}).setLngLat([lngNum, latNum]).addTo(window.mapa);
                         elFiltro.addEventListener('click', (e) => {
@@ -1319,20 +1272,24 @@
                     });
                     
                     let txAbuso = tItens > 0 ? (qAb / tItens) * 100 : 0; let txAprov = tItens > 0 ? (qAp / tItens) * 100 : 0; 
-                    let colorPino = 'var(--brand-accent)'; let st = `<p style="color:var(--brand-accent);font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusYellow}</p>`;
+                    let colorPino = '#10B981'; /* Verde padrao */
+                    let st = `<p style="color:var(--brand-accent);font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusYellow}</p>`;
                     
                     if (isDono) { 
                         st = `<p style="color:var(--brand-secondary);font-weight:800;font-size:14px;margin:0 0 12px 0;">🏢 A Sua Loja</p>`; 
+                        colorPino = '#0F172A';
                     } 
                     else if (isPremium) { 
                         st = `<p style="color:var(--brand-accent);font-weight:800;font-size:13px;margin:0 0 12px 0;">⭐ Local Parceiro Verificado</p>`; 
+                        colorPino = '#F59E0B';
                     } 
                     else if (lugarLojista) { 
-                        colorPino = 'var(--brand-primary)'; st = `<p style="color:var(--brand-primary);font-weight:700;font-size:13px;margin:0 0 12px 0;">✅ Negócio Local</p>`; 
+                        st = `<p style="color:var(--brand-primary);font-weight:700;font-size:13px;margin:0 0 12px 0;">✅ Negócio Local</p>`; 
+                        colorPino = '#10B981';
                     } 
                     else {
                         if (txAbuso >= 30) { colorPino = '#EF4444'; st = `<p style="color:#EF4444;font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusRed} (${txAbuso.toFixed(0)}% Abusivo)</p>`; } 
-                        else if (txAprov >= 60) { colorPino = 'var(--brand-primary)'; st = `<p style="color:var(--brand-primary);font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusGreen} (${txAprov.toFixed(0)}% Seguro)</p>`; }
+                        else if (txAprov >= 60) { colorPino = '#10B981'; st = `<p style="color:var(--brand-primary);font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusGreen} (${txAprov.toFixed(0)}% Seguro)</p>`; }
                     }
 
                     const safeLocalName = nomeL.replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -1402,7 +1359,7 @@
                     } else {
                         elPinoBase = document.createElement('div');
                         elPinoBase.className = 'marker-base'; 
-                        elPinoBase.style.backgroundColor = colorPino;
+                        elPinoBase.style.backgroundColor = colorPino; /* Usando o HEX puro aqui! */
                     }
 
                     if (elPinoBase) {
