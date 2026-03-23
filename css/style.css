@@ -1239,3 +1239,35 @@ select.input-form {
 .mapboxgl-popup-close-button { 
 	display: none; 
 }
+
+/* --- MÁGICA CSS DE PERFIS (UX CORRIGIDO) --- */
+/* TURISTA: Foco em consumir e perguntar */
+body.modo-turista .btn-adicionar { display: none !important; }
+body.modo-turista #t_level { display: none !important; }
+body.modo-turista #saldoDisplay { display: none !important; }
+body.modo-turista .item-acoes { display: none !important; }
+body.modo-turista .badge-buscas { display: flex !important; }
+body.modo-turista .btn-perguntar { display: flex !important; }
+body.modo-turista .btn-radar { display: flex !important; }
+body.modo-turista .btn-denuncia { display: inline-block !important; } 
+body.modo-turista #bloqueioLoginOverlay { display: none !important; } 
+
+/* AVALIADOR: Foco em trabalhar e ganhar dinheiro */
+body.modo-avaliador .btn-perguntar { display: none !important; }
+body.modo-avaliador .btn-pesquisa { display: none !important; } 
+body.modo-avaliador .btn-radar { display: none !important; }
+/* Correção: Notificações AGORA APARECEM para o Avaliador receber alertas de dinheiro e fotos */
+
+/* LOJISTA: Foco em gerir o próprio negócio */
+body.modo-lojista #t_level { display: none !important; }
+body.modo-lojista #saldoDisplay { display: none !important; }
+body.modo-lojista .notif-container { display: none !important; }
+body.modo-lojista .btn-perguntar { display: none !important; }
+body.modo-lojista .badge-buscas { display: none !important; }
+body.modo-lojista .btn-radar { display: none !important; }
+body.modo-lojista .item-acoes { display: none !important; } 
+
+/* MENU LATERAL DINÂMICO */
+body:not(.modo-lojista) #btnAreaLojista { display: none !important; }
+body:not(.modo-avaliador) #btnMinhaCarteira { display: none !important; }
+body:not(.modo-turista) #btnCarregarRoteiro { display: none !important; }
