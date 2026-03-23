@@ -780,19 +780,19 @@ select.input-form {
 }
 
 /* --- MARCADORES/MARKERS --- */
-.marker-base { 
-	width: 32px; 
-	height: 40px; 
-	background: var(--brand-primary); 
-	border-radius: 50% 50% 50% 0; 
-	transform: rotate(-45deg); 
-	cursor: pointer; 
-	display: flex; 
-	align-items: center; 
-	justify-content: center; 
-	border: 2px solid white; 
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-	font-size: 18px; 
+.marker-base {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+    pointer-events: auto;
+    background: var(--brand-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
 }
 
 .marker-premium { 
