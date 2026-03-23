@@ -6,17 +6,17 @@
     <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GringoSafe • Smart Travel</title>
+    <title>GringoSafe - Preço Justo</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#FFFFFF">
+    <meta name="theme-color" content="#004d40">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="./logo.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
@@ -30,23 +30,23 @@
 
     <div id="splashScreen">
         <h1>🛡️ GringoSafe</h1>
-        <p id="t_splashSub">Preço Justo em Qualquer Lugar</p>
+        <p>Preço Justo em Qualquer Lugar</p>
     </div>
 
     <div id="toastAviso">📡 Radar Ativado!</div>
 
     <div id="mapa"></div>
 
-    <div class="header-island glass-island" id="topBarInfo">
-        <div class="brand-logo" id="btnAbrirMenu">
-            <span style="font-size: 22px; color: var(--brand-primary);">☰</span>
-            <span>Gringo<b style="color: var(--brand-primary);">Safe</b></span>
+    <div class="top-bar">
+        <div class="top-bar-logo" id="btnAbrirMenu">
+            <button class="btn-menu">☰</button>
+            <span>GringoSafe</span>
         </div>
-        <div class="user-meta">
-            <span class="user-level" id="t_level" style="display: none;">⭐ Nvl 1</span>
-            <div class="balance-pill" id="saldoDisplay">R$ 0,00</div>
+        <div class="top-bar-right">
+            <span class="user-level" id="t_level">⭐ Nvl 1</span>
+            <div class="user-balance" id="saldoDisplay">R$ 0,00</div>
             <div class="notif-container" id="btnAbrirNotificacoes">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                 <span class="badge-notificacao" id="badgeNotificacoes"></span>
             </div>
         </div>
@@ -54,7 +54,7 @@
 
     <div class="alfinete-alvo" id="alfineteAlvo"></div>
     <div class="alfinete-central" id="alfineteCentral">
-        <svg width="45" height="45" viewBox="0 0 24 24" fill="#10B981"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="#c62828"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
     </div>
 
     <div id="telaPerfil" style="display: none;">
@@ -63,39 +63,39 @@
             <div id="btnLangEnInicio">🇺🇸 EN</div>
             <div id="btnLangEsInicio">🇪🇸 ES</div>
         </div>
-        <h2 id="t_roleTitle">Como quer usar a App?</h2>
+        <h2>Como quer usar a App?</h2>
         <button class="btn-perfil" id="btnPerfilTurista">
-            📸 <strong id="t_roleTourist">Sou Turista</strong>
-            <span id="t_roleTouristSub">Quero pesquisar locais seguros e perguntar preços.</span>
+            📸 <strong>Sou Turista</strong>
+            <span>Pesquisar locais seguros e perguntar preços.</span>
         </button>
         <button class="btn-perfil avaliador" id="btnPerfilAvaliador">
-            ⭐ <strong id="t_roleLocal">Sou Avaliador Local</strong>
-            <span id="t_roleLocalSub">Quero registar preços e responder a turistas.</span>
+            ⭐ <strong>Sou Avaliador Local</strong>
+            <span>Registar preços e responder a turistas.</span>
         </button>
         <button class="btn-perfil lojista" id="btnPerfilLojista">
-            🏢 <strong id="t_roleLojista">Sou Lojista</strong>
-            <span id="t_roleLojistaSub">Quero registar o meu negócio e atrair turistas.</span>
+            🏢 <strong>Sou Lojista</strong>
+            <span>Registar o meu negócio e atrair turistas.</span>
         </button>
     </div>
 
     <div class="menu-overlay" id="menuOverlay"></div>
-    
     <div class="side-menu" id="sideMenu">
+        <div class="menu-header">GringoSafe</div>
         <div class="user-card">
             <div class="user-info">
                 <div class="user-avatar" id="menuAvatar">👤</div>
                 <span id="menuNome">Visitante</span>
             </div>
             <button class="btn-google" id="btnLoginGoogleMenu">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-                <span id="t_btnLogin">Entrar com Google</span>
+                <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                Entrar com Google
             </button>
-            <button class="btn-sair" id="btnLogout" style="display: none;"><span id="t_btnLogout">Sair da Conta</span></button>
+            <button class="btn-sair" id="btnLogout" style="display: none;">Sair da Conta</button>
         </div>
-        <div class="menu-item" id="btnMinhaCarteira"><span id="t_menuWallet">💰 Minha Carteira</span></div>
-        <div class="menu-item" id="btnAreaLojista"><span id="t_menuLojista">🏢 Área do Lojista</span></div>
-        <div class="menu-item" id="btnCarregarRoteiro"><span id="t_menuRoute">🗺️ Ligar Roteiro Premium</span></div>
-        <div class="menu-item" id="btnLangToggle"><span id="t_menuLang">🌐 Idiomas</span><span>▼</span></div>
+        <div class="menu-item" id="btnMinhaCarteira"><span>💰 Minha Carteira</span></div>
+        <div class="menu-item" id="btnAreaLojista"><span>🏢 Área do Lojista</span></div>
+        <div class="menu-item" id="btnCarregarRoteiro"><span>🗺️ Ligar Roteiro Premium</span></div>
+        <div class="menu-item" id="btnLangToggle"><span>🌐 Idiomas</span><span>▼</span></div>
         <div class="sub-menu" id="langSubMenu">
             <div class="sub-menu-item ativo-option" id="lang_pt"><span>🇧🇷 Português</span><span class="check">✔️</span></div>
             <div class="sub-menu-item" id="lang_en"><span>🇺🇸 English</span><span class="check" style="display:none;">✔️</span></div>
@@ -108,20 +108,20 @@
             <div class="sub-menu-item" id="cur_EUR"><span>🇪🇺 EUR (Euro)</span><span class="check" style="display:none;">✔️</span></div>
             <div class="sub-menu-item" id="cur_ARS"><span>🇦🇷 ARS (Peso)</span><span class="check" style="display:none;">✔️</span></div>
         </div>
-        <div class="menu-item" id="btnTrocarPerfil"><span id="t_menuChangeRole">👤 Trocar de Perfil</span></div>
+        <div class="menu-item" id="btnTrocarPerfil"><span>👤 Trocar de Perfil</span></div>
     </div>
 
     <div class="bloqueio-login" id="bloqueioLoginOverlay" style="display: none;">
         <div style="font-size: 50px; margin-bottom: 10px;">🔒</div>
-        <h3 id="t_lockTitle">Mapa Protegido</h3>
-        <p id="t_lockSub">Faça login gratuitamente para visualizar preços e locais.</p>
+        <h3>Mapa Protegido</h3>
+        <p>Inicie sessão gratuitamente para visualizar preços e locais próximos de si.</p>
         <button class="btn-google" id="btnLoginGoogleOverlay">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="white" style="margin-right: 8px;"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-            <span id="t_lockBtn">Entrar com Google</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" style="margin-right: 8px;"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Entrar com Google
         </button>
     </div>
 
-    <button id="btnLimparFiltro" style="display:none; position:fixed; top:85px; left:50%; transform:translateX(-50%); z-index:4000; background:var(--text-dark); color:white; border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.15);">❌ Limpar Mapa</button>
+    <button id="btnLimparFiltro" style="display:none; position:fixed; top:80px; left:50%; transform:translateX(-50%); z-index:4000; background:#333; color:white; border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.3);">❌ Limpar Mapa</button>
     
     <input type="file" id="inputCamNormal" accept="image/*" capture="environment" style="display: none;">
     <input type="file" id="inputGalNormal" accept="image/*" style="display: none;">
@@ -133,51 +133,51 @@
     <input type="file" id="inputGalLojista" accept="image/*" style="display: none;">
     <input type="file" id="inputDocLojista" accept="image/*" style="display: none;">
 
-    <div class="action-dock glass-island" id="bottomActions">
-        <button class="btn-dock btn-util btn-pesquisa" id="btnAbrirBusca">
+    <div class="bottom-actions">
+        <button class="btn-action btn-pesquisa" id="btnAbrirBusca">
             <span class="badge-buscas" id="badgeBuscas">3</span>
-            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" style="width:24px;height:24px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
         </button>
-        <button class="btn-dock btn-perguntar" id="btnPerguntar">
-            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 28px; height: 28px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+        <button class="btn-action btn-perguntar" id="btnPerguntar">
+            <svg width="24" height="24" viewBox="0 0 24 24"><path d="M11.07 12.85c.77-1.39 2.25-2.21 3.11-3.44.91-1.29.4-3.7-1.58-4.41-1.11-.4-2.38-.26-3.35.47-.8.6-1.15 1.6-1.15 2.53H6.1c0-1.72.68-3.47 1.95-4.48C9.4 2.45 11.37 2 13.33 2.34c2.12.37 3.9 1.83 4.47 3.91.51 1.88-.18 3.8-1.47 5.15-.84.88-1.99 1.44-2.75 2.44-.43.57-.33 1.39-.33 2.01h-2.2c0-1.03.11-2.13.02-3.15zM14 20c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"></path></svg>
         </button>
-        <button class="btn-dock btn-dock-main btn-adicionar" id="btnAdicionar">
-            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" style="width:34px;height:34px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <button class="btn-action btn-adicionar" id="btnAdicionar">
+            <svg width="24" height="24" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
         </button>
     </div>
     
-    <button class="btn-mira" id="btnMira"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg></button>
+    <button class="btn-mira" id="btnMira"><svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg></button>
 
     <button class="btn-radar" id="btnRadar">
-        <span style="font-size:22px; line-height:1;">📡</span>
-        <span id="t_btnRadarText">Radar</span>
+        <div style="font-size:20px; line-height:1;">📡</div>
+        <span>Radar</span>
     </button>
 
-    <div class="posicionamento-ui glass-island" id="posicionamentoUI">
-        <div class="posicionamento-aviso" id="t_posHint">📍 Aponte para o local exato no mapa</div>
+    <div class="posicionamento-ui" id="posicionamentoUI">
+        <div class="posicionamento-aviso">📍 Aponte para a barraca<br>(Dica: Faça de uma distância segura)</div>
         <div class="posicionamento-botoes">
-            <button class="btn-cancel-pos" id="btnCancelarPos"><span id="t_btnPosCancel">Cancelar</span></button>
-            <button class="btn-confirm-pos" id="btnConfirmarPos"><span id="t_btnPosConfirm">Confirmar Local</span></button>
+            <button class="btn-cancel-pos" id="btnCancelarPos">Cancelar</button>
+            <button class="btn-confirm-pos" id="btnConfirmarPos">Confirmar Local</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="modalCarteira">
-        <div class="modal-sheet">
-            <h3 style="color:var(--brand-primary); margin-bottom:15px;" id="t_walletTitle">Saque via PIX</h3>
-            <div style="background:#ECFDF5; padding:24px; border-radius:20px; margin-bottom:15px; border: 1px solid #D1FAE5;">
-                <span style="font-size:14px; color:var(--text-muted); font-weight: 500;">Saldo Disponível</span><br>
-                <strong style="font-size:36px; color:var(--brand-primary); font-family: 'Poppins', sans-serif;" id="saldoCarteiraDisplay">R$ 0,00</strong>
+        <div class="modal-content">
+            <h3 style="color:#004d40; margin-bottom:15px;">Saque via PIX</h3>
+            <div style="background:#e0f2f1; padding:20px; border-radius:15px; margin-bottom:15px;">
+                <span style="font-size:14px; color:#555;">Saldo Disponível</span><br>
+                <strong style="font-size:32px; color:#004d40;" id="saldoCarteiraDisplay">R$ 0,00</strong>
             </div>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px; font-weight:500;" id="t_walletSub">Saque mínimo de R$ 20,00.</p>
+            <p style="font-size:12px; color:#666; margin-bottom:15px;">Saque mínimo de R$ 20,00.</p>
             <input type="text" id="inputChavePix" class="input-form" placeholder="Sua Chave PIX (CPF, E-mail, Celular)">
-            <button class="btn-salvar" id="btnSacarPix" style="background:var(--brand-primary);"><span id="t_btnWithdraw">Solicitar Saque PIX</span></button>
+            <button class="btn-salvar" id="btnSacarPix">Solicitar Saque PIX</button>
             <button class="btn-cancelar" id="btnFecharCarteira">Cancelar</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="modalFormLojista">
-        <div class="modal-sheet">
-            <h3 style="color:var(--brand-accent); margin-bottom:15px;">🏢 Registar o Meu Negócio</h3>
+        <div class="modal-content">
+            <h3 style="color:#f57c00; margin-bottom:15px;">🏢 Registar o Meu Negócio</h3>
             <input type="text" id="nomeLojistaInput" class="input-form" placeholder="Nome Oficial do Estabelecimento">
             <select id="categoriaLojista" class="input-form">
                 <option value="Restaurante">🍽️ Restaurante</option>
@@ -186,215 +186,169 @@
                 <option value="Quiosque">🏖️ Quiosque de Praia</option>
                 <option value="Turismo">🚤 Agência de Passeios / Turismo</option>
             </select>
-            <div style="font-size:13px; color:var(--text-muted); margin:15px 0 5px 0; font-weight:600;">Adicione até 3 fotos para atrair turistas:</div>
+            <div style="font-size:12px; color:#666; margin:10px 0 5px 0;">Adicione até 3 fotos para atrair turistas:</div>
             <div class="linha-botoes-foto">
-                <button class="btn-laranja" id="btnCamLojista" style="flex: 1;">📸 Câmara</button>
-                <button class="btn-laranja" id="btnGalLojista" style="flex: 1; background: #F1F5F9; color: var(--text-dark);">🖼️ Galeria</button>
+                <button class="btn-add-foto" id="btnCamLojista" style="flex: 1; border-color:#f57c00; color:#f57c00; background:#fff3e0;">📸 Câmara</button>
+                <button class="btn-add-foto" id="btnGalLojista" style="flex: 1; border-color:#f57c00; color:#f57c00; background:#fff3e0;">🖼️ Galeria</button>
             </div>
             <div id="previewFotosLojista" class="galeria-lojista"></div>
-            <button class="btn-salvar" id="btnSalvarLojista" style="background:var(--brand-accent);">Guardar o Meu Negócio no Mapa</button>
+            <button class="btn-salvar" id="btnSalvarLojista" style="background:#f57c00;">Guardar o Meu Negócio no Mapa</button>
             <button class="btn-cancelar" id="btnCancelarLojista">Cancelar</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="modalVerificacaoLojista">
-        <div class="modal-sheet">
-            <h3 style="color:var(--brand-accent); margin-bottom:10px;">🛡️ Verificação do Negócio</h3>
-            <p style="font-size:14px; color:var(--text-muted); margin-bottom:15px; font-weight:500;">Para proteger o seu negocio contra edições externas, precisamos de uma foto do seu <strong>Alvará de Funcionamento</strong> ou <strong>Cartão CNPJ</strong>.</p>
+        <div class="modal-content">
+            <h3 style="color:#f57c00; margin-bottom:10px;">🛡️ Verificação do Negócio</h3>
+            <p style="font-size:13px; color:#666; margin-bottom:15px;">Para proteger o seu negocio contra edições externas, precisamos de uma foto do seu <strong>Alvará de Funcionamento</strong> ou <strong>Cartão CNPJ</strong>.</p>
             <button class="btn-add-foto" id="btnUploadDocLojista">📸 Enviar Documento</button>
             <img id="previewDocLojista" class="imagem-preview" style="display:none; width:100%;">
-            <button class="btn-salvar" id="btnEnviarVerificacao" style="background:var(--brand-accent); display:none; margin-top:15px;">Avançar para Destaque Premium</button>
+            <button class="btn-salvar" id="btnEnviarVerificacao" style="background:#f57c00; display:none; margin-top:15px;">Avançar para Destaque Premium</button>
             <button class="btn-cancelar" id="btnFecharVerificacao" style="margin-top:10px;">Cancelar</button>
         </div>
     </div>
 
+    <div class="modal-overlay" id="modalLojista">
+        <div class="modal-content">
+            <h3>Destacar o seu Negócio 🌟</h3>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">Atraia mais turistas. O seu local ficará com um pino dourado e ganhará a prioridade absoluta nas pesquisas da região.</p>
+            <div style="background:#fff3e0; border:2px solid #f57c00; padding:15px; border-radius:12px; margin-bottom:20px;">
+                <span style="font-weight:700; color:#333; font-size:16px;">Plano Ouro Mensal</span><br>
+                <span style="color:#f57c00; font-size: 28px; font-weight: 900;">R$ 19,99/mês</span>
+                <div style="font-size:11px; color:#c62828; font-weight:bold; margin-top:5px;">🔥 OFERTA PIONEIRO: Preço original R$ 99,90</div>
+            </div>
+            <button id="btnTesteGratis" style="background:#f57c00; width:100%; padding:15px; color:white; border:none; border-radius:10px; font-weight:700; margin-bottom:10px; cursor:pointer; display:none;" onclick="window.ativarTesteGratis()">🎁 Começar 30 Dias Grátis</button>
+            <button class="btn-salvar" style="background:#333; margin-bottom: 10px;" onclick="document.getElementById('modalLojista').style.display='none'; window.location.href='https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=de968d42bc404eee9a7df4fb1870f153';">Assinar Plano Ouro</button>
+            <button class="btn-cancelar" onclick="document.getElementById('modalLojista').style.display='none';">Talvez depois</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalAssinatura">
+        <div class="modal-content">
+            <div style="font-size: 36px; margin-bottom: 15px;">🛡️</div>
+            <h3>GringoSafe Pass</h3>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">Unlock unlimited safe searches and real-time price guides for 7 days.</p>
+            <div style="background:#f0f0f0; border:2px solid #333; padding:15px; border-radius:12px; margin-bottom:20px;">
+                <span style="font-weight:700; color:#333; font-size:16px;">7-Day Full Access</span><br>
+                <span style="color:#333; font-size: 28px; font-weight: 900;">$ 4.99</span>
+                <div style="font-size:11px; color:#666; margin-top:5px;">One-time payment</div>
+            </div>
+            <button class="btn-salvar" style="background:#333; margin-bottom: 10px;" onclick="document.getElementById('modalAssinatura').style.display='none'; window.location.href='https://buy.stripe.com/test_00w4gyeLNe5se8o5s4dIA00';">Pay with Apple/Google Pay</button>
+            <button class="btn-cancelar" onclick="document.getElementById('modalAssinatura').style.display='none';">Maybe later</button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="modalAvaliacoes">
-        <div class="modal-sheet">
-            <h3 style="color:var(--brand-accent); margin-bottom:5px;">Avaliações ⭐</h3>
-            <h4 id="revNomeLocal" style="margin-top:0; color:var(--text-dark); font-family: 'Inter', sans-serif;">Nome Local</h4>
-            <div id="listaReviews" style="max-height:30vh; overflow-y:auto; margin-bottom:15px; font-size:14px; text-align:left;"></div>
-            
-            <div style="border-top:1px solid #E2E8F0; padding-top:15px;">
-                <select id="notaReview" class="input-form" style="margin-bottom:10px;">
+        <div class="modal-content">
+            <h3 style="color:#f57c00; margin-bottom:5px;">Avaliações ⭐</h3>
+            <h4 id="revNomeLocal" style="margin-top:0; color:#333;">Nome Local</h4>
+            <div id="listaReviews" style="max-height:30vh; overflow-y:auto; margin-bottom:15px; font-size:13px; text-align:left;"></div>
+            <div style="border-top:1px solid #eee; padding-top:10px;">
+                <select id="notaReview" class="input-form" style="margin-bottom:5px;">
                     <option value="5">⭐⭐⭐⭐⭐ Excelente</option>
                     <option value="4">⭐⭐⭐⭐ Muito Bom</option>
                     <option value="3">⭐⭐⭐ Bom</option>
                     <option value="2">⭐⭐ Ruim</option>
                     <option value="1">⭐ Péssimo</option>
                 </select>
-                <textarea id="textoReview" class="input-form" placeholder="Deixe o seu comentário..." style="height:80px; resize:none;"></textarea>
+                <textarea id="textoReview" class="input-form" placeholder="Deixe o seu comentário..." style="height:60px; resize:none;"></textarea>
                 <input type="hidden" id="localAlvoReview">
-                <button class="btn-salvar" id="btnEnviarReview" style="background:var(--text-dark); margin-top:10px;">Enviar Avaliação</button>
+                <button class="btn-salvar" id="btnEnviarReview" style="background:#333; margin-top:5px;">Enviar Avaliação</button>
             </div>
             <button class="btn-cancelar" id="btnFecharAvaliacoes">Fechar</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="modalLojista">
-        <div class="modal-sheet">
-            <h3>Destacar o seu Negócio 🌟</h3>
-            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px; font-weight:500;">
-                Atraia mais turistas. O seu local ficará com um pino dourado e ganhará a prioridade absoluta nas pesquisas da região.
-            </p>
-
-            <div class="bento-card" style="border: 2px solid var(--brand-accent); background: #FFFBEB; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                    <span style="font-weight: 700; color: var(--text-dark); font-size: 16px;">Plano Ouro Mensal</span>
-                    <span style="font-size:11px; background:#EF4444; color:white; padding:4px 10px; border-radius:12px; font-weight:800; white-space: nowrap;">🔥 OFERTA PIONEIRO</span>
-                </div>
-                <div style="display:flex; flex-direction:column; text-align:right;">
-                    <span style="font-size:13px; color:#94A3B8; text-decoration:line-through; font-weight:600;">De R$ 99,90</span>
-                    <span style="color:var(--brand-accent); font-size: 32px; font-weight: 800; font-family:'Poppins', sans-serif;">R$ 19,99<span style="font-size:14px; font-weight: 600; font-family:'Inter', sans-serif;">/mês</span></span>
-                </div>
-            </div>
-
-            <button id="btnTesteGratis" style="background:var(--brand-accent); font-size:16px; width: 100%; padding: 16px; color: white; border: none; border-radius: 16px; font-weight: 700; margin-bottom: 12px; cursor: pointer; display: none; box-shadow: 0 10px 20px rgba(245, 158, 11, 0.2);" onclick="window.ativarTesteGratis()">
-                🎁 Começar 30 Dias Grátis
-            </button>
-
-            <button class="btn-salvar" style="background:var(--text-dark); margin-bottom: 10px;" onclick="document.getElementById('modalLojista').style.display='none'; window.location.href='https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=de968d42bc404eee9a7df4fb1870f153';">
-                Assinar Plano Ouro
-            </button>
-            
-            <button class="btn-cancelar" onclick="document.getElementById('modalLojista').style.display='none';">
-                Talvez depois
-            </button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modalAssinatura">
-        <div class="modal-sheet">
-            <div style="font-size: 36px; margin-bottom: 15px;">🛡️</div>
-            <h3>GringoSafe Pass</h3>
-            <p style="font-size: 15px; color: var(--text-muted); margin-bottom: 25px; font-weight:500;">
-                Unlock unlimited safe searches and real-time price guides for 7 days.
-            </p>
-
-            <div class="bento-card" style="border: 2px solid var(--text-dark); background: #F8FAFC; margin-bottom: 20px; text-align: left;">
-                <span style="font-weight: 700; color: var(--text-dark); font-size: 16px;">7-Day Full Access</span>
-                <div style="display:flex; flex-direction:column; text-align:right; margin-top: 10px;">
-                    <span style="color:var(--text-dark); font-size: 32px; font-weight: 800; font-family:'Poppins', sans-serif;">$ 4.99</span>
-                    <span style="font-size:13px; color:var(--text-muted); font-weight:600;">One-time payment</span>
-                </div>
-            </div>
-
-            <button class="btn-salvar" style="background:var(--text-dark); margin-bottom: 10px;" onclick="document.getElementById('modalAssinatura').style.display='none'; window.location.href='https://buy.stripe.com/test_00w4gyeLNe5se8o5s4dIA00';">
-                Pay with Apple/Google Pay
-            </button>
-            
-            <button class="btn-cancelar" onclick="document.getElementById('modalAssinatura').style.display='none';">
-                Maybe later
-            </button>
-        </div>
-    </div>
-
     <div class="modal-overlay" id="modalNotificacoes">
-        <div class="modal-sheet" style="max-height: 80vh; width: 95%; max-width: 420px; padding: 24px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                <h3 id="t_notifTitle" style="color:var(--text-dark); margin:0;">🔔 Notificações</h3>
-                <div style="display:flex; gap:8px;">
-                    <button id="btnNotifLidas" style="font-size:12px; padding:8px 12px; border-radius:10px; border:none; background:#ECFDF5; color:#059669; font-weight:700; cursor:pointer;">✔️ Lidas</button>
-                    <button id="btnNotifApagarTodas" style="font-size:12px; padding:8px 12px; border-radius:10px; border:none; background:#FEF2F2; color:#DC2626; font-weight:700; cursor:pointer;">🗑️ Todas</button>
+        <div class="modal-content" style="max-height: 80vh; width: 95%;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                <h3 style="color:#004d40; margin:0;">🔔 Notificações</h3>
+                <div style="display:flex; gap:5px;">
+                    <button id="btnNotifLidas" style="font-size:11px; padding:5px 10px; border-radius:15px; border:none; background:#e8f5e9; color:#2e7d32; font-weight:bold; cursor:pointer;">✔️ Lidas</button>
+                    <button id="btnNotifApagarTodas" style="font-size:11px; padding:5px 10px; border-radius:15px; border:none; background:#ffebee; color:#c62828; font-weight:bold; cursor:pointer;">🗑️ Todas</button>
                 </div>
             </div>
-            <div id="listaNotificacoes" style="max-height: 50vh; overflow-y: auto; padding-right:5px;"></div>
-            <button class="btn-cancelar" id="btnFecharNotificacoes" style="margin-top:20px;"><span>Fechar</span></button>
+            <div id="listaNotificacoes" style="max-height: 50vh; overflow-y: auto;"></div>
+            <button class="btn-cancelar" id="btnFecharNotificacoes" style="margin-top:15px;">Fechar</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="modalBusca">
-        <div class="modal-sheet" style="max-height: 85vh;">
-            <h3 id="t_searchTitle">Procurar Local ou Produto</h3>
+        <div class="modal-content" style="max-height: 85vh;">
+            <h3>Procurar Local ou Produto</h3>
             <input type="text" id="inputBusca" class="input-form" placeholder="Ex: Quiosque, Água...">
             <div class="resultados-busca" id="resultadosBusca"></div>
-            <button class="btn-cancelar" id="btnFecharBusca" style="margin-top:20px;"><span id="t_searchClose">Fechar</span></button>
+            <button class="btn-cancelar" id="btnFecharBusca" style="margin-top:15px;">Fechar</button>
         </div>
     </div>
     
     <div class="modal-overlay" id="modalEditar">
-        <div class="modal-sheet">
-            <h3 style="color:var(--brand-accent);">✏️ Atualizar Preço</h3>
-            <p style="font-size: 15px; color: var(--text-muted); margin-bottom: 20px; font-weight:500;">Item: <strong id="editItemNome" style="color:var(--text-dark);"></strong></p>
+        <div class="modal-content">
+            <h3 style="color:#f57c00;">✏️ Atualizar Preço</h3>
+            <p style="font-size: 14px; color: #666;">Item: <strong id="editItemNome" style="color:#333;"></strong></p>
             <input type="number" id="editItemPreco" class="input-form" placeholder="Novo preço real">
             <input type="hidden" id="editItemId">
-            <button class="btn-salvar" id="btnSalvarEdicao" style="background:var(--brand-primary);">Guardar e Resetar Votos</button>
+            <button class="btn-salvar" id="btnSalvarEdicao">Guardar e Resetar Votos</button>
             <button class="btn-cancelar" id="btnCancelarEdicao">Cancelar</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="modalForm">
-        <div class="modal-sheet">
+        <div class="modal-content">
             <h3 id="t_formTitle">Novo Registo</h3>
             <div class="linha-botoes-foto">
-                <button class="btn-add-foto" id="btnCamNormal" style="flex: 1;"><span id="t_btnAddCam">📸 Câmara</span></button>
-                <button class="btn-add-foto" id="btnGalNormal" style="flex: 1;"><span id="t_btnAddGal">🖼️ Galeria</span></button>
+                <button class="btn-add-foto" id="btnCamNormal" style="flex: 1;">📸 Câmara</button>
+                <button class="btn-add-foto" id="btnGalNormal" style="flex: 1;">🖼️ Galeria</button>
             </div>
             <img id="imagemPreview" class="imagem-preview" alt="Foto">
             <p id="iaStatus" class="ia-status">🤖 IA...</p>
-            <select id="selectLocal" class="input-form"><option value="NEW" id="t_optNewPlace">➕ Adicionar Novo Local</option></select>
+            <select id="selectLocal" class="input-form"><option value="NEW">➕ Adicionar Novo Local</option></select>
             <input type="text" id="nomeLocalInput" class="input-form" placeholder="Nome do Novo Local">
             <input type="text" id="nomeProduto" class="input-form" placeholder="O que é?">
             <input type="number" id="precoProduto" class="input-form" placeholder="Preço Cobrado">
             <select id="categoriaProduto" class="input-form">
-                <option value="Bebida" id="t_catDrink">Bebida</option><option value="Comida" id="t_catFood">Comida</option><option value="Serviço" id="t_catService">Serviço</option><option value="Ingresso" id="t_catTicket">Ingresso</option>
+                <option value="Bebida">Bebida</option><option value="Comida">Comida</option><option value="Serviço">Serviço</option><option value="Ingresso">Ingresso</option>
             </select>
-            <button class="btn-salvar" id="btnSalvar" style="background:var(--brand-primary);"><span id="t_btnSave">Guardar (+R$ 0,25)</span></button>
-            <button class="btn-cancelar" id="btnCancelar"><span id="t_btnCancel">Cancelar</span></button>
+            <button class="btn-salvar" id="btnSalvar">Guardar (+R$ 0,25)</button>
+            <button class="btn-cancelar" id="btnCancelar">Cancelar</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="modalPergunta">
-        <div class="modal-content modal-sheet">
-            <h3 id="t_askTitle" style="color:var(--brand-secondary);">O que quer comprar?</h3>
-            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px; font-weight:500;" id="t_askSub">A comunidade local dirá se o preço é justo.</p>
+        <div class="modal-content">
+            <h3 style="color:#9c27b0;">O que quer comprar?</h3>
+            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">A comunidade local dirá se o preço é justo.</p>
             <div class="linha-botoes-foto">
-                <button class="btn-add-foto" id="btnCamPergunta" style="border-color:#C7D2FE; color:var(--brand-secondary); flex: 1; background:#EEF2FF;"><span id="t_btnAskCam">📸 Câmara</span></button>
-                <button class="btn-add-foto" id="btnGalPergunta" style="border-color:#C7D2FE; color:var(--brand-secondary); flex: 1; background:#EEF2FF;"><span id="t_btnAskGal">🖼️ Galeria</span></button>
+                <button class="btn-add-foto" id="btnCamPergunta" style="border-color:#9c27b0; color:#9c27b0; background:#f3e5f5; flex: 1;">📸 Câmara</button>
+                <button class="btn-add-foto" id="btnGalPergunta" style="border-color:#9c27b0; color:#9c27b0; background:#f3e5f5; flex: 1;">🖼️ Galeria</button>
             </div>
             <img id="imagemPreviewPergunta" class="imagem-preview" alt="Foto">
             <p id="iaStatusPergunta" class="ia-status">🤖 IA...</p>
-            
             <input type="text" id="nomeProdutoPergunta" class="input-form" placeholder="Nome do Produto (Ex: Cadeira)">
             <div id="estimativaIA" class="estimativa-ia-box"></div>
-
             <select id="tipoLocalPergunta" class="input-form">
-                <option value="Fixo" id="t_optFixo">🏪 Estabelecimento Fixo</option>
-                <option value="Ambulante" id="t_optAmbulante">🚶 Vendedor Ambulante</option>
+                <option value="Fixo">🏪 Estabelecimento Fixo</option>
+                <option value="Ambulante">🚶 Vendedor Ambulante</option>
             </select>
             <input type="text" id="nomeLocalPergunta" class="input-form" placeholder="Nome do Local ou Vendedor">
-            
-            <button class="btn-roxo" id="btnEnviarPergunta"><span id="t_btnSendAsk">Enviar Pergunta</span></button>
-            <button class="btn-cancelar" id="btnCancelarPergunta"><span id="t_btnCancelAsk">Cancelar</span></button>
+            <button class="btn-roxo" id="btnEnviarPergunta">Enviar Pergunta</button>
+            <button class="btn-cancelar" id="btnCancelarPergunta">Cancelar</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="modalResposta">
-        <div class="modal-sheet">
-            <h3 style="color:var(--brand-primary);" id="t_ansTitle">Responder ao Turista</h3>
-            <div class="bento-card" style="margin: 15px 0;">
-                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 8px; text-align: left; font-weight:500;">Local: <strong id="respLocalNome" style="color:var(--text-dark);"></strong> <span id="respLocalTipo" style="font-size: 12px; color:var(--text-muted);"></span></p>
-                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 0; text-align: left; font-weight:500;">Item: <strong id="respItemNome" style="color:var(--text-dark); font-size:16px;"></strong></p>
-            </div>
+        <div class="modal-content">
+            <h3 style="color:#004d40;">Responder ao Turista</h3>
+            <p style="font-size: 14px; color: #666;">Item: <strong id="respItemNome" style="color:#333;"></strong></p>
+            <p style="font-size: 13px; color: #777;">Local: <span id="respLocalNome"></span> <span id="respLocalTipo" style="font-size: 11px; background:#eee; padding:2px 5px; border-radius:4px;"></span></p>
             <input type="number" id="precoProdutoResposta" class="input-form" placeholder="Qual o preço real/justo?">
             <input type="hidden" id="idPerguntaAtual">
             <input type="hidden" id="uidAutorPergunta"> 
-            <button class="btn-salvar" id="btnEnviarResposta" style="background:var(--brand-primary);"><span id="t_btnSendAns">Responder (+R$ 1,00)</span></button>
-            <button class="btn-cancelar" id="btnCancelarResposta"><span id="t_btnCancelAns">Cancelar</span></button>
+            <button class="btn-salvar" id="btnEnviarResposta">Responder (+R$ 1,00)</button>
+            <button class="btn-cancelar" id="btnCancelarResposta">Cancelar</button>
         </div>
     </div>
 
-    <script type="module">
-        // Regista o PWA para instalação no telemóvel
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker Registado com sucesso!', reg))
-                    .catch(err => console.error('Erro ao registar o Service Worker', err));
-            });
-        }
-    </script>
-    
-    <script type="module" src="./js/app.js"></script>
-
+    <script src="js/app.js"></script>
 </body>
 </html>
