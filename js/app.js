@@ -482,6 +482,37 @@ window.votarItem = async function(id, tipo, isPremium) {
     try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
 };
 
+window.denunciarItem = async function(id) {
+    if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+    
+    const uid = estadoApp.usuario.uid;
+    let jaDenounciou = false;
+    
+    for (const loc in estadoApp.dadosHospedados) {
+        const iLocal = estadoApp.dadosHospedados[loc].itens.find(i => i.id === id);
+        if (iLocal) {
+            const denList = iLocal.denunciaram || [];
+            if (denList.includes(uid)) jaDenounciou = true;
+            break;
+        }
+    }
+    
+    if (jaDenounciou) return alert("🚫 Você já denunciou este item!");
+    
+    try {
+        const docRef = doc(db, "precos", id);
+        await updateDoc(docRef, {
+            denuncias: increment(1),
+            denunciaram: arrayUnion(uid)
+        });
+        alert("✅ Denúncia registada! Obrigado por ajudar a manter a comunidade segura.");
+        window.agendarDesenho();
+    } catch(e) {
+        console.error(e);
+        alert("Erro ao denunciar item.");
+    }
+};
+
 window.executarPromocao = async function(nomeLocal) {
     try {
         const q = query(collection(db, "precos"), where("local", "==", nomeLocal));
