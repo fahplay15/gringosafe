@@ -2,12 +2,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-// Tokens do Mapbox e Firebase
 mapboxgl.accessToken = 'pk.eyJ1IjoiZmFocGxheTE1IiwiYSI6ImNtbXk2Z3UzMDB2YnYyb3BsMTA2ZzV2NmkifQ.Tvdrpof80mAktc3Z3dB3cw';
 const firebaseConfig = { apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs", authDomain: "gringosafe-1f434.firebaseapp.com", projectId: "gringosafe-1f434", storageBucket: "gringosafe-1f434.firebasestorage.app", messagingSenderId: "949745647794", appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab" };
 const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); const provider = new GoogleAuthProvider();
 
-// Mapa
 window.mapa = new mapboxgl.Map({
     container: 'mapa',
     style: 'mapbox://styles/mapbox/streets-v12', 
@@ -225,6 +223,7 @@ bindClick('btnRadar', () => {
 bindClick('btnLimparFiltro', () => { estadoApp.filtroProduto = null; getEl('btnLimparFiltro').style.display = 'none'; window.agendarDesenho(); });
 window.pesquisarComLocal = function(termo) { getEl('modalBusca').style.display = 'none'; iniciarModoPosicionamento('ask'); setTimeout(() => { getEl('nomeProdutoPergunta').value = termo.charAt(0).toUpperCase() + termo.slice(1); const event = new Event('input'); getEl('nomeProdutoPergunta').dispatchEvent(event); }, 500); };
 
+// 🚨 CORREÇÃO: PREÇOS DA PESQUISA BEM VISÍVEIS E BOTÃO LIMPAR FILTRO REPARADO 🚨
 bindInput('nomeProdutoPergunta', (e) => {
     const termo = e.target.value.toLowerCase().trim(); const estimativaEl = getEl('estimativaIA'); let achou = false;
     if (termo.length > 2) {
@@ -247,7 +246,12 @@ bindInput('inputBusca', (e) => {
     const termo = e.target.value.toLowerCase().trim(); getEl('resultadosBusca').innerHTML = ''; if(!termo) return;
     const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
     
-    if (termo.length > 2) { const divMapa = document.createElement('div'); divMapa.className = 'resultado-item'; divMapa.style.background = '#ECFDF5'; divMapa.style.borderColor = '#A7F3D0'; divMapa.innerHTML = `<span style="font-weight:700; color:var(--brand-primary);">💲 Ver "${termo.toUpperCase()}" no mapa</span>`; divMapa.onclick = () => { estadoApp.filtroProduto = termo; getEl('modalBusca').style.display = 'none'; getEl('btnLimparFiltro').style.display = 'block'; window.agendarDesenho(); }; getEl('resultadosBusca').appendChild(divMapa); }
+    if (termo.length > 2) { 
+        const divMapa = document.createElement('div'); divMapa.className = 'resultado-item'; divMapa.style.background = '#ECFDF5'; divMapa.style.borderColor = '#A7F3D0'; 
+        divMapa.innerHTML = `<span style="font-weight:700; color:var(--brand-primary);">💲 Ver "${termo.toUpperCase()}" no mapa</span>`; 
+        divMapa.onclick = () => { estadoApp.filtroProduto = termo; getEl('modalBusca').style.display = 'none'; getEl('btnLimparFiltro').style.display = 'flex'; window.agendarDesenho(); }; 
+        getEl('resultadosBusca').appendChild(divMapa); 
+    }
 
     let achouIA = false;
     if (termo.length > 2) {
@@ -259,7 +263,25 @@ bindInput('inputBusca', (e) => {
     let achouLocais = false;
     for (const nLocal in estadoApp.dadosHospedados) {
         const dLugar = estadoApp.dadosHospedados[nLocal]; const iMatch = dLugar.itens.filter(i => !i.isLojistaPlace && (i.nome || "").toLowerCase().includes(termo));
-        if (iMatch.length > 0) { achouLocais = true; iMatch.forEach(item => { if (!dLugar.lat || !dLugar.lng) return; const div = document.createElement('div'); div.className = 'resultado-item'; const prc = (item.preco * cotacao).toFixed(2); div.innerHTML = `<span style="font-weight:700; color:var(--text-dark);">🏪 ${nLocal}</span><span style="font-size:15px; color:var(--brand-primary); font-weight:700; margin-top:4px;">${item.nome}: ${sim} ${prc}</span>`; div.onclick = () => { estadoApp.filtroProduto = item.nome; getEl('btnLimparFiltro').style.display = 'block'; getEl('modalBusca').style.display = 'none'; window.mapa.flyTo({center: [dLugar.lng, dLugar.lat], zoom: 18, duration: 1500}); window.agendarDesenho(); }; getEl('resultadosBusca').appendChild(div); }); }
+        if (iMatch.length > 0) { 
+            achouLocais = true; 
+            iMatch.forEach(item => { 
+                if (!dLugar.lat || !dLugar.lng) return; 
+                const div = document.createElement('div'); div.className = 'resultado-item'; 
+                const prc = (item.preco * cotacao).toFixed(2); 
+                
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:700; color:#0F172A; font-size:14px;">🏪 ${nLocal}</span>
+                        <span style="font-size:16px; color:#10B981; font-weight:800;">${sim} ${prc}</span>
+                    </div>
+                    <span style="font-size:13px; color:#64748B; margin-top:4px; display:block;">${item.nome}</span>
+                `; 
+                
+                div.onclick = () => { estadoApp.filtroProduto = item.nome; getEl('btnLimparFiltro').style.display = 'flex'; getEl('modalBusca').style.display = 'none'; window.mapa.flyTo({center: [dLugar.lng, dLugar.lat], zoom: 18, duration: 1500}); window.agendarDesenho(); }; 
+                getEl('resultadosBusca').appendChild(div); 
+            }); 
+        }
     }
 
     if (!achouLocais && !achouIA && termo.length > 2) { const divVazio = document.createElement('div'); divVazio.className = 'resultado-item'; divVazio.style.textAlign = 'center'; divVazio.style.cursor = 'default'; divVazio.innerHTML = `<span style="color:var(--text-muted); margin-bottom:12px; display:block;">Ainda não temos dados sobre "${termo}" por aqui.</span><button class="btn-roxo" style="padding:10px; font-size:13px;" onclick="window.pesquisarComLocal('${termo.replace(/'/g, "\\'")}')">Pergunte aos Moradores Agora!</button>`; getEl('resultadosBusca').appendChild(divVazio); }
@@ -463,14 +485,50 @@ bindClick('btnSalvarEdicao', async () => {
     try { const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(nvPreco) / taxasCambio[estadoApp.moeda].taxa : parseFloat(nvPreco); await updateDoc(doc(db, "precos", id), { preco: prcReal, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], status: "pendente" }); getEl('modalEditar').style.display = 'none'; alert("Preço atualizado e avaliações resetadas!"); } catch(e) { alert("Erro ao editar preço."); } 
 });
 
-window.votarItem = async function(id, tipo, isPremium) {
+// 🚨 CORREÇÃO DA VOTAÇÃO (COM FEEDBACK VISUAL IMEDIATO) 🚨
+window.votarItem = async function(id, tipo, isPremium, btnElement) {
     if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
     if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
 
     const uid = estadoApp.usuario.uid; let jaVotou = false;
     for (const loc in estadoApp.dadosHospedados) { const iLocal = estadoApp.dadosHospedados[loc].itens.find(i => i.id === id); if (iLocal) { const upList = iLocal.votaram_up || []; const downList = iLocal.votaram_down || []; if (upList.includes(uid) || downList.includes(uid)) jaVotou = true; break; } }
-    if (jaVotou) return alert(dicionario[estadoApp.idioma].alertVoted);
-    try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
+    
+    if (jaVotou) return window.mostrarToast("Você já votou neste item!", "#F59E0B");
+
+    try { 
+        if (btnElement) {
+            let text = btnElement.innerText;
+            let num = parseInt(text.replace(/[^0-9]/g, '')) || 0;
+            btnElement.innerText = text.replace(num, num + 1);
+            btnElement.style.opacity = '0.5';
+            btnElement.style.pointerEvents = 'none';
+        }
+
+        const docRef = doc(db, "precos", id); 
+        if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); 
+        if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); 
+        
+        window.mostrarToast("Voto computado com sucesso!", "#10B981");
+    } catch(e) { console.error(e); }
+};
+
+// 🚨 FUNÇÃO DE DENÚNCIA ADICIONADA 🚨
+window.denunciarItem = async function(id) {
+    if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+    const uid = estadoApp.usuario.uid; let jaDenunciou = false;
+    
+    for (const loc in estadoApp.dadosHospedados) { const iLocal = estadoApp.dadosHospedados[loc].itens.find(i => i.id === id); if (iLocal) { const denList = iLocal.denunciaram || []; if (denList.includes(uid)) jaDenunciou = true; break; } }
+    
+    if (jaDenunciou) return window.mostrarToast("Você já denunciou este preço.", "#F59E0B");
+    
+    if(confirm("Tem certeza que deseja denunciar este preço como falso ou abusivo? Após 3 denúncias, ele será suspenso e ocultado dos turistas.")) {
+        try {
+            const docRef = doc(db, "precos", id);
+            await updateDoc(docRef, { denuncias: increment(1), denunciaram: arrayUnion(uid) });
+            window.mostrarToast("Denúncia enviada à moderação.", "#EF4444");
+            document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove()); 
+        } catch(e) { console.error(e); }
+    }
 };
 
 window.executarPromocao = async function(nomeLocal) {
@@ -571,7 +629,7 @@ function desenharPinos() {
                         btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Mudança de Preço">🚩 Preço Mudou?</button></div>`;
                     } else {
                         const safeName = (item.nome || "Item").replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                        btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:var(--brand-primary);" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#EF4444;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${safeName}', ${item.preco}, ${isPremium})">✏️</button></div>`;
+                        btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:var(--brand-primary);" onclick="window.votarItem('${item.id}', 'up', ${isPremium}, this)">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#EF4444;" onclick="window.votarItem('${item.id}', 'down', ${isPremium}, this)">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${safeName}', ${item.preco}, ${isPremium})">✏️</button></div>`;
                     }
                     
                     let bgDestaque = ((item.nome || "").toLowerCase() === estadoApp.filtroProduto.toLowerCase()) ? 'background:#ECFDF5; border: 1px solid var(--brand-primary);' : '';
@@ -582,7 +640,27 @@ function desenharPinos() {
                 
                 let btnPromoverHtml = ''; 
                 if (isDono && !isPremium) {
-                    btnPromoverHtml = `<div style="background:#FFFBEB; border:2px dashed var(--brand-accent); padding:10px; border-radius:14px; margin-bottom:15px; text-align:center;"><button onclick="event.stopPropagation(); window.iniciarVerificacaoLojista('${safeLocalName}')" style="width:100%; padding:12px; background:var(--brand-accent); color:white; font-weight:800; font-size:14px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(245, 158, 11, 0.3);">⭐ VERIFICAR E DESTACAR</button></div>`;
+                    let emTeste = false;
+                    let diasRestantes = 0;
+                    if (estadoApp.fimTrial) {
+                        const agora = Date.now();
+                        if (agora <= estadoApp.fimTrial) {
+                            emTeste = true;
+                            diasRestantes = Math.ceil((estadoApp.fimTrial - agora) / (1000 * 60 * 60 * 24));
+                        }
+                    }
+                    if (emTeste) {
+                        btnPromoverHtml = `
+                        <div style="background:#ECFDF5; border:2px dashed var(--brand-primary); padding:12px; border-radius:14px; margin-bottom:15px; text-align:center;">
+                            <p style="color:var(--brand-primary); font-weight:800; font-size:14px; margin:0;">🎁 30 Dias Grátis Ativos!</p>
+                            <p style="color:var(--text-muted); font-size:12px; margin:4px 0 0 0; font-weight:500;">Faltam ${diasRestantes} dias de destaque.</p>
+                        </div>`;
+                    } else {
+                        btnPromoverHtml = `
+                        <div style="background:#FFFBEB; border:2px dashed var(--brand-accent); padding:12px; border-radius:14px; margin-bottom:15px; text-align:center;">
+                            <button onclick="event.stopPropagation(); window.iniciarVerificacaoLojista('${safeLocalName}')" style="width:100%; padding:14px; background:var(--brand-accent); color:white; font-weight:800; font-size:14px; border:none; border-radius:12px; cursor:pointer; box-shadow:0 4px 10px rgba(245, 158, 11, 0.3);">⭐ VERIFICAR E DESTACAR</button>
+                        </div>`;
+                    }
                 }
 
                 let btnAdicionarItemHtml = '';
@@ -600,7 +678,17 @@ function desenharPinos() {
                     estrelasStr = `<span style="font-size: 20px; margin-right: 6px;">⭐</span> <span style="font-size: 15px;">${media} (${revs.length} opiniões)</span>`;
                 }
 
-                let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3><div class="badge-estrelas">${estrelasStr}</div>${btnPromoverHtml}<div class="lista-itens">${htmlLista}</div>${btnAdicionarItemHtml}</div>`;
+                let btnVerAvaliacoesHtml = `<button onclick="event.stopPropagation(); window.abrirAvaliacoes('${safeLocalName}')" style="width:100%; margin-top:5px; padding:14px; background:transparent; color:var(--text-dark); font-weight:700; font-size:14px; border:2px solid #E2E8F0; border-radius:14px; cursor:pointer; transition:0.2s;">⭐ Ver/Deixar Avaliação</button>`;
+
+                let popupHtml = `<div class="popup-info">
+                    <h3 style="margin-bottom: 10px;">🏪 ${nomeL}</h3>
+                    <div class="badge-estrelas">${estrelasStr}</div>
+                    ${btnPromoverHtml}
+                    ${fotosLojistaHtml}
+                    <div class="lista-itens">${htmlLista}</div>
+                    ${btnAdicionarItemHtml}
+                    ${btnVerAvaliacoesHtml}
+                </div>`;
                 
                 const markerFiltro = new mapboxgl.Marker({element: elFiltro}).setLngLat([lngNum, latNum]).addTo(window.mapa);
                 elFiltro.addEventListener('click', (e) => {
@@ -637,7 +725,7 @@ function desenharPinos() {
                     btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Mudança">🚩 Preço Mudou?</button></div>`;
                 } else {
                     if (isCongelado) { ic = '🧊'; btns = `<div class="item-acoes"><span style="color:#EF4444; font-size:12px; font-weight:700;">🚨 Suspenso por Fraude</span></div>`; } 
-                    else { btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:var(--brand-primary);" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#EF4444;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${safeName}', ${item.preco}, ${isPremium})">✏️</button></div>`; }
+                    else { btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:var(--brand-primary);" onclick="window.votarItem('${item.id}', 'up', ${isPremium}, this)">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#EF4444;" onclick="window.votarItem('${item.id}', 'down', ${isPremium}, this)">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${safeName}', ${item.preco}, ${isPremium})">✏️</button></div>`; }
                 }
 
                 let badge = ""; const nl = (item.nome || "").toLowerCase().trim(); const ctg = estadoApp.contagemPrecos[nl];
@@ -648,21 +736,24 @@ function desenharPinos() {
             });
             
             let txAbuso = tItens > 0 ? (qAb / tItens) * 100 : 0; let txAprov = tItens > 0 ? (qAp / tItens) * 100 : 0; 
-            let colorPino = '#00e676'; /* Cor verde original que você me pediu */
-            let st = `<p style="color:#f57c00;font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusYellow}</p>`;
+            let colorPino = '#10B981'; /* Verde padrao */
+            let st = `<p style="color:var(--brand-accent);font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusYellow}</p>`;
             
             if (isDono) { 
-                st = `<p style="color:#01579b;font-weight:800;font-size:14px;margin:0 0 12px 0;">🏢 A Sua Loja</p>`; 
+                st = `<p style="color:var(--brand-secondary);font-weight:800;font-size:14px;margin:0 0 12px 0;">🏢 A Sua Loja</p>`; 
+                colorPino = '#0F172A';
             } 
             else if (isPremium) { 
-                st = `<p style="color:#f57c00;font-weight:800;font-size:13px;margin:0 0 12px 0;">⭐ Local Parceiro Verificado</p>`; 
+                st = `<p style="color:var(--brand-accent);font-weight:800;font-size:13px;margin:0 0 12px 0;">⭐ Local Parceiro Verificado</p>`; 
+                colorPino = '#F59E0B';
             } 
             else if (lugarLojista) { 
-                st = `<p style="color:#004d40;font-weight:700;font-size:13px;margin:0 0 12px 0;">✅ Negócio Local</p>`; 
+                st = `<p style="color:var(--brand-primary);font-weight:700;font-size:13px;margin:0 0 12px 0;">✅ Negócio Local</p>`; 
+                colorPino = '#10B981';
             } 
             else {
-                if (txAbuso >= 30) { colorPino = '#c62828'; st = `<p style="color:#c62828;font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusRed} (${txAbuso.toFixed(0)}% Abusivo)</p>`; } 
-                else if (txAprov >= 60) { colorPino = '#00e676'; st = `<p style="color:#2e7d32;font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusGreen} (${txAprov.toFixed(0)}% Seguro)</p>`; }
+                if (txAbuso >= 30) { colorPino = '#EF4444'; st = `<p style="color:#EF4444;font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusRed} (${txAbuso.toFixed(0)}% Abusivo)</p>`; } 
+                else if (txAprov >= 60) { colorPino = '#10B981'; st = `<p style="color:var(--brand-primary);font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusGreen} (${txAprov.toFixed(0)}% Seguro)</p>`; }
             }
 
             const safeLocalName = nomeL.replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -680,25 +771,25 @@ function desenharPinos() {
                 }
                 if (emTeste) {
                     btnPromoverHtml = `
-                    <div style="background:#e8f5e9; border:2px dashed #4caf50; padding:12px; border-radius:14px; margin-bottom:15px; text-align:center;">
-                        <p style="color:#2e7d32; font-weight:800; font-size:14px; margin:0;">🎁 30 Dias Grátis Ativos!</p>
-                        <p style="color:#555; font-size:12px; margin:4px 0 0 0; font-weight:500;">Faltam ${diasRestantes} dias de destaque.</p>
+                    <div style="background:#ECFDF5; border:2px dashed var(--brand-primary); padding:12px; border-radius:14px; margin-bottom:15px; text-align:center;">
+                        <p style="color:var(--brand-primary); font-weight:800; font-size:14px; margin:0;">🎁 30 Dias Grátis Ativos!</p>
+                        <p style="color:var(--text-muted); font-size:12px; margin:4px 0 0 0; font-weight:500;">Faltam ${diasRestantes} dias de destaque.</p>
                     </div>`;
                 } else {
                     btnPromoverHtml = `
-                    <div style="background:#fff3e0; border:2px dashed #f57c00; padding:12px; border-radius:14px; margin-bottom:15px; text-align:center;">
-                        <button onclick="event.stopPropagation(); window.iniciarVerificacaoLojista('${safeLocalName}')" style="width:100%; padding:14px; background:#f57c00; color:white; font-weight:800; font-size:14px; border:none; border-radius:12px; cursor:pointer; box-shadow:0 4px 10px rgba(245, 124, 0, 0.3);">⭐ VERIFICAR E DESTACAR</button>
+                    <div style="background:#FFFBEB; border:2px dashed var(--brand-accent); padding:12px; border-radius:14px; margin-bottom:15px; text-align:center;">
+                        <button onclick="event.stopPropagation(); window.iniciarVerificacaoLojista('${safeLocalName}')" style="width:100%; padding:14px; background:var(--brand-accent); color:white; font-weight:800; font-size:14px; border:none; border-radius:12px; cursor:pointer; box-shadow:0 4px 10px rgba(245, 158, 11, 0.3);">⭐ VERIFICAR E DESTACAR</button>
                     </div>`;
                 }
             }
 
             let btnAdicionarItemHtml = '';
             if (isPremium && lugarLojista) {
-                if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:#004d40; color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1);">📋 Adicionar ao Menu</button>`; } 
-                else { btnAdicionarItemHtml = `<div style="text-align:center; padding:10px; background:#eee; border-radius:12px; font-size:12px; color:#555; margin-bottom:8px; font-weight:600;">🔒 Menu Fechado Oficial</div>`; }
+                if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:var(--text-dark); color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1);">📋 Adicionar ao Menu</button>`; } 
+                else { btnAdicionarItemHtml = `<div style="text-align:center; padding:10px; background:#F1F5F9; border-radius:12px; font-size:12px; color:var(--text-muted); margin-bottom:8px; font-weight:600;">🔒 Menu Fechado Oficial</div>`; }
             } else {
-                if (estadoApp.perfil === 'avaliador') { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:#4caf50; color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(76, 175, 80, 0.3);">➕ Cadastrar Novo Item</button>`; } 
-                else if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:#004d40; color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1);">📋 Adicionar ao Menu</button>`; }
+                if (estadoApp.perfil === 'avaliador') { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:var(--brand-primary); color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(16, 185, 129, 0.2);">➕ Cadastrar Novo Item Aqui</button>`; } 
+                else if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:var(--text-dark); color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1);">📋 Adicionar ao Menu</button>`; }
             }
 
             let estrelasStr = `<span style="font-size: 20px; margin-right: 6px;">⭐</span> <span style="font-size: 15px;">Nova Loja</span>`;
@@ -707,7 +798,7 @@ function desenharPinos() {
                 estrelasStr = `<span style="font-size: 20px; margin-right: 6px;">⭐</span> <span style="font-size: 15px;">${media} (${revs.length} opiniões)</span>`;
             }
 
-            let btnVerAvaliacoesHtml = `<button onclick="event.stopPropagation(); window.abrirAvaliacoes('${safeLocalName}')" style="width:100%; margin-top:5px; padding:14px; background:transparent; color:#f57c00; font-weight:700; font-size:14px; border:2px solid #f57c00; border-radius:14px; cursor:pointer; transition:0.2s;">⭐ Ver/Deixar Avaliação</button>`;
+            let btnVerAvaliacoesHtml = `<button onclick="event.stopPropagation(); window.abrirAvaliacoes('${safeLocalName}')" style="width:100%; margin-top:5px; padding:14px; background:transparent; color:var(--text-dark); font-weight:700; font-size:14px; border:2px solid #E2E8F0; border-radius:14px; cursor:pointer; transition:0.2s;">⭐ Ver/Deixar Avaliação</button>`;
 
             let popupHtml = `<div class="popup-info">
                 <h3 style="margin-bottom: 10px;">🏪 ${nomeL}</h3>
@@ -730,9 +821,8 @@ function desenharPinos() {
             } else if (isDono) {
                 elPinoBase = document.createElement('div');
                 elPinoBase.className = 'minha-loja-container'; 
-                elPinoBase.innerHTML = '<div class="marker-minha-loja" style="background:linear-gradient(135deg, #03a9f4, #01579b); border-color:white; box-shadow:0 0 15px rgba(2, 136, 209, 0.8);">🏬<div class="label-minha-loja" style="background:#01579b; border-color:white;">SUA LOJA</div></div>';
+                elPinoBase.innerHTML = '<div class="marker-minha-loja" style="background:var(--text-dark); border-color:white; box-shadow:0 10px 20px rgba(0,0,0,0.2);">🏬<div class="label-minha-loja" style="background:var(--text-dark); border-color:white;">SUA LOJA</div></div>';
             } else {
-                // 🚨 PINOS ORIGINAIS GARANTIDOS 🚨
                 elPinoBase = document.createElement('div');
                 elPinoBase.className = 'marker-base'; 
                 elPinoBase.style.backgroundColor = colorPino; 
@@ -766,10 +856,10 @@ function desenharPinos() {
 
             if (estadoApp.perfil === 'lojista' || (estadoApp.perfil === 'turista' && (!estadoApp.usuario || autorP !== estadoApp.usuario.uid))) continue; 
 
-            let corArea = '#9c27b0';      
+            let corArea = 'var(--brand-secondary)';      
             let typeAnim = 'marker-pergunta-anim'; let typeIcon = '?';
-            if (perg.fotoSolicitada) { typeAnim = 'marker-camera-anim'; typeIcon = '📸'; corArea = '#f57c00'; } 
-            else if (perg.fotoUrl) { typeAnim = 'marker-foto-anim'; typeIcon = '🖼️'; corArea = '#1976d2'; }
+            if (perg.fotoSolicitada) { typeAnim = 'marker-camera-anim'; typeIcon = '📸'; corArea = 'var(--brand-accent)'; } 
+            else if (perg.fotoUrl) { typeAnim = 'marker-foto-anim'; typeIcon = '🖼️'; corArea = '#3B82F6'; }
 
             const elDuvida = document.createElement('div');
             elDuvida.className = 'marker-pergunta-container';
@@ -779,18 +869,18 @@ function desenharPinos() {
             window.marcadoresAtuais.push(pinoDuvida);
 
             const resps = perg.respostas || []; const qtdResps = resps.length; const tipoBadge = perg.tipoLocal === 'Ambulante' ? '🚶 Ambulante' : '🏪 Fixo';
-            let htmlPopup = ''; const imgHtml = perg.fotoUrl ? `<img src="${perg.fotoUrl}" style="width:100%; max-height:140px; object-fit:cover; border-radius:12px; border: 1px solid #eee; margin-bottom:12px;">` : '';
+            let htmlPopup = ''; const imgHtml = perg.fotoUrl ? `<img src="${perg.fotoUrl}" style="width:100%; max-height:140px; object-fit:cover; border-radius:12px; border: 1px solid #E2E8F0; margin-bottom:12px;">` : '';
 
             if(estadoApp.perfil === 'avaliador') {
                 let btnFoto = '';
-                if (!perg.fotoUrl && !perg.fotoSolicitada) { btnFoto = `<button onclick="window.solicitarFoto('${idPerg}', '${autorP}', '${(perg.nomeItem||'').replace(/'/g, "\\'").replace(/"/g, '&quot;')}', '${(perg.nomeLocal||'').replace(/'/g, "\\'").replace(/"/g, '&quot;')}')" class="btn-laranja" style="background:#f57c00; padding:14px; border-radius:12px;">${t.btnReqFoto}</button>`; } 
-                else if (perg.fotoSolicitada) { btnFoto = `<p style="font-size:13px; color:#f57c00; font-weight:700;">⏳ A aguardar envio de foto...</p>`; }
+                if (!perg.fotoUrl && !perg.fotoSolicitada) { btnFoto = `<button onclick="window.solicitarFoto('${idPerg}', '${autorP}', '${(perg.nomeItem||'').replace(/'/g, "\\'").replace(/"/g, '&quot;')}', '${(perg.nomeLocal||'').replace(/'/g, "\\'").replace(/"/g, '&quot;')}')" class="btn-laranja" style="background:var(--brand-accent); padding:14px; border-radius:12px;">${t.btnReqFoto}</button>`; } 
+                else if (perg.fotoSolicitada) { btnFoto = `<p style="font-size:13px; color:var(--brand-accent); font-weight:700;">⏳ A aguardar envio de foto...</p>`; }
                 
-                htmlPopup = `<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 8px 0; color:${corArea};">Dúvida na Área</h3><p style="margin:0 0 5px 0; font-size:15px; color:#333;">Procurar por: <strong>${perg.nomeLocal}</strong> <span style="font-size:11px; background:#eee; color:#666; padding:3px 6px; border-radius:6px; font-weight:600;">${tipoBadge}</span></p><p style="margin:0 0 12px 0; font-size:15px; color:#333;">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}<p style="font-size:13px; color:#f57c00; font-weight:800; margin-bottom:10px;">Respostas: ${qtdResps}/3</p><button onclick="window.abrirModalResposta('${idPerg}')" style="background:#2e7d32; color:white; border:none; padding:14px; border-radius:12px; cursor:pointer; font-weight:700; font-size:14px; margin-bottom:8px; width:100%; box-shadow:0 4px 10px rgba(46, 125, 50, 0.2);">Responder e Ganhar</button>${btnFoto}</div>`; 
+                htmlPopup = `<div style="text-align:center; font-family:'Inter', sans-serif;"><h3 style="font-family:'Poppins', sans-serif; margin:0 0 8px 0; color:${corArea};">Dúvida na Área</h3><p style="margin:0 0 5px 0; font-size:15px; color:var(--text-dark);">Procurar por: <strong>${perg.nomeLocal}</strong> <span style="font-size:11px; background:#F1F5F9; color:var(--text-muted); padding:3px 6px; border-radius:6px; font-weight:600;">${tipoBadge}</span></p><p style="margin:0 0 12px 0; font-size:15px; color:var(--text-dark);">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}<p style="font-size:13px; color:var(--brand-accent); font-weight:800; margin-bottom:10px;">Respostas: ${qtdResps}/3</p><button onclick="window.abrirModalResposta('${idPerg}')" style="background:var(--brand-primary); color:white; border:none; padding:14px; border-radius:12px; cursor:pointer; font-weight:700; font-size:14px; margin-bottom:8px; width:100%; box-shadow:0 4px 10px rgba(16,185,129,0.2);">Responder e Ganhar</button>${btnFoto}</div>`; 
             } else {
-                let btnEnviarExtra = ''; let statusMsg = `<p style="font-size:13px; color:#f57c00; font-weight:700;">⏳ A aguardar avaliadores...</p>`;
-                if(perg.fotoSolicitada) { statusMsg = `<p style="font-size:13px; color:#c62828; font-weight:700; line-height:1.3; margin-bottom:10px;">🚨 Os avaliadores precisam de uma foto para ajudar!</p>`; btnEnviarExtra = `<button onclick="window.abrirEnvioFotoExtra('${idPerg}')" style="background:#f57c00; color:white; border:none; padding:14px; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;">📸 Enviar Foto Agora</button>`; }
-                htmlPopup = `<div style="text-align:center; font-family:'Poppins', sans-serif;"><h3 style="margin:0 0 8px 0; color:${corArea};">Sua Dúvida</h3><p style="margin:0 0 5px 0; font-size:15px; color:#333;"><strong>${perg.nomeLocal}</strong> <span style="font-size:11px; background:#eee; color:#666; padding:3px 6px; border-radius:6px; font-weight:600;">${tipoBadge}</span></p><p style="margin:0 0 12px 0; font-size:15px; color:#333;">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}${statusMsg}${btnEnviarExtra}</div>`;
+                let btnEnviarExtra = ''; let statusMsg = `<p style="font-size:13px; color:var(--brand-accent); font-weight:700;">⏳ A aguardar avaliadores...</p>`;
+                if(perg.fotoSolicitada) { statusMsg = `<p style="font-size:13px; color:#EF4444; font-weight:700; line-height:1.3; margin-bottom:10px;">🚨 Os avaliadores precisam de uma foto para ajudar!</p>`; btnEnviarExtra = `<button onclick="window.abrirEnvioFotoExtra('${idPerg}')" style="background:var(--brand-accent); color:white; border:none; padding:14px; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;">📸 Enviar Foto Agora</button>`; }
+                htmlPopup = `<div style="text-align:center; font-family:'Inter', sans-serif;"><h3 style="font-family:'Poppins', sans-serif; margin:0 0 8px 0; color:${corArea};">Sua Dúvida</h3><p style="margin:0 0 5px 0; font-size:15px; color:var(--text-dark);"><strong>${perg.nomeLocal}</strong> <span style="font-size:11px; background:#F1F5F9; color:var(--text-muted); padding:3px 6px; border-radius:6px; font-weight:600;">${tipoBadge}</span></p><p style="margin:0 0 12px 0; font-size:15px; color:var(--text-dark);">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}${statusMsg}${btnEnviarExtra}</div>`;
             }
 
             elDuvida.addEventListener('click', (e) => {

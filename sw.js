@@ -1,9 +1,9 @@
-// NOME DO CACHE (Sempre que você fizer uma mudança grande no app, mude este número para forçar a limpeza)
-const CACHE_NAME = 'gringosafe-v1.0';
+// NOME DO CACHE 
+const CACHE_NAME = 'gringosafe-v1.3';
 
 // Quando o PWA é instalado no celular
 self.addEventListener('install', (event) => {
-    self.skipWaiting(); // Força o novo Service Worker a assumir imediatamente
+    self.skipWaiting(); 
 });
 
 // Quando o PWA é ativado (limpa o lixo antigo)
@@ -13,16 +13,16 @@ self.addEventListener('activate', (event) => {
             return Promise.all(
                 cacheNames.map((cacheName) => {
                     if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName); // Apaga os códigos antigos do celular do usuário
+                        return caches.delete(cacheName); 
                     }
                 })
             );
         })
     );
-    self.clients.claim(); // Assume o controle da página na hora
+    self.clients.claim(); 
 });
 
-// Quando o PWA pede um arquivo (Pula o cache e vai direto na internet pegar a versão fresca do Netlify)
+// Quando o PWA pede um arquivo
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         fetch(event.request).catch(() => {

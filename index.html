@@ -24,7 +24,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest"></script>
 
-    <link rel="stylesheet" href="ccs/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="modo-turista"> 
 
@@ -386,11 +386,14 @@
     <script type="module" src="js/app.js"></script>
 
     <script>
-        // Registro do Service Worker movido para o HTML por questões de escopo e caching limpo
+        // Força a atualização agressiva do Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker Registado com sucesso!', reg))
+                    .then(reg => {
+                        reg.update(); // Obriga o navegador a verificar se há um novo sw.js
+                        console.log('Service Worker Registado com sucesso!', reg);
+                    })
                     .catch(err => console.error('Erro no Service Worker', err));
             });
         }
