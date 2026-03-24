@@ -120,7 +120,7 @@ function iniciarMapa() {
         return;
     }
     
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZ3Jpbmdvc2FmZSIsImEiOiJjbGZvcjZqZm0wMmNlM2RwbnZqbnZoZG5jIn0.7H4p_zWQJxKzG4LhZ8wW5A';
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZmFocGxheTE1IiwiYSI6ImNtbXk2Z3UzMDB2YnYyb3BsMTA2ZzV2NmkifQ.Tvdrpof80mAktc3Z3dB3cw';
     
     estadoApp.mapa = new mapboxgl.Map({
         container: 'mapa',
