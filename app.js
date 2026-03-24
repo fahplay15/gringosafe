@@ -4,6 +4,11 @@ import dicionario from './locales.js';
 import { collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
+// Garantir que mapboxgl esteja disponível globalmente
+if (typeof window.mapboxgl === 'undefined') {
+    console.error('Mapbox GL JS não está carregado!');
+}
+
 // Registro do Service Worker para PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -53,10 +58,34 @@ let fotoAtualBase64 = null;
 let fotosLojista = [];
 
 // FUNÇÕES UTILITÁRIAS
-function getEl(id) { return document.getElementById(id); }
-function setTxt(id, txt) { const el = getEl(id); if (el) el.innerText = txt; }
-function bindClick(id, fn) { const el = getEl(id); if (el) el.addEventListener('click', fn); }
-function bindChange(id, fn) { const el = getEl(id); if (el) el.addEventListener('change', fn); }
+function getEl(id) { 
+    const el = document.getElementById(id); 
+    if (!el) console.warn(`⚠️ Elemento #${id} não encontrado`);
+    return el; 
+}
+function setTxt(id, txt) { 
+    const el = getEl(id); 
+    if (el) el.innerText = txt; 
+    else console.warn(`⚠️ Não foi possível definir texto em #${id}`);
+}
+function bindClick(id, fn) { 
+    const el = getEl(id); 
+    if (el) {
+        el.addEventListener('click', fn);
+        console.log(`🔗 Evento click vinculado ao #${id}`);
+    } else {
+        console.warn(`⚠️ Não foi possível vincular click ao #${id}`);
+    }
+}
+function bindChange(id, fn) { 
+    const el = getEl(id); 
+    if (el) {
+        el.addEventListener('change', fn);
+        console.log(`🔗 Evento change vinculado ao #${id}`);
+    } else {
+        console.warn(`⚠️ Não foi possível vincular change ao #${id}`);
+    }
+}
 
 // COMPRESSÃO DE IMAGEM
 function comprimirImagemBase64(file, callback, maxWidth = 800, quality = 0.7) {
@@ -84,6 +113,13 @@ function comprimirImagemBase64(file, callback, maxWidth = 800, quality = 0.7) {
 
 // INICIALIZAÇÃO DO MAPA
 function iniciarMapa() {
+    // Verificar se Mapbox está carregado
+    if (typeof mapboxgl === 'undefined') {
+        console.error('Mapbox GL JS não está disponível!');
+        getEl('mapa').innerHTML = '<div style="padding:20px;text-align:center;">🗺️ Mapa não disponível - verifique sua conexão</div>';
+        return;
+    }
+    
     mapboxgl.accessToken = 'pk.eyJ1IjoiZ3Jpbmdvc2FmZSIsImEiOiJjbGZvcjZqZm0wMmNlM2RwbnZqbnZoZG5jIn0.7H4p_zWQJxKzG4LhZ8wW5A';
     
     estadoApp.mapa = new mapboxgl.Map({
@@ -1326,6 +1362,16 @@ onSnapshot(collection(db, "perguntas"), (snapshot) => {
 
 // INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 GringoSafe iniciando...');
+    
+    // Verificar elementos essenciais
+    const elementosEssenciais = ['splashScreen', 'mapa', 'telaPerfil', 'sideMenu'];
+    elementosEssenciais.forEach(id => {
+        if (!getEl(id)) {
+            console.error(`❌ Elemento #${id} não encontrado!`);
+        }
+    });
+    
     // Esconder splash screen após carregar
     setTimeout(() => {
         const splash = getEl('splashScreen');
@@ -1342,4 +1388,39 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Atualizar textos
     atualizarTextos();
+    
+    // Mostrar tela de perfil inicial
+    setTimeout(() => {
+        const telaPerfil = getEl('telaPerfil');
+        if (telaPerfil) {
+            telaPerfil.style.display = 'flex';
+        }
+    }, 2500);
+    
+    console.log('✅ GringoSafe inicializado com sucesso!');
+    
+    // Teste rápido dos botões principais
+    setTimeout(() => {
+        console.log('🧪 Testando botões principais...');
+        
+        // Testar botões de perfil
+        const btnTurista = getEl('btnPerfilTurista');
+        const btnAvaliador = getEl('btnPerfilAvaliador');
+        const btnLojista = getEl('btnPerfilLojista');
+        
+        if (btnTurista) console.log('✅ Botão Turista encontrado');
+        else console.log('❌ Botão Turista NÃO encontrado');
+        
+        if (btnAvaliador) console.log('✅ Botão Avaliador encontrado');
+        else console.log('❌ Botão Avaliador NÃO encontrado');
+        
+        if (btnLojista) console.log('✅ Botão Lojista encontrado');
+        else console.log('❌ Botão Lojista NÃO encontrado');
+        
+        // Testar botão de menu
+        const btnMenu = getEl('btnAbrirMenu');
+        if (btnMenu) console.log('✅ Botão Menu encontrado');
+        else console.log('❌ Botão Menu NÃO encontrado');
+        
+    }, 3000);
 });
