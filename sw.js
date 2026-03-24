@@ -1,5 +1,5 @@
-// NOME DO CACHE 
-const CACHE_NAME = 'gringosafe-v1.3';
+// NOME DO CACHE (Sempre que você fizer uma mudança grande no app, mude este número para forçar a limpeza)
+const CACHE_NAME = 'gringosafe-v1.0';
 
 // Quando o PWA é instalado no celular
 self.addEventListener('install', (event) => {
