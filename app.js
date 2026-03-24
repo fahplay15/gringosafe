@@ -11,7 +11,7 @@ if (typeof window.mapboxgl === 'undefined') {
 
 // Registro do Service Worker para PWA
 if ('serviceWorker' in navigator) {
-    window.addEventListener('loasd', () => {
+    window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
             .then(reg => {
                 reg.update();
