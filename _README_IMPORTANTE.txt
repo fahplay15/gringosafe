@@ -1,0 +1,1 @@
+Os diretórios js/ e css/ são legados e não são mais usados. Todo o código e estilos estão agora na raiz do projeto para funcionar corretamente no GitHub Pages. Você pode deletar js/ e css/ com segurança.
