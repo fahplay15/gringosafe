@@ -145,8 +145,22 @@ body, html { font-family: 'Inter', sans-serif; background-color: #FFFFFF; color:
 .btn-del-notif { background: transparent; border: none; font-size: 18px; cursor: pointer; padding: 5px; color: #CBD5E1; transition: 0.2s; }
 .btn-del-notif:hover { color: #EF4444; }
 
-/* OCULTAR CONTROLES NATIVOS DO MAPBOX QUE CAUSAM BUG VISUAL */
-.mapboxgl-ctrl-top-left, .mapboxgl-ctrl-top-right, .mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right { display: none !important; }
+/* OCULTAR CONTROLES NATIVOS DO MAPBOX EXCETO GEOLOCALIZAÇÃO */
+.mapboxgl-ctrl-top-left:not(.mapboxgl-ctrl-geolocate), 
+.mapboxgl-ctrl-top-right, 
+.mapboxgl-ctrl-bottom-left, 
+.mapboxgl-ctrl-bottom-right { 
+    display: none !important; 
+}
+
+/* FORÇAR VISIBILIDADE DO CONTROLE DE GEOLOCALIZAÇÃO */
+.mapboxgl-ctrl-geolocate {
+    display: block !important;
+    position: fixed !important;
+    top: 80px !important;
+    right: 20px !important;
+    z-index: 1000 !important;
+}
 
 /* CORREÇÕES DOS POPUPS E MARCADORES MAPBOX */
 .mapboxgl-popup { z-index: 1000; }

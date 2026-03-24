@@ -1,8 +1,8 @@
 // GringoSafe MASTER MODULE
 import { db, auth, provider, analytics } from './firebase-config.js';
 import dicionario from './locales.js';
-import { collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-import { signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where, getDocs, deleteDoc } from "firebase/firestore";
+import { signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth";
 
 // Garantir que mapboxgl esteja disponível globalmente
 if (typeof window.mapboxgl === 'undefined') {
@@ -134,12 +134,43 @@ function iniciarMapa() {
     estadoApp.mapa.on('load', () => {
         window.agendarDesenho();
         
-        // Adicionar controle de geolocalização
-        estadoApp.mapa.addControl(new mapboxgl.GeolocateControl({
-            positionOptions: { enableHighAccuracy: true },
+        // Adicionar controle de geolocalização melhorado
+        const geolocateControl = new mapboxgl.GeolocateControl({
+            positionOptions: { 
+                enableHighAccuracy: true,
+                timeout: 6000
+            },
             trackUserLocation: true,
-            showUserHeading: true
-        }));
+            showUserHeading: true,
+            showAccuracyCircle: true,
+            fitBoundsOptions: { maxZoom: 15 }
+        });
+        
+        estadoApp.mapa.addControl(geolocateControl);
+        
+        // Eventos de geolocalização
+        geolocateControl.on('geolocate', (position) => {
+            console.log('📍 GPS Ativado:', position.coords);
+            // Centralizar mapa na posição do usuário
+            estadoApp.mapa.flyTo({
+                center: [position.coords.longitude, position.coords.latitude],
+                zoom: 15,
+                speed: 2
+            });
+        });
+        
+        geolocateControl.on('error', (error) => {
+            console.error('❌ Erro no GPS:', error);
+            // Mostrar mensagem amigável
+            const toast = getEl('toastAviso');
+            if (toast) {
+                toast.textContent = '📍 GPS não disponível';
+                toast.style.display = 'block';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 3000);
+            }
+        });
     });
 
     // Atualizar coordenadas ao mover o mapa

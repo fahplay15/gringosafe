@@ -1,9 +1,10 @@
-// Configuração Firebase - GringoSafe Web
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js";
+// Importações necessárias
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
+// Configuração Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs",
   authDomain: "gringosafe-1f434.firebaseapp.com",
@@ -14,10 +15,12 @@ const firebaseConfig = {
   measurementId: "G-JTQT05JKZW"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-const analytics = getAnalytics(app);
 
+// Exportar para uso no app
 export { db, auth, provider, analytics };
