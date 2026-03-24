@@ -11,6 +11,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#FFFFFF">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="./logo.png">
 
@@ -384,19 +385,5 @@
     </div>
 
     <script type="module" src="app.js"></script>
-
-    <script>
-        // Força a atualização agressiva do Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => {
-                        reg.update(); // Obriga o navegador a verificar se há um novo sw.js
-                        console.log('Service Worker Registado com sucesso!', reg);
-                    })
-                    .catch(err => console.error('Erro no Service Worker', err));
-            });
-        }
-    </script>
 </body>
 </html>
