@@ -60,7 +60,7 @@ let fotosLojista = [];
 // FUNÇÕES UTILITÁRIAS
 function getEl(id) { 
     const el = document.getElementById(id); 
-    if (!el) console.warn(`⚠️ Elemento #${id} não encontrado`);
+    // Não mostrar warning para elementos opcionais
     return el; 
 }
 function setTxt(id, txt) { 
@@ -314,15 +314,33 @@ function trocarIdioma(lang) {
     atualizarTextos();
 }
 
-// ATUALIZAR TEXTOS
+// ATUALIZAR TEXTOS (APENAS ELEMENTOS QUE EXISTEM)
 function atualizarTextos() {
     const t = dicionario[estadoApp.idioma];
     if (!t) return;
     
-    // Atualizar todos os elementos com data-text ou IDs específicos
-    Object.keys(t).forEach(key => {
-        const el = getEl(key) || document.querySelector(`[data-text="${key}"]`);
-        if (el) el.innerText = t[key];
+    // Lista de IDs que realmente existem no HTML
+    const idsExistentes = [
+        't_splashSub', 't_roleTitle', 't_roleTourist', 't_roleTouristSub',
+        't_roleLocal', 't_roleLocalSub', 't_roleLojista', 't_roleLojistaSub',
+        't_btnLogin', 't_btnLogout', 't_menuWallet', 't_menuLojista', 't_menuRoute',
+        't_menuLang', 't_menuChangeRole', 't_lockTitle', 't_lockSub', 't_lockBtn',
+        't_btnRadarText', 't_posHint', 't_btnPosCancel', 't_btnPosConfirm',
+        't_walletTitle', 't_walletSub', 't_btnWithdraw', 't_searchTitle', 't_searchClose',
+        't_formTitle', 't_btnSave', 't_btnCancel', 't_askTitle', 't_askSub',
+        't_btnAskCam', 't_btnAskGal', 't_btnSendAsk', 't_btnCancelAsk',
+        't_ansTitle', 't_btnSendAns', 't_btnCancelAns', 't_notifTitle',
+        't_optNewPlace', 't_optFixo', 't_optAmbulante'
+    ];
+    
+    // Atualizar apenas os elementos que existem
+    idsExistentes.forEach(key => {
+        if (t[key]) {
+            const el = getEl(key);
+            if (el) {
+                el.innerText = t[key];
+            }
+        }
     });
 }
 
@@ -1299,66 +1317,86 @@ window.resolverPerguntaConsenso = async function(idPergunta, pergData, respostas
     }
 };
 
-// MONITORAR MUDANÇAS NO FIRESTORE
-onSnapshot(collection(db, "precos"), (snapshot) => {
-    estadoApp.dadosHospedados = {};
-    estadoApp.mediaPrecos = {};
-    estadoApp.contagemPrecos = {};
-    
-    snapshot.forEach((doc) => {
-        const item = doc.data();
-        const nomeItemSeguro = item.nome || "Item Não Nomeado";
-        const precoSeguro = item.preco || 0;
-        const nomeL = item.tipoLocal === 'Ambulante' ? `🚶 Ambulante (${doc.id.substring(0,4)})` : (item.local || "Desconhecido");
+// MONITORAR MUDANÇAS NO FIRESTORE (COM TRATAMENTO DE ERRO)
+try {
+    onSnapshot(collection(db, "precos"), (snapshot) => {
+        estadoApp.dadosHospedados = {};
+        estadoApp.mediaPrecos = {};
+        estadoApp.contagemPrecos = {};
         
-        if (!estadoApp.dadosHospedados[nomeL]) {
-            estadoApp.dadosHospedados[nomeL] = {
-                lat: parseFloat(item.lat),
-                lng: parseFloat(item.lng),
-                itens: []
-            };
-        }
-        
-        estadoApp.dadosHospedados[nomeL].itens.push({
-            ...item,
-            nome: nomeItemSeguro,
-            preco: precoSeguro,
-            id: doc.id
+        snapshot.forEach((doc) => {
+            const item = doc.data();
+            const nomeItemSeguro = item.nome || "Item Não Nomeado";
+            const precoSeguro = item.preco || 0;
+            const nomeL = item.tipoLocal === 'Ambulante' ? `🚶 Ambulante (${doc.id.substring(0,4)})` : (item.local || "Desconhecido");
+            
+            if (!estadoApp.dadosHospedados[nomeL]) {
+                estadoApp.dadosHospedados[nomeL] = {
+                    lat: parseFloat(item.lat),
+                    lng: parseFloat(item.lng),
+                    itens: []
+                };
+            }
+            
+            estadoApp.dadosHospedados[nomeL].itens.push({
+                ...item,
+                nome: nomeItemSeguro,
+                preco: precoSeguro,
+                id: doc.id
+            });
+            
+            if (!item.isLojistaPlace) {
+                const nl = nomeItemSeguro.toLowerCase().trim();
+                if (!estadoApp.mediaPrecos[nl]) {
+                    estadoApp.mediaPrecos[nl] = 0;
+                    estadoApp.contagemPrecos[nl] = 0;
+                }
+                estadoApp.mediaPrecos[nl] += precoSeguro;
+                estadoApp.contagemPrecos[nl]++;
+            }
         });
         
-        if (!item.isLojistaPlace) {
-            const nl = nomeItemSeguro.toLowerCase().trim();
-            if (!estadoApp.mediaPrecos[nl]) {
-                estadoApp.mediaPrecos[nl] = 0;
-                estadoApp.contagemPrecos[nl] = 0;
+        // Atualizar select de locais
+        let html = `<option value="NEW">➕ Adicionar Novo Local</option>`;
+        Object.keys(estadoApp.dadosHospedados).sort().forEach(n => {
+            if (n !== "Desconhecido" && !n.includes("🚶 Ambulante")) {
+                html += `<option value="${n}">${n}</option>`;
             }
-            estadoApp.mediaPrecos[nl] += precoSeguro;
-            estadoApp.contagemPrecos[nl]++;
-        }
+        });
+        getEl('selectLocal').innerHTML = html;
+        
+        window.agendarDesenho();
     });
-    
-    // Atualizar select de locais
-    let html = `<option value="NEW">➕ Adicionar Novo Local</option>`;
-    Object.keys(estadoApp.dadosHospedados).sort().forEach(n => {
-        if (n !== "Desconhecido" && !n.includes("🚶 Ambulante")) {
-            html += `<option value="${n}">${n}</option>`;
+} catch (error) {
+    console.error('❌ Erro no listener de preços:', error);
+    // Adicionar dados de exemplo para teste offline
+    estadoApp.dadosHospedados = {
+        'Exemplo Quiosque': {
+            lat: -23.5505,
+            lng: -46.6333,
+            itens: [
+                { nome: 'Água', preco: 5.00, id: 'ex1' },
+                { nome: 'Cerveja', preco: 8.00, id: 'ex2' }
+            ]
         }
-    });
-    getEl('selectLocal').innerHTML = html;
-    
+    };
     window.agendarDesenho();
-});
+}
 
-onSnapshot(collection(db, "perguntas"), (snapshot) => {
-    estadoApp.perguntasAbertas = {};
-    snapshot.forEach((doc) => {
-        const p = doc.data();
-        if (p.status === "aberta") {
-            estadoApp.perguntasAbertas[doc.id] = p;
-        }
+try {
+    onSnapshot(collection(db, "perguntas"), (snapshot) => {
+        estadoApp.perguntasAbertas = {};
+        snapshot.forEach((doc) => {
+            const p = doc.data();
+            if (p.status === "aberta") {
+                estadoApp.perguntasAbertas[doc.id] = p;
+            }
+        });
+        window.agendarDesenho();
     });
-    window.agendarDesenho();
-});
+} catch (error) {
+    console.error('❌ Erro no listener de perguntas:', error);
+}
 
 // INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', () => {
