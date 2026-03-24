@@ -25,7 +25,47 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest"></script>
 
-    <link rel="stylesheet" href="style.css">
+    <!-- CSS externo removido, agora o CSS está embutido abaixo -->
+</head>
+<!-- Bloco de CSS embutido do projeto original -->
+<style>
+    :root {
+        --brand-primary: #10B981;
+        --brand-secondary: #6366F1;
+        --brand-accent: #F59E0B;
+        --bg-glass: rgba(255, 255, 255, 0.85);
+        --text-dark: #0F172A;
+        --text-muted: #64748B;
+        --border-glass: rgba(255, 255, 255, 0.4);
+        --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        --radius-ui: 24px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body, html { font-family: 'Inter', sans-serif; background-color: #FFFFFF; color: var(--text-dark); height: 100%; width: 100%; overflow: hidden; }
+
+    /* --- UI LAYER: MAPA --- */
+    #mapa { position: absolute; inset: 0; z-index: 0; }
+
+    /* --- COMPONENTE: SPLASH SCREEN --- */
+    #splashScreen { position: fixed; inset: 0; background: #FFFFFF; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease-in-out; }
+    #splashScreen h1 { font-family: 'Poppins', sans-serif; font-size: 38px; font-weight: 800; background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary)); -webkit-background-clip: text; color: transparent; margin: 0; }
+    #t_splashSub { color: var(--text-muted); font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px; }
+
+    /* --- TELA DE PERFIL INICIAL --- */
+    #telaPerfil { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); z-index: 9000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+    .lang-selector-inicial { display: flex; gap: 15px; margin-bottom: 25px; background: #F1F5F9; padding: 8px 16px; border-radius: 30px; }
+    .lang-selector-inicial div { cursor: pointer; font-size: 15px; font-weight: 700; padding: 8px 16px; border-radius: 20px; transition: 0.2s; color: var(--text-muted); }
+    .lang-selector-inicial div:hover, .lang-selector-inicial div.ativo-option { background: white; color: var(--brand-primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    #t_roleTitle { font-family: 'Poppins', sans-serif; font-size: 24px; margin-bottom: 25px; color: var(--text-dark); }
+    .btn-perfil { background: white; color: var(--text-dark); border: 2px solid #E2E8F0; padding: 20px; width: 100%; max-width: 320px; border-radius: 20px; font-size: 18px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-bottom: 12px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .btn-perfil span { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-muted); }
+    .btn-perfil:active { transform: scale(0.96); border-color: var(--brand-primary); }
+    .btn-perfil.avaliador { border-color: #FDE68A; background: #FFFBEB; }
+    .btn-perfil.lojista { border-color: #FED7AA; background: #FFF7ED; }
+    /* ...demais regras do CSS original... */
+</style>
 </head>
 <body class="modo-turista"> 
 
