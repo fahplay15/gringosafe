@@ -1371,12 +1371,21 @@ try {
     console.error('❌ Erro no listener de preços:', error);
     // Adicionar dados de exemplo para teste offline
     estadoApp.dadosHospedados = {
-        'Exemplo Quiosque': {
+        'Quiosque do João': {
             lat: -23.5505,
             lng: -46.6333,
             itens: [
-                { nome: 'Água', preco: 5.00, id: 'ex1' },
-                { nome: 'Cerveja', preco: 8.00, id: 'ex2' }
+                { nome: 'Água Mineral', preco: 5.00, id: 'ex1', categoria: 'Bebida' },
+                { nome: 'Cerveja', preco: 12.00, id: 'ex2', categoria: 'Bebida' },
+                { nome: 'Tapioca', preco: 15.00, id: 'ex3', categoria: 'Comida' }
+            ]
+        },
+        'Bar da Praia': {
+            lat: -23.5520,
+            lng: -46.6320,
+            itens: [
+                { nome: 'Caipirinha', preco: 18.00, id: 'ex4', categoria: 'Bebida' },
+                { nome: 'Petisco', preco: 25.00, id: 'ex5', categoria: 'Comida' }
             ]
         }
     };
