@@ -593,6 +593,8 @@ bindChange('inputBusca', (e) => {
         getEl('resultadosBusca').innerHTML = '';
         estadoApp.filtroProduto = null;
         window.agendarDesenho();
+        // Esconder botão limpar quando não há busca
+        getEl('btnLimparFiltro').style.display = 'none';
         return;
     }
     
@@ -621,6 +623,16 @@ window.selecionarResultadoBusca = function(local, produto) {
     estadoApp.filtroProduto = produto;
     getEl('modalBusca').style.display = 'none';
     window.agendarDesenho();
+    
+    // Mostrar botão limpar filtro
+    getEl('btnLimparFiltro').style.display = 'block';
+    getEl('btnLimparFiltro').onclick = () => {
+        estadoApp.filtroProduto = null;
+        getEl('btnLimparFiltro').style.display = 'none';
+        getEl('inputBusca').value = '';
+        getEl('resultadosBusca').innerHTML = '';
+        window.agendarDesenho();
+    };
     
     // Centralizar mapa no local
     if (estadoApp.dadosHospedados[local]) {
@@ -978,6 +990,7 @@ window.desenharPinos = function() {
                                         <span class="item-preco">${sim} ${precoLocal}</span>
                                     </div>
                                 </div>
+                                <button class="btn-fechar-popup" onclick="this.closest('.mapboxgl-popup').remove()" style="margin-top: 10px; width: 100%; padding: 8px; background: #EF4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">❌ Fechar</button>
                             </div>
                         `)
                         .addTo(estadoApp.mapa);
@@ -1074,6 +1087,7 @@ window.desenharPinos = function() {
                         <div class="popup-info">
                             <h3>🏪 ${nomeL}</h3>
                             <div class="lista-itens">${htmlLista}</div>
+                            <button class="btn-fechar-popup" onclick="this.closest('.mapboxgl-popup').remove()" style="margin-top: 10px; width: 100%; padding: 8px; background: #EF4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">❌ Fechar</button>
                         </div>
                     `)
                     .addTo(estadoApp.mapa);
@@ -1141,14 +1155,15 @@ window.desenharPinos = function() {
                     }
                     
                     htmlPopup = `
-                        <div style="text-align:center;">
+                        <div class="popup-info" style="text-align:center;">
                             <h3 style="color:var(--brand-secondary);">Dúvida na Área</h3>
                             <p><strong>${perg.nomeLocal}</strong> <span style="font-size:11px; background:#F1F5F9; padding:3px 6px; border-radius:6px;">${tipoBadge}</span></p>
                             <p>Item: <strong>${perg.nomeItem}</strong></p>
                             ${imgHtml}
                             <p style="color:var(--brand-accent); font-weight:800;">Respostas: ${qtdResps}/3</p>
-                            <button onclick="window.abrirModalResposta('${idPerg}')" style="background:var(--brand-primary); color:white; border:none; padding:14px; border-radius:12px; cursor:pointer; width:100%;">Responder e Ganhar</button>
+                            <button onclick="window.abrirModalResposta('${idPerg}')" style="background:var(--brand-primary); color:white; border:none; padding:14px; border-radius:12px; cursor:pointer; width:100%; margin-bottom: 8px;">Responder e Ganhar</button>
                             ${btnFoto}
+                            <button class="btn-fechar-popup" onclick="this.closest('.mapboxgl-popup').remove()">❌ Fechar</button>
                         </div>
                     `;
                 } else {
@@ -1159,13 +1174,14 @@ window.desenharPinos = function() {
                         btnEnviarExtra = `<button onclick="window.abrirEnvioFotoExtra('${idPerg}')" style="background:var(--brand-accent); color:white; border:none; padding:14px; border-radius:12px; cursor:pointer; width:100%;">📸 Enviar Foto</button>`;
                     }
                     htmlPopup = `
-                        <div style="text-align:center;">
+                        <div class="popup-info" style="text-align:center;">
                             <h3 style="color:var(--brand-secondary);">Sua Dúvida</h3>
                             <p><strong>${perg.nomeLocal}</strong> <span style="font-size:11px; background:#F1F5F9; padding:3px 6px; border-radius:6px;">${tipoBadge}</span></p>
                             <p>Item: <strong>${perg.nomeItem}</strong></p>
                             ${imgHtml}
                             ${statusMsg}
                             ${btnEnviarExtra}
+                            <button class="btn-fechar-popup" onclick="this.closest('.mapboxgl-popup').remove()">❌ Fechar</button>
                         </div>
                     `;
                 }

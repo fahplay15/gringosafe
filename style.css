@@ -202,6 +202,8 @@ body, html { font-family: 'Inter', sans-serif; background-color: #FFFFFF; color:
 .btn-voto { border: none; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: white; display: flex; align-items: center; gap: 4px; }
 .btn-editar { background: #E2E8F0; color: var(--text-dark); border: none; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
 .btn-denuncia { background: transparent; border: none; font-size: 14px; cursor: pointer; color: #94A3B8; padding: 4px; }
+.btn-fechar-popup { background: #EF4444 !important; color: white !important; border: none !important; padding: 10px !important; border-radius: 8px !important; font-weight: 600 !important; cursor: pointer !important; width: 100% !important; margin-top: 10px !important; transition: all 0.2s ease !important; }
+.btn-fechar-popup:hover { background: #DC2626 !important; transform: scale(0.98) !important; }
 
 .badge-estrelas { 
     background: #FFFBEB; border: 1px solid #FDE68A; padding: 6px 14px; 
