@@ -134,74 +134,45 @@ function iniciarMapa() {
     estadoApp.mapa.on('load', () => {
         window.agendarDesenho();
         
-        // Adicionar controle de geolocalização melhorado
-        const geolocateControl = new mapboxgl.GeolocateControl({
-            positionOptions: { 
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            },
-            trackUserLocation: true,
-            showUserHeading: true,
-            showAccuracyCircle: true,
-            fitBoundsOptions: { maxZoom: 16 }
-        });
-        
-        estadoApp.mapa.addControl(geolocateControl);
-        
-        // FORÇAR ATIVAÇÃO DO GPS APÓS CARREGAR
+        // ATIVAR GPS AUTOMÁTICO COMO NO CÓDIGO ORIGINAL
         setTimeout(() => {
-            try {
-                geolocateControl.trigger();
-                console.log('🎯 GPS ativado automaticamente');
-            } catch (error) {
-                console.log('⚠️ GPS precisa ser ativado manualmente');
-            }
-        }, 2000);
-        
-        // Eventos de geolocalização
-        geolocateControl.on('geolocate', (position) => {
-            console.log('📍 GPS Ativado:', position.coords);
-            // Centralizar mapa na posição do usuário
-            estadoApp.mapa.flyTo({
-                center: [position.coords.longitude, position.coords.latitude],
-                zoom: 16,
-                speed: 1.5
-            });
-        });
-        
-        geolocateControl.on('error', (error) => {
-            console.error('❌ Erro no GPS:', error);
-            // Tentar GPS nativo do navegador
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                        console.log('📍 GPS nativo funcionou:', pos.coords);
-                        estadoApp.mapa.flyTo({
-                            center: [pos.coords.longitude, pos.coords.latitude],
-                            zoom: 16
-                        });
+                    (position) => {
+                        console.log('📍 GPS automático funcionou:', position.coords);
+                        // Centralizar mapa na posição do usuário
+                        if (estadoApp.mapa) {
+                            estadoApp.mapa.flyTo({
+                                center: [position.coords.longitude, position.coords.latitude],
+                                zoom: 16,
+                                speed: 1.5
+                            });
+                        }
                     },
-                    (err) => {
-                        console.error('❌ GPS nativo também falhou:', err);
-                        mostrarErroGPSToast();
+                    (error) => {
+                        console.error('❌ Erro no GPS automático:', error);
+                        const toast = getEl('toastAviso');
+                        if (toast) {
+                            toast.textContent = '📍 GPS não disponível - Verifique permissões';
+                            toast.style.display = 'block';
+                            setTimeout(() => {
+                                toast.style.display = 'none';
+                            }, 3000);
+                        }
                     }
                 );
             } else {
-                mostrarErroGPSToast();
+                console.error('❌ GPS não suportado pelo navegador');
+                const toast = getEl('toastAviso');
+                if (toast) {
+                    toast.textContent = '❌ GPS não suportado';
+                    toast.style.display = 'block';
+                    setTimeout(() => {
+                        toast.style.display = 'none';
+                    }, 3000);
+                }
             }
-        });
-        
-        function mostrarErroGPSToast() {
-            const toast = getEl('toastAviso');
-            if (toast) {
-                toast.textContent = '📍 GPS não disponível - Verifique permissões';
-                toast.style.display = 'block';
-                setTimeout(() => {
-                    toast.style.display = 'none';
-                }, 5000);
-            }
-        }
+        }, 1000);
     });
 
     // Atualizar coordenadas ao mover o mapa
@@ -489,65 +460,6 @@ bindClick('btnAbrirMenu', () => {
     getEl('menuOverlay').style.display = 'block';
 });
 
-// Botão GPS Manual
-bindClick('btnGPSManual', () => {
-    console.log('🎯 Botão GPS manual clicado');
-    
-    // Tentar GPS nativo do navegador
-    if (navigator.geolocation) {
-        const toast = getEl('toastAviso');
-        if (toast) {
-            toast.textContent = '📍 Buscando sua localização...';
-            toast.style.display = 'block';
-        }
-        
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                console.log('📍 GPS manual funcionou:', position.coords);
-                
-                // Centralizar mapa na posição do usuário
-                if (estadoApp.mapa) {
-                    estadoApp.mapa.flyTo({
-                        center: [position.coords.longitude, position.coords.latitude],
-                        zoom: 16,
-                        speed: 1.5
-                    });
-                }
-                
-                if (toast) {
-                    toast.textContent = '📍 Localização encontrada!';
-                    setTimeout(() => {
-                        toast.style.display = 'none';
-                    }, 2000);
-                }
-            },
-            (error) => {
-                console.error('❌ GPS manual falhou:', error);
-                if (toast) {
-                    toast.textContent = '❌ GPS não disponível - Verifique permissões';
-                    setTimeout(() => {
-                        toast.style.display = 'none';
-                    }, 3000);
-                }
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            }
-        );
-    } else {
-        console.error('❌ GPS não suportado pelo navegador');
-        const toast = getEl('toastAviso');
-        if (toast) {
-            toast.textContent = '❌ GPS não suportado';
-            toast.style.display = 'block';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
-        }
-    }
-});
 
 bindClick('menuOverlay', () => {
     getEl('sideMenu').classList.remove('open');
