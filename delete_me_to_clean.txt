@@ -1,1 +1,0 @@
-Delete the folders js/ and css/ to avoid confusion. All code and styles are now in the root.
