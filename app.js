@@ -1,8 +1,8 @@
 // GringoSafe MASTER MODULE
 import { db, auth, provider, analytics } from './firebase-config.js';
 import dicionario from './locales.js';
-import { collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where, getDocs, deleteDoc } from "firebase/firestore";
-import { signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth";
+import { collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
 // Garantir que mapboxgl esteja disponível globalmente
 if (typeof window.mapboxgl === 'undefined') {
