@@ -11,7 +11,7 @@ if (typeof window.mapboxgl === 'undefined') {
 
 // Registro do Service Worker para PWA
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
+    window.addEventListener('loasd', () => {
         navigator.serviceWorker.register('./sw.js')
             .then(reg => {
                 reg.update();
@@ -134,45 +134,47 @@ function iniciarMapa() {
     estadoApp.mapa.on('load', () => {
         window.agendarDesenho();
         
-        // ATIVAR GPS AUTOMÁTICO COMO NO CÓDIGO ORIGINAL
+        // ADICIONAR CONTROLE DE GPS (PONTO AZUL)
+        const geolocateControl = new mapboxgl.GeolocateControl({
+            positionOptions: { 
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            },
+            trackUserLocation: true,
+            showUserHeading: true,
+            showAccuracyCircle: true,
+            fitBoundsOptions: { maxZoom: 16 }
+        });
+        
+        estadoApp.mapa.addControl(geolocateControl);
+        
+        // ATIVAR GPS AUTOMÁTICAMENTE
         setTimeout(() => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        console.log('📍 GPS automático funcionou:', position.coords);
-                        // Centralizar mapa na posição do usuário
-                        if (estadoApp.mapa) {
-                            estadoApp.mapa.flyTo({
-                                center: [position.coords.longitude, position.coords.latitude],
-                                zoom: 16,
-                                speed: 1.5
-                            });
-                        }
-                    },
-                    (error) => {
-                        console.error('❌ Erro no GPS automático:', error);
-                        const toast = getEl('toastAviso');
-                        if (toast) {
-                            toast.textContent = '📍 GPS não disponível - Verifique permissões';
-                            toast.style.display = 'block';
-                            setTimeout(() => {
-                                toast.style.display = 'none';
-                            }, 3000);
-                        }
-                    }
-                );
-            } else {
-                console.error('❌ GPS não suportado pelo navegador');
-                const toast = getEl('toastAviso');
-                if (toast) {
-                    toast.textContent = '❌ GPS não suportado';
-                    toast.style.display = 'block';
-                    setTimeout(() => {
-                        toast.style.display = 'none';
-                    }, 3000);
-                }
+            try {
+                geolocateControl.trigger();
+                console.log('🎯 GPS ativado automaticamente');
+            } catch (error) {
+                console.log('⚠️ GPS precisa ser ativado manualmente');
             }
-        }, 1000);
+        }, 2000);
+        
+        // Eventos de GPS
+        geolocateControl.on('geolocate', (position) => {
+            console.log('📍 GPS Ativado:', position.coords);
+        });
+        
+        geolocateControl.on('error', (error) => {
+            console.error('❌ Erro no GPS:', error);
+            const toast = getEl('toastAviso');
+            if (toast) {
+                toast.textContent = '📍 GPS não disponível - Verifique permissões';
+                toast.style.display = 'block';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 3000);
+            }
+        });
     });
 
     // Atualizar coordenadas ao mover o mapa

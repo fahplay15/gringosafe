@@ -145,12 +145,18 @@ body, html { font-family: 'Inter', sans-serif; background-color: #FFFFFF; color:
 .btn-del-notif { background: transparent; border: none; font-size: 18px; cursor: pointer; padding: 5px; color: #CBD5E1; transition: 0.2s; }
 .btn-del-notif:hover { color: #EF4444; }
 
-/* OCULTAR CONTROLES NATIVOS DO MAPBOX EXCETO GEOLOCALIZAÇÃO */
-.mapboxgl-ctrl-top-left:not(.mapboxgl-ctrl-geolocate), 
-.mapboxgl-ctrl-top-right, 
-.mapboxgl-ctrl-bottom-left, 
-.mapboxgl-ctrl-bottom-right { 
-    display: none !important; 
+/* OCULTAR CONTROLES NATIVOS DO MAPBOX EXCETO GPS */
+.mapboxgl-ctrl-top-left, .mapboxgl-ctrl-top-right, .mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right { display: none !important; }
+
+/* MOSTRAR APENAS O CONTROLE DE GPS */
+.mapboxgl-ctrl-top-right .mapboxgl-ctrl { display: block !important; }
+.mapboxgl-ctrl-geolocate { 
+    display: block !important; 
+    background: white !important;
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
 }
 
 /* FORÇAR VISIBILIDADE DO CONTROLE DE GEOLOCALIZAÇÃO */
