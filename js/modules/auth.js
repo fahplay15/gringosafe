@@ -100,8 +100,10 @@ onAuthStateChanged(window.auth, async (user) => {
 });
 
 // Event listeners de autenticação
-bindClick('btnLoginGoogleMenu', fazerLogin); 
-bindClick('btnLoginGoogleOverlay', fazerLogin); 
-bindClick('btnLogout', fazerLogout);
+if (typeof bindClick === 'function') {
+    bindClick('btnLoginGoogleMenu', fazerLogin); 
+    bindClick('btnLoginGoogleOverlay', fazerLogin); 
+    bindClick('btnLogout', fazerLogout);
+}
 
 };

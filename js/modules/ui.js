@@ -171,22 +171,29 @@ window.definirPerfil = function(perfil) {
 };
 
 // Event listeners de UI
-bindClick('btnLangPtInicio', () => aplicarIdioma('pt')); 
-bindClick('btnLangEnInicio', () => aplicarIdioma('en')); 
-bindClick('btnLangEsInicio', () => aplicarIdioma('es'));
+if (typeof bindClick === 'function') {
+    bindClick('btnLangPtInicio', () => aplicarIdioma('pt')); 
+    bindClick('btnLangEnInicio', () => aplicarIdioma('en')); 
+    bindClick('btnLangEsInicio', () => aplicarIdioma('es'));
 
-bindClick('lang_pt', () => aplicarIdioma('pt')); 
-bindClick('lang_en', () => aplicarIdioma('en')); 
-bindClick('lang_es', () => aplicarIdioma('es'));
+    bindClick('lang_pt', () => aplicarIdioma('pt')); 
+    bindClick('lang_en', () => aplicarIdioma('en')); 
+    bindClick('lang_es', () => aplicarIdioma('es'));
 
-bindClick('cur_BRL', () => aplicarMoeda('BRL')); 
-bindClick('cur_USD', () => aplicarMoeda('USD')); 
-bindClick('cur_EUR', () => aplicarMoeda('EUR')); 
-bindClick('cur_ARS', () => aplicarMoeda('ARS'));
+    bindClick('btnPerfilTurista', () => definirPerfil('turista')); 
+    bindClick('btnPerfilAvaliador', () => definirPerfil('avaliador')); 
+    bindClick('btnPerfilLojista', () => definirPerfil('lojista')); 
 
-bindClick('btnPerfilTurista', () => definirPerfil('turista')); 
-bindClick('btnPerfilAvaliador', () => definirPerfil('avaliador')); 
-bindClick('btnPerfilLojista', () => definirPerfil('lojista')); 
+    bindClick('btnMoedaBRL', () => aplicarMoeda('BRL')); 
+    bindClick('btnMoedaUSD', () => aplicarMoeda('USD')); 
+    bindClick('btnMoedaEUR', () => aplicarMoeda('EUR')); 
+    bindClick('btnMoedaARS', () => aplicarMoeda('ARS')); 
+
+    bindClick('btnNotif', () => getEl('modalNotificacoes').style.display = 'flex'); 
+    bindClick('btnFecharNotificacoes', () => getEl('modalNotificacoes').style.display = 'none'); 
+    bindClick('btnNotifLidas', () => { /* marcar como lidas */ }); 
+    bindClick('btnNotifApagarTodas', () => { /* apagar todas */ });
+}
 
 bindClick('btnTrocarPerfil', () => { 
     getEl('sideMenu').classList.remove('open'); 
