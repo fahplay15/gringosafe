@@ -7,10 +7,9 @@ window.GringoSafeConfig = {
         projectId: "gringosafe-1f434",
         storageBucket: "gringosafe-1f434.firebasestorage.app",
         messagingSenderId: "949745647794",
-        appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab"
+        appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab",
+        measurementId: "G-JTQT05JKZW"
     },
-
-    // Mapbox
     mapbox: {
         accessToken: 'pk.eyJ1IjoiZmFocGxheTE1IiwiYSI6ImNtbXk2Z3UzMDB2YnYyb3BsMTA2ZzV2NmkifQ.Tvdrpof80mAktc3Z3dB3cw',
         defaultCenter: [-43.2302, -22.9121],

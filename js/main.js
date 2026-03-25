@@ -9,6 +9,13 @@
 // Inicializar Firebase
 window.app = initializeApp(window.GringoSafeConfig.firebase);
 
+// Inicializar Analytics (opcional)
+try {
+    window.analytics = getAnalytics(window.app);
+} catch (e) {
+    console.log("Analytics não disponível ou bloqueado");
+}
+
 // Inicializar serviços Firebase
 if (typeof window.initFirebaseServices === 'function') {
     window.initFirebaseServices();
