@@ -2,7 +2,13 @@
 
 // Função principal de desenhar pinos
 window.desenharPinos = function() {
-    if (!window.mapa || !window.mapa.isStyleLoaded()) {
+    if (!window.mapa) {
+        setTimeout(window.desenharPinos, 500);
+        return;
+    }
+    
+    // Verificar se o mapa está carregado
+    if (window.mapa.loaded && typeof window.mapa.loaded === 'function' && !window.mapa.loaded()) {
         setTimeout(window.desenharPinos, 500);
         return;
     }

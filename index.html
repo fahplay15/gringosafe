@@ -9,10 +9,12 @@
     <title>GringoSafe • Smart Travel</title>
     
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="assets/images/logo.png" type="image/png">
     <meta name="theme-color" content="#FFFFFF">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="apple-touch-icon" href="./logo.png">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
 
     <!-- Preconnect para otimização -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -437,19 +439,56 @@
     </div>
 
     <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"></script>
-    
-    <!-- JavaScript Modular -->
-    <script src="js/core/config.js"></script>
-    <script src="js/core/utils.js"></script>
-    <script src="js/core/app.js"></script>
-    <script src="js/modules/auth.js"></script>
-    <script src="js/modules/ui.js"></script>
-    <script src="js/modules/map.js"></script>
-    <script src="js/services/api.js"></script>
-    <script src="js/services/cache.js"></script>
-    <script src="js/main.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        
+        // Disponibilizar globalmente
+        window.initializeApp = initializeApp;
+        window.getFirestore = getFirestore;
+        window.collection = collection;
+        window.addDoc = addDoc;
+        window.onSnapshot = onSnapshot;
+        window.doc = doc;
+        window.updateDoc = updateDoc;
+        window.getDoc = getDoc;
+        window.setDoc = setDoc;
+        window.increment = increment;
+        window.arrayUnion = arrayUnion;
+        window.query = query;
+        window.where = where;
+        window.getDocs = getDocs;
+        window.deleteDoc = deleteDoc;
+        window.getAuth = getAuth;
+        window.signInWithPopup = signInWithPopup;
+        window.GoogleAuthProvider = GoogleAuthProvider;
+        window.onAuthStateChanged = onAuthStateChanged;
+        window.signOut = signOut;
+        
+        // Carregar scripts após Firebase estar disponível
+        const loadScripts = () => {
+            const scripts = [
+                'js/core/config.js',
+                'js/core/utils.js',
+                'js/core/app.js',
+                'js/modules/auth.js',
+                'js/modules/ui.js',
+                'js/modules/map.js',
+                'js/services/api.js',
+                'js/services/cache.js',
+                'js/main.js'
+            ];
+            
+            scripts.forEach(src => {
+                const script = document.createElement('script');
+                script.src = src;
+                document.body.appendChild(script);
+            });
+        };
+        
+        // Iniciar carregamento
+        loadScripts();
+    </script>
 </body>
 </html>
