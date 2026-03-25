@@ -95,8 +95,9 @@ self.addEventListener('fetch', (event) => {
                         .then(networkResponse => {
                             // Cacheiar resposta bem-sucedida
                             if (networkResponse.ok) {
+                                const responseClone = networkResponse.clone();
                                 caches.open(STATIC_CACHE)
-                                    .then(cache => cache.put(request, networkResponse.clone()));
+                                    .then(cache => cache.put(request, responseClone));
                             }
                             return networkResponse;
                         })
@@ -119,8 +120,9 @@ self.addEventListener('fetch', (event) => {
                 .then(networkResponse => {
                     // Cacheiar respostas GET bem-sucedidas
                     if (networkResponse.ok && request.method === 'GET') {
+                        const responseClone = networkResponse.clone();
                         caches.open(DYNAMIC_CACHE)
-                            .then(cache => cache.put(request, networkResponse.clone()));
+                            .then(cache => cache.put(request, responseClone));
                     }
                     return networkResponse;
                 })
@@ -144,14 +146,11 @@ self.addEventListener('fetch', (event) => {
                     .then(networkResponse => {
                         // Cacheiar se for bem-sucedido
                         if (networkResponse.ok) {
+                            const responseClone = networkResponse.clone();
                             caches.open(DYNAMIC_CACHE)
-                                .then(cache => cache.put(request, networkResponse.clone()));
+                                .then(cache => cache.put(request, responseClone));
                         }
                         return networkResponse;
-                    })
-                    .catch(() => {
-                        // Fallback para cache se falhar a rede
-                        return caches.match(request);
                     });
             })
     );

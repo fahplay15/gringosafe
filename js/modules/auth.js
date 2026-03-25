@@ -105,5 +105,3 @@ if (typeof bindClick === 'function') {
     bindClick('btnLoginGoogleOverlay', fazerLogin); 
     bindClick('btnLogout', fazerLogout);
 }
-
-};
