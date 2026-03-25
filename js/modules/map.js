@@ -8,9 +8,13 @@ window.desenharPinos = function() {
     }
     
     // Verificar se o mapa está carregado
-    if (window.mapa.loaded && typeof window.mapa.loaded === 'function' && !window.mapa.loaded()) {
-        setTimeout(window.desenharPinos, 500);
-        return;
+    try {
+        if (window.mapa.loaded && typeof window.mapa.loaded === 'function' && !window.mapa.loaded()) {
+            setTimeout(window.desenharPinos, 500);
+            return;
+        }
+    } catch (e) {
+        // Se loaded não estiver disponível, continua
     }
 
     if(window.marcadoresAtuais) {
@@ -179,7 +183,9 @@ window.desenharPinos = function() {
                     ${btnAdicionarItemHtml}
                 </div>`;
                 
-                const markerFiltro = new mapboxgl.Marker({element: elFiltro}).setLngLat([lngNum, latNum]).addTo(window.mapa);
+                const markerFiltro = new mapboxgl.Marker({element: elFiltro})
+                    .setLngLat([lngNum, latNum])
+                    .addTo(window.mapa);
                 elFiltro.addEventListener('click', (e) => {
                     e.stopPropagation();
                     document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
@@ -248,8 +254,14 @@ window.desenharPinos = function() {
                 <div class="${typeAnim}">${typeIcon}</div>
             </div>`;
 
-            const pinoDuvida = new mapboxgl.Marker({element: elDuvida}).setLngLat([lngNum, latNum]).addTo(window.mapa);
-            window.marcadoresAtuais.push(pinoDuvida);
+            try {
+                const pinoDuvida = new mapboxgl.Marker({element: elDuvida})
+                    .setLngLat([lngNum, latNum])
+                    .addTo(window.mapa);
+                window.marcadoresAtuais.push(pinoDuvida);
+            } catch (markerError) {
+                console.error("Erro ao criar marker de pergunta:", markerError);
+            }
 
             // ... resto da lógica de perguntas
         } catch (err) { 
