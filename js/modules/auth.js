@@ -53,27 +53,27 @@ onAuthStateChanged(window.auth, async (user) => {
         window.atualizarBadgeBuscas();
 
         // Configurar notificações
-        const q = query(collection(window.db, "notificacoes"), where("userId", "==", user.uid));
-        window.listenerNotificacoes = onSnapshot(q, (snapshot) => {
-            estadoApp.notificacoes = []; 
-            let qtdNaoLidas = 0;
-            snapshot.forEach(d => { 
-                let notif = d.data(); 
-                notif.id = d.id; 
-                estadoApp.notificacoes.push(notif); 
-                if(!notif.lida) qtdNaoLidas++; 
+        if (window.db) {
+            const q = query(collection(window.db, "notificacoes"), where("userId", "==", user.uid));
+            window.listenerNotificacoes = onSnapshot(q, (snapshot) => {
+                estadoApp.notificacoes = []; 
+                let qtdNaoLidas = 0;
+                snapshot.forEach(d => { 
+                    let notif = d.data(); 
+                    notif.id = d.id; 
+                    estadoApp.notificacoes.push(notif); 
+                    if(!notif.lida) qtdNaoLidas++; 
+                });
+                estadoApp.notificacoes.sort((a,b) => b.data.toMillis() - a.data.toMillis());
+                const bN = getEl('badgeNotificacoes'); 
+                if(qtdNaoLidas > 0) { 
+                    bN.style.display = 'flex'; 
+                    bN.innerText = qtdNaoLidas; 
+                } else { 
+                    bN.style.display = 'none'; 
+                }
             });
-            estadoApp.notificacoes.sort((a,b) => b.data.toMillis() - a.data.toMillis());
-            const bN = getEl('badgeNotificacoes'); 
-            if(qtdNaoLidas > 0) { 
-                bN.style.display = 'flex'; 
-                bN.innerText = qtdNaoLidas; 
-            } else { 
-                bN.style.display = 'none'; 
-            }
-        });
-
-    } else {
+        } else {
         // Usuário deslogado
         estadoApp.usuario = null; 
         estadoApp.saldo = 0.00; 

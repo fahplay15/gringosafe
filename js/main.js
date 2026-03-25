@@ -154,6 +154,11 @@ window.uploadFotoLojista = function(e) {
 
 // Event listeners principais
 bindClick('btnConfirmarPos', () => {
+    if (!window.mapa || !window.mapa.getCenter) {
+        console.error("Mapa não está disponível");
+        return;
+    }
+    
     window.coordSelecionada = window.mapa.getCenter(); 
     getEl('posicionamentoUI').style.display = 'none'; 
     getEl('alfineteCentral').style.display = 'none'; 

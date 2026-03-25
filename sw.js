@@ -5,24 +5,24 @@ const DYNAMIC_CACHE = 'gringosafe-dynamic-v2.0';
 
 // Arquivos essenciais para cache estático
 const STATIC_ASSETS = [
-    '/',
-    '/index.html',
-    '/manifest.json',
-    '/assets/images/logo.png',
-    '/css/core.css',
-    '/css/components.css',
-    '/css/modals.css',
-    '/css/map.css',
-    '/css/responsive.css',
-    '/js/core/config.js',
-    '/js/core/utils.js',
-    '/js/core/app.js',
-    '/js/modules/auth.js',
-    '/js/modules/ui.js',
-    '/js/modules/map.js',
-    '/js/services/api.js',
-    '/js/services/cache.js',
-    '/js/main.js'
+    './',
+    './index.html',
+    './manifest.json',
+    './assets/images/logo.png',
+    './css/core.css',
+    './css/components.css',
+    './css/modals.css',
+    './css/map.css',
+    './css/responsive.css',
+    './js/core/config.js',
+    './js/core/utils.js',
+    './js/core/app.js',
+    './js/modules/auth.js',
+    './js/modules/ui.js',
+    './js/modules/map.js',
+    './js/services/api.js',
+    './js/services/cache.js',
+    './js/main.js'
 ];
 
 // Instalação do Service Worker

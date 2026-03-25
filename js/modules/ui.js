@@ -145,16 +145,29 @@ window.atualizarBadgeBuscas = function() {
     }
 };
 
-// Definir perfil
-window.definirPerfil = function(tipo) { 
-    estadoApp.perfil = tipo; 
-    document.body.className = 'modo-' + tipo; 
+// UI - GringoSafe
+
+// Garantir que estadoApp esteja disponível
+if (typeof window.estadoApp === 'undefined') {
+    window.estadoApp = {};
+}
+
+// Definir perfil do usuário
+window.definirPerfil = function(perfil) { 
+    if (!window.estadoApp) return;
+    
+    window.estadoApp.perfil = perfil; 
+    document.body.className = 'modo-' + perfil; 
     localStorage.setItem('gringosafe_ja_acessou', 'sim'); 
     
     if(getEl('telaPerfil')) getEl('telaPerfil').style.display = 'none'; 
     
-    window.agendarDesenho(); 
-    window.atualizarBadgeBuscas(); 
+    if (typeof window.agendarDesenho === 'function') {
+        window.agendarDesenho(); 
+    }
+    if (typeof window.atualizarBadgeBuscas === 'function') {
+        window.atualizarBadgeBuscas(); 
+    }
 };
 
 // Event listeners de UI
