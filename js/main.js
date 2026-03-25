@@ -153,73 +153,103 @@ window.uploadFotoLojista = function(e) {
 };
 
 // Event listeners principais
-bindClick('btnConfirmarPos', () => {
-    if (!window.mapa || !window.mapa.getCenter) {
-        console.error("Mapa não está disponível");
-        return;
-    }
+if (typeof bindClick === 'function') {
+    // Botões de posicionamento
+    bindClick('btnConfirmarPos', () => {
+        if (!window.mapa || !window.mapa.getCenter) {
+            console.error("Mapa não está disponível");
+            return;
+        }
+        
+        window.coordSelecionada = window.mapa.getCenter(); 
+        getEl('posicionamentoUI').style.display = 'none'; 
+        getEl('alfineteCentral').style.display = 'none'; 
+        getEl('alfineteAlvo').style.display = 'none'; 
+        getEl('bottomActions').style.display = 'flex';
+        
+        if (window.acaoPendente === 'add') { 
+            delete getEl('modalForm').dataset.modoLojista; 
+            setTxt('t_btnSave', "Salvar (+R$ 0,25)"); 
+            getEl('t_formTitle').innerText = "Novo Registro"; 
+            getEl('selectLocal').value = 'NEW'; 
+            getEl('nomeLocalInput').style.display = 'block'; 
+            getEl('nomeLocalInput').value = ''; 
+            getEl('nomeProduto').value = ''; 
+            getEl('precoProduto').value = ''; 
+            getEl('imagemPreview').style.display = 'none'; 
+            getEl('iaStatus').style.display = 'none'; 
+            window.fotoAtualBase64 = null; 
+            getEl('modalForm').style.display = 'flex';
+        } 
+        else if (window.acaoPendente === 'ask') { 
+            getEl('nomeProdutoPergunta').value = ''; 
+            getEl('estimativaIA').style.display = 'none'; 
+            getEl('nomeLocalPergunta').value = ''; 
+            getEl('imagemPreviewPergunta').style.display = 'none'; 
+            getEl('iaStatusPergunta').style.display = 'none'; 
+            window.fotoAtualBase64 = null; 
+            getEl('tipoLocalPergunta').value = 'Fixo'; 
+            getEl('nomeLocalPergunta').style.display = 'block'; 
+            getEl('modalPergunta').style.display = 'flex';
+        }
+        else if (window.acaoPendente === 'addLojista') { 
+            window.fotosLojista = []; 
+            window.atualizarPreviewLojista(); 
+            getEl('nomeLojistaInput').value = ''; 
+            getEl('modalFormLojista').style.display = 'flex'; 
+        }
+    });
     
-    window.coordSelecionada = window.mapa.getCenter(); 
-    getEl('posicionamentoUI').style.display = 'none'; 
-    getEl('alfineteCentral').style.display = 'none'; 
-    getEl('alfineteAlvo').style.display = 'none'; 
-    getEl('bottomActions').style.display = 'flex';
+    // Botões de modais
+    bindClick('btnCancelarPos', () => {
+        getEl('posicionamentoUI').style.display = 'none'; 
+        getEl('alfineteCentral').style.display = 'none'; 
+        getEl('alfineteAlvo').style.display = 'none'; 
+        getEl('bottomActions').style.display = 'flex';
+    });
     
-    if (window.acaoPendente === 'add') { 
-        delete getEl('modalForm').dataset.modoLojista; 
-        setTxt('t_btnSave', "Salvar (+R$ 0,25)"); 
-        getEl('t_formTitle').innerText = "Novo Registro"; 
-        getEl('selectLocal').value = 'NEW'; 
-        getEl('nomeLocalInput').style.display = 'block'; 
-        getEl('nomeLocalInput').value = ''; 
-        getEl('nomeProduto').value = ''; 
-        getEl('precoProduto').value = ''; 
-        getEl('imagemPreview').style.display = 'none'; 
-        getEl('iaStatus').style.display = 'none'; 
-        window.fotoAtualBase64 = null; 
-        getEl('modalForm').style.display = 'flex'; 
-    } 
-    else if (window.acaoPendente === 'ask') { 
-        getEl('nomeProdutoPergunta').value = ''; 
-        getEl('estimativaIA').style.display = 'none'; 
-        getEl('nomeLocalPergunta').value = ''; 
-        getEl('imagemPreviewPergunta').style.display = 'none'; 
-        getEl('iaStatusPergunta').style.display = 'none'; 
-        window.fotoAtualBase64 = null; 
-        getEl('tipoLocalPergunta').value = 'Fixo'; 
-        getEl('nomeLocalPergunta').style.display = 'block'; 
-        getEl('modalPergunta').style.display = 'flex'; 
-    }
-    else if (window.acaoPendente === 'addLojista') { 
-        window.fotosLojista = []; 
-        window.atualizarPreviewLojista(); 
-        getEl('nomeLojistaInput').value = ''; 
-        getEl('modalFormLojista').style.display = 'flex'; 
-    }
-});
+    // Botão adicionar
+    bindClick('btnAdicionar', () => { 
+        if (window.estadoApp && window.estadoApp.perfil === 'lojista') { 
+            window.iniciarModoPosicionamento('addLojista'); 
+        } else { 
+            window.iniciarModoPosicionamento('add'); 
+        }
+    });
+}
 
-bindClick('btnCancelarPos', () => { 
-    getEl('posicionamentoUI').style.display = 'none'; 
-    getEl('alfineteCentral').style.display = 'none'; 
-    getEl('alfineteAlvo').style.display = 'none'; 
-    getEl('bottomActions').style.display = 'flex'; 
-});
+if (typeof bindClick === 'function') {
+    bindClick('btnCamLojista', () => getEl('inputCamLojista')?.click()); 
+    bindClick('btnGalLojista', () => getEl('inputGalLojista')?.click()); 
+    bindChange('inputCamLojista', (e) => window.processarImagem(e, 'imagemPreviewLojista', 'iaStatusLojista', 'nomeLojistaInput')); 
+    bindChange('inputGalLojista', (e) => window.processarImagem(e, 'imagemPreviewLojista', 'iaStatusLojista', 'nomeLojistaInput')); 
 
-bindClick('btnAdicionar', () => { 
-    if (estadoApp.perfil === 'lojista') { 
-        window.iniciarModoPosicionamento('addLojista'); 
-    } else { 
-        window.iniciarModoPosicionamento('add'); 
-    } 
-});
+    bindClick('btnCam', () => getEl('inputCam')?.click()); 
+    bindClick('btnGal', () => getEl('inputGal')?.click()); 
+    bindChange('inputCam', (e) => window.processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto')); 
+    bindChange('inputGal', (e) => window.processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto')); 
 
-bindClick('btnPerguntar', () => window.iniciarModoPosicionamento('ask'));
+    bindClick('btnCamPergunta', () => getEl('inputCamPergunta')?.click()); 
+    bindClick('btnGalPergunta', () => getEl('inputGalPergunta')?.click()); 
+    bindChange('inputCamPergunta', (e) => window.processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta')); 
+    bindChange('inputGalPergunta', (e) => window.processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta')); 
+
+    bindClick('btnPerguntar', () => window.iniciarModoPosicionamento('ask'));
+}
+
+bindClick('btnCamPergunta', () => getEl('inputCamPergunta')?.click()); 
+bindClick('btnGalPergunta', () => getEl('inputGalPergunta')?.click());
+bindChange('inputCamPergunta', (e) => window.processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta')); 
+bindChange('inputGalPergunta', (e) => window.processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta'));
 
 // Event listeners de formulários
-bindClick('btnCamLojista', () => getEl('inputCamLojista')?.click()); 
-bindClick('btnGalLojista', () => getEl('inputGalLojista')?.click());
-bindChange('inputCamLojista', window.uploadFotoLojista); 
-bindChange('inputGalLojista', window.uploadFotoLojista);
+bindClick('btnCancelar', () => { 
+    getEl('modalForm').style.display = 'none'; 
+}); 
+
+bindClick('btnCancelarLojista', () => { 
+    getEl('modalFormLojista').style.display = 'none'; 
+});
 
 bindChange('selectLocal', (e) => { 
     getEl('nomeLocalInput').style.display = e.target.value === 'NEW' ? 'block' : 'none'; 
@@ -229,24 +259,7 @@ bindChange('tipoLocalPergunta', (e) => {
     getEl('nomeLocalPergunta').style.display = e.target.value === 'Ambulante' ? 'none' : 'block'; 
 });
 
-bindClick('btnCancelar', () => { 
-    getEl('modalForm').style.display = 'none'; 
-}); 
-
-bindClick('btnCancelarLojista', () => { 
-    getEl('modalFormLojista').style.display = 'none'; 
-});
-
-bindClick('btnCamNormal', () => getEl('inputCamNormal')?.click()); 
-bindClick('btnGalNormal', () => getEl('inputGalNormal')?.click());
-bindChange('inputCamNormal', (e) => window.processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto')); 
-bindChange('inputGalNormal', (e) => window.processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto'));
-
 bindClick('btnCancelarPergunta', () => getEl('modalPergunta').style.display = 'none');
-bindClick('btnCamPergunta', () => getEl('inputCamPergunta')?.click()); 
-bindClick('btnGalPergunta', () => getEl('inputGalPergunta')?.click());
-bindChange('inputCamPergunta', (e) => window.processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta')); 
-bindChange('inputGalPergunta', (e) => window.processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta'));
 
 // Inicialização quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', function() {

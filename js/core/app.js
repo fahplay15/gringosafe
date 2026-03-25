@@ -285,6 +285,12 @@ window.dicionario = {
 
 // Inicialização da aplicação
 window.inicializarApp = function() {
+    // Verificar se mapboxgl está disponível
+    if (typeof mapboxgl === 'undefined') {
+        console.error("Mapbox GL não está carregado");
+        return;
+    }
+    
     // Configurar mapa
     mapboxgl.accessToken = window.GringoSafeConfig.mapbox.accessToken;
     window.mapa = new mapboxgl.Map({
@@ -304,8 +310,11 @@ window.inicializarApp = function() {
 
     // Event listeners do mapa
     window.mapa.on('load', () => { 
+        console.log("Mapa carregado com sucesso");
         geolocate.trigger(); 
-        window.agendarDesenho(); 
+        if (typeof window.agendarDesenho === 'function') {
+            window.agendarDesenho(); 
+        }
     });
 
     geolocate.on('geolocate', (e) => { 
