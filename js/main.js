@@ -9,6 +9,14 @@
 // Inicializar Firebase
 window.app = initializeApp(window.GringoSafeConfig.firebase);
 
+// Inicializar serviços Firebase
+if (typeof window.initFirebaseServices === 'function') {
+    window.initFirebaseServices();
+}
+if (typeof window.initAuth === 'function') {
+    window.initAuth();
+}
+
 // Funções principais que precisam estar disponíveis globalmente
 window.iniciarModoPosicionamento = function(acao) {
     if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);

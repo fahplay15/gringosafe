@@ -1,17 +1,22 @@
 // AUTENTICAÇÃO - GringoSafe
 
-// Inicializar Firebase Auth
-window.auth = getAuth(app);
-window.provider = new GoogleAuthProvider();
+// Inicializar Firebase Auth quando app estiver disponível
+window.auth = null;
+window.provider = null;
+window.initAuth = function() {
+    if (!window.app) return;
+    
+    window.auth = getAuth(window.app);
+    window.provider = new GoogleAuthProvider();
+    
+    // Login
+    window.fazerLogin = () => signInWithPopup(window.auth, window.provider).catch(() => alert("Erro no início de sessão."));
 
-// Login
-window.fazerLogin = () => signInWithPopup(auth, provider).catch(() => alert("Erro no início de sessão."));
-
-// Logout
-window.fazerLogout = () => signOut(auth).then(() => alert("Sessão terminada."));
+    // Logout
+    window.fazerLogout = () => signOut(window.auth).then(() => alert("Sessão terminada."));
 
 // Monitorar estado de autenticação
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(window.auth, async (user) => {
     if (user) {
         // Usuário logado
         estadoApp.usuario = user; 
@@ -21,7 +26,7 @@ onAuthStateChanged(auth, async (user) => {
         getEl('btnLogout').style.display = 'block'; 
         getEl('bloqueioLoginOverlay').style.display = 'none'; 
         
-        const docRef = doc(db, "usuarios", user.uid); 
+        const docRef = doc(window.db, "usuarios", user.uid); 
         const docSnap = await getDoc(docRef);
         
         if (docSnap.exists()) { 
@@ -48,7 +53,7 @@ onAuthStateChanged(auth, async (user) => {
         window.atualizarBadgeBuscas();
 
         // Configurar notificações
-        const q = query(collection(db, "notificacoes"), where("userId", "==", user.uid));
+        const q = query(collection(window.db, "notificacoes"), where("userId", "==", user.uid));
         window.listenerNotificacoes = onSnapshot(q, (snapshot) => {
             estadoApp.notificacoes = []; 
             let qtdNaoLidas = 0;
@@ -98,3 +103,5 @@ onAuthStateChanged(auth, async (user) => {
 bindClick('btnLoginGoogleMenu', fazerLogin); 
 bindClick('btnLoginGoogleOverlay', fazerLogin); 
 bindClick('btnLogout', fazerLogout);
+
+};

@@ -480,10 +480,12 @@
                 'js/main.js'
             ];
             
-            scripts.forEach(src => {
-                const script = document.createElement('script');
-                script.src = src;
-                document.body.appendChild(script);
+            scripts.forEach((src, index) => {
+                setTimeout(() => {
+                    const script = document.createElement('script');
+                    script.src = src;
+                    document.body.appendChild(script);
+                }, index * 100); // 100ms de delay entre cada script
             });
         };
         

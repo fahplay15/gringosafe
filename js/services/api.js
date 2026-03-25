@@ -1,10 +1,14 @@
 // SERVIÇOS DE API - GringoSafe
 
-// Firebase Services
-window.db = getFirestore(app);
-
-// Listener de preços
-onSnapshot(collection(db, "precos"), (snapshot) => {
+// Firebase Services - será inicializado quando app estiver disponível
+window.db = null;
+window.initFirebaseServices = function() {
+    if (!window.app) return;
+    
+    window.db = getFirestore(window.app);
+    
+    // Listener de preços
+    onSnapshot(collection(window.db, "precos"), (snapshot) => {
     estadoApp.dadosHospedados = {}; 
     estadoApp.mediaPrecos = {}; 
     estadoApp.contagemPrecos = {};
@@ -58,7 +62,7 @@ onSnapshot(collection(db, "precos"), (snapshot) => {
 });
 
 // Listener de perguntas
-onSnapshot(collection(db, "perguntas"), (snapshot) => {
+onSnapshot(collection(window.db, "perguntas"), (snapshot) => {
     estadoApp.perguntasAbertas = {}; 
     snapshot.forEach((doc) => { 
         const p = doc.data(); 
@@ -71,7 +75,7 @@ onSnapshot(collection(db, "perguntas"), (snapshot) => {
 });
 
 // Listener de avaliações
-onSnapshot(collection(db, "avaliacoes"), (snapshot) => {
+onSnapshot(collection(window.db, "avaliacoes"), (snapshot) => {
     estadoApp.avaliacoes = {}; 
     snapshot.forEach((doc) => { 
         const data = doc.data(); 
@@ -88,7 +92,7 @@ onSnapshot(collection(db, "avaliacoes"), (snapshot) => {
 });
 
 // Listener de configurações do sistema
-onSnapshot(doc(db, "sistema", "configuracoes"), (docSnap) => { 
+onSnapshot(doc(window.db, "sistema", "configuracoes"), (docSnap) => { 
     if (docSnap.exists()) { 
         const dadosSistema = docSnap.data(); 
         if (window.versaoAtualApp === null) { 
@@ -102,10 +106,12 @@ onSnapshot(doc(db, "sistema", "configuracoes"), (docSnap) => {
     } 
 });
 
+};
+
 // Funções de API
 window.adicionarPreco = async function(dados) {
     try {
-        await addDoc(collection(db, "precos"), dados);
+        await addDoc(collection(window.db, "precos"), dados);
         return { success: true };
     } catch(error) {
         console.error("Erro ao adicionar preço:", error);
@@ -115,7 +121,7 @@ window.adicionarPreco = async function(dados) {
 
 window.atualizarPreco = async function(id, dados) {
     try {
-        await updateDoc(doc(db, "precos", id), dados);
+        await updateDoc(doc(window.db, "precos", id), dados);
         return { success: true };
     } catch(error) {
         console.error("Erro ao atualizar preço:", error);
@@ -125,7 +131,7 @@ window.atualizarPreco = async function(id, dados) {
 
 window.adicionarPergunta = async function(dados) {
     try {
-        await addDoc(collection(db, "perguntas"), dados);
+        await addDoc(collection(window.db, "perguntas"), dados);
         return { success: true };
     } catch(error) {
         console.error("Erro ao adicionar pergunta:", error);
@@ -135,7 +141,7 @@ window.adicionarPergunta = async function(dados) {
 
 window.responderPergunta = async function(id, dados) {
     try {
-        await updateDoc(doc(db, "perguntas", id), dados);
+        await updateDoc(doc(window.db, "perguntas", id), dados);
         return { success: true };
     } catch(error) {
         console.error("Erro ao responder pergunta:", error);
@@ -145,7 +151,7 @@ window.responderPergunta = async function(id, dados) {
 
 window.adicionarNotificacao = async function(dados) {
     try {
-        await addDoc(collection(db, "notificacoes"), dados);
+        await addDoc(collection(window.db, "notificacoes"), dados);
         return { success: true };
     } catch(error) {
         console.error("Erro ao adicionar notificação:", error);
@@ -155,7 +161,7 @@ window.adicionarNotificacao = async function(dados) {
 
 window.apagarNotificacao = async function(id) {
     try {
-        await deleteDoc(doc(db, "notificacoes", id));
+        await deleteDoc(doc(window.db, "notificacoes", id));
         return { success: true };
     } catch(error) {
         console.error("Erro ao apagar notificação:", error);
@@ -165,7 +171,7 @@ window.apagarNotificacao = async function(id) {
 
 window.adicionarAvaliacao = async function(dados) {
     try {
-        await addDoc(collection(db, "avaliacoes"), dados);
+        await addDoc(collection(window.db, "avaliacoes"), dados);
         return { success: true };
     } catch(error) {
         console.error("Erro ao adicionar avaliação:", error);
@@ -197,7 +203,7 @@ window.votarItem = async function(id, tipo, isPremium) {
     if (jaVotou) return alert(dicionario[estadoApp.idioma].alertVoted);
     
     try { 
-        const docRef = doc(db, "precos", id); 
+        const docRef = doc(window.db, "precos", id); 
         if(tipo === 'up') {
             await updateDoc(docRef, { 
                 votos_up: increment(1), 
@@ -219,7 +225,7 @@ window.denunciarItem = async function(id) {
     if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
     
     try {
-        const docRef = doc(db, "precos", id);
+        const docRef = doc(window.db, "precos", id);
         await updateDoc(docRef, { 
             denuncias: increment(1),
             denunciaram: arrayUnion(estadoApp.usuario.uid)
