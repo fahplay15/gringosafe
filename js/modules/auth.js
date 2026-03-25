@@ -74,34 +74,32 @@ onAuthStateChanged(window.auth, async (user) => {
                 }
             });
         } else {
-        // Usuário deslogado
-        estadoApp.usuario = null; 
-        estadoApp.saldo = 0.00; 
-        estadoApp.buscasRestantes = 3; 
-        estadoApp.isLojistaPremium = false; 
-        estadoApp.fimTrial = null; 
-        setTxt('saldoDisplay', `R$ 0,00`); 
-        setTxt('menuNome', `Visitante`); 
-        
-        if(getEl('menuAvatar')) getEl('menuAvatar').innerHTML = `👤`;
-        if(getEl('btnLoginGoogleMenu')) getEl('btnLoginGoogleMenu').style.display = 'flex';
-        if(getEl('btnLogout')) getEl('btnLogout').style.display = 'none';
-        if(getEl('bloqueioLoginOverlay')) getEl('bloqueioLoginOverlay').style.display = 'flex';
-        
-        window.atualizarBadgeBuscas();
-        
-        if(window.listenerNotificacoes) { 
-            window.listenerNotificacoes(); 
-            window.listenerNotificacoes = null; 
+            // Usuário deslogado
+            if (window.estadoApp) {
+                window.estadoApp.usuario = null; 
+                window.estadoApp.saldo = 0.00; 
+                window.estadoApp.buscasRestantes = 3; 
+                window.estadoApp.isLojistaPremium = false; 
+                window.estadoApp.fimTrial = null; 
+            }
+            setTxt('saldoDisplay', `R$ 0,00`); 
+            setTxt('menuNome', `Visitante`); 
+            
+            if(getEl('menuAvatar')) getEl('menuAvatar').innerHTML = `👤`;
+            if(getEl('btnLoginGoogleMenu')) getEl('btnLoginGoogleMenu').style.display = 'flex';
+            if(getEl('btnLogout')) getEl('btnLogout').style.display = 'none';
+            if(getEl('bloqueioLoginOverlay')) getEl('bloqueioLoginOverlay').style.display = 'flex';
+            
+            if (typeof window.atualizarBadgeBuscas === 'function') {
+                window.atualizarBadgeBuscas();
+            }
+            
+            if(window.listenerNotificacoes) { 
+                window.listenerNotificacoes(); 
+                window.listenerNotificacoes = null; 
+            }
+            
+            if(getEl('badgeNotificacoes')) getEl('badgeNotificacoes').style.display = 'none';
         }
-        
-        if(getEl('badgeNotificacoes')) getEl('badgeNotificacoes').style.display = 'none';
-    }
-});
-
-// Event listeners de autenticação
-if (typeof bindClick === 'function') {
-    bindClick('btnLoginGoogleMenu', fazerLogin); 
-    bindClick('btnLoginGoogleOverlay', fazerLogin); 
-    bindClick('btnLogout', fazerLogout);
-}
+    });
+};

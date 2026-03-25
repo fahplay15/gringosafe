@@ -93,13 +93,15 @@ self.addEventListener('fetch', (event) => {
                     // Se não estiver no cache, buscar da rede
                     return fetch(request)
                         .then(networkResponse => {
+                            // Clone the response BEFORE potentially consuming its body
+                            const networkResponseClone = networkResponse.clone();
+
                             // Cacheiar resposta bem-sucedida
                             if (networkResponse.ok) {
-                                const responseClone = networkResponse.clone();
                                 caches.open(STATIC_CACHE)
-                                    .then(cache => cache.put(request, responseClone));
+                                    .then(cache => cache.put(request, networkResponseClone));
                             }
-                            return networkResponse;
+                            return networkResponse; // Return the original response
                         })
                         .catch(() => {
                             // Fallback para offline
@@ -118,13 +120,15 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             fetch(request)
                 .then(networkResponse => {
+                    // Clone the response BEFORE potentially consuming the body
+                    const networkResponseClone = networkResponse.clone();
+
                     // Cacheiar respostas GET bem-sucedidas
                     if (networkResponse.ok && request.method === 'GET') {
-                        const responseClone = networkResponse.clone();
                         caches.open(DYNAMIC_CACHE)
-                            .then(cache => cache.put(request, responseClone));
+                            .then(cache => cache.put(request, networkResponseClone));
                     }
-                    return networkResponse;
+                    return networkResponse; // Return the original response
                 })
                 .catch(() => {
                     // Tentar do cache se falhar a rede
@@ -144,13 +148,19 @@ self.addEventListener('fetch', (event) => {
                 
                 return fetch(request)
                     .then(networkResponse => {
+                        // Clone the response BEFORE potentially consuming its body
+                        const networkResponseClone = networkResponse.clone();
+
                         // Cacheiar se for bem-sucedido
                         if (networkResponse.ok) {
-                            const responseClone = networkResponse.clone();
                             caches.open(DYNAMIC_CACHE)
-                                .then(cache => cache.put(request, responseClone));
+                                .then(cache => cache.put(request, networkResponseClone));
                         }
-                        return networkResponse;
+                        return networkResponse; // Return the original response
+                    })
+                    .catch(() => {
+                        // Fallback para cache se falhar a rede
+                        return caches.match(request);
                     });
             })
     );
