@@ -326,4 +326,22 @@ window.inicializarApp = function() {
             } 
         }, 1000); 
     });
+
+    // Configurar agendamento de desenho
+    window.agendarDesenho = function() { 
+        if(window.timeoutDesenho) clearTimeout(window.timeoutDesenho); 
+        window.timeoutDesenho = setTimeout(() => {
+            if (typeof window.desenharPinos === 'function') {
+                window.desenharPinos();
+            }
+        }, 300); 
+    };
+    
+    // Garantir que o mapa seja inicializado
+    setTimeout(() => {
+        if (!window.mapa) {
+            console.log("Mapa não inicializado, tentando novamente...");
+            window.inicializarApp();
+        }
+    }, 3000);
 };

@@ -270,5 +270,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 splash.style.display = 'none';
             }, 500);
         }
-    }, 2000);
+    }, 1000); // Reduzido para 1 segundo
 });
+
+// Garantir que o splash seja escondido mesmo se DOMContentLoaded não funcionar
+setTimeout(() => {
+    const splash = getEl('splashScreen');
+    if (splash && splash.style.display !== 'none') {
+        console.log("Forçando remoção do splash screen");
+        splash.style.opacity = '0';
+        setTimeout(() => {
+            splash.style.display = 'none';
+        }, 500);
+    }
+}, 3000); // Reduzido para 3 segundos

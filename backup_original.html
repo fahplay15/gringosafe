@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GringoSafe • Smart Travel</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FFFFFF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="./logo.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest"></script>
+
+    <style>
+        :root {
+            --brand-primary: #10B981;
+            --brand-secondary: #6366F1;
+            --brand-accent: #F59E0B;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --text-dark: #0F172A;
+            --text-muted: #64748B;
+            --border-glass: rgba(255, 255, 255, 0.4);
+            --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --radius-ui: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body, html { font-family: 'Inter', sans-serif; background-color: #FFFFFF; color: var(--text-dark); height: 100%; width: 100%; overflow: hidden; }
+
+        /* --- UI LAYER: MAPA --- */
+        #mapa { position: absolute; inset: 0; z-index: 0; }
+
+        /* --- COMPONENTE: SPLASH SCREEN --- */
+        #splashScreen { position: fixed; inset: 0; background: #FFFFFF; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.8s ease-in-out; }
+        #splashScreen h1 { font-family: 'Poppins', sans-serif; font-size: 38px; font-weight: 800; background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary)); -webkit-background-clip: text; color: transparent; margin: 0; }
+        #t_splashSub { color: var(--text-muted); font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px; }
+
+        /* --- TELA DE PERFIL INICIAL --- */
+        #telaPerfil { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); z-index: 9000; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        .lang-selector-inicial { display: flex; gap: 15px; margin-bottom: 25px; background: #F1F5F9; padding: 8px 16px; border-radius: 30px; }
+        .lang-selector-inicial div { cursor: pointer; font-size: 15px; font-weight: 700; padding: 8px 16px; border-radius: 20px; transition: 0.2s; color: var(--text-muted); }
+        .lang-selector-inicial div:hover, .lang-selector-inicial div.ativo-option { background: white; color: var(--brand-primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        #t_roleTitle { font-family: 'Poppins', sans-serif; font-size: 24px; margin-bottom: 25px; color: var(--text-dark); }
+        
+        .btn-perfil { background: white; color: var(--text-dark); border: 2px solid #E2E8F0; padding: 20px; width: 100%; max-width: 320px; border-radius: 20px; font-size: 18px; font-weight: 700; font-family: 'Poppins', sans-serif; margin-bottom: 12px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .btn-perfil span { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-muted); }
+        .btn-perfil:active { transform: scale(0.96); border-color: var(--brand-primary); }
+        .btn-perfil.avaliador { border-color: #FDE68A; background: #FFFBEB; }
+        .btn-perfil.lojista { border-color: #FED7AA; background: #FFF7ED; }
+
+        /* --- COMPONENTE: ILHAS FLUTUANTES (GLASS) --- */
+        .glass-island { background: var(--bg-glass); backdrop-filter: blur(16px) saturate(180%); -webkit-backdrop-filter: blur(16px) saturate(180%); border: 1px solid var(--border-glass); box-shadow: var(--shadow-float); }
+
+        /* --- TOP NAV (CORRIGIDO ALINHAMENTO DO SINO) --- */
+        .header-island { position: absolute; top: 15px; left: 15px; right: 15px; height: 60px; border-radius: var(--radius-ui); display: flex; align-items: center; padding: 0 15px; z-index: 5000; justify-content: space-between; }
+        .brand-logo { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 18px; display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-dark); }
+        .brand-logo span { color: var(--brand-primary); font-size: 22px; }
+        
+        .user-meta { display: flex; align-items: center; gap: 12px; }
+        .balance-pill { background: #F1F5F9; padding: 8px 16px; border-radius: 40px; font-weight: 700; font-size: 13px; color: var(--brand-primary); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        
+        /* Estrutura 100% centrada para o ícone do sino */
+        .notif-container { position: relative; cursor: pointer; display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; }
+        .notif-container svg { width: 26px; height: 26px; stroke: var(--text-dark); fill: none; }
+        .badge-notificacao { position: absolute; top: 0px; right: 0px; background: #EF4444; color: white; font-size: 11px; font-weight: 800; width: 18px; height: 18px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid white; }
+
+        /* --- MENU LATERAL --- */
+        .side-menu { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: white; z-index: 8000; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 10px 0 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow-y: auto; border-top-right-radius: 30px; border-bottom-right-radius: 30px; }
+        .side-menu.open { left: 0; }
+        .menu-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 7500; }
+        .user-card { padding: 30px 20px; background: #F8FAFC; display: flex; flex-direction: column; gap: 15px; border-bottom: 1px solid #E2E8F0; border-top-right-radius: 30px; }
+        .user-info { display: flex; align-items: center; gap: 12px; font-family: 'Poppins', sans-serif; font-weight: 700; color: var(--text-dark); font-size: 18px; }
+        .user-avatar { width: 48px; height: 48px; border-radius: 50%; background: #E2E8F0; display: flex; justify-content: center; align-items: center; font-size: 24px; overflow: hidden; }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .btn-google { background: white; color: var(--text-dark); border: 1px solid #E2E8F0; padding: 12px; border-radius: 12px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .btn-sair { background: #FEE2E2; color: #DC2626; border: none; padding: 10px; border-radius: 12px; font-weight: 600; cursor: pointer; }
+        .menu-item { padding: 18px 25px; border-bottom: 1px solid #F1F5F9; color: var(--text-dark); font-size: 15px; font-weight: 600; display: flex; justify-content: space-between; cursor: pointer; transition: 0.2s; }
+        .menu-item:hover { background: #F8FAFC; }
+        .sub-menu { display: none; background: #F8FAFC; flex-direction: column; border-bottom: 1px solid #F1F5F9; }
+        .sub-menu.open { display: flex; }
+        .sub-menu-item { padding: 14px 40px; color: var(--text-muted); font-size: 14px; font-weight: 500; cursor: pointer; display: flex; justify-content: space-between; }
+        .sub-menu-item.ativo-option { color: var(--brand-primary); font-weight: 700; }
+
+        /* BLOQUEIO LOGIN */
+        .bloqueio-login { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); z-index: 1500; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        .bloqueio-login h3 { font-family: 'Poppins', sans-serif; color: var(--text-dark); font-size: 26px; margin: 10px 0; }
+        .bloqueio-login p { color: var(--text-muted); font-size: 15px; font-weight: 500; margin-bottom: 25px; }
+
+        /* --- BOTTOM ACTION DOCK (CORRIGIDO SVG) --- */
+        .action-dock { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 40px; z-index: 6000; }
+        .btn-dock { width: 56px; height: 56px; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1); position: relative; }
+        .btn-dock:active { transform: scale(0.85); }
+        .btn-dock-main { width: 68px; height: 68px; background: linear-gradient(135deg, var(--brand-primary), #059669); color: white; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3); margin: 0 5px; }
+        
+        /* Corrigido: SVG sólido do botão Perguntar */
+        .btn-perguntar { width: 68px; height: 68px; background: linear-gradient(135deg, #8B5CF6, #6366F1); color: white; display: none; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); margin: 0 5px; }
+        .btn-perguntar svg { fill: currentColor; stroke: none; }
+        
+        .btn-dock-util { background: white; color: var(--text-dark); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .badge-buscas { position: absolute; top: -2px; right: -2px; background: #EF4444; color: white; font-size: 11px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid white; display: none; }
+
+        /* CONTROLES FLUTUANTES LATERAIS */
+        .btn-mira { position: fixed; bottom: 110px; right: 15px; background: white; border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 1000; cursor: pointer; color: var(--text-dark); }
+        .btn-radar { position: fixed; bottom: 110px; left: 15px; background: var(--text-dark); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; display: none; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 8px 15px rgba(0,0,0,0.2); z-index: 1000; cursor: pointer; transition: 0.3s; }
+        .btn-radar span { font-size: 9px; font-weight: 700; margin-top: -2px; font-family: 'Inter', sans-serif;}
+        .radar-anim { animation: radarPulseBtn 1.5s infinite; background: var(--brand-secondary) !important; }
+        @keyframes radarPulseBtn { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
+
+        /* --- TOAST --- */
+        #toastAviso { display:none; position:fixed; top:85px; left:50%; transform:translateX(-50%); background:var(--text-dark); color:white; padding:12px 24px; border-radius:30px; z-index:9999; font-weight:600; font-size:14px; box-shadow:0 10px 25px rgba(0,0,0,0.2); animation: fadeInDown 0.3s ease-out; white-space: nowrap; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+        /* --- UI DE POSICIONAMENTO --- */
+        .alfinete-alvo { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 8px; height: 8px; background-color: #EF4444; border-radius: 50%; z-index: 1001; pointer-events: none; display: none; box-shadow: 0 0 0 3px white, 0 4px 8px rgba(0,0,0,0.3); }
+        .alfinete-central { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%); z-index: 1000; pointer-events: none; display: none; margin-top: -6px; filter: drop-shadow(0px 8px 6px rgba(0,0,0,0.3)); }
+        
+        #posicionamentoUI { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: calc(100% - 30px); max-width: 400px; padding: 18px; border-radius: 24px; z-index: 4000; text-align: center; display: none; }
+        .posicionamento-aviso { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .posicionamento-botoes { display: flex; gap: 12px; }
+        .btn-cancel-pos { flex: 1; background: #F1F5F9; color: var(--text-muted); border: none; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; }
+        .btn-confirm-pos { flex: 1; background: var(--brand-primary); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+
+        /* --- MODAIS --- */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(6px); z-index: 9500; align-items: flex-end; justify-content: center; padding: 10px; }
+        .modal-sheet { background-color: white; padding: 30px 25px; border-radius: 32px; width: 100%; max-width: 450px; text-align: center; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); animation: sheetUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-sheet h3 { font-family: 'Poppins', sans-serif; font-size: 22px; color: var(--text-dark); margin-bottom: 5px; }
+        
+        .input-form { width: 100%; background: #F8FAFC; border: 2px solid transparent; padding: 16px; margin: 8px 0; border-radius: 16px; font-size: 15px; font-family: 'Inter', sans-serif; color: var(--text-dark); transition: all 0.3s ease; }
+        .input-form:focus { background: white; border-color: var(--brand-primary); outline: none; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
+        .bento-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; padding: 16px; transition: 0.2s; }
+        
+        .btn-salvar { background-color: var(--text-dark); color: white; border: none; padding: 16px; width: 100%; border-radius: 16px; font-size: 16px; font-weight: 700; margin-top: 15px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: 0.2s; }
+        .btn-salvar:active { transform: scale(0.98); }
+        .btn-cancelar { background: transparent; color: var(--text-muted); border: none; padding: 14px; width: 100%; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 5px; }
+
+        .btn-add-foto { background: #F8FAFC; color: var(--text-dark); border: 2px dashed #CBD5E1; padding: 16px; width: 100%; border-radius: 16px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .linha-botoes-foto { display: flex; gap: 12px; margin: 15px 0; }
+        .imagem-preview { max-width: 100%; max-height: 140px; border-radius: 12px; display: none; margin: 10px auto; object-fit: cover; border: 1px solid #E2E8F0; }
+        .ia-status { font-size: 12px; color: var(--brand-secondary); font-weight: 600; display: none; margin: 5px 0; background: #EEF2FF; padding: 6px 10px; border-radius: 8px; }
+
+        .btn-roxo { background-color: var(--brand-secondary); color: white; border: none; padding: 16px; width: 100%; border-radius: 16px; font-size: 16px; font-weight: 700; margin-top: 10px; cursor: pointer; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2); }
+        .btn-laranja { background-color: var(--brand-accent); color: white; border: none; padding: 12px 16px; width: 100%; border-radius: 12px; font-size: 14px; font-weight: 700; margin-top: 5px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 5px; }
+
+        /* RESULTADOS DE BUSCA */
+        .resultados-busca { max-height: 50vh; overflow-y: auto; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; text-align: left; }
+        .resultado-item { background: #F8FAFC; padding: 16px; border-radius: 16px; border: 1px solid #F1F5F9; cursor: pointer; display: flex; flex-direction: column; transition: 0.2s; }
+        .resultado-item:active { transform: scale(0.98); background: #F1F5F9; }
+        .estimativa-ia-box { background: #ECFDF5; color: var(--brand-primary); border: 1px solid #A7F3D0; padding: 12px; border-radius: 12px; font-size: 13px; text-align: left; margin: 15px 0; display: none; font-weight: 600; }
+
+        /* NOTIFICAÇÕES */
+        .notif-item { padding: 16px; background: #F8FAFC; border: 1px solid #F1F5F9; border-radius: 16px; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .notif-item.nao-lida { background: #EEF2FF; border-color: #C7D2FE; }
+        .notif-titulo { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 14px; color: var(--text-dark); margin-bottom: 4px; }
+        .notif-msg { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+        .btn-del-notif { background: transparent; border: none; font-size: 18px; cursor: pointer; padding: 5px; color: #CBD5E1; transition: 0.2s; }
+        .btn-del-notif:hover { color: #EF4444; }
+
+        /* 🚨 OCULTAR CONTROLOS NATIVOS DO MAPBOX QUE CAUSAM BUG VISUAL 🚨 */
+        .mapboxgl-ctrl-top-left, .mapboxgl-ctrl-top-right, .mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right { display: none !important; }
+        
+        /* 🚨 CORREÇÕES DOS POPUPS E MARCADORES MAPBOX 🚨 */
+        .mapboxgl-popup { z-index: 1000; }
+        .mapboxgl-popup-content { 
+            border-radius: 20px; padding: 16px; font-family: 'Inter', sans-serif; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15); width: 320px; max-width: 90vw; border: 1px solid #E2E8F0;
+        }
+        
+        .mapboxgl-popup-close-button { 
+            font-size: 24px; color: #94A3B8; padding: 6px 12px; 
+            position: absolute; right: 5px; top: 5px; z-index: 10;
+            outline: none; border: none; background: transparent; transition: 0.2s; border-radius: 50%; 
+        }
+        .mapboxgl-popup-close-button:hover { background: #F1F5F9; color: #EF4444; }
+
+        .popup-info { width: 100%; box-sizing: border-box; overflow: hidden; }
+        
+        .popup-info h3 { 
+            font-family: 'Poppins', sans-serif; margin: 0 0 10px 0; font-size: 16px; color: var(--text-dark); 
+            border-bottom: 1px solid #E2E8F0; padding-bottom: 10px; 
+            padding-right: 35px; line-height: 1.3; word-wrap: break-word; 
+        }
+        
+        .lista-itens { max-height: 240px; overflow-y: auto; margin-top: 10px; padding-right: 4px; }
+        .item-card { background: #F8FAFC; padding: 12px; border-radius: 12px; margin-bottom: 8px; border: 1px solid #E2E8F0; position: relative; }
+        
+        .item-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
+        .item-detalhes { flex: 1; min-width: 0; text-align: left; } 
+        .item-nome { font-weight: 600; font-size: 14px; color: var(--text-dark); line-height: 1.3; margin: 0; }
+        .item-preco { font-weight: 800; color: var(--brand-primary); font-size: 15px; white-space: nowrap; flex-shrink: 0; text-align: right; }
+        
+        .item-acoes { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; align-items: center; flex-wrap: wrap; }
+        .btn-voto { border: none; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: white; display: flex; align-items: center; gap: 4px; }
+        .btn-editar { background: #E2E8F0; color: var(--text-dark); border: none; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .btn-denuncia { background: transparent; border: none; font-size: 14px; cursor: pointer; color: #94A3B8; padding: 4px; }
+        
+        .badge-estrelas { 
+            background: #FFFBEB; border: 1px solid #FDE68A; padding: 6px 14px; 
+            border-radius: 20px; display: flex; align-items: center; justify-content: center; 
+            margin: 0 auto 15px auto; color: #D97706; font-weight: 700; font-size: 13px; 
+            width: max-content; max-width: 100%; gap: 6px;
+        }
+
+        .galeria-lojista { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 5px; }
+        .galeria-lojista img { width: 75px; height: 75px; object-fit: cover; border-radius: 12px; border: 2px solid var(--brand-accent); flex-shrink: 0; }
+
+        /* PERFIS */
+        body.modo-turista .btn-adicionar { display: none !important; }
+        body.modo-turista #t_level { display: none !important; }
+        body.modo-turista #saldoDisplay { display: none !important; }
+        body.modo-turista .item-acoes { display: none !important; }
+        body.modo-turista .badge-buscas { display: flex !important; }
+        body.modo-turista .btn-perguntar { display: flex !important; }
+        body.modo-turista .notif-container { display: flex !important; }
+        body.modo-turista .btn-radar { display: flex !important; }
+        body.modo-turista .btn-denuncia { display: inline-block !important; } 
+        body.modo-turista #bloqueioLoginOverlay { display: none !important; } 
+        body.modo-avaliador .notif-container { display: none !important; }
+        body.modo-avaliador .btn-perguntar { display: none !important; }
+        body.modo-avaliador .btn-pesquisa { display: none !important; } 
+        body.modo-avaliador .btn-denuncia { display: inline-block !important; }
+        body.modo-lojista #t_level { display: none !important; }
+        body.modo-lojista #saldoDisplay { display: none !important; }
+        body.modo-lojista .notif-container { display: none !important; }
+        body.modo-lojista .btn-perguntar { display: none !important; }
+        body.modo-lojista .badge-buscas { display: none !important; }
+        body.modo-lojista .btn-radar { display: none !important; }
+        body.modo-lojista .item-acoes { display: none !important; } 
+        body:not(.modo-lojista) #btnAreaLojista { display: none !important; }
+        body:not(.modo-avaliador) #btnMinhaCarteira { display: none !important; }
+
+        /* MARCADORES MAPBOX */
+        .mapboxgl-marker { pointer-events: auto !important; cursor: pointer !important; }
+        .marker-pergunta-container { width: 80px; height: 80px; background: transparent; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; pointer-events: auto; }
+        .minha-loja-container { width: 50px; height: 75px; background: transparent; display: flex; justify-content: center; align-items: center; pointer-events: auto; cursor: pointer; }
+        
+        @keyframes wanderGhost { 0% { transform: translate(0px, 0px); } 33% { transform: translate(25px, -20px); } 66% { transform: translate(-20px, 25px); } 100% { transform: translate(0px, 0px); } }
+        .ghost-anim { animation: wanderGhost 6s infinite ease-in-out; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; pointer-events: none; }
+
+        @keyframes pulsePurpleGigante { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); transform: scale(1); } 50% { box-shadow: 0 0 0 25px rgba(99, 102, 241, 0); transform: scale(1.1); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); transform: scale(1); } }
+        
+        .marker-pergunta-anim { width: 48px; height: 48px; background: var(--brand-secondary); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); animation: pulsePurpleGigante 2s infinite ease-in-out; pointer-events: none; }
+        .marker-camera-anim { width: 48px; height: 48px; background: #F97316; border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); animation: pulsePurpleGigante 2s infinite ease-in-out; pointer-events: none; }
+        .marker-foto-anim { width: 48px; height: 48px; background: #3B82F6; border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); animation: pulsePurpleGigante 2s infinite ease-in-out; pointer-events: none; }
+
+        /* Corrigido: Fundo Verde Sólido para os Preços Pesquisados */
+        .marker-dolar { background: var(--brand-primary); color: white; border-radius: 12px; padding: 6px 12px; border: 2px solid white; box-shadow: 0 8px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; font-size: 14px; white-space: nowrap; font-weight: 800; cursor: pointer; }
+        
+        .flash-resposta { background: var(--brand-primary); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 24px; border: 4px solid white; width: 50px; height: 50px; pointer-events: none; box-shadow: 0 0 20px rgba(16,185,129,0.6); }
+
+        .marker-minha-loja { width: 50px; height: 50px; background: var(--text-dark); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 24px; border: 3px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.3); position: relative; pointer-events: none; }
+        .label-minha-loja { position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%); background: var(--text-dark); color: white; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px; white-space: nowrap; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); text-transform: uppercase; letter-spacing: 1px; }
+        
+        .marker-premium { width: 40px; height: 40px; background: var(--brand-accent); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; border: 4px solid white; box-shadow: 0 10px 20px rgba(245, 158, 11, 0.4); pointer-events: auto; }
+        .marker-base { width: 28px; height: 28px; border-radius: 50%; border: 4px solid white; box-shadow: 0 8px 15px rgba(0,0,0,0.15); pointer-events: auto; }
+        
+        #btnLimparFiltro { background: #0F172A; }
+    </style>
+</head>
+<body class="modo-turista"> 
+
+    <div id="splashScreen">
+        <h1>🛡️ GringoSafe</h1>
+        <p id="t_splashSub">Preço Justo em Qualquer Lugar</p>
+    </div>
+
+    <div id="toastAviso">📡 Radar Ativado!</div>
+
+    <div id="mapa"></div>
+
+    <div class="header-island glass-island" id="topBarInfo">
+        <div class="brand-logo" id="btnAbrirMenu">
+            <span style="font-size: 22px; color: var(--brand-primary);">☰</span>
+            <span>Gringo<b style="color: var(--brand-primary);">Safe</b></span>
+        </div>
+        <div class="user-meta">
+            <span class="user-level" id="t_level" style="display: none;">⭐ Nvl 1</span>
+            <div class="balance-pill" id="saldoDisplay">R$ 0,00</div>
+            <div class="notif-container" id="btnAbrirNotificacoes">
+                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <span class="badge-notificacao" id="badgeNotificacoes"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="alfinete-alvo" id="alfineteAlvo"></div>
+    <div class="alfinete-central" id="alfineteCentral">
+        <svg width="45" height="45" viewBox="0 0 24 24" fill="#10B981"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+    </div>
+
+    <div id="telaPerfil" style="display: none;">
+        <div class="lang-selector-inicial">
+            <div id="btnLangPtInicio">🇧🇷 PT</div>
+            <div id="btnLangEnInicio">🇺🇸 EN</div>
+            <div id="btnLangEsInicio">🇪🇸 ES</div>
+        </div>
+        <h2 id="t_roleTitle">Como quer usar a App?</h2>
+        <button class="btn-perfil" id="btnPerfilTurista">
+            📸 <strong id="t_roleTourist">Sou Turista</strong>
+            <span id="t_roleTouristSub">Quero pesquisar locais seguros e perguntar preços.</span>
+        </button>
+        <button class="btn-perfil avaliador" id="btnPerfilAvaliador">
+            ⭐ <strong id="t_roleLocal">Sou Avaliador Local</strong>
+            <span id="t_roleLocalSub">Quero registar preços e responder a turistas.</span>
+        </button>
+        <button class="btn-perfil lojista" id="btnPerfilLojista">
+            🏢 <strong id="t_roleLojista">Sou Lojista</strong>
+            <span id="t_roleLojistaSub">Quero registar o meu negócio e atrair turistas.</span>
+        </button>
+    </div>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+    
+    <div class="side-menu" id="sideMenu">
+        <div class="user-card">
+            <div class="user-info">
+                <div class="user-avatar" id="menuAvatar">👤</div>
+                <span id="menuNome">Visitante</span>
+            </div>
+            <button class="btn-google" id="btnLoginGoogleMenu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                <span id="t_btnLogin">Entrar com Google</span>
+            </button>
+            <button class="btn-sair" id="btnLogout" style="display: none;"><span id="t_btnLogout">Sair da Conta</span></button>
+        </div>
+        <div class="menu-item" id="btnMinhaCarteira"><span id="t_menuWallet">💰 Minha Carteira</span></div>
+        <div class="menu-item" id="btnAreaLojista"><span id="t_menuLojista">🏢 Área do Lojista</span></div>
+        <div class="menu-item" id="btnCarregarRoteiro"><span id="t_menuRoute">🗺️ Ligar Roteiro Premium</span></div>
+        <div class="menu-item" id="btnLangToggle"><span id="t_menuLang">🌐 Idiomas</span><span>▼</span></div>
+        <div class="sub-menu" id="langSubMenu">
+            <div class="sub-menu-item ativo-option" id="lang_pt"><span>🇧🇷 Português</span><span class="check">✔️</span></div>
+            <div class="sub-menu-item" id="lang_en"><span>🇺🇸 English</span><span class="check" style="display:none;">✔️</span></div>
+            <div class="sub-menu-item" id="lang_es"><span>🇪🇸 Español</span><span class="check" style="display:none;">✔️</span></div>
+        </div>
+        <div class="menu-item" id="btnCurrencyToggle"><span>💵 Moeda (Câmbio)</span><span>▼</span></div>
+        <div class="sub-menu" id="currencySubMenu">
+            <div class="sub-menu-item ativo-option" id="cur_BRL"><span>🇧🇷 BRL (Real)</span><span class="check">✔️</span></div>
+            <div class="sub-menu-item" id="cur_USD"><span>🇺🇸 USD (Dólar)</span><span class="check" style="display:none;">✔️</span></div>
+            <div class="sub-menu-item" id="cur_EUR"><span>🇪🇺 EUR (Euro)</span><span class="check" style="display:none;">✔️</span></div>
+            <div class="sub-menu-item" id="cur_ARS"><span>🇦🇷 ARS (Peso)</span><span class="check" style="display:none;">✔️</span></div>
+        </div>
+        <div class="menu-item" id="btnTrocarPerfil"><span id="t_menuChangeRole">👤 Trocar de Perfil</span></div>
+    </div>
+
+    <div class="bloqueio-login" id="bloqueioLoginOverlay" style="display: none;">
+        <div style="font-size: 50px; margin-bottom: 10px;">🔒</div>
+        <h3 id="t_lockTitle">Mapa Protegido</h3>
+        <p id="t_lockSub">Faça login gratuitamente para visualizar preços e locais.</p>
+        <button class="btn-google" id="btnLoginGoogleOverlay">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white" style="margin-right: 8px;"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            <span id="t_lockBtn">Entrar com Google</span>
+        </button>
+    </div>
+
+    <button id="btnLimparFiltro" style="display:none; position:fixed; top:85px; left:50%; transform:translateX(-50%); z-index:4000; background:var(--text-dark); color:white; border:none; padding:10px 20px; border-radius:20px; font-weight:bold; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.15);">❌ Limpar Mapa</button>
+    
+    <input type="file" id="inputCamNormal" accept="image/*" capture="environment" style="display: none;">
+    <input type="file" id="inputGalNormal" accept="image/*" style="display: none;">
+    <input type="file" id="inputCamPergunta" accept="image/*" capture="environment" style="display: none;">
+    <input type="file" id="inputGalPergunta" accept="image/*" style="display: none;">
+    <input type="file" id="inputCamExtra" accept="image/*" capture="environment" style="display: none;">
+    <input type="file" id="inputGalExtra" accept="image/*" style="display: none;">
+    <input type="file" id="inputCamLojista" accept="image/*" capture="environment" style="display: none;">
+    <input type="file" id="inputGalLojista" accept="image/*" style="display: none;">
+    <input type="file" id="inputDocLojista" accept="image/*" style="display: none;">
+
+    <div class="action-dock glass-island" id="bottomActions">
+        <button class="btn-dock btn-util btn-pesquisa" id="btnAbrirBusca">
+            <span class="badge-buscas" id="badgeBuscas">3</span>
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none" style="width:24px;height:24px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+        <button class="btn-dock btn-perguntar" id="btnPerguntar">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 28px; height: 28px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+        </button>
+        <button class="btn-dock btn-dock-main btn-adicionar" id="btnAdicionar">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" style="width:34px;height:34px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+    </div>
+    
+    <button class="btn-mira" id="btnMira"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg></button>
+
+    <button class="btn-radar" id="btnRadar">
+        <span style="font-size:22px; line-height:1;">📡</span>
+        <span id="t_btnRadarText">Radar</span>
+    </button>
+
+    <div class="posicionamento-ui glass-island" id="posicionamentoUI">
+        <div class="posicionamento-aviso" id="t_posHint">📍 Aponte para o local exato no mapa</div>
+        <div class="posicionamento-botoes">
+            <button class="btn-cancel-pos" id="btnCancelarPos"><span id="t_btnPosCancel">Cancelar</span></button>
+            <button class="btn-confirm-pos" id="btnConfirmarPos"><span id="t_btnPosConfirm">Confirmar Local</span></button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalCarteira">
+        <div class="modal-sheet">
+            <h3 style="color:var(--brand-primary); margin-bottom:15px;" id="t_walletTitle">Saque via PIX</h3>
+            <div style="background:#ECFDF5; padding:24px; border-radius:20px; margin-bottom:15px; border: 1px solid #D1FAE5;">
+                <span style="font-size:14px; color:var(--text-muted); font-weight: 500;">Saldo Disponível</span><br>
+                <strong style="font-size:36px; color:var(--brand-primary); font-family: 'Poppins', sans-serif;" id="saldoCarteiraDisplay">R$ 0,00</strong>
+            </div>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px; font-weight:500;" id="t_walletSub">Saque mínimo de R$ 20,00.</p>
+            <input type="text" id="inputChavePix" class="input-form" placeholder="Sua Chave PIX (CPF, E-mail, Celular)">
+            <button class="btn-salvar" id="btnSacarPix" style="background:var(--brand-primary);"><span id="t_btnWithdraw">Solicitar Saque PIX</span></button>
+            <button class="btn-cancelar" id="btnFecharCarteira">Cancelar</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalFormLojista">
+        <div class="modal-sheet">
+            <h3 style="color:var(--brand-accent); margin-bottom:15px;">🏢 Registar o Meu Negócio</h3>
+            <input type="text" id="nomeLojistaInput" class="input-form" placeholder="Nome Oficial do Estabelecimento">
+            <select id="categoriaLojista" class="input-form">
+                <option value="Restaurante">🍽️ Restaurante</option>
+                <option value="Bar">🍻 Bar / Pub</option>
+                <option value="Pousada">🛏️ Pousada / Hotel</option>
+                <option value="Quiosque">🏖️ Quiosque de Praia</option>
+                <option value="Turismo">🚤 Agência de Passeios / Turismo</option>
+            </select>
+            <div style="font-size:13px; color:var(--text-muted); margin:15px 0 5px 0; font-weight:600;">Adicione até 3 fotos para atrair turistas:</div>
+            <div class="linha-botoes-foto">
+                <button class="btn-laranja" id="btnCamLojista" style="flex: 1;">📸 Câmara</button>
+                <button class="btn-laranja" id="btnGalLojista" style="flex: 1; background: #F1F5F9; color: var(--text-dark);">🖼️ Galeria</button>
+            </div>
+            <div id="previewFotosLojista" class="galeria-lojista"></div>
+            <button class="btn-salvar" id="btnSalvarLojista" style="background:var(--brand-accent);">Guardar o Meu Negócio no Mapa</button>
+            <button class="btn-cancelar" id="btnCancelarLojista">Cancelar</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalVerificacaoLojista">
+        <div class="modal-sheet">
+            <h3 style="color:var(--brand-accent); margin-bottom:10px;">🛡️ Verificação do Negócio</h3>
+            <p style="font-size:14px; color:var(--text-muted); margin-bottom:15px; font-weight:500;">Para proteger o seu negocio contra edições externas, precisamos de uma foto do seu <strong>Alvará de Funcionamento</strong> ou <strong>Cartão CNPJ</strong>.</p>
+            <button class="btn-add-foto" id="btnUploadDocLojista">📸 Enviar Documento</button>
+            <img id="previewDocLojista" class="imagem-preview" style="display:none; width:100%;">
+            <button class="btn-salvar" id="btnEnviarVerificacao" style="background:var(--brand-accent); display:none; margin-top:15px;">Avançar para Destaque Premium</button>
+            <button class="btn-cancelar" id="btnFecharVerificacao" style="margin-top:10px;">Cancelar</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalAvaliacoes">
+        <div class="modal-sheet">
+            <h3 style="color:var(--brand-accent); margin-bottom:5px;">Avaliações ⭐</h3>
+            <h4 id="revNomeLocal" style="margin-top:0; color:var(--text-dark); font-family: 'Inter', sans-serif;">Nome Local</h4>
+            <div id="listaReviews" style="max-height:30vh; overflow-y:auto; margin-bottom:15px; font-size:14px; text-align:left;"></div>
+            
+            <div style="border-top:1px solid #E2E8F0; padding-top:15px;">
+                <select id="notaReview" class="input-form" style="margin-bottom:10px;">
+                    <option value="5">⭐⭐⭐⭐⭐ Excelente</option>
+                    <option value="4">⭐⭐⭐⭐ Muito Bom</option>
+                    <option value="3">⭐⭐⭐ Bom</option>
+                    <option value="2">⭐⭐ Ruim</option>
+                    <option value="1">⭐ Péssimo</option>
+                </select>
+                <textarea id="textoReview" class="input-form" placeholder="Deixe o seu comentário..." style="height:80px; resize:none;"></textarea>
+                <input type="hidden" id="localAlvoReview">
+                <button class="btn-salvar" id="btnEnviarReview" style="background:var(--text-dark); margin-top:10px;">Enviar Avaliação</button>
+            </div>
+            <button class="btn-cancelar" id="btnFecharAvaliacoes">Fechar</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalLojista">
+        <div class="modal-sheet">
+            <h3>Destacar o seu Negócio 🌟</h3>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px; font-weight:500;">
+                Atraia mais turistas. O seu local ficará com um pino dourado e ganhará a prioridade absoluta nas pesquisas da região.
+            </p>
+
+            <div class="bento-card" style="border: 2px solid var(--brand-accent); background: #FFFBEB; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                    <span style="font-weight: 700; color: var(--text-dark); font-size: 16px;">Plano Ouro Mensal</span>
+                    <span style="font-size:11px; background:#EF4444; color:white; padding:4px 10px; border-radius:12px; font-weight:800; white-space: nowrap;">🔥 OFERTA PIONEIRO</span>
+                </div>
+                <div style="display:flex; flex-direction:column; text-align:right;">
+                    <span style="font-size:13px; color:#94A3B8; text-decoration:line-through; font-weight:600;">De R$ 99,90</span>
+                    <span style="color:var(--brand-accent); font-size: 32px; font-weight: 800; font-family:'Poppins', sans-serif;">R$ 19,99<span style="font-size:14px; font-weight: 600; font-family:'Inter', sans-serif;">/mês</span></span>
+                </div>
+            </div>
+
+            <button id="btnTesteGratis" style="background:var(--brand-accent); font-size:16px; width: 100%; padding: 16px; color: white; border: none; border-radius: 16px; font-weight: 700; margin-bottom: 12px; cursor: pointer; display: none; box-shadow: 0 10px 20px rgba(245, 158, 11, 0.2);" onclick="window.ativarTesteGratis()">
+                🎁 Começar 30 Dias Grátis
+            </button>
+
+            <button class="btn-salvar" style="background:var(--text-dark); margin-bottom: 10px;" onclick="document.getElementById('modalLojista').style.display='none'; window.location.href='https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=de968d42bc404eee9a7df4fb1870f153';">
+                Assinar Plano Ouro
+            </button>
+            
+            <button class="btn-cancelar" onclick="document.getElementById('modalLojista').style.display='none';">
+                Talvez depois
+            </button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalAssinatura">
+        <div class="modal-sheet">
+            <div style="font-size: 36px; margin-bottom: 15px;">🛡️</div>
+            <h3>GringoSafe Pass</h3>
+            <p style="font-size: 15px; color: var(--text-muted); margin-bottom: 25px; font-weight:500;">
+                Unlock unlimited safe searches and real-time price guides for 7 days.
+            </p>
+
+            <div class="bento-card" style="border: 2px solid var(--text-dark); background: #F8FAFC; margin-bottom: 20px; text-align: left;">
+                <span style="font-weight: 700; color: var(--text-dark); font-size: 16px;">7-Day Full Access</span>
+                <div style="display:flex; flex-direction:column; text-align:right; margin-top: 10px;">
+                    <span style="color:var(--text-dark); font-size: 32px; font-weight: 800; font-family:'Poppins', sans-serif;">$ 4.99</span>
+                    <span style="font-size:13px; color:var(--text-muted); font-weight:600;">One-time payment</span>
+                </div>
+            </div>
+
+            <button class="btn-salvar" style="background:var(--text-dark); margin-bottom: 10px;" onclick="document.getElementById('modalAssinatura').style.display='none'; window.location.href='https://buy.stripe.com/test_00w4gyeLNe5se8o5s4dIA00';">
+                Pay with Apple/Google Pay
+            </button>
+            
+            <button class="btn-cancelar" onclick="document.getElementById('modalAssinatura').style.display='none';">
+                Maybe later
+            </button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalNotificacoes">
+        <div class="modal-sheet" style="max-height: 80vh; width: 95%; max-width: 420px; padding: 24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <h3 id="t_notifTitle" style="color:var(--text-dark); margin:0;">🔔 Notificações</h3>
+                <div style="display:flex; gap:8px;">
+                    <button id="btnNotifLidas" style="font-size:12px; padding:8px 12px; border-radius:10px; border:none; background:#ECFDF5; color:#059669; font-weight:700; cursor:pointer;">✔️ Lidas</button>
+                    <button id="btnNotifApagarTodas" style="font-size:12px; padding:8px 12px; border-radius:10px; border:none; background:#FEF2F2; color:#DC2626; font-weight:700; cursor:pointer;">🗑️ Todas</button>
+                </div>
+            </div>
+            <div id="listaNotificacoes" style="max-height: 50vh; overflow-y: auto; padding-right:5px;"></div>
+            <button class="btn-cancelar" id="btnFecharNotificacoes" style="margin-top:20px;"><span>Fechar</span></button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalBusca">
+        <div class="modal-sheet" style="max-height: 85vh;">
+            <h3 id="t_searchTitle">Procurar Local ou Produto</h3>
+            <input type="text" id="inputBusca" class="input-form" placeholder="Ex: Quiosque, Água...">
+            <div class="resultados-busca" id="resultadosBusca"></div>
+            <button class="btn-cancelar" id="btnFecharBusca" style="margin-top:20px;"><span id="t_searchClose">Fechar</span></button>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="modalEditar">
+        <div class="modal-sheet">
+            <h3 style="color:var(--brand-accent);">✏️ Atualizar Preço</h3>
+            <p style="font-size: 15px; color: var(--text-muted); margin-bottom: 20px; font-weight:500;">Item: <strong id="editItemNome" style="color:var(--text-dark);"></strong></p>
+            <input type="number" id="editItemPreco" class="input-form" placeholder="Novo preço real">
+            <input type="hidden" id="editItemId">
+            <button class="btn-salvar" id="btnSalvarEdicao" style="background:var(--brand-primary);">Guardar e Resetar Votos</button>
+            <button class="btn-cancelar" id="btnCancelarEdicao">Cancelar</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalForm">
+        <div class="modal-sheet">
+            <h3 id="t_formTitle">Novo Registo</h3>
+            <div class="linha-botoes-foto">
+                <button class="btn-add-foto" id="btnCamNormal" style="flex: 1;"><span id="t_btnAddCam">📸 Câmara</span></button>
+                <button class="btn-add-foto" id="btnGalNormal" style="flex: 1;"><span id="t_btnAddGal">🖼️ Galeria</span></button>
+            </div>
+            <img id="imagemPreview" class="imagem-preview" alt="Foto">
+            <p id="iaStatus" class="ia-status">🤖 IA...</p>
+            <select id="selectLocal" class="input-form"><option value="NEW" id="t_optNewPlace">➕ Adicionar Novo Local</option></select>
+            <input type="text" id="nomeLocalInput" class="input-form" placeholder="Nome do Novo Local">
+            <input type="text" id="nomeProduto" class="input-form" placeholder="O que é?">
+            <input type="number" id="precoProduto" class="input-form" placeholder="Preço Cobrado">
+            <select id="categoriaProduto" class="input-form">
+                <option value="Bebida" id="t_catDrink">Bebida</option><option value="Comida" id="t_catFood">Comida</option><option value="Serviço" id="t_catService">Serviço</option><option value="Ingresso" id="t_catTicket">Ingresso</option>
+            </select>
+            <button class="btn-salvar" id="btnSalvar" style="background:var(--brand-primary);"><span id="t_btnSave">Guardar (+R$ 0,25)</span></button>
+            <button class="btn-cancelar" id="btnCancelar"><span id="t_btnCancel">Cancelar</span></button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalPergunta">
+        <div class="modal-content modal-sheet">
+            <h3 id="t_askTitle" style="color:var(--brand-secondary);">O que quer comprar?</h3>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px; font-weight:500;" id="t_askSub">A comunidade local dirá se o preço é justo.</p>
+            <div class="linha-botoes-foto">
+                <button class="btn-add-foto" id="btnCamPergunta" style="border-color:#C7D2FE; color:var(--brand-secondary); flex: 1; background:#EEF2FF;"><span id="t_btnAskCam">📸 Câmara</span></button>
+                <button class="btn-add-foto" id="btnGalPergunta" style="border-color:#C7D2FE; color:var(--brand-secondary); flex: 1; background:#EEF2FF;"><span id="t_btnAskGal">🖼️ Galeria</span></button>
+            </div>
+            <img id="imagemPreviewPergunta" class="imagem-preview" alt="Foto">
+            <p id="iaStatusPergunta" class="ia-status">🤖 IA...</p>
+            
+            <input type="text" id="nomeProdutoPergunta" class="input-form" placeholder="Nome do Produto (Ex: Cadeira)">
+            <div id="estimativaIA" class="estimativa-ia-box"></div>
+
+            <select id="tipoLocalPergunta" class="input-form">
+                <option value="Fixo" id="t_optFixo">🏪 Estabelecimento Fixo</option>
+                <option value="Ambulante" id="t_optAmbulante">🚶 Vendedor Ambulante</option>
+            </select>
+            <input type="text" id="nomeLocalPergunta" class="input-form" placeholder="Nome do Local ou Vendedor">
+            
+            <button class="btn-roxo" id="btnEnviarPergunta"><span id="t_btnSendAsk">Enviar Pergunta</span></button>
+            <button class="btn-cancelar" id="btnCancelarPergunta"><span id="t_btnCancelAsk">Cancelar</span></button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalResposta">
+        <div class="modal-sheet">
+            <h3 style="color:var(--brand-primary);" id="t_ansTitle">Responder ao Turista</h3>
+            <div class="bento-card" style="margin: 15px 0;">
+                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 8px; text-align: left; font-weight:500;">Local: <strong id="respLocalNome" style="color:var(--text-dark);"></strong> <span id="respLocalTipo" style="font-size: 12px; color:var(--text-muted);"></span></p>
+                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 0; text-align: left; font-weight:500;">Item: <strong id="respItemNome" style="color:var(--text-dark); font-size:16px;"></strong></p>
+            </div>
+            <input type="number" id="precoProdutoResposta" class="input-form" placeholder="Qual o preço real/justo?">
+            <input type="hidden" id="idPerguntaAtual">
+            <input type="hidden" id="uidAutorPergunta"> 
+            <button class="btn-salvar" id="btnEnviarResposta" style="background:var(--brand-primary);"><span id="t_btnSendAns">Responder (+R$ 1,00)</span></button>
+            <button class="btn-cancelar" id="btnCancelarResposta"><span id="t_btnCancelAns">Cancelar</span></button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, getDoc, setDoc, increment, arrayUnion, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZmFocGxheTE1IiwiYSI6ImNtbXk2Z3UzMDB2YnYyb3BsMTA2ZzV2NmkifQ.Tvdrpof80mAktc3Z3dB3cw';
+        const firebaseConfig = { apiKey: "AIzaSyDFsKM3nO9kMqOfqNkUL5rW3ukS4yzzTzs", authDomain: "gringosafe-1f434.firebaseapp.com", projectId: "gringosafe-1f434", storageBucket: "gringosafe-1f434.firebasestorage.app", messagingSenderId: "949745647794", appId: "1:949745647794:web:e81698e40bd8d7aa5d09ab" };
+        const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app); const provider = new GoogleAuthProvider();
+
+        window.mapa = new mapboxgl.Map({
+            container: 'mapa',
+            style: 'mapbox://styles/mapbox/streets-v12', 
+            center: [-43.2302, -22.9121], 
+            zoom: 15.5
+        });
+
+        const getEl = (id) => document.getElementById(id); const setTxt = (id, txt) => { const e = getEl(id); if(e) e.innerText = txt; }; const setPlc = (id, txt) => { const e = getEl(id); if(e) e.placeholder = txt; };
+        const bindClick = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('click', fn); };
+        const bindChange = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('change', fn); };
+        const bindInput = (id, fn) => { const el = getEl(id); if(el) el.addEventListener('input', fn); };
+
+        function calcularDistancia(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; 
+            const φ1 = lat1 * Math.PI/180; const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180; const Δλ = (lon2-lon1) * Math.PI/180;
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c; 
+        }
+
+        let rotaAtiva = false; window.marcadoresAtuais = [];
+        let myLat = null; let myLng = null;
+        
+        const geolocate = new mapboxgl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: true, showUserHeading: true });
+        window.mapa.addControl(geolocate);
+        
+        let timeoutDesenho = null;
+        window.agendarDesenho = function() { if(timeoutDesenho) clearTimeout(timeoutDesenho); timeoutDesenho = setTimeout(desenharPinos, 300); };
+
+        window.mapa.on('load', () => { geolocate.trigger(); window.agendarDesenho(); });
+        geolocate.on('geolocate', (e) => { myLat = e.coords.latitude; myLng = e.coords.longitude; });
+        bindClick('btnMira', () => { geolocate.trigger(); if(myLat && myLng) { window.mapa.flyTo({center: [myLng, myLat], zoom: 17, duration: 1500}); } });
+
+        window.addEventListener('load', () => { setTimeout(() => { const splash = getEl('splashScreen'); if(splash) { splash.style.opacity = '0'; setTimeout(() => { splash.style.display = 'none'; atualizarPrecosPaywall(); }, 600); } }, 1000); });
+
+        window.mostrarToast = function(msg, cor = '#0F172A') { const toast = getEl('toastAviso'); if(!toast) return; toast.innerText = msg; toast.style.background = cor; toast.style.display = 'block'; setTimeout(() => { toast.style.display = 'none'; }, 3500); };
+
+        let estadoApp = { moeda: 'BRL', idioma: 'pt', perfil: 'turista', buscasRestantes: 3, planoPrecoUSD: 4.99, saldo: 0.00, usuario: null, dadosHospedados: {}, mediaPrecos: {}, contagemPrecos: {}, perguntasAbertas: {}, notificacoes: [], radarAtivo: false, isLojistaPremium: false, nivelAvaliador: 1, avaliacoes: {}, filtroProduto: null, fimTrial: null };
+        const taxasCambio = { 'BRL': { sim: 'R$', taxa: 1 }, 'USD': { sim: 'US$', taxa: 0.20 }, 'EUR': { sim: '€', taxa: 0.18 }, 'ARS': { sim: '$', taxa: 170.0 } };
+        const basePrecosIA = { 'água': { min: 4, max: 7 }, 'agua': { min: 4, max: 7 }, 'water': { min: 4, max: 7 }, 'cerveja': { min: 8, max: 15 }, 'beer': { min: 8, max: 15 }, 'cadeira': { min: 15, max: 30 }, 'chair': { min: 15, max: 30 }, 'silla': { min: 15, max: 30 }, 'guarda-sol': { min: 20, max: 40 }, 'umbrella': { min: 20, max: 40 }, 'barraca': { min: 20, max: 40 }, 'coco': { min: 8, max: 12 }, 'coconut': { min: 8, max: 12 }, 'caipirinha': { min: 15, max: 30 }, 'espetinho': { min: 30, max: 60 }, 'porção': { min: 30, max: 60 }, 'skewer': { min: 30, max: 60 } };
+
+        const dicionario = {
+            pt: { splashSub: "Preço Justo em Qualquer Lugar", menuRoute: "🗺️ Ligar Roteiro Premium", menuRouteOff: "❌ Desligar Roteiro", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Trocar de Perfil", menuLojista: "🏢 Área do Lojista", menuWallet: "💰 Minha Carteira", walletTitle: "Saque via PIX", walletSub: "Saque mínimo de R$ 20,00.", btnWithdraw: "Solicitar Saque PIX", level: "⭐ Nvl 1", formTitle: "Novo Registo", optNewPlace: "➕ Adicionar Novo Local", placeNewLocal: "Nome do Novo Local", placeName: "Produto (Ex: Água)", placePrice: "Preço", catDrink: "Bebida", catFood: "Comida", catService: "Serviço", catTicket: "Ingresso", btnSave: "Guardar", btnCancel: "Cancelar", alertaSalvo: "Guardado com sucesso!", alertaFalta: "Preencha todos os campos!", alertaDuplicado: "Este produto já está registado!", statusGreen: "✅ Confiável", statusYellow: "⏳ Em Análise", statusRed: "🚨 Alerta de Fraude", btnYes: "👍", btnNo: "👎", searchTitle: "Procurar Local ou Produto", searchPlaceholder: "Ex: Quiosque, Água...", searchClose: "Fechar", roleTitle: "Como quer usar a App?", roleTourist: "Sou Turista", roleTouristSub: "Pesquisar locais seguros e perguntar preços.", roleLocal: "Sou Avaliador Local", roleLocalSub: "Registar preços e responder a turistas.", roleLojista: "Sou Lojista", roleLojistaSub: "Quero registar o meu negócio e atrair turistas.", btnAddCam: "📸 Câmara", btnAddGal: "🖼️ Galeria", btnLogin: "Entrar com Google", btnLogout: "Sair da Conta", pwTitle: "Acesso Premium", pwSub: "Pesquisas ilimitadas e Roteiros Seguros.", pwPlan1: "Passe de 7 Dias", pwPlan2: "Passe de 15 Dias", pwPlan3: "Passe de 30 Dias", pwCancel: "Talvez depois", badgeMedia: "⚖️ Preço na Média", badgeCaro: "📈 Acima da Média", badgeBom: "✨ Melhor Preço", askTitle: "O que quer comprar?", askSub: "A comunidade local dirá se o preço é justo.", btnAskCam: "📸 Câmara", btnAskGal: "🖼️ Galeria", btnSendAsk: "Enviar Pergunta", btnCancelAsk: "Cancelar", ansTitle: "Responder ao Turista", btnSendAns: "Responder", optFixo: "🏪 Estabelecimento Fixo", optAmbulante: "🚶 Vendedor Ambulante", btnCancelAns: "Cancelar", placeNewLocalAsk: "Nome do Local ou Vendedor", alertReqLogin: "⚠️ Inicie sessão no menu (☰) para usar esta função!", alertVoted: "🚫 Já votou neste item!", lockTitle: "Mapa Protegido", lockSub: "Inicie sessão gratuitamente para visualizar preços e locais.", lockBtn: "Entrar com Google", notifTitle: "🔔 Notificações", notifEmpty: "Nenhuma notificação nova.", posHint: "📍 Aponte para a barraca (Dica: Faça de uma distância segura)", btnPosCancel: "Cancelar", btnPosConfirm: "Confirmar Local", btnReqFoto: "📷 Pedir Foto ao Turista", notifReqFoto: "Um Avaliador pediu uma foto do item para dar o preço exato. 📍 Clique aqui para enviar.", radarBtn: "Radar", radarActive: "Radar ligado! Os locais estão visíveis.", radarCool: "O radar arrefeceu. Os locais não premium foram ocultados.", makePremium: "⭐ Destacar O Meu Negócio", lojistaTitle: "Destaque o seu Negócio", lojistaSub: "Atraia turistas 24h por dia. Pinos Premium nunca somem do mapa, mesmo sem radar!", kycAlert: "🛡️ Segurança KYC: Apenas Avaliadores Nível 5+ (Verificados com Documento) podem alterar preços de Estabelecimentos Premium Oficiais!" },
+            en: { splashSub: "Fair Price Anywhere", menuRoute: "🗺️ Turn On Premium Route", menuRouteOff: "❌ Turn Off Route", menuLang: "🌐 Languages", menuChangeRole: "👤 Change Role", menuLojista: "🏢 Store Owner Area", menuWallet: "💰 My Wallet", walletTitle: "Withdraw Funds", walletSub: "Minimum withdrawal: $ 20.00.", btnWithdraw: "Request Withdrawal", level: "⭐ Lvl 1", formTitle: "New Record", optNewPlace: "➕ Add New Place", placeNewLocal: "New Place Name", placeName: "Product (Ex: Water)", placePrice: "Price", catDrink: "Drink", catFood: "Food", catService: "Service", catTicket: "Ticket", btnSave: "Save", btnCancel: "Cancel", alertaSalvo: "Saved successfully!", alertaFalta: "Fill in all fields!", alertaDuplicado: "Product already exists!", statusGreen: "✅ Trusted", statusYellow: "⏳ Under Review", statusRed: "🚨 Scam Alert", btnYes: "👍", btnNo: "👎", searchTitle: "Search Place or Product", searchPlaceholder: "Ex: Kiosk, Water...", searchClose: "Close", roleTitle: "How do you want to use the App?", roleTourist: "I'm a Tourist", roleTouristSub: "Search safe places and ask prices.", roleLocal: "I'm a Local Evaluator", roleLocalSub: "Register prices and answer tourists.", roleLojista: "I'm a Store Owner", roleLojistaSub: "Register my business and attract tourists.", btnAddCam: "📸 Camera", btnAddGal: "🖼️ Gallery", btnLogin: "Sign in with Google", btnLogout: "Sign Out", pwTitle: "Premium Access", pwSub: "Unlimited searches and Safe Routes.", pwPlan1: "7-Day Pass", pwPlan2: "15-Day Pass", pwPlan3: "30-Day Pass", pwCancel: "Maybe later", badgeMedia: "⚖️ Average Price", badgeCaro: "📈 Above Average", badgeBom: "✨ Best Price", askTitle: "What do you want to buy?", askSub: "The local community will tell you the fair price.", btnAskCam: "📸 Camera", btnAskGal: "🖼️ Gallery", btnSendAsk: "Send Question", btnCancelAsk: "Cancel", ansTitle: "Answer Tourist", btnSendAns: "Answer", optFixo: "🏪 Fixed Establishment", optAmbulante: "🚶 Mobile Vendor", btnCancelAns: "Cancel", placeNewLocalAsk: "Location or Vendor Name", alertReqLogin: "⚠️ Please login in the menu (☰) to use this feature!", alertVoted: "🚫 You already voted on this item!", lockTitle: "Protected Map", lockSub: "Log in for free to view prices and places.", lockBtn: "Sign in with Google", notifTitle: "🔔 Notifications", notifEmpty: "No new notifications.", posHint: "📍 Point to the vendor (Tip: Do it from a safe distance)", btnPosCancel: "Cancel", btnPosConfirm: "Confirm Location", btnReqFoto: "📷 Request Photo", notifReqFoto: "An Evaluator requested a photo to give the exact price. 📍 Click here to send.", radarBtn: "Radar", radarActive: "Radar active! Places are visible.", radarCool: "Radar cooled down. Non-premium places hidden.", makePremium: "⭐ Highlight My Business", lojistaTitle: "Highlight your Business", lojistaSub: "Attract tourists 24/7. Premium Pins never disappear!", kycAlert: "🛡️ KYC Security: Only Level 5+ Evaluators (ID Verified) can change prices of Official Premium Stores!" },
+            es: { splashSub: "Precio Justo en Cualquier Lugar", menuRoute: "🗺️ Activar Ruta Premium", menuRouteOff: "❌ Apagar Ruta", menuLang: "🌐 Idiomas", menuChangeRole: "👤 Cambiar Perfil", menuLojista: "🏢 Área del Comerciante", menuWallet: "💰 Mi Billetera", walletTitle: "Retiro de Fondos", walletSub: "Retiro mínimo: $ 20.00.", btnWithdraw: "Solicitar Retiro", level: "⭐ Nvl 1", formTitle: "Nuevo Registro", optNewPlace: "➕ Añadir Nuevo Lugar", placeNewLocal: "Nombre del Nuevo Lugar", placeName: "Producto (Ej: Agua)", placePrice: "Precio", catDrink: "Bebida", catFood: "Comida", catService: "Servicio", catTicket: "Entrada", btnSave: "Guardar", btnCancel: "Cancelar", alertaSalvo: "¡Guardado con éxito!", alertaFalta: "¡Completa todos los campos!", alertaDuplicado: "¡Producto ya existe!", statusGreen: "✅ Confiable", statusYellow: "⏳ En Revisión", statusRed: "🚨 Alerta de Estafa", btnYes: "👍", btnNo: "👎", searchTitle: "Buscar Lugar o Producto", searchPlaceholder: "Ej: Kiosco, Agua...", searchClose: "Cerrar", roleTitle: "¿Cómo quieres usar la App?", roleTourist: "Soy Turista", roleTouristSub: "Buscar lugares seguros y preguntar precios.", roleLocal: "Soy Evaluador Local", roleLocalSub: "Registrar precios y responder turistas.", roleLojista: "Soy Comerciante", roleLojistaSub: "Registrar mi negocio y atraer turistas.", btnAddCam: "📸 Cámara", btnAddGal: "🖼️ Galería", btnLogin: "Entrar con Google", btnLogout: "Cerrar Sesión", pwTitle: "Acceso Premium", pwSub: "Búsquedas ilimitadas y Rutas Seguras.", pwPlan1: "Pase de 7 Días", pwPlan2: "Pase de 15 Días", pwPlan3: "Pase de 30 Días", pwCancel: "Quizás después", badgeMedia: "⚖️ Precio Promedio", badgeCaro: "📈 Por Encima de Media", badgeBom: "✨ Mejor Precio", askTitle: "¿Qué quieres comprar?", askSub: "La comunidad local te dirá el precio justo.", btnAskCam: "📸 Cámara", btnAskGal: "🖼️ Galería", btnSendAsk: "Enviar Pregunta", btnCancelAsk: "Cancelar", ansTitle: "Responder al Turista", btnSendAns: "Responder", optFixo: "🏪 Establecimiento Fijo", optAmbulante: "🚶 Vendedor Ambulante", btnCancelAns: "Cancelar", placeNewLocalAsk: "Nombre del Lugar o Vendedor", alertReqLogin: "⚠️ ¡Inicia sesión en el menú (☰) para usar esta función!", alertVoted: "🚫 ¡Ya votaste por este artículo!", lockTitle: "Mapa Protegido", lockSub: "Inicia sesión gratis para ver precios y lugares.", lockBtn: "Entrar con Google", notifTitle: "🔔 Notificaciones", notifEmpty: "No hay notificaciones nuevas.", posHint: "📍 Apunta al vendedor (Consejo: Hazlo desde una distancia segura)", btnPosCancel: "Cancelar", btnPosConfirm: "Confirmar Lugar", btnReqFoto: "📷 Pedir Foto", notifReqFoto: "Un Evaluador Local pidió una foto para dar el precio exacto. 📍 Clic para enviar.", radarBtn: "Radar", radarActive: "Radar encendido! Lugares visibles.", radarCool: "Radar apagado. Lugares ocultos.", makePremium: "⭐ Destacar Mi Negocio", lojistaTitle: "Destaca tu Negocio", lojistaSub: "Atrae turistas 24/7. ¡Los pines premium nunca desaparecen!", kycAlert: "🛡️ Seguridad KYC: ¡Solo Evaluadores de Nivel 5+ (Identificación Verificada) pueden cambiar los precios de las Tiendas Premium!" }
+        };
+
+        function aplicarIdioma(lang) {
+            estadoApp.idioma = lang; const t = dicionario[lang];
+            document.querySelectorAll('.sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; });
+            const opt = getEl('lang_' + lang); if(opt) { opt.classList.add('ativo-option'); if(opt.querySelector('.check')) opt.querySelector('.check').style.display = 'inline'; }
+            setTxt('t_splashSub', t.splashSub); setTxt('t_menuRoute', rotaAtiva ? t.menuRouteOff : t.menuRoute); 
+            setTxt('t_menuLang', t.menuLang); setTxt('t_menuChangeRole', t.menuChangeRole); setTxt('t_level', t.level); setTxt('t_formTitle', t.formTitle); setTxt('t_catDrink', t.catDrink); setTxt('t_catFood', t.catFood); setTxt('t_catService', t.catService); setTxt('t_catTicket', t.catTicket); setTxt('t_btnCancel', t.btnCancel); setTxt('t_optNewPlace', t.optNewPlace); setTxt('t_searchTitle', t.searchTitle); setTxt('t_searchClose', t.searchClose); setTxt('t_roleTitle', t.roleTitle); setTxt('t_roleTourist', t.roleTourist); setTxt('t_roleTouristSub', t.roleTouristSub); setTxt('t_roleLocal', t.roleLocal); setTxt('t_roleLocalSub', t.roleLocalSub); setTxt('t_btnLogin', t.btnLogin); setTxt('t_btnLogout', t.btnLogout); setTxt('t_pwTitle', t.pwTitle); setTxt('t_pwSub', t.pwSub); setTxt('t_pwPlan1', t.pwPlan1); setTxt('t_pwPlan2', t.pwPlan2); setTxt('t_pwPlan3', t.pwPlan3); setTxt('t_pwCancel', t.pwCancel); setTxt('t_askTitle', t.askTitle); setTxt('t_askSub', t.askSub); setTxt('t_btnSendAsk', t.btnSendAsk); setTxt('t_btnCancelAsk', t.btnCancelAsk); setTxt('t_ansTitle', t.ansTitle); setTxt('t_btnCancelAns', t.btnCancelAns); setTxt('t_btnAddCam', t.btnAddCam); setTxt('t_btnAddGal', t.btnAddGal); setTxt('t_btnAskCam', t.btnAskCam); setTxt('t_btnAskGal', t.btnAskGal); setTxt('t_optFixo', t.optFixo); setTxt('t_optAmbulante', t.optAmbulante); setTxt('t_lockTitle', t.lockTitle); setTxt('t_lockSub', t.lockSub); setTxt('t_lockBtn', t.lockBtn); setTxt('t_notifTitle', t.notifTitle); setTxt('t_posHint', t.posHint); setTxt('t_btnPosCancel', t.btnPosCancel); setTxt('t_btnPosConfirm', t.btnPosConfirm); setPlc('nomeLocalInput', t.placeNewLocal); setPlc('nomeProduto', t.placeName); setPlc('precoProduto', t.placePrice); setPlc('inputBusca', t.searchPlaceholder); setPlc('nomeLocalPergunta', t.placeNewLocalAsk);
+            setTxt('t_menuLojista', t.menuLojista); setTxt('t_btnRadarText', t.radarBtn); setTxt('t_lojistaTitle', t.lojistaTitle); setTxt('t_lojistaSub', t.lojistaSub); setTxt('t_roleLojista', t.roleLojista); setTxt('t_roleLojistaSub', t.roleLojistaSub);
+            setTxt('t_menuWallet', t.menuWallet); setTxt('t_walletTitle', t.walletTitle); setTxt('t_walletSub', t.walletSub); setTxt('t_btnWithdraw', t.btnWithdraw);
+            getEl('langSubMenu')?.classList.remove('open'); getEl('sideMenu')?.classList.remove('open'); if(getEl('menuOverlay')) getEl('menuOverlay').style.display = 'none';
+            window.agendarDesenho(); 
+        }
+
+        function aplicarMoeda(moeda) { estadoApp.moeda = moeda; document.querySelectorAll('#currencySubMenu .sub-menu-item').forEach(el => { el.classList.remove('ativo-option'); const c = el.querySelector('.check'); if(c) c.style.display = 'none'; }); const opt = getEl('cur_' + moeda); if(opt) { opt.classList.add('ativo-option'); opt.querySelector('.check').style.display = 'inline'; } getEl('currencySubMenu')?.classList.remove('open'); getEl('sideMenu')?.classList.remove('open'); if(getEl('menuOverlay')) getEl('menuOverlay').style.display = 'none'; window.agendarDesenho(); atualizarPrecosPaywall(); if(estadoApp.usuario) setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`); }
+        function atualizarPrecosPaywall() { const usdRates = [4.99, 7.99, 12.99]; const taxa = taxasCambio[estadoApp.moeda].taxa / taxasCambio['USD'].taxa; /* UI estática no momento */ }
+
+        window.atualizarBadgeBuscas = function() {
+            const b = getEl('badgeBuscas'); if(!b) return;
+            if(estadoApp.perfil === 'turista') { b.style.display = 'flex'; if(estadoApp.buscasRestantes >= 999) { b.innerText = '♾️'; b.style.background = 'var(--brand-accent)'; b.style.color = 'white'; } else { b.innerText = estadoApp.buscasRestantes; b.style.background = '#EF4444'; b.style.color = 'white'; } } else { b.style.display = 'none'; }
+        }
+
+        function definirPerfil(tipo) { estadoApp.perfil = tipo; document.body.className = 'modo-' + tipo; localStorage.setItem('gringosafe_ja_acessou', 'sim'); if(getEl('telaPerfil')) getEl('telaPerfil').style.display = 'none'; window.agendarDesenho(); window.atualizarBadgeBuscas(); }
+        definirPerfil('turista'); 
+
+        bindClick('btnLangPtInicio', () => aplicarIdioma('pt')); bindClick('btnLangEnInicio', () => aplicarIdioma('en')); bindClick('btnLangEsInicio', () => aplicarIdioma('es'));
+        bindClick('lang_pt', () => aplicarIdioma('pt')); bindClick('lang_en', () => aplicarIdioma('en')); bindClick('lang_es', () => aplicarIdioma('es'));
+        bindClick('cur_BRL', () => aplicarMoeda('BRL')); bindClick('cur_USD', () => aplicarMoeda('USD')); bindClick('cur_EUR', () => aplicarMoeda('EUR')); bindClick('cur_ARS', () => aplicarMoeda('ARS'));
+        
+        bindClick('btnPerfilTurista', () => definirPerfil('turista')); bindClick('btnPerfilAvaliador', () => definirPerfil('avaliador')); bindClick('btnPerfilLojista', () => definirPerfil('lojista')); 
+        bindClick('btnTrocarPerfil', () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; getEl('telaPerfil').style.display = 'flex'; });
+        bindClick('btnLangToggle', () => getEl('langSubMenu').classList.toggle('open')); bindClick('btnCurrencyToggle', () => getEl('currencySubMenu').classList.toggle('open'));
+        bindClick('btnAbrirMenu', () => { getEl('sideMenu').classList.add('open'); getEl('menuOverlay').style.display = 'block'; }); bindClick('menuOverlay', () => { getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; });
+
+        let versaoAtualApp = null;
+        onSnapshot(doc(db, "sistema", "configuracoes"), (docSnap) => { if (docSnap.exists()) { const dadosSistema = docSnap.data(); if (versaoAtualApp === null) { versaoAtualApp = dadosSistema.versaoPWA; } else if (dadosSistema.versaoPWA !== versaoAtualApp) { if ('serviceWorker' in navigator) navigator.serviceWorker.ready.then(reg => reg.update()); setTimeout(() => window.location.reload(true), 1000); } } });
+
+        window.ativarTesteGratis = async function() { if (!estadoApp.usuario) return; try { const agora = Date.now(); const fimTrial = agora + (30 * 24 * 60 * 60 * 1000); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { fimTrial: fimTrial }); getEl('modalLojista').style.display = 'none'; alert("🎉 Teste de 30 dias ativado com sucesso! O seu local já pode receber turistas."); window.location.reload(); } catch (error) { console.error(error); alert("Erro ao ativar o teste."); } };
+
+        const fazerLogin = () => signInWithPopup(auth, provider).catch(() => alert("Erro no início de sessão."));
+        bindClick('btnLoginGoogleMenu', fazerLogin); bindClick('btnLoginGoogleOverlay', fazerLogin); bindClick('btnLogout', () => signOut(auth).then(() => alert("Sessão terminada.")));
+
+        let listenerNotificacoes = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                estadoApp.usuario = user; getEl('menuAvatar').innerHTML = `<img src="${user.photoURL}" alt="Foto">`; setTxt('menuNome', user.displayName.split(" ")[0]); 
+                getEl('btnLoginGoogleMenu').style.display = 'none'; getEl('btnLogout').style.display = 'block'; getEl('bloqueioLoginOverlay').style.display = 'none'; 
+                const docRef = doc(db, "usuarios", user.uid); const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) { 
+                    const dadosUsuario = docSnap.data(); estadoApp.saldo = dadosUsuario.saldo || 0.00; estadoApp.buscasRestantes = dadosUsuario.buscas !== undefined ? dadosUsuario.buscas : 3; estadoApp.isLojistaPremium = dadosUsuario.isLojistaPremium || false; estadoApp.fimTrial = dadosUsuario.fimTrial || null;
+                } else { 
+                    estadoApp.saldo = 0.00; estadoApp.buscasRestantes = 3; estadoApp.fimTrial = null; await setDoc(docRef, { nome: user.displayName, email: user.email, saldo: 0, buscas: 3, isLojistaPremium: false, dataCadastro: new Date() }); 
+                }
+                setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`); window.atualizarBadgeBuscas();
+
+                const q = query(collection(db, "notificacoes"), where("userId", "==", user.uid));
+                listenerNotificacoes = onSnapshot(q, (snapshot) => {
+                    estadoApp.notificacoes = []; let qtdNaoLidas = 0;
+                    snapshot.forEach(d => { let notif = d.data(); notif.id = d.id; estadoApp.notificacoes.push(notif); if(!notif.lida) qtdNaoLidas++; });
+                    estadoApp.notificacoes.sort((a,b) => b.data.toMillis() - a.data.toMillis());
+                    const bN = getEl('badgeNotificacoes'); if(qtdNaoLidas > 0) { bN.style.display = 'flex'; bN.innerText = qtdNaoLidas; } else { bN.style.display = 'none'; }
+                });
+            } else {
+                estadoApp.usuario = null; estadoApp.saldo = 0.00; estadoApp.buscasRestantes = 3; estadoApp.isLojistaPremium = false; estadoApp.fimTrial = null; setTxt('saldoDisplay', `R$ 0,00`); setTxt('menuNome', `Visitante`); 
+                if(getEl('menuAvatar')) getEl('menuAvatar').innerHTML = `👤`;
+                if(getEl('btnLoginGoogleMenu')) getEl('btnLoginGoogleMenu').style.display = 'flex';
+                if(getEl('btnLogout')) getEl('btnLogout').style.display = 'none';
+                if(getEl('bloqueioLoginOverlay')) getEl('bloqueioLoginOverlay').style.display = 'flex';
+                window.atualizarBadgeBuscas();
+                if(listenerNotificacoes) { listenerNotificacoes(); listenerNotificacoes = null; }
+                if(getEl('badgeNotificacoes')) getEl('badgeNotificacoes').style.display = 'none';
+            }
+        });
+
+        window.iniciarVerificacaoLojista = async function(nomeLocal) {
+            try { window.marcadoresAtuais.forEach(m => { if(m.getPopup() && m.getPopup().isOpen()) m.togglePopup(); }); } catch(e) {}
+            localParaPromover = nomeLocal;
+            if (estadoApp.usuario && estadoApp.perfil === 'lojista' && !estadoApp.isLojistaPremium) {
+                try {
+                    const docSnap = await getDoc(doc(db, "usuarios", estadoApp.usuario.uid));
+                    if (docSnap.exists()) {
+                        const dadosUsuario = docSnap.data(); const agora = Date.now(); const fimTrial = dadosUsuario.fimTrial;
+                        const modalLojista = getEl('modalLojista'); const btnTesteGratis = getEl('btnTesteGratis'); const btnCancelar = modalLojista.querySelector('.btn-cancelar');
+                        if (!fimTrial) { modalLojista.style.display = 'flex'; if (btnTesteGratis) btnTesteGratis.style.display = 'block'; if (btnCancelar) btnCancelar.style.display = 'none'; return; } 
+                        else if (agora > fimTrial) { modalLojista.style.display = 'flex'; if (btnTesteGratis) btnTesteGratis.style.display = 'none'; if (btnCancelar) btnCancelar.style.display = 'none'; return; }
+                    }
+                } catch(e) { console.error(e); }
+            }
+            getEl('modalVerificacaoLojista').style.display = 'flex';
+        };
+
+        window.piscarNoMapa = function(lat, lng) {
+            if (!lat || !lng) return; const el = document.createElement('div'); el.className = 'marker-pergunta-container'; el.innerHTML = '<div class="flash-resposta">✅</div>'; const marker = new mapboxgl.Marker(el).setLngLat([lng, lat]).addTo(window.mapa); setTimeout(() => marker.remove(), 6000);
+        };
+
+        window.apagarNotificacao = async function(id, e) { e.stopPropagation(); try { await deleteDoc(doc(db, "notificacoes", id)); } catch(e) { console.error(e); } };
+        bindClick('btnNotifLidas', () => { estadoApp.notificacoes.forEach(n => { if(!n.lida) updateDoc(doc(db, "notificacoes", n.id), { lida: true }); }); });
+        bindClick('btnNotifApagarTodas', () => { if(estadoApp.notificacoes.length === 0) return; if(confirm("Deseja realmente apagar todas as notificações?")) { estadoApp.notificacoes.forEach(n => { deleteDoc(doc(db, "notificacoes", n.id)); }); } });
+
+        window.marcadoresMapboxGlobais = {}; 
+
+        bindClick('btnAbrirNotificacoes', () => {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            const lista = getEl('listaNotificacoes'); lista.innerHTML = '';
+            if(estadoApp.notificacoes.length === 0) {
+                lista.innerHTML = `<p style="text-align:center; color:var(--text-muted); font-size:14px; margin-top:20px;">${dicionario[estadoApp.idioma].notifEmpty}</p>`;
+            } else {
+                estadoApp.notificacoes.forEach(n => {
+                    const div = document.createElement('div'); div.className = `notif-item ${n.lida ? '' : 'nao-lida'}`;
+                    let iconDel = `<button class="btn-del-notif" onclick="window.apagarNotificacao('${n.id}', event)" title="Apagar">×</button>`;
+                    let contentHtml = '';
+                    if (n.tipo === 'foto_req') { contentHtml = `<div class="notif-titulo">${n.titulo}</div><div class="notif-msg">${dicionario[estadoApp.idioma].notifReqFoto}</div>`; } 
+                    else { const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim; const precoFormatado = n.precoReal ? `${sim} ${(n.precoReal * cotacao).toFixed(2)}` : ''; contentHtml = `<div class="notif-titulo">${n.titulo}</div><div class="notif-msg">O preço de <strong style="color:var(--text-dark);">${n.nomeItem}</strong> em ${n.nomeLocal} é <strong style="color:var(--brand-primary);">${precoFormatado}</strong>.<br><span style="font-size:12px; color:var(--brand-secondary); font-weight:bold; display:block; margin-top:8px;">📍 Clique para ver no mapa</span></div>`; }
+                    div.innerHTML = `<div class="notif-content">${contentHtml}</div>${iconDel}`;
+                    div.onclick = () => { getEl('modalNotificacoes').style.display = 'none'; window.mapa.flyTo({center: [n.lng, n.lat], zoom: 18, duration: 1500}); setTimeout(() => { window.piscarNoMapa(n.lat, n.lng); }, 1500); if(!n.lida) updateDoc(doc(db, "notificacoes", n.id), { lida: true }); };
+                    lista.appendChild(div);
+                });
+            }
+            getEl('modalNotificacoes').style.display = 'flex';
+        });
+        bindClick('btnFecharNotificacoes', () => getEl('modalNotificacoes').style.display = 'none');
+
+        onSnapshot(collection(db, "avaliacoes"), (snapshot) => { estadoApp.avaliacoes = {}; snapshot.forEach((doc) => { const data = doc.data(); if(!estadoApp.avaliacoes[data.local]) estadoApp.avaliacoes[data.local] = []; estadoApp.avaliacoes[data.local].push({...data, id: doc.id}); }); window.agendarDesenho(); });
+
+        window.abrirAvaliacoes = function(nomeLocal) {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            getEl('revNomeLocal').innerText = nomeLocal; getEl('localAlvoReview').value = nomeLocal; const lista = getEl('listaReviews'); lista.innerHTML = '';
+            if(estadoApp.avaliacoes[nomeLocal] && estadoApp.avaliacoes[nomeLocal].length > 0) { estadoApp.avaliacoes[nomeLocal].forEach(r => { let stars = ''; for(let i=0;i<r.nota;i++) stars += '⭐'; lista.innerHTML += `<div style="border-bottom:1px solid #E2E8F0; padding:12px 0;"><strong style="color:var(--text-dark);">${r.nome}</strong> <span style="font-size:10px; color:#888;"></span><br>${stars}<br><span style="color:var(--text-muted); display:block; margin-top:6px; font-size:14px;">"${r.comentario}"</span></div>`; }); } 
+            else { lista.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:20px 0;">Nenhuma avaliação ainda. Seja o primeiro a opinar!</p>'; }
+            getEl('modalAvaliacoes').style.display = 'flex';
+        };
+
+        bindClick('btnFecharAvaliacoes', () => getEl('modalAvaliacoes').style.display = 'none');
+
+        bindClick('btnEnviarReview', async () => {
+            if(!estadoApp.usuario) return; const local = getEl('localAlvoReview').value; const nota = getEl('notaReview').value; const texto = getEl('textoReview').value.trim();
+            if(!texto) return alert("Por favor, escreva um comentário para ajudar os outros!");
+            try { await addDoc(collection(db, "avaliacoes"), { local: local, uid: estadoApp.usuario.uid, nome: estadoApp.usuario.displayName.split(" ")[0], nota: parseInt(nota), comentario: texto, data: new Date() }); getEl('textoReview').value = ''; getEl('modalAvaliacoes').style.display = 'none'; alert("⭐ Obrigado! A sua avaliação foi publicada."); } catch(e) { console.error(e); alert("Erro ao publicar avaliação."); }
+        });
+
+        bindClick('btnCarregarRoteiro', async () => {
+            getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none';
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            if(rotaAtiva) { if(window.mapa.getLayer('route')) window.mapa.removeLayer('route'); if(window.mapa.getSource('route')) window.mapa.removeSource('route'); rotaAtiva = false; setTxt('t_menuRoute', dicionario[estadoApp.idioma].menuRoute); alert("Roteiro Premium desligado."); return; }
+            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { getEl('modalAssinatura').style.display = 'flex'; return; }
+            if(!myLat) return alert("Aguarde que o GPS encontre a sua localização antes de traçar a rota.");
+
+            const userLat = myLat; const userLng = myLng; let pontosRota = [[userLng, userLat]]; let locaisSeguros = [];
+            for (const nomeL in estadoApp.dadosHospedados) { const dados = estadoApp.dadosHospedados[nomeL]; if (!dados.lat || !dados.lng) continue; const isPremium = dados.itens.some(i => i.premium); let temAprovado = false; dados.itens.forEach(i => { let vUp = i.votos_up || 0; let vDown = i.votos_down || 0; if((vUp+vDown) >= 5 && (vUp/(vUp+vDown)) >= 0.6) temAprovado = true; }); if(isPremium || temAprovado) { const dist = Math.sqrt(Math.pow(dados.lat - userLat, 2) + Math.pow(dados.lng - userLng, 2)); locaisSeguros.push({lat: dados.lat, lng: dados.lng, nome: nomeL, dist: dist}); } }
+            locaisSeguros.sort((a,b) => a.dist - b.dist); locaisSeguros.slice(0, 4).forEach(loc => pontosRota.push([loc.lng, loc.lat])); 
+            
+            if(pontosRota.length < 2) return alert("Desculpe! A IA não encontrou locais parceiros ou 100% seguros próximos de si.");
+            if (window.mapa.getSource('route')) { window.mapa.getSource('route').setData({ type: 'Feature', geometry: { type: 'LineString', coordinates: pontosRota } }); } else { window.mapa.addSource('route', { type: 'geojson', data: { type: 'Feature', geometry: { type: 'LineString', coordinates: pontosRota } } }); window.mapa.addLayer({ id: 'route', type: 'line', source: 'route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#6366F1', 'line-width': 6, 'line-dasharray': [2, 2] } }); }
+            const bounds = new mapboxgl.LngLatBounds(pontosRota[0], pontosRota[0]); for (const coord of pontosRota) { bounds.extend(coord); } window.mapa.fitBounds(bounds, { padding: 50 });
+            rotaAtiva = true; setTxt('t_menuRoute', dicionario[estadoApp.idioma].menuRouteOff); alert("🗺️ Roteiro Seguro traçado pela IA!\n\nSiga a linha azul no mapa.");
+        });
+
+        bindClick('btnMinhaCarteira', () => { if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); getEl('sideMenu').classList.remove('open'); getEl('menuOverlay').style.display = 'none'; setTxt('saldoCarteiraDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`); getEl('modalCarteira').style.display = 'flex'; });
+        bindClick('btnFecharCarteira', () => getEl('modalCarteira').style.display = 'none');
+        bindClick('btnSacarPix', async () => { if(!estadoApp.usuario) return alert("Inicie sessão"); const chavePix = getEl('inputChavePix').value.trim(); const saldoBRL = estadoApp.saldo; if (saldoBRL < 20) return alert(`Saldo insuficiente!\nPrecisa de acumular o equivalente a R$ 20,00 para levantar.`); if (!chavePix) return alert("Por favor, digite a sua Chave PIX."); try { await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(-saldoBRL) }); estadoApp.saldo = 0; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`); setTxt('saldoCarteiraDisplay', `${taxasCambio[estadoApp.moeda].sim} 0.00`); alert(`✅ Levantamento Solicitado!\n\nUm PIX no valor de R$ ${saldoBRL.toFixed(2)} foi programado.`); getEl('inputChavePix').value = ''; getEl('modalCarteira').style.display = 'none'; } catch(e) { console.error(e); alert("Erro ao solicitar levantamento."); } });
+
+        bindClick('btnRadar', () => {
+            if(estadoApp.radarAtivo) return; estadoApp.filtroProduto = null; getEl('btnLimparFiltro').style.display = 'none'; estadoApp.radarAtivo = true; getEl('btnRadar').classList.add('radar-anim'); window.mostrarToast("📡 Radar Ativado! A revelar locais...", "#10B981"); window.agendarDesenho(); 
+            setTimeout(() => { estadoApp.radarAtivo = false; getEl('btnRadar').classList.remove('radar-anim'); window.mostrarToast("❄️ O radar arrefeceu. Locais ocultos.", "#0F172A"); window.agendarDesenho(); }, 15000); 
+        });
+
+        bindClick('btnLimparFiltro', () => { estadoApp.filtroProduto = null; getEl('btnLimparFiltro').style.display = 'none'; window.agendarDesenho(); });
+        window.pesquisarComLocal = function(termo) { getEl('modalBusca').style.display = 'none'; iniciarModoPosicionamento('ask'); setTimeout(() => { getEl('nomeProdutoPergunta').value = termo.charAt(0).toUpperCase() + termo.slice(1); const event = new Event('input'); getEl('nomeProdutoPergunta').dispatchEvent(event); }, 500); };
+
+        bindInput('nomeProdutoPergunta', (e) => {
+            const termo = e.target.value.toLowerCase().trim(); const estimativaEl = getEl('estimativaIA'); let achou = false;
+            if (termo.length > 2) {
+                let precosReais = []; for (let loc in estadoApp.dadosHospedados) { estadoApp.dadosHospedados[loc].itens.forEach(it => { if (!it.isLojistaPlace && (it.nome || "").toLowerCase().includes(termo)) precosReais.push(it.preco); }); }
+                const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
+                if (precosReais.length > 0) { const minReal = Math.min(...precosReais); const maxReal = Math.max(...precosReais); const minF = (minReal * cotacao).toFixed(2); const maxF = (maxReal * cotacao).toFixed(2); estimativaEl.innerHTML = `🧠 <strong>Comunidade Local:</strong> ${sim} ${minF} a ${sim} ${maxF}`; estimativaEl.style.display = 'block'; achou = true; } 
+                else { for (let key in basePrecosIA) { if (termo.includes(key)) { const min = (basePrecosIA[key].min * cotacao).toFixed(2); const max = (basePrecosIA[key].max * cotacao).toFixed(2); estimativaEl.innerHTML = `💡 <strong>Estimativa Global AI:</strong> ${sim} ${min} a ${sim} ${max}`; estimativaEl.style.display = 'block'; achou = true; break; } } }
+            }
+            if(!achou) estimativaEl.style.display = 'none';
+        });
+
+        bindClick('btnAbrirBusca', async () => {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { if (estadoApp.buscasRestantes <= 0) { getEl('modalAssinatura').style.display = 'flex'; return; } estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
+            getEl('modalBusca').style.display = 'flex'; getEl('inputBusca').value = ''; getEl('resultadosBusca').innerHTML = ''; getEl('inputBusca').focus();
+        });
+        bindClick('btnFecharBusca', () => getEl('modalBusca').style.display = 'none');
+
+        bindInput('inputBusca', (e) => {
+            const termo = e.target.value.toLowerCase().trim(); getEl('resultadosBusca').innerHTML = ''; if(!termo) return;
+            const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
+            
+            if (termo.length > 2) { const divMapa = document.createElement('div'); divMapa.className = 'resultado-item'; divMapa.style.background = '#ECFDF5'; divMapa.style.borderColor = '#A7F3D0'; divMapa.innerHTML = `<span style="font-weight:700; color:var(--brand-primary);">💲 Ver "${termo.toUpperCase()}" no mapa</span>`; divMapa.onclick = () => { estadoApp.filtroProduto = termo; getEl('modalBusca').style.display = 'none'; getEl('btnLimparFiltro').style.display = 'block'; window.agendarDesenho(); }; getEl('resultadosBusca').appendChild(divMapa); }
+
+            let achouIA = false;
+            if (termo.length > 2) {
+                let precosReais = []; for (let loc in estadoApp.dadosHospedados) { estadoApp.dadosHospedados[loc].itens.forEach(it => { if (!it.isLojistaPlace && (it.nome || "").toLowerCase().includes(termo)) precosReais.push(it.preco); }); }
+                if (precosReais.length > 0) { const minReal = Math.min(...precosReais); const maxReal = Math.max(...precosReais); const minF = (minReal * cotacao).toFixed(2); const maxF = (maxReal * cotacao).toFixed(2); const divAI = document.createElement('div'); divAI.className = 'resultado-item'; divAI.style.background = '#EEF2FF'; divAI.style.borderColor = '#C7D2FE'; divAI.style.cursor = 'default'; divAI.innerHTML = `<span style="font-weight:700; color:var(--brand-secondary);">🧠 Comunidade Local</span><span style="font-size:18px; color:var(--text-dark); font-weight:800; margin-top:5px;">${sim} ${minF} a ${sim} ${maxF}</span><button class="btn-roxo" style="margin-top:12px; padding:10px; font-size:13px;" onclick="window.pesquisarComLocal('${termo.replace(/'/g, "\\'")}')">Não encontrou a sua barraca? Pergunte!</button>`; getEl('resultadosBusca').appendChild(divAI); achouIA = true; } 
+                else { for (let key in basePrecosIA) { if (termo.includes(key)) { const min = (basePrecosIA[key].min * cotacao).toFixed(2); const max = (basePrecosIA[key].max * cotacao).toFixed(2); const divAI = document.createElement('div'); divAI.className = 'resultado-item'; divAI.style.background = '#EEF2FF'; divAI.style.borderColor = '#C7D2FE'; divAI.style.cursor = 'default'; divAI.innerHTML = `<span style="font-weight:700; color:var(--brand-secondary);">💡 Estimativa Global AI</span><span style="font-size:18px; color:var(--text-dark); font-weight:800; margin-top:5px;">${sim} ${min} a ${sim} ${max}</span><button class="btn-roxo" style="margin-top:12px; padding:10px; font-size:13px;" onclick="window.pesquisarComLocal('${key.replace(/'/g, "\\'")}')">Pergunte a um Avaliador Local</button>`; getEl('resultadosBusca').appendChild(divAI); achouIA = true; break; } } }
+            }
+
+            let achouLocais = false;
+            for (const nLocal in estadoApp.dadosHospedados) {
+                const dLugar = estadoApp.dadosHospedados[nLocal]; const iMatch = dLugar.itens.filter(i => !i.isLojistaPlace && (i.nome || "").toLowerCase().includes(termo));
+                if (iMatch.length > 0) { achouLocais = true; iMatch.forEach(item => { if (!dLugar.lat || !dLugar.lng) return; const div = document.createElement('div'); div.className = 'resultado-item'; const prc = (item.preco * cotacao).toFixed(2); div.innerHTML = `<span style="font-weight:700; color:var(--text-dark);">🏪 ${nLocal}</span><span style="font-size:15px; color:var(--brand-primary); font-weight:700; margin-top:4px;">${item.nome}: ${sim} ${prc}</span>`; div.onclick = () => { estadoApp.filtroProduto = item.nome; getEl('btnLimparFiltro').style.display = 'block'; getEl('modalBusca').style.display = 'none'; window.mapa.flyTo({center: [dLugar.lng, dLugar.lat], zoom: 18, duration: 1500}); window.agendarDesenho(); }; getEl('resultadosBusca').appendChild(div); }); }
+            }
+
+            if (!achouLocais && !achouIA && termo.length > 2) { const divVazio = document.createElement('div'); divVazio.className = 'resultado-item'; divVazio.style.textAlign = 'center'; divVazio.style.cursor = 'default'; divVazio.innerHTML = `<span style="color:var(--text-muted); margin-bottom:12px; display:block;">Ainda não temos dados sobre "${termo}" por aqui.</span><button class="btn-roxo" style="padding:10px; font-size:13px;" onclick="window.pesquisarComLocal('${termo.replace(/'/g, "\\'")}')">Pergunte aos Moradores Agora!</button>`; getEl('resultadosBusca').appendChild(divVazio); }
+        });
+
+        const planos = [getEl('btnPlan1'), getEl('btnPlan2'), getEl('btnPlan3')]; const precos = [4.99, 7.99, 12.99]; planos.forEach((p, i) => { bindClick(p?.id, () => { planos.forEach(pl => pl?.classList.remove('active')); p.classList.add('active'); estadoApp.planoPrecoUSD = precos[i]; }); });
+        const processarPgto = async (m) => { alert(`✅ Simulação: ${m}\n\nO cartão seria debitado em US$ ${estadoApp.planoPrecoUSD}.\n\nAcesso Premium liberado!`); estadoApp.buscasRestantes = 999; if(estadoApp.usuario) { await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: 999 }); } window.atualizarBadgeBuscas(); getEl('modalAssinatura').style.display = 'none'; };
+        bindClick('btnApplePay', () => processarPgto('Apple Pay')); bindClick('btnGooglePay', () => processarPgto('Google Pay')); bindClick('btnFecharPaywall', () => getEl('modalAssinatura').style.display = 'none');
+        
+        function comprimirImagemBase64(file, callback) { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const MAX_WIDTH = 400; const MAX_HEIGHT = 400; let width = img.width; let height = img.height; if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } } canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height); callback(canvas.toDataURL('image/jpeg', 0.6)); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
+
+        let fotoAtualBase64 = null;
+        const processarImagem = (e, idPreview, idStatus, idNomeInput) => { if (e.target.files.length > 0) { comprimirImagemBase64(e.target.files[0], (base64) => { fotoAtualBase64 = base64; const img = getEl(idPreview); if(img) { img.src = base64; img.style.display = 'block'; } const inpNome = getEl(idNomeInput); if(inpNome) inpNome.value = ''; if (window.modeloIA) { const status = getEl(idStatus); if(status) { status.style.display = 'block'; setTxt(idStatus, '🤖 IA...'); } if(img) img.onload = () => { window.modeloIA.classify(img).then(prev => { if(status) status.style.display = 'none'; const tIngles = prev[0].className.split(',')[0].toLowerCase().trim(); if(estadoApp.idioma === 'en') { if(inpNome) inpNome.value = tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } else { const tTrad = dicionario['pt'][tIngles]; if(inpNome) inpNome.value = tTrad ? tTrad : tIngles.charAt(0).toUpperCase() + tIngles.slice(1); } if(idNomeInput === 'nomeProdutoPergunta') { const event = new Event('input'); inpNome.dispatchEvent(event); } }); } } }); } };
+
+        let fotosLojista = []; const maxFotosLojista = 3;
+        const uploadFotoLojista = (e) => { if (e.target.files.length > 0) { if (fotosLojista.length >= maxFotosLojista) return alert("Já atingiu o máximo de 3 fotos!"); comprimirImagemBase64(e.target.files[0], (base64) => { fotosLojista.push(base64); atualizarPreviewLojista(); }); } };
+        function atualizarPreviewLojista() { const container = getEl('previewFotosLojista'); container.innerHTML = ''; fotosLojista.forEach((f) => { container.innerHTML += `<img src="${f}">`; }); }
+
+        bindClick('btnCamLojista', () => getEl('inputCamLojista')?.click()); bindClick('btnGalLojista', () => getEl('inputGalLojista')?.click());
+        bindChange('inputCamLojista', uploadFotoLojista); bindChange('inputGalLojista', uploadFotoLojista);
+        
+        bindChange('selectLocal', (e) => { getEl('nomeLocalInput').style.display = e.target.value === 'NEW' ? 'block' : 'none'; });
+        bindChange('tipoLocalPergunta', (e) => { getEl('nomeLocalPergunta').style.display = e.target.value === 'Ambulante' ? 'none' : 'block'; });
+
+        let coordSelecionada = null; let acaoPendente = null; let localParaPromover = null;
+        
+        window.iniciarModoPosicionamento = function(acao) {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            if (acao === 'ask' && estadoApp.perfil === 'turista' && estadoApp.buscasRestantes <= 0) { getEl('modalAssinatura').style.display = 'flex'; return; }
+            acaoPendente = acao; getEl('bottomActions').style.display = 'none'; getEl('posicionamentoUI').style.display = 'block'; getEl('alfineteCentral').style.display = 'flex'; getEl('alfineteAlvo').style.display = 'block';
+        }
+
+        window.abrirAdicionarItemDireto = function(nomeLocal, isLojista) {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            try { window.marcadoresAtuais.forEach(m => { if(m.getPopup() && m.getPopup().isOpen()) m.togglePopup(); }); } catch(e) {}
+            
+            const sel = getEl('selectLocal'); let optionExists = false;
+            for(let i=0; i<sel.options.length; i++){ if(sel.options[i].value === nomeLocal) optionExists = true; }
+            if(!optionExists) { sel.innerHTML += `<option value="${nomeLocal}">${nomeLocal}</option>`; }
+            
+            sel.value = nomeLocal; getEl('nomeLocalInput').style.display = 'none';
+            getEl('nomeProduto').value = ''; getEl('precoProduto').value = '';
+            getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null;
+            
+            getEl('modalForm').dataset.modoLojista = isLojista ? "true" : "false";
+            
+            if (isLojista) { setTxt('t_btnSave', "Salvar no Menu"); getEl('t_formTitle').innerText = "Novo Produto no Menu"; } 
+            else { setTxt('t_btnSave', dicionario[estadoApp.idioma].btnSave + " (+R$ 0,25)"); getEl('t_formTitle').innerText = dicionario[estadoApp.idioma].formTitle; }
+            
+            const placeData = estadoApp.dadosHospedados[nomeLocal];
+            if (placeData) { coordSelecionada = { lat: placeData.lat, lng: placeData.lng }; } 
+            else { coordSelecionada = window.mapa.getCenter(); } 
+            
+            getEl('modalForm').style.display = 'flex';
+        };
+
+        bindClick('btnUploadDocLojista', () => getEl('inputDocLojista').click());
+        bindChange('inputDocLojista', (e) => { if (e.target.files.length > 0) { comprimirImagemBase64(e.target.files[0], (base64) => { const img = getEl('previewDocLojista'); img.src = base64; img.style.display = 'block'; getEl('btnEnviarVerificacao').style.display = 'block'; }); } });
+        bindClick('btnEnviarVerificacao', () => { getEl('modalVerificacaoLojista').style.display = 'none'; if(!estadoApp.isLojistaPremium) { getEl('modalLojista').style.display = 'flex'; } else { window.executarPromocao(localParaPromover); } });
+        bindClick('btnFecharVerificacao', () => getEl('modalVerificacaoLojista').style.display = 'none');
+        
+        bindClick('btnAdicionar', () => { if (estadoApp.perfil === 'lojista') { iniciarModoPosicionamento('addLojista'); } else { iniciarModoPosicionamento('add'); } });
+        bindClick('btnPerguntar', () => iniciarModoPosicionamento('ask'));
+        bindClick('btnCancelarPos', () => { getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex'; });
+        
+        bindClick('btnConfirmarPos', () => {
+            coordSelecionada = window.mapa.getCenter(); 
+            getEl('posicionamentoUI').style.display = 'none'; getEl('alfineteCentral').style.display = 'none'; getEl('alfineteAlvo').style.display = 'none'; getEl('bottomActions').style.display = 'flex';
+            if (acaoPendente === 'add') { delete getEl('modalForm').dataset.modoLojista; setTxt('t_btnSave', "Salvar (+R$ 0,25)"); getEl('t_formTitle').innerText = "Novo Registro"; getEl('selectLocal').value = 'NEW'; getEl('nomeLocalInput').style.display = 'block'; getEl('nomeLocalInput').value = ''; getEl('nomeProduto').value = ''; getEl('precoProduto').value = ''; getEl('imagemPreview').style.display = 'none'; getEl('iaStatus').style.display = 'none'; fotoAtualBase64 = null; getEl('modalForm').style.display = 'flex'; } 
+            else if (acaoPendente === 'ask') { getEl('nomeProdutoPergunta').value = ''; getEl('estimativaIA').style.display = 'none'; getEl('nomeLocalPergunta').value = ''; getEl('imagemPreviewPergunta').style.display = 'none'; getEl('iaStatusPergunta').style.display = 'none'; fotoAtualBase64 = null; getEl('tipoLocalPergunta').value = 'Fixo'; getEl('nomeLocalPergunta').style.display = 'block'; getEl('modalPergunta').style.display = 'flex'; }
+            else if (acaoPendente === 'addLojista') { fotosLojista = []; atualizarPreviewLojista(); getEl('nomeLojistaInput').value = ''; getEl('modalFormLojista').style.display = 'flex'; }
+        });
+
+        bindClick('btnCancelar', () => { getEl('modalForm').style.display = 'none'; }); bindClick('btnCancelarLojista', () => { getEl('modalFormLojista').style.display = 'none'; });
+        bindClick('btnCamNormal', () => getEl('inputCamNormal')?.click()); bindClick('btnGalNormal', () => getEl('inputGalNormal')?.click());
+        bindChange('inputCamNormal', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto')); bindChange('inputGalNormal', (e) => processarImagem(e, 'imagemPreview', 'iaStatus', 'nomeProduto'));
+
+        bindClick('btnSalvar', async () => {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            const t = dicionario[estadoApp.idioma]; const vSel = getEl('selectLocal').value; const localFinal = (vSel === 'NEW') ? getEl('nomeLocalInput').value.trim() : vSel; const nProd = getEl('nomeProduto').value.trim(); const prc = getEl('precoProduto').value;
+            if(!localFinal || !nProd || !prc) return alert(t.alertaFalta);
+            if (estadoApp.dadosHospedados[localFinal] && estadoApp.dadosHospedados[localFinal].itens.some(i => (i.nome || "").toLowerCase() === nProd.toLowerCase())) return alert(t.alertaDuplicado);
+            
+            const centro = coordSelecionada || window.mapa.getCenter(); const aMail = estadoApp.usuario.email; const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc);
+            const isLojistaAdd = getEl('modalForm').dataset.modoLojista === "true";
+
+            if (isLojistaAdd) {
+                await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: parseFloat(centro.lat), lng: parseFloat(centro.lng), status: "aprovado", premium: true, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: aMail, tipoLocal: 'Fixo', data: new Date() });
+                getEl('modalForm').style.display = 'none'; alert("✅ Produto adicionado ao seu Menu!");
+            } else {
+                await addDoc(collection(db, "precos"), { local: localFinal, nome: nProd, preco: prcReal, categoria: getEl('categoriaProduto').value, lat: parseFloat(centro.lat), lng: parseFloat(centro.lng), status: "pendente", premium: false, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: aMail, tipoLocal: 'Fixo', data: new Date() });
+                await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { saldo: increment(0.25) }); estadoApp.saldo += 0.25; setTxt('saldoDisplay', `${taxasCambio[estadoApp.moeda].sim} ${(estadoApp.saldo * taxasCambio[estadoApp.moeda].taxa).toFixed(2)}`);
+                getEl('modalForm').style.display = 'none'; alert(t.alertaSalvo);
+            }
+        });
+
+        bindClick('btnSalvarLojista', async () => {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            const nomeNegocio = getEl('nomeLojistaInput').value.trim(); const catNegocio = getEl('categoriaLojista').value;
+            if(!nomeNegocio) return alert("Por favor, digite o nome do seu negócio.");
+            const centro = coordSelecionada || window.mapa.getCenter(); const aMail = estadoApp.usuario.email;
+            await addDoc(collection(db, "precos"), { local: nomeNegocio, nome: "Acesso ao Local", preco: 0, isLojistaPlace: true, categoria: catNegocio, lat: parseFloat(centro.lat), lng: parseFloat(centro.lng), status: "aprovado", premium: estadoApp.isLojistaPremium, fotosLocal: fotosLojista, autor: aMail, data: new Date() });
+            getEl('modalFormLojista').style.display = 'none'; alert("Seu negócio foi cadastrado com sucesso e já está no mapa como Negócio Local! Clique no pino para destacá-lo.");
+        });
+
+        bindClick('btnCancelarPergunta', () => getEl('modalPergunta').style.display = 'none');
+        bindClick('btnCamPergunta', () => getEl('inputCamPergunta')?.click()); bindClick('btnGalPergunta', () => getEl('inputGalPergunta')?.click());
+        bindChange('inputCamPergunta', (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta')); 
+        bindChange('inputGalPergunta', (e) => processarImagem(e, 'imagemPreviewPergunta', 'iaStatusPergunta', 'nomeProdutoPergunta'));
+
+        bindClick('btnEnviarPergunta', async () => {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            const itemDesejado = getEl('nomeProdutoPergunta').value.trim(); const localTipo = getEl('tipoLocalPergunta').value; let localNome = getEl('nomeLocalPergunta').value.trim();
+            if (localTipo === 'Ambulante') { localNome = 'Vendedor Ambulante da Região'; } else if (!localNome) { return alert("Digite o nome do local!"); }
+            if(!itemDesejado) return alert("Digite o nome do item!");
+            
+            const centro = coordSelecionada || window.mapa.getCenter(); let fuzzyLat = parseFloat(centro.lat); let fuzzyLng = parseFloat(centro.lng);
+            if (localTipo === 'Ambulante') { const angle = Math.random() * Math.PI * 2; const radius = 0.0004 + (Math.random() * 0.0004); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); } 
+            else { const angle = Math.random() * Math.PI * 2; const radius = 0.0001 + (Math.random() * 0.00015); fuzzyLat += (radius * Math.cos(angle)); fuzzyLng += (radius * Math.sin(angle)); }
+            
+            await addDoc(collection(db, "perguntas"), { nomeItem: itemDesejado, nomeLocal: localNome, tipoLocal: localTipo, lat: fuzzyLat, lng: fuzzyLng, status: "aberta", respostas: [], autorUid: estadoApp.usuario.uid, fotoUrl: fotoAtualBase64, fotoSolicitada: false, data: new Date() });
+            if (estadoApp.perfil === 'turista' && estadoApp.buscasRestantes < 999) { estadoApp.buscasRestantes--; window.atualizarBadgeBuscas(); await updateDoc(doc(db, "usuarios", estadoApp.usuario.uid), { buscas: increment(-1) }); }
+            getEl('modalPergunta').style.display = 'none'; alert("Pergunta enviada no mapa! Por segurança, sua localização exata foi oculta dos Avaliadores.");
+        });
+
+        window.solicitarFoto = async function(idPergunta, autorUid, nomeItem, nomeLocal) {
+            if(!estadoApp.usuario) return;
+            try { await updateDoc(doc(db, "perguntas", idPergunta), { fotoSolicitada: true }); if (autorUid && autorUid !== 'undefined') { await addDoc(collection(db, "notificacoes"), { userId: autorUid, tipo: 'foto_req', titulo: "📷 Foto Solicitada!", nomeItem: nomeItem, nomeLocal: nomeLocal, lida: false, data: new Date() }); } alert("Solicitação enviada! O turista foi notificado."); } catch(e) { console.log(e); }
+        };
+
+        let idPerguntaParaFotoExtra = null; window.abrirEnvioFotoExtra = function(idPergunta) { idPerguntaParaFotoExtra = idPergunta; getEl('inputCamExtra').click(); };
+        const uploadFotoExtra = async (e) => {
+            if (e.target.files.length > 0 && idPerguntaParaFotoExtra) {
+                comprimirImagemBase64(e.target.files[0], async (base64) => {
+                    await updateDoc(doc(db, "perguntas", idPerguntaParaFotoExtra), { fotoUrl: base64, fotoSolicitada: false });
+                    alert("📸 Foto enviada com sucesso! Os avaliadores já podem ver."); idPerguntaParaFotoExtra = null;
+                });
+            }
+        };
+        bindChange('inputCamExtra', uploadFotoExtra); bindChange('inputGalExtra', uploadFotoExtra);
+
+        window.resolverPerguntaConsenso = async function(idPergunta, pergData, respostas) {
+            respostas.sort((a, b) => a.tempo - b.tempo); let vencedor = respostas[0]; let precoFinal = vencedor.preco;
+            if (respostas.length >= 3) {
+                const precos = respostas.map(r => r.preco).sort((a,b) => a-b); const median = precos[Math.floor(precos.length/2)];
+                const validos = respostas.filter(r => r.preco >= median * 0.7 && r.preco <= median * 1.3);
+                if (validos.length > 0) { vencedor = validos[0]; precoFinal = validos.reduce((acc, curr) => acc + curr.preco, 0) / validos.length; }
+            }
+            try {
+                await updateDoc(doc(db, "perguntas", idPergunta), { status: "respondida" });
+                await addDoc(collection(db, "precos"), { local: pergData.nomeLocal, nome: pergData.nomeItem, preco: precoFinal, categoria: "Serviço", lat: parseFloat(pergData.lat), lng: parseFloat(pergData.lng), status: "pendente", premium: false, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], denuncias: 0, denunciaram: [], autor: "Consenso Comunitário", tipoLocal: pergData.tipoLocal || 'Fixo', data: new Date() });
+                await updateDoc(doc(db, "usuarios", vencedor.uid), { saldo: increment(1.00) });
+                if (pergData.autorUid && pergData.autorUid !== 'undefined') { 
+                    await addDoc(collection(db, "notificacoes"), { userId: pergData.autorUid, tipo: 'resposta', titulo: "✅ Dúvida Respondida!", nomeItem: pergData.nomeItem, nomeLocal: pergData.nomeLocal, precoReal: precoFinal, lat: parseFloat(pergData.lat), lng: parseFloat(pergData.lng), lida: false, data: new Date() }); 
+                    if (estadoApp.usuario && pergData.autorUid === estadoApp.usuario.uid) { window.piscarNoMapa(pergData.lat, pergData.lng); }
+                }
+            } catch(e) { console.log(e); }
+        };
+
+        setInterval(() => {
+            if(!estadoApp.usuario) return; const agora = Date.now();
+            for(const id in estadoApp.perguntasAbertas) {
+                const p = estadoApp.perguntasAbertas[id]; const resps = p.respostas || [];
+                if(p.data && (agora - p.data.toMillis()) > 20000 && resps.length > 0) { window.resolverPerguntaConsenso(id, p, resps); delete estadoApp.perguntasAbertas[id]; }
+            }
+        }, 5000);
+
+        window.abrirModalResposta = async function(idPergunta) {
+            if(estadoApp.perfil === 'turista' || estadoApp.perfil === 'lojista') return; 
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin);
+            const p = estadoApp.perguntasAbertas[idPergunta]; if(!p) return;
+            const uid = estadoApp.usuario.uid; const resps = p.respostas || [];
+            if(resps.some(r => r.uid === uid)) return alert("Já respondeu a esta dúvida! A aguardar o consenso.");
+            
+            setTxt('respItemNome', p.nomeItem); setTxt('respLocalNome', p.nomeLocal); setTxt('respLocalTipo', p.tipoLocal === 'Ambulante' ? '(Ambulante)' : '(Fixo)'); 
+            getEl('idPerguntaAtual').value = idPergunta; getEl('precoProdutoResposta').value = ''; getEl('modalResposta').style.display = 'flex';
+        };
+        
+        bindClick('btnCancelarResposta', () => getEl('modalResposta').style.display = 'none');
+        bindClick('btnEnviarResposta', async () => {
+            if(!estadoApp.usuario) return; const prc = getEl('precoProdutoResposta').value; if(!prc) return alert("Preencha o preço!");
+            const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(prc) / taxasCambio[estadoApp.moeda].taxa : parseFloat(prc); 
+            const idPergunta = getEl('idPerguntaAtual').value; const p = estadoApp.perguntasAbertas[idPergunta]; if(!p) return;
+            let resps = p.respostas || []; resps.push({ uid: estadoApp.usuario.uid, preco: prcReal, tempo: Date.now() });
+            if(resps.length >= 3) { window.resolverPerguntaConsenso(idPergunta, p, resps); alert("Consenso atingido! Resultado enviado."); } 
+            else { await updateDoc(doc(db, "perguntas", idPergunta), { respostas: resps }); alert("A sua resposta foi registada! ⏳ A aguardar mais avaliadores ou o tempo de 20s esgotar."); }
+            getEl('modalResposta').style.display = 'none'; 
+        });
+
+        bindClick('btnCancelarEdicao', () => getEl('modalEditar').style.display = 'none');
+        
+        window.abrirEdicao = function(id, nome, precoAtualBRL, isPremium) { 
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
+            if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
+            getEl('editItemId').value = id; getEl('editItemNome').innerText = nome; getEl('editItemPreco').value = (precoAtualBRL * taxasCambio[estadoApp.moeda].taxa).toFixed(2); getEl('modalEditar').style.display = 'flex'; 
+        };
+        
+        bindClick('btnSalvarEdicao', async () => { 
+            if(!estadoApp.usuario) return; 
+            const id = getEl('editItemId').value; const nvPreco = getEl('editItemPreco').value; if(!nvPreco) return alert("Digite o novo preço!"); 
+            try { const prcReal = estadoApp.moeda !== 'BRL' ? parseFloat(nvPreco) / taxasCambio[estadoApp.moeda].taxa : parseFloat(nvPreco); await updateDoc(doc(db, "precos", id), { preco: prcReal, votos_up: 0, votos_down: 0, votaram_up: [], votaram_down: [], status: "pendente" }); getEl('modalEditar').style.display = 'none'; alert("Preço atualizado e avaliações resetadas!"); } catch(e) { alert("Erro ao editar preço."); } 
+        });
+
+        window.votarItem = async function(id, tipo, isPremium) {
+            if(!estadoApp.usuario) return alert(dicionario[estadoApp.idioma].alertReqLogin); 
+            if(isPremium === true && estadoApp.nivelAvaliador < 5 && estadoApp.perfil !== 'lojista') return alert(dicionario[estadoApp.idioma].kycAlert);
+
+            const uid = estadoApp.usuario.uid; let jaVotou = false;
+            for (const loc in estadoApp.dadosHospedados) { const iLocal = estadoApp.dadosHospedados[loc].itens.find(i => i.id === id); if (iLocal) { const upList = iLocal.votaram_up || []; const downList = iLocal.votaram_down || []; if (upList.includes(uid) || downList.includes(uid)) jaVotou = true; break; } }
+            if (jaVotou) return alert(dicionario[estadoApp.idioma].alertVoted);
+            try { const docRef = doc(db, "precos", id); if(tipo === 'up') await updateDoc(docRef, { votos_up: increment(1), votaram_up: arrayUnion(uid) }); if(tipo === 'down') await updateDoc(docRef, { votos_down: increment(1), votaram_down: arrayUnion(uid) }); } catch(e) { console.error(e); }
+        };
+
+        window.executarPromocao = async function(nomeLocal) {
+            try {
+                const q = query(collection(db, "precos"), where("local", "==", nomeLocal));
+                const snapshot = await getDocs(q); let atualizouAlgo = false;
+                snapshot.forEach((docSnap) => { 
+                    updateDoc(doc(db, "precos", docSnap.id), { premium: true, autor: estadoApp.usuario.email }); 
+                    atualizouAlgo = true; 
+                });
+                if(atualizouAlgo){ alert(`✅ Sucesso! O local "${nomeLocal}" agora é Oficial e Premium!`); } 
+                else { alert(`⚠️ Erro ao encontrar os produtos para destacar.`); }
+            } catch(e) { console.error(e); alert("Erro ao tentar destacar: " + e.message); }
+        };
+
+        onSnapshot(collection(db, "precos"), (snapshot) => {
+            estadoApp.dadosHospedados = {}; estadoApp.mediaPrecos = {}; estadoApp.contagemPrecos = {};
+            snapshot.forEach((doc) => {
+                const item = doc.data(); 
+                const nomeItemSeguro = item.nome || "Item Não Nomeado";
+                const precoSeguro = item.preco || 0;
+                const nomeL = item.tipoLocal === 'Ambulante' ? `🚶 Ambulante (${doc.id.substring(0,4)})` : (item.local || "Desconhecido"); 
+                
+                if (!estadoApp.dadosHospedados[nomeL]) estadoApp.dadosHospedados[nomeL] = { lat: parseFloat(item.lat), lng: parseFloat(item.lng), itens: [] };
+                estadoApp.dadosHospedados[nomeL].itens.push({ ...item, nome: nomeItemSeguro, preco: precoSeguro, id: doc.id });
+                
+                if(!item.isLojistaPlace) {
+                    const nl = nomeItemSeguro.toString().toLowerCase().trim(); 
+                    if(!estadoApp.mediaPrecos[nl]) { estadoApp.mediaPrecos[nl] = 0; estadoApp.contagemPrecos[nl] = 0; }
+                    estadoApp.mediaPrecos[nl] += precoSeguro; estadoApp.contagemPrecos[nl]++;
+                }
+            });
+            
+            let h = `<option value="NEW" id="t_optNewPlace">${dicionario[estadoApp.idioma].optNewPlace}</option>`; 
+            Object.keys(estadoApp.dadosHospedados).sort().forEach(n => { if(n !== "Desconhecido" && !n.includes("🚶 Ambulante")) h += `<option value="${n}">${n}</option>`; }); 
+            getEl('selectLocal').innerHTML = h;
+            window.agendarDesenho();
+        });
+
+        onSnapshot(collection(db, "perguntas"), (snapshot) => {
+            estadoApp.perguntasAbertas = {}; snapshot.forEach((doc) => { const p = doc.data(); if(p.status === "aberta") estadoApp.perguntasAbertas[doc.id] = p; }); window.agendarDesenho(); 
+        });
+
+        function desenharPinos() {
+            if (!window.mapa || !window.mapa.isStyleLoaded()) {
+                setTimeout(desenharPinos, 500);
+                return;
+            }
+
+            if(window.marcadoresAtuais) {
+                window.marcadoresAtuais.forEach(m => m.remove());
+            }
+            window.marcadoresAtuais = [];
+            window.marcadoresMapboxGlobais = {};
+            
+            const t = dicionario[estadoApp.idioma]; const cotacao = taxasCambio[estadoApp.moeda].taxa; const sim = taxasCambio[estadoApp.moeda].sim;
+
+            for (const nomeL in estadoApp.dadosHospedados) {
+                try {
+                    const dadosL = estadoApp.dadosHospedados[nomeL]; 
+                    
+                    const latNum = parseFloat(dadosL.lat);
+                    const lngNum = parseFloat(dadosL.lng);
+                    
+                    if (isNaN(latNum) || isNaN(lngNum)) continue;
+
+                    const avaliacoesValidas = dadosL.itens.filter(i => !i.isLojistaPlace);
+                    let tItens = avaliacoesValidas.length; let qAb = 0; let qAp = 0; let htmlLista = '';
+                    const isPremium = dadosL.itens.some(i => i.premium === true);
+                    
+                    const lugarLojista = dadosL.itens.find(i => i.isLojistaPlace);
+                    const isDono = estadoApp.usuario && lugarLojista && lugarLojista.autor === estadoApp.usuario.email;
+
+                    if (estadoApp.filtroProduto) {
+                        const itemFiltrado = avaliacoesValidas.find(i => (i.nome || "").toLowerCase().includes(estadoApp.filtroProduto.toLowerCase()));
+                        if (!itemFiltrado) continue; 
+                        
+                        const precoLocal = (itemFiltrado.preco * cotacao).toFixed(2);
+                        const nomeStr = (itemFiltrado.nome || "");
+                        const nomeCurto = nomeStr.length > 15 ? nomeStr.substring(0,12)+'...' : nomeStr;
+                        
+                        const htmlPino = `<div class="marker-dolar pulse-dolar"><span style="font-size:10px; font-weight:600; text-transform:uppercase; opacity:0.9; margin-bottom:2px;">${nomeCurto}</span><span>💲 ${sim} ${precoLocal}</span></div>`;
+                        
+                        const elFiltro = document.createElement('div');
+                        elFiltro.className = 'marker-pergunta-container';
+                        elFiltro.innerHTML = htmlPino;
+
+                        avaliacoesValidas.forEach(item => {
+                            let vUp = item.votos_up || 0; let vDown = item.votos_down || 0; let totalV = vUp + vDown; let stAtual = 'pendente'; let minVotosRequeridos = 5; 
+                            if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
+                            let ic = stAtual === 'aprovado' ? '✅' : (stAtual === 'abusivo' ? '🚨' : '⏳'); 
+                            
+                            let textoPreco = `${sim} ${(item.preco * cotacao).toFixed(2)}`;
+                            let btns = '';
+
+                            if (estadoApp.perfil === 'avaliador' && (stAtual === 'aprovado' || isPremium)) {
+                                textoPreco = `<span style="font-size:10px; background:#E2E8F0; color:#64748B; padding:4px 6px; border-radius:6px;">🔒 Visível para Turistas</span>`;
+                                btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Mudança de Preço">🚩 Preço Mudou?</button></div>`;
+                            } else {
+                                const safeName = (item.nome || "Item").replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                                btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:var(--brand-primary);" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#EF4444;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${safeName}', ${item.preco}, ${isPremium})">✏️</button></div>`;
+                            }
+                            
+                            let bgDestaque = ((item.nome || "").toLowerCase() === estadoApp.filtroProduto.toLowerCase()) ? 'background:#ECFDF5; border: 1px solid var(--brand-primary);' : '';
+                            htmlLista += `<div class="item-card" style="${bgDestaque}"><div class="item-row"><div class="item-detalhes"><span class="item-nome">${ic} ${item.nome}</span></div><span class="item-preco">${textoPreco}</span></div>${btns}</div>`;
+                        });
+
+                        const safeLocalName = nomeL.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                        
+                        let btnPromoverHtml = ''; 
+                        if (isDono && !isPremium) {
+                            btnPromoverHtml = `<div style="background:#FFFBEB; border:2px dashed var(--brand-accent); padding:10px; border-radius:14px; margin-bottom:15px; text-align:center;"><button onclick="event.stopPropagation(); window.iniciarVerificacaoLojista('${safeLocalName}')" style="width:100%; padding:12px; background:var(--brand-accent); color:white; font-weight:800; font-size:14px; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(245, 158, 11, 0.3);">⭐ VERIFICAR E DESTACAR</button></div>`;
+                        }
+
+                        let btnAdicionarItemHtml = '';
+                        if (isPremium && lugarLojista) {
+                            if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:var(--text-dark); color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1);">📋 Adicionar ao Menu</button>`; } 
+                            else { btnAdicionarItemHtml = `<div style="text-align:center; padding:10px; background:#F1F5F9; border-radius:12px; font-size:12px; color:var(--text-muted); margin-bottom:8px; font-weight:600;">🔒 Menu Fechado Oficial</div>`; }
+                        } else {
+                            if (estadoApp.perfil === 'avaliador') { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:var(--brand-primary); color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(16, 185, 129, 0.2);">➕ Cadastrar Novo Item Aqui</button>`; } 
+                            else if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:var(--text-dark); color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1);">📋 Adicionar ao Menu</button>`; }
+                        }
+
+                        let estrelasStr = `<span style="font-size: 20px; margin-right: 6px;">⭐</span> <span style="font-size: 15px;">Nova Loja</span>`;
+                        if(estadoApp.avaliacoes && estadoApp.avaliacoes[nomeL]) {
+                            const revs = estadoApp.avaliacoes[nomeL]; let soma = 0; revs.forEach(r => soma += r.nota); const media = (soma / revs.length).toFixed(1);
+                            estrelasStr = `<span style="font-size: 20px; margin-right: 6px;">⭐</span> <span style="font-size: 15px;">${media} (${revs.length} opiniões)</span>`;
+                        }
+
+                        let popupHtml = `<div class="popup-info"><h3>🏪 ${nomeL}</h3><div class="badge-estrelas">${estrelasStr}</div>${btnPromoverHtml}<div class="lista-itens">${htmlLista}</div>${btnAdicionarItemHtml}</div>`;
+                        
+                        const markerFiltro = new mapboxgl.Marker({element: elFiltro}).setLngLat([lngNum, latNum]).addTo(window.mapa);
+                        elFiltro.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+                            new mapboxgl.Popup({offset: 25, closeOnClick: true}).setLngLat([lngNum, latNum]).setHTML(popupHtml).addTo(window.mapa);
+                        });
+                        window.marcadoresAtuais.push(markerFiltro);
+                        window.marcadoresMapboxGlobais[nomeL] = markerFiltro;
+                        
+                        continue; 
+                    }
+
+                    if (estadoApp.perfil === 'turista' && !estadoApp.radarAtivo && !isPremium) { continue; }
+                    
+                    let fotosLojistaHtml = ''; 
+                    if (lugarLojista && lugarLojista.fotosLocal && lugarLojista.fotosLocal.length > 0) {
+                        fotosLojistaHtml = '<div class="galeria-lojista">'; lugarLojista.fotosLocal.forEach(f => { fotosLojistaHtml += `<img src="${f}">`; }); fotosLojistaHtml += '</div>';
+                    }
+
+                    avaliacoesValidas.forEach(item => {
+                        let qtdDenuncias = item.denuncias || 0; let isCongelado = qtdDenuncias >= 3;
+                        let vUp = item.votos_up || 0; let vDown = item.votos_down || 0; let totalV = vUp + vDown; let stAtual = 'pendente'; let minVotosRequeridos = 5; 
+                        if(totalV >= minVotosRequeridos) { let pctAprovacao = (vUp / totalV) * 100; if(pctAprovacao >= 60) stAtual = 'aprovado'; else if(pctAprovacao <= 40) stAtual = 'abusivo'; }
+                        if (stAtual === "abusivo") qAb++; if (stAtual === "aprovado") qAp++; 
+                        let ic = stAtual === 'aprovado' ? '✅' : (stAtual === 'abusivo' ? '🚨' : '⏳'); 
+                        
+                        let textoPreco = `${sim} ${(item.preco * cotacao).toFixed(2)}`;
+                        let btns = '';
+                        const safeName = (item.nome || "Item").replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+                        if (estadoApp.perfil === 'avaliador' && (stAtual === 'aprovado' || isPremium) && !isCongelado) {
+                            textoPreco = `<span style="font-size:10px; background:#E2E8F0; color:#64748B; padding:4px 6px; border-radius:6px;">🔒 Visível para Turistas</span>`;
+                            btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Mudança">🚩 Preço Mudou?</button></div>`;
+                        } else {
+                            if (isCongelado) { ic = '🧊'; btns = `<div class="item-acoes"><span style="color:#EF4444; font-size:12px; font-weight:700;">🚨 Suspenso por Fraude</span></div>`; } 
+                            else { btns = `<div class="item-acoes"><button class="btn-denuncia" onclick="window.denunciarItem('${item.id}')" title="Denunciar Golpe">🚩</button><button class="btn-voto" style="background:var(--brand-primary);" onclick="window.votarItem('${item.id}', 'up', ${isPremium})">${t.btnYes} (${vUp})</button><button class="btn-voto" style="background:#EF4444;" onclick="window.votarItem('${item.id}', 'down', ${isPremium})">${t.btnNo} (${vDown})</button><button class="btn-editar" onclick="window.abrirEdicao('${item.id}', '${safeName}', ${item.preco}, ${isPremium})">✏️</button></div>`; }
+                        }
+
+                        let badge = ""; const nl = (item.nome || "").toLowerCase().trim(); const ctg = estadoApp.contagemPrecos[nl];
+                        if (estadoApp.perfil !== 'avaliador' || !(stAtual === 'aprovado' || isPremium)) {
+                            if (ctg > 1 && !isCongelado) { const m = estadoApp.mediaPrecos[nl] / ctg; const pM = (m * cotacao).toFixed(2); if (item.preco > m * 1.15) badge = `<span style="font-size:10px;background:#FEF2F2;color:#DC2626;padding:3px 6px;border-radius:6px;margin-top:4px;display:inline-block;">${t.badgeCaro} (${sim} ${pM})</span>`; else if (item.preco <= m * 0.9) badge = `<span style="font-size:10px;background:#ECFDF5;color:var(--brand-primary);padding:3px 6px;border-radius:6px;margin-top:4px;display:inline-block;">${t.badgeBom} (${sim} ${pM})</span>`; else badge = `<span style="font-size:10px;background:#FFFBEB;color:var(--brand-accent);padding:3px 6px;border-radius:6px;margin-top:4px;display:inline-block;">${t.badgeMedia}</span>`; }
+                        }
+                        htmlLista += `<div class="item-card"><div class="item-row"><div class="item-detalhes"><span class="item-nome">${ic} ${item.nome}</span>${badge}</div><span class="item-preco">${textoPreco}</span></div>${btns}</div>`;
+                    });
+                    
+                    let txAbuso = tItens > 0 ? (qAb / tItens) * 100 : 0; let txAprov = tItens > 0 ? (qAp / tItens) * 100 : 0; 
+                    let colorPino = '#10B981'; /* Verde padrao */
+                    let st = `<p style="color:var(--brand-accent);font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusYellow}</p>`;
+                    
+                    if (isDono) { 
+                        st = `<p style="color:var(--brand-secondary);font-weight:800;font-size:14px;margin:0 0 12px 0;">🏢 A Sua Loja</p>`; 
+                        colorPino = '#0F172A';
+                    } 
+                    else if (isPremium) { 
+                        st = `<p style="color:var(--brand-accent);font-weight:800;font-size:13px;margin:0 0 12px 0;">⭐ Local Parceiro Verificado</p>`; 
+                        colorPino = '#F59E0B';
+                    } 
+                    else if (lugarLojista) { 
+                        st = `<p style="color:var(--brand-primary);font-weight:700;font-size:13px;margin:0 0 12px 0;">✅ Negócio Local</p>`; 
+                        colorPino = '#10B981';
+                    } 
+                    else {
+                        if (txAbuso >= 30) { colorPino = '#EF4444'; st = `<p style="color:#EF4444;font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusRed} (${txAbuso.toFixed(0)}% Abusivo)</p>`; } 
+                        else if (txAprov >= 60) { colorPino = '#10B981'; st = `<p style="color:var(--brand-primary);font-weight:700;font-size:13px;margin:0 0 12px 0;">${t.statusGreen} (${txAprov.toFixed(0)}% Seguro)</p>`; }
+                    }
+
+                    const safeLocalName = nomeL.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    
+                    let btnPromoverHtml = ''; 
+                    if (isDono && !isPremium) {
+                        let emTeste = false;
+                        let diasRestantes = 0;
+                        if (estadoApp.fimTrial) {
+                            const agora = Date.now();
+                            if (agora <= estadoApp.fimTrial) {
+                                emTeste = true;
+                                diasRestantes = Math.ceil((estadoApp.fimTrial - agora) / (1000 * 60 * 60 * 24));
+                            }
+                        }
+                        if (emTeste) {
+                            btnPromoverHtml = `
+                            <div style="background:#ECFDF5; border:2px dashed var(--brand-primary); padding:12px; border-radius:14px; margin-bottom:15px; text-align:center;">
+                                <p style="color:var(--brand-primary); font-weight:800; font-size:14px; margin:0;">🎁 30 Dias Grátis Ativos!</p>
+                                <p style="color:var(--text-muted); font-size:12px; margin:4px 0 0 0; font-weight:500;">Faltam ${diasRestantes} dias de destaque.</p>
+                            </div>`;
+                        } else {
+                            btnPromoverHtml = `
+                            <div style="background:#FFFBEB; border:2px dashed var(--brand-accent); padding:12px; border-radius:14px; margin-bottom:15px; text-align:center;">
+                                <button onclick="event.stopPropagation(); window.iniciarVerificacaoLojista('${safeLocalName}')" style="width:100%; padding:14px; background:var(--brand-accent); color:white; font-weight:800; font-size:14px; border:none; border-radius:12px; cursor:pointer; box-shadow:0 4px 10px rgba(245, 158, 11, 0.3);">⭐ VERIFICAR E DESTACAR</button>
+                            </div>`;
+                        }
+                    }
+
+                    let btnAdicionarItemHtml = '';
+                    if (isPremium && lugarLojista) {
+                        if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:var(--text-dark); color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1);">📋 Adicionar ao Menu</button>`; } 
+                        else { btnAdicionarItemHtml = `<div style="text-align:center; padding:10px; background:#F1F5F9; border-radius:12px; font-size:12px; color:var(--text-muted); margin-bottom:8px; font-weight:600;">🔒 Menu Fechado Oficial</div>`; }
+                    } else {
+                        if (estadoApp.perfil === 'avaliador') { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', false)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:var(--brand-primary); color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(16, 185, 129, 0.3);">➕ Cadastrar Novo Item</button>`; } 
+                        else if (isDono) { btnAdicionarItemHtml = `<button onclick="event.stopPropagation(); window.abrirAdicionarItemDireto('${safeLocalName}', true)" style="width:100%; margin-top:12px; margin-bottom:8px; padding:14px; background:var(--text-dark); color:white; font-weight:bold; font-size:14px; border:none; border-radius:14px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.1);">📋 Adicionar ao Menu</button>`; }
+                    }
+
+                    let estrelasStr = `<span style="font-size: 20px; margin-right: 6px;">⭐</span> <span style="font-size: 15px;">Nova Loja</span>`;
+                    if(estadoApp.avaliacoes && estadoApp.avaliacoes[nomeL]) {
+                        const revs = estadoApp.avaliacoes[nomeL]; let soma = 0; revs.forEach(r => soma += r.nota); const media = (soma / revs.length).toFixed(1);
+                        estrelasStr = `<span style="font-size: 20px; margin-right: 6px;">⭐</span> <span style="font-size: 15px;">${media} (${revs.length} opiniões)</span>`;
+                    }
+
+                    let btnVerAvaliacoesHtml = `<button onclick="event.stopPropagation(); window.abrirAvaliacoes('${safeLocalName}')" style="width:100%; margin-top:5px; padding:14px; background:transparent; color:var(--text-dark); font-weight:700; font-size:14px; border:2px solid #E2E8F0; border-radius:14px; cursor:pointer; transition:0.2s;">⭐ Ver/Deixar Avaliação</button>`;
+
+                    let popupHtml = `<div class="popup-info">
+                        <h3 style="margin-bottom: 10px;">🏪 ${nomeL}</h3>
+                        <div class="badge-estrelas">${estrelasStr}</div>
+                        ${btnPromoverHtml}
+                        ${fotosLojistaHtml}
+                        ${st}
+                        <div class="lista-itens">${htmlLista}</div>
+                        ${btnAdicionarItemHtml}
+                        ${btnVerAvaliacoesHtml}
+                    </div>`;
+
+                    let pinoMapbox;
+                    let elPinoBase = null;
+
+                    if (isPremium) {
+                        elPinoBase = document.createElement('div');
+                        elPinoBase.className = 'marker-premium'; elPinoBase.innerHTML = '⭐';
+                    } else if (isDono) {
+                        elPinoBase = document.createElement('div');
+                        elPinoBase.className = 'minha-loja-container'; elPinoBase.innerHTML = '<div class="marker-minha-loja" style="background:var(--text-dark); border-color:white; box-shadow:0 10px 20px rgba(0,0,0,0.2);">🏬<div class="label-minha-loja" style="background:var(--text-dark); border-color:white;">SUA LOJA</div></div>';
+                    } else {
+                        elPinoBase = document.createElement('div');
+                        elPinoBase.className = 'marker-base'; 
+                        elPinoBase.style.backgroundColor = colorPino; /* Usando o HEX puro aqui! */
+                    }
+
+                    if (elPinoBase) {
+                        pinoMapbox = new mapboxgl.Marker({element: elPinoBase}).setLngLat([lngNum, latNum]).addTo(window.mapa);
+                        elPinoBase.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+                            new mapboxgl.Popup({offset: 25, closeOnClick: true}).setLngLat([lngNum, latNum]).setHTML(popupHtml).addTo(window.mapa);
+                        });
+                    }
+                    window.marcadoresAtuais.push(pinoMapbox);
+                    window.marcadoresMapboxGlobais[nomeL] = pinoMapbox;
+                    
+                } catch(err) { 
+                    console.error("Falha ao desenhar o pino:", nomeL, err); 
+                }
+            }
+
+            for (const idPerg in estadoApp.perguntasAbertas) {
+                try {
+                    if (estadoApp.filtroProduto) continue;
+
+                    const perg = estadoApp.perguntasAbertas[idPerg]; const autorP = perg.autorUid || '';
+                    
+                    const latNum = parseFloat(perg.lat);
+                    const lngNum = parseFloat(perg.lng);
+                    if (isNaN(latNum) || isNaN(lngNum)) continue; 
+
+                    if (estadoApp.perfil === 'lojista' || (estadoApp.perfil === 'turista' && (!estadoApp.usuario || autorP !== estadoApp.usuario.uid))) continue; 
+
+                    let corArea = 'var(--brand-secondary)';      
+                    let typeAnim = 'marker-pergunta-anim'; let typeIcon = '?';
+                    if (perg.fotoSolicitada) { typeAnim = 'marker-camera-anim'; typeIcon = '📸'; corArea = 'var(--brand-accent)'; } 
+                    else if (perg.fotoUrl) { typeAnim = 'marker-foto-anim'; typeIcon = '🖼️'; corArea = '#3B82F6'; }
+
+                    const elDuvida = document.createElement('div');
+                    elDuvida.className = 'marker-pergunta-container';
+                    elDuvida.innerHTML = `<div class="ghost-anim"><div class="${typeAnim}">${typeIcon}</div></div>`;
+
+                    const pinoDuvida = new mapboxgl.Marker({element: elDuvida}).setLngLat([lngNum, latNum]).addTo(window.mapa);
+                    window.marcadoresAtuais.push(pinoDuvida);
+
+                    const resps = perg.respostas || []; const qtdResps = resps.length; const tipoBadge = perg.tipoLocal === 'Ambulante' ? '🚶 Ambulante' : '🏪 Fixo';
+                    let htmlPopup = ''; const imgHtml = perg.fotoUrl ? `<img src="${perg.fotoUrl}" style="width:100%; max-height:140px; object-fit:cover; border-radius:12px; border: 1px solid #E2E8F0; margin-bottom:12px;">` : '';
+
+                    if(estadoApp.perfil === 'avaliador') {
+                        let btnFoto = '';
+                        if (!perg.fotoUrl && !perg.fotoSolicitada) { btnFoto = `<button onclick="window.solicitarFoto('${idPerg}', '${autorP}', '${(perg.nomeItem||'').replace(/'/g, "\\'").replace(/"/g, '&quot;')}', '${(perg.nomeLocal||'').replace(/'/g, "\\'").replace(/"/g, '&quot;')}')" class="btn-laranja" style="background:var(--brand-accent); padding:14px; border-radius:12px;">${t.btnReqFoto}</button>`; } 
+                        else if (perg.fotoSolicitada) { btnFoto = `<p style="font-size:13px; color:var(--brand-accent); font-weight:700;">⏳ A aguardar envio de foto...</p>`; }
+                        
+                        htmlPopup = `<div style="text-align:center; font-family:'Inter', sans-serif;"><h3 style="font-family:'Poppins', sans-serif; margin:0 0 8px 0; color:${corArea};">Dúvida na Área</h3><p style="margin:0 0 5px 0; font-size:15px; color:var(--text-dark);">Procurar por: <strong>${perg.nomeLocal}</strong> <span style="font-size:11px; background:#F1F5F9; color:var(--text-muted); padding:3px 6px; border-radius:6px; font-weight:600;">${tipoBadge}</span></p><p style="margin:0 0 12px 0; font-size:15px; color:var(--text-dark);">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}<p style="font-size:13px; color:var(--brand-accent); font-weight:800; margin-bottom:10px;">Respostas: ${qtdResps}/3</p><button onclick="window.abrirModalResposta('${idPerg}')" style="background:var(--brand-primary); color:white; border:none; padding:14px; border-radius:12px; cursor:pointer; font-weight:700; font-size:14px; margin-bottom:8px; width:100%; box-shadow:0 4px 10px rgba(16,185,129,0.2);">Responder e Ganhar</button>${btnFoto}</div>`; 
+                    } else {
+                        let btnEnviarExtra = ''; let statusMsg = `<p style="font-size:13px; color:var(--brand-accent); font-weight:700;">⏳ A aguardar avaliadores...</p>`;
+                        if(perg.fotoSolicitada) { statusMsg = `<p style="font-size:13px; color:#EF4444; font-weight:700; line-height:1.3; margin-bottom:10px;">🚨 Os avaliadores precisam de uma foto para ajudar!</p>`; btnEnviarExtra = `<button onclick="window.abrirEnvioFotoExtra('${idPerg}')" style="background:var(--brand-accent); color:white; border:none; padding:14px; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:8px;">📸 Enviar Foto Agora</button>`; }
+                        htmlPopup = `<div style="text-align:center; font-family:'Inter', sans-serif;"><h3 style="font-family:'Poppins', sans-serif; margin:0 0 8px 0; color:${corArea};">Sua Dúvida</h3><p style="margin:0 0 5px 0; font-size:15px; color:var(--text-dark);"><strong>${perg.nomeLocal}</strong> <span style="font-size:11px; background:#F1F5F9; color:var(--text-muted); padding:3px 6px; border-radius:6px; font-weight:600;">${tipoBadge}</span></p><p style="margin:0 0 12px 0; font-size:15px; color:var(--text-dark);">Item: <strong>${perg.nomeItem}</strong></p>${imgHtml}${statusMsg}${btnEnviarExtra}</div>`;
+                    }
+
+                    elDuvida.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+                        new mapboxgl.Popup({offset: 25, closeOnClick: true})
+                            .setLngLat([lngNum, latNum])
+                            .setHTML(htmlPopup)
+                            .addTo(window.mapa);
+                    });
+                } catch (err) { console.error("Falha ao desenhar a pergunta", err); }
+            }
+            if(estadoApp.usuario) setTxt('saldoDisplay', `${sim} ${(estadoApp.saldo * cotacao).toFixed(2)}`);
+        }
+    </script>
+</body>
+</html>

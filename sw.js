@@ -82,7 +82,7 @@ self.addEventListener('fetch', (event) => {
     }
     
     // Estratégia para recursos estáticos
-    if (STATIC_ASSETS.some(asset => url.pathname === asset || url.pathname.endsWith(asset))) {
+    if (STATIC_ASSETS.some(asset => url.pathname === asset || url.pathname.includes(asset))) {
         event.respondWith(
             caches.match(request)
                 .then(response => {
@@ -148,6 +148,10 @@ self.addEventListener('fetch', (event) => {
                                 .then(cache => cache.put(request, networkResponse.clone()));
                         }
                         return networkResponse;
+                    })
+                    .catch(() => {
+                        // Fallback para cache se falhar a rede
+                        return caches.match(request);
                     });
             })
     );
@@ -157,8 +161,10 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('sync', (event) => {
     if (event.tag === 'background-sync') {
         event.waitUntil(
-            // Lógica de sincronização offline
-            console.log('🔄 Sincronizando dados em background...');
+            Promise.resolve()
+                .then(() => {
+                    console.log('🔄 Sincronizando dados em background...');
+                })
         );
     }
 });

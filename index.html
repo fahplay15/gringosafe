@@ -482,16 +482,39 @@
                 'js/main.js'
             ];
             
-            scripts.forEach((src, index) => {
-                setTimeout(() => {
+            // Carregar todos scripts simultaneamente com Promise
+            const loadPromises = scripts.map(src => {
+                return new Promise((resolve, reject) => {
                     const script = document.createElement('script');
                     script.src = src;
+                    script.onload = resolve;
+                    script.onerror = reject;
                     document.body.appendChild(script);
-                }, index * 100); // 100ms de delay entre cada script
+                });
             });
+            
+            Promise.all(loadPromises)
+                .then(() => {
+                    console.log("✅ Todos os scripts carregados com sucesso!");
+                    
+                    // Forçar inicialização após 500ms
+                    setTimeout(() => {
+                        const splash = getEl('splashScreen');
+                        if (splash && splash.style.display !== 'none') {
+                            splash.style.opacity = '0';
+                            setTimeout(() => {
+                                splash.style.display = 'none';
+                                console.log("🚀 App pronto para uso!");
+                            }, 500);
+                        }
+                    }, 500);
+                })
+                .catch(error => {
+                    console.error("❌ Erro ao carregar scripts:", error);
+                });
         };
         
-        // Iniciar carregamento
+        // Iniciar carregamento imediatamente
         loadScripts();
     </script>
 </body>
