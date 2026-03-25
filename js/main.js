@@ -245,4 +245,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     console.log("GringoSafe inicializado com sucesso!");
+    
+    // Esconder splash screen após carregamento completo
+    setTimeout(() => {
+        const splash = getEl('splashScreen');
+        if (splash) {
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 500);
+        }
+    }, 2000);
 });

@@ -326,10 +326,4 @@ window.inicializarApp = function() {
             } 
         }, 1000); 
     });
-
-    // Configurar agendamento de desenho
-    window.agendarDesenho = function() { 
-        if(window.timeoutDesenho) clearTimeout(window.timeoutDesenho); 
-        window.timeoutDesenho = setTimeout(window.desenharPinos, 300); 
-    };
 };

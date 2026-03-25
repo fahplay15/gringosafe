@@ -84,7 +84,7 @@ window.escapeHtml = function(text) {
     return text.replace(/[&<>"']/g, m => map[m]);
 }
 
-// Debounce para performance
+// Debounce function
 window.debounce = function(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -95,4 +95,14 @@ window.debounce = function(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
     };
-}
+};
+
+// Agendar desenho (para evitar múltiplas renderizações)
+window.agendarDesenho = function() { 
+    if(window.timeoutDesenho) clearTimeout(window.timeoutDesenho); 
+    window.timeoutDesenho = setTimeout(() => {
+        if (typeof window.desenharPinos === 'function') {
+            window.desenharPinos();
+        }
+    }, 300); 
+};
