@@ -1,0 +1,92 @@
+/* CORE CSS - GringoSafe */
+:root {
+    --brand-primary: #10B981;
+    --brand-secondary: #6366F1;
+    --brand-accent: #F59E0B;
+    --bg-glass: rgba(255, 255, 255, 0.85);
+    --text-dark: #0F172A;
+    --text-muted: #64748B;
+    --border-glass: rgba(255, 255, 255, 0.4);
+    --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    --radius-ui: 24px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body, html { 
+    font-family: 'Inter', sans-serif; 
+    background-color: #FFFFFF; 
+    color: var(--text-dark); 
+    height: 100%; 
+    width: 100%; 
+    overflow: hidden; 
+}
+
+/* --- UI LAYER: MAPA --- */
+#mapa { position: absolute; inset: 0; z-index: 0; }
+
+/* --- COMPONENTE: ILHAS FLUTUANTES (GLASS) --- */
+.glass-island { 
+    background: var(--bg-glass); 
+    backdrop-filter: blur(16px) saturate(180%); 
+    -webkit-backdrop-filter: blur(16px) saturate(180%); 
+    border: 1px solid var(--border-glass); 
+    box-shadow: var(--shadow-float); 
+}
+
+/* --- TOAST --- */
+#toastAviso { 
+    display:none; 
+    position:fixed; 
+    top:85px; 
+    left:50%; 
+    transform:translateX(-50%); 
+    background:var(--text-dark); 
+    color:white; 
+    padding:12px 24px; 
+    border-radius:30px; 
+    z-index:9999; 
+    font-weight:600; 
+    font-size:14px; 
+    box-shadow:0 10px 25px rgba(0,0,0,0.2); 
+    animation: fadeInDown 0.3s ease-out; 
+    white-space: nowrap; 
+}
+
+@keyframes fadeInDown { 
+    from { opacity: 0; transform: translate(-50%, -20px); } 
+    to { opacity: 1; transform: translate(-50%, 0); } 
+}
+
+/* --- ANIMAÇÕES GLOBAIS --- */
+@keyframes radarPulseBtn { 
+    0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); } 
+    70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } 
+    100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } 
+}
+
+@keyframes wanderGhost { 
+    0% { transform: translate(0px, 0px); } 
+    33% { transform: translate(25px, -20px); } 
+    66% { transform: translate(-20px, 25px); } 
+    100% { transform: translate(0px, 0px); } 
+}
+
+@keyframes pulsePurpleGigante { 
+    0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.6); transform: scale(1); } 
+    50% { box-shadow: 0 0 0 25px rgba(99, 102, 241, 0); transform: scale(1.1); } 
+    100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); transform: scale(1); } 
+}
+
+@keyframes sheetUp { 
+    from { transform: translateY(100%); } 
+    to { transform: translateY(0); } 
+}
+
+/* 🚨 OCULTAR CONTROLOS NATIVOS DO MAPBOX QUE CAUSAM BUG VISUAL 🚨 */
+.mapboxgl-ctrl-top-left, 
+.mapboxgl-ctrl-top-right, 
+.mapboxgl-ctrl-bottom-left, 
+.mapboxgl-ctrl-bottom-right { 
+    display: none !important; 
+}

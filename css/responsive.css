@@ -1,0 +1,170 @@
+/* RESPONSIVE CSS - GringoSafe */
+
+/* PERFIS */
+body.modo-turista .btn-adicionar { 
+    display: none !important; 
+}
+
+body.modo-turista #t_level { 
+    display: none !important; 
+}
+
+body.modo-turista #saldoDisplay { 
+    display: none !important; 
+}
+
+body.modo-turista .item-acoes { 
+    display: none !important; 
+}
+
+body.modo-turista .badge-buscas { 
+    display: flex !important; 
+}
+
+body.modo-turista .btn-perguntar { 
+    display: flex !important; 
+}
+
+body.modo-turista .notif-container { 
+    display: flex !important; 
+}
+
+body.modo-turista .btn-radar { 
+    display: flex !important; 
+}
+
+body.modo-turista .btn-denuncia { 
+    display: inline-block !important; 
+} 
+
+body.modo-turista #bloqueioLoginOverlay { 
+    display: none !important; 
+} 
+
+body.modo-avaliador .notif-container { 
+    display: none !important; 
+}
+
+body.modo-avaliador .btn-perguntar { 
+    display: none !important; 
+}
+
+body.modo-avaliador .btn-pesquisa { 
+    display: none !important; 
+} 
+
+body.modo-avaliador .btn-denuncia { 
+    display: inline-block !important; 
+}
+
+body.modo-lojista #t_level { 
+    display: none !important; 
+}
+
+body.modo-lojista #saldoDisplay { 
+    display: none !important; 
+}
+
+body.modo-lojista .notif-container { 
+    display: none !important; 
+}
+
+body.modo-lojista .btn-perguntar { 
+    display: none !important; 
+}
+
+body.modo-lojista .badge-buscas { 
+    display: none !important; 
+}
+
+body.modo-lojista .btn-radar { 
+    display: none !important; 
+}
+
+body.modo-lojista .item-acoes { 
+    display: none !important; 
+} 
+
+body:not(.modo-lojista) #btnAreaLojista { 
+    display: none !important; 
+}
+
+body:not(.modo-avaliador) #btnMinhaCarteira { 
+    display: none !important; 
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 480px) {
+    .header-island {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        height: 50px;
+        padding: 0 10px;
+    }
+    
+    .brand-logo {
+        font-size: 16px;
+    }
+    
+    .brand-logo span {
+        font-size: 18px;
+    }
+    
+    .action-dock {
+        bottom: 15px;
+        padding: 8px;
+        gap: 8px;
+    }
+    
+    .btn-dock {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .btn-dock-main {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .btn-perguntar {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .modal-sheet {
+        padding: 20px 15px;
+        border-radius: 20px;
+    }
+    
+    .side-menu {
+        width: 280px;
+        left: -280px;
+    }
+}
+
+@media (max-width: 360px) {
+    .brand-logo {
+        font-size: 14px;
+    }
+    
+    .balance-pill {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+    
+    .btn-dock {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .btn-dock-main {
+        width: 55px;
+        height: 55px;
+    }
+    
+    .btn-perguntar {
+        width: 55px;
+        height: 55px;
+    }
+}
