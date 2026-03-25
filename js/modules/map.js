@@ -263,8 +263,22 @@ window.desenharPinos = function() {
                 console.error("Erro ao criar marker de pergunta:", markerError);
             }
 
-            // ... resto da lógica de perguntas
-        } catch (err) { 
+            elDuvida.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+                const popupHtml = `<div class="popup-pergunta">
+                    <h3>${perg.titulo}</h3>
+                    <p>${perg.descricao}</p>
+                    <button class="btn-responder" onclick="window.abrirRespostaPergunta('${idPerg}')">
+                        Responder
+                    </button>
+                </div>`;
+                new mapboxgl.Popup({offset: 25, closeOnClick: true})
+                    .setLngLat([lngNum, latNum])
+                    .setHTML(popupHtml)
+                    .addTo(window.mapa);
+            });
+        } catch (err) {
             console.error("Falha ao desenhar a pergunta", err); 
         }
     }
