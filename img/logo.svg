@@ -1,0 +1,10 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shield background -->
+  <path d="M20 2L4 8V18C4 26 10 32 20 38C30 32 36 26 36 18V8L20 2Z" fill="#10B981" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Location pin -->
+  <path d="M20 10C17.24 10 15 12.24 15 15C15 17.76 20 24 20 24C20 24 25 17.76 25 15C25 12.24 22.76 10 20 10Z" fill="#6366F1" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Dollar sign -->
+  <text x="20" y="18" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#ffffff" text-anchor="middle">$</text>
+</svg>

@@ -42,11 +42,16 @@ GringoSafe.app = {
     // Initialize map
     await GringoSafe.map.init();
     
-    // Initialize auth (already initialized via auth.js)
-    // Initialize AI (already initialized via ai.js)
+    // Initialize database
+    GringoSafe.db.init();
+    
+    // Setup real-time listeners
+    GringoSafe.db.setupRealtimeListeners();
     
     // Load saved preferences
     this.loadSavedPreferences();
+    
+    console.log("All components initialized");
   },
   
   // Setup event listeners
@@ -366,13 +371,29 @@ GringoSafe.app = {
   // Setup service worker for PWA
   setupServiceWorker: function() {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .then(registration => {
-          console.log('ServiceWorker registration successful');
-        })
-        .catch(error => {
-          console.log('ServiceWorker registration failed:', error);
-        });
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            
+            // Check for updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New content is available
+                  if (confirm('Nova versão disponível! Deseja atualizar?')) {
+                    window.location.reload();
+                  }
+                }
+              });
+            });
+            
+          })
+          .catch(error => {
+            console.log('ServiceWorker registration failed:', error);
+          });
+      });
     }
   },
   
@@ -461,8 +482,37 @@ window.submitPrice = async function() {
   }
   
   try {
-    // Here you would save to Firebase
-    console.log('Submitting price:', { productName, productPrice, establishmentName });
+    // Get current location or use default
+    let location = GringoSafe.state.location;
+    if (!location) {
+      location = { lat: -23.5505, lng: -46.6333 }; // São Paulo default
+    }
+    
+    // Create marker data
+    const markerData = {
+      id: 'user-' + Date.now(),
+      lat: location.lat,
+      lng: location.lng,
+      title: productName,
+      price: productPrice,
+      currency: GringoSafe.state.currency || 'BRL',
+      type: 'validated',
+      description: establishmentName,
+      verified: false,
+      category: 'food',
+      userId: GringoSafe.auth.getCurrentUser()?.uid || 'anonymous',
+      timestamp: new Date().toISOString()
+    };
+    
+    // Add to map immediately
+    GringoSafe.map.addMarker(markerData);
+    
+    // Save to database
+    try {
+      await GringoSafe.db.addMarker(markerData);
+    } catch (error) {
+      console.log("Database not available, using local storage");
+    }
     
     // Add points for adding price
     await GringoSafe.auth.addPoints(10, 'Adicionou preço');

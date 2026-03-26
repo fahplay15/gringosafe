@@ -15,7 +15,7 @@ GringoSafe.config = {
   
   // Mapbox Configuration
   mapbox: {
-    accessToken: "pk.eyJ1IjoiZ3Jpbmdvc2FmZSIsImEiOiJjbXXXXXXXXXXXXXXXXXXXXX",
+    accessToken: "pk.eyJ1IjoiZmFocGxheTE1IiwiYSI6ImNtbXk2Z3UzMDB2YnYyb3BsMTA2ZzV2NmkifQ.Tvdrpof80mAktc3Z3dB3cw",
     style: "mapbox://styles/mapbox/dark-v11",
     center: [-46.6333, -23.5505], // São Paulo
     zoom: 12

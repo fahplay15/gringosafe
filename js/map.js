@@ -370,12 +370,66 @@ GringoSafe.map = {
   loadMarkers: async function() {
     try {
       const markers = await GringoSafe.db.getMarkers();
-      markers.forEach(marker => {
-        this.addMarker(marker);
-      });
+      
+      // If no markers, add sample data for testing
+      if (markers.length === 0) {
+        this.addSampleMarkers();
+      } else {
+        markers.forEach(marker => {
+          this.addMarker(marker);
+        });
+      }
     } catch (error) {
       console.error("Error loading markers:", error);
+      // Add sample data if database fails
+      this.addSampleMarkers();
     }
+  },
+  
+  // Add sample markers for testing
+  addSampleMarkers: function() {
+    const sampleMarkers = [
+      {
+        id: 'sample-1',
+        lat: -23.5505,
+        lng: -46.6333,
+        title: 'Água Mineral 500ml',
+        price: 2.50,
+        currency: 'BRL',
+        type: 'validated',
+        description: 'Supermercado local',
+        verified: true,
+        category: 'food'
+      },
+      {
+        id: 'sample-2', 
+        lat: -23.5455,
+        lng: -46.6383,
+        title: 'Refrigerante Lata',
+        price: 4.00,
+        currency: 'BRL',
+        type: 'premium',
+        description: 'Loja premium verificada',
+        verified: true,
+        category: 'food'
+      },
+      {
+        id: 'sample-3',
+        lat: -23.5555,
+        lng: -46.6283,
+        title: 'Taxi até aeroporto?',
+        price: null,
+        currency: 'BRL',
+        type: 'question',
+        description: 'Alguém sabe o preço?',
+        verified: false,
+        category: 'transport'
+      }
+    ];
+    
+    sampleMarkers.forEach(marker => {
+      this.addMarker(marker);
+    });
   },
   
   // Setup event listeners
