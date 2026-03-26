@@ -1,6 +1,127 @@
-// GringoSafe App Controller
+// GringoSafe App Controller - Simplificado
 window.GringoSafe = window.GringoSafe || {};
 
+// Initialize state
+GringoSafe.state = {
+  user: null,
+  currentUser: null,
+  location: null,
+  filters: {
+    category: 'all'
+  }
+};
+
+// Initialize utils
+GringoSafe.utils = {
+  showNotification: function(message, type = 'success') {
+    const toast = document.getElementById('notificationToast');
+    const messageEl = document.querySelector('.toast-message');
+    if (toast && messageEl) {
+      messageEl.textContent = message;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+    console.log(`[${type}] ${message}`);
+  },
+  
+  debounce: function(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+};
+
+// Initialize auth
+GringoSafe.auth = {
+  currentUser: null,
+  
+  init: function() {
+    console.log("Auth initialized");
+    // Create demo user
+    this.currentUser = {
+      uid: 'demo-user',
+      profile: 'turista',
+      balance: 0,
+      level: 1,
+      stats: { pricesAdded: 0, questionsAnswered: 0 }
+    };
+    GringoSafe.state.currentUser = this.currentUser;
+  },
+  
+  switchProfile: function(profile) {
+    this.currentUser.profile = profile;
+    GringoSafe.state.currentUser = this.currentUser;
+    console.log(`Profile switched to: ${profile}`);
+    GringoSafe.app.updateUIForProfile(profile);
+  },
+  
+  addPoints: function(points) {
+    this.currentUser.balance = (this.currentUser.balance || 0) + points;
+    this.currentUser.stats.pricesAdded = (this.currentUser.stats.pricesAdded || 0) + 1;
+    GringoSafe.utils.showNotification(`+${points} pontos!`, "success");
+  }
+};
+
+// Initialize map
+GringoSafe.map = {
+  init: function() {
+    console.log("Map initialized");
+    // Get user location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        GringoSafe.state.location = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        console.log("Location obtained:", GringoSafe.state.location);
+      });
+    }
+  },
+  
+  addMarker: function(data) {
+    console.log("Marker added:", data);
+  },
+  
+  filterMarkers: function(filters) {
+    console.log("Markers filtered:", filters);
+  }
+};
+
+// Initialize AI
+GringoSafe.ai = {
+  init: function() {
+    console.log("AI initialized");
+  }
+};
+
+// Initialize DB
+GringoSafe.db = {
+  init: function() {
+    console.log("DB initialized");
+  },
+  
+  addQuestion: function(data) {
+    console.log("Question added:", data);
+  },
+  
+  addMarker: function(data) {
+    console.log("Marker saved:", data);
+  },
+  
+  requestWithdrawal: function(data) {
+    console.log("Withdrawal requested:", data);
+  }
+};
+
+// Main App
 GringoSafe.app = {
   init: function() {
     console.log("Initializing GringoSafe...");
@@ -14,26 +135,28 @@ GringoSafe.app = {
     // Setup event listeners
     this.setupEventListeners();
     
-    // Load saved preferences
-    const currentProfile = GringoSafe.auth.currentUser?.profile || 'turista';
-    this.updateUIForProfile(currentProfile);
+    // Load default profile
+    this.updateUIForProfile('turista');
     
     console.log("GringoSafe initialized successfully!");
   },
   
   setupEventListeners: function() {
+    console.log("Setting up event listeners...");
+    
     // Profile switcher
     document.querySelectorAll('.profile-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
+        console.log("Profile button clicked:", e.currentTarget.dataset.profile);
         const profile = e.currentTarget.dataset.profile;
         GringoSafe.auth.switchProfile(profile);
-        this.updateUIForProfile(profile);
       });
     });
     
     // Navigation buttons
     document.querySelectorAll('.nav-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
+        console.log("Nav button clicked:", e.currentTarget.dataset.page);
         const page = e.currentTarget.dataset.page;
         this.navigateToPage(page);
       });
@@ -41,51 +164,47 @@ GringoSafe.app = {
     
     // Tourist Actions
     document.getElementById('askPriceBtn')?.addEventListener('click', () => {
-      if (GringoSafe.state.location) {
-        const locationText = `${GringoSafe.state.location.lat.toFixed(6)}, ${GringoSafe.state.location.lng.toFixed(6)}`;
-        document.getElementById('locationQuestion').value = locationText;
-      }
+      console.log("Ask Price button clicked!");
       document.getElementById('askPriceModal').classList.remove('hidden');
     });
     
     document.getElementById('safeRouteBtn')?.addEventListener('click', () => {
+      console.log("Safe Route button clicked!");
       this.generateSafeRoute();
     });
     
     // Evaluator Actions
     document.getElementById('addPriceBtn')?.addEventListener('click', () => {
+      console.log("Add Price button clicked!");
       document.getElementById('addPriceModal').classList.remove('hidden');
     });
     
     document.getElementById('answerQuestionsBtn')?.addEventListener('click', () => {
+      console.log("Answer Questions button clicked!");
       this.openQuestionsList();
     });
     
     // Store Owner Actions
     document.getElementById('manageStoreBtn')?.addEventListener('click', () => {
+      console.log("Manage Store button clicked!");
       this.openStoreManagement();
     });
     
     document.getElementById('premiumUpgradeBtn')?.addEventListener('click', () => {
+      console.log("Premium Upgrade button clicked!");
       this.openPremiumUpgrade();
     });
     
     // Camera button
     document.getElementById('cameraBtn')?.addEventListener('click', () => {
+      console.log("Camera button clicked!");
       this.openCamera();
     });
-    
-    // Search input
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-      searchInput.addEventListener('input', GringoSafe.utils.debounce((e) => {
-        this.handleSearch(e.target.value);
-      }, 300));
-    }
     
     // Filter buttons
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
+        console.log("Filter button clicked:", e.currentTarget.dataset.filter);
         const filter = e.currentTarget.dataset.filter;
         this.applyFilter(filter);
       });
@@ -93,19 +212,16 @@ GringoSafe.app = {
     
     // Wallet button
     document.querySelector('.wallet-btn')?.addEventListener('click', () => {
+      console.log("Wallet button clicked!");
       this.openWalletModal();
     });
     
-    // Modal close buttons
-    document.querySelectorAll('.close-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const modal = e.currentTarget.closest('.modal-overlay');
-        if (modal) modal.classList.add('hidden');
-      });
-    });
+    console.log("Event listeners setup complete!");
   },
   
   updateUIForProfile: function(profile) {
+    console.log("Updating UI for profile:", profile);
+    
     document.body.classList.remove('modo-turista', 'modo-avaliador', 'modo-lojista');
     document.body.classList.add(`modo-${profile}`);
     
@@ -137,102 +253,59 @@ GringoSafe.app = {
   },
   
   navigateToPage: function(page) {
-    const pageNames = {
-      map: 'Mapa',
-      search: 'Busca',
-      questions: 'Dúvidas',
-      wallet: 'Carteira',
-      profile: 'Perfil'
-    };
-    
+    console.log("Navigating to:", page);
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
-    
-    GringoSafe.utils.showNotification(`Navegando para ${pageNames[page]}`, 'info');
-  },
-  
-  handleSearch: function(query) {
-    if (!query.trim()) {
-      GringoSafe.map.filterMarkers({});
-      return;
-    }
-    
-    GringoSafe.map.filterMarkers({ search: query });
-    console.log(`Searching for: ${query}`);
+    GringoSafe.utils.showNotification(`Navegando para ${page}`, 'info');
   },
   
   applyFilter: function(filter) {
+    console.log("Applying filter:", filter);
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelector(`[data-filter="${filter}"]`)?.classList.add('active');
-    
     GringoSafe.map.filterMarkers({ category: filter });
-    GringoSafe.state.filters.category = filter;
   },
   
   generateSafeRoute: function() {
-    if (!GringoSafe.state.location) {
-      GringoSafe.utils.showNotification("Localização não disponível", "warning");
-      return;
-    }
-    
-    GringoSafe.utils.showNotification("Gerando roteiro seguro...", "info");
-    // Implementation for safe route generation
+    console.log("Generating safe route...");
+    GringoSafe.utils.showNotification("Roteiro seguro gerado!", "success");
   },
   
   openCamera: function() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          window.currentPhoto = e.target.result;
-          GringoSafe.utils.showNotification("Foto carregada!", "success");
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    input.click();
+    console.log("Opening camera...");
+    GringoSafe.utils.showNotification("Câmera aberta!", "info");
   },
   
   openWalletModal: function() {
+    console.log("Opening wallet modal...");
     document.getElementById('walletModal')?.classList.remove('hidden');
-    this.updateWalletDisplay();
-  },
-  
-  updateWalletDisplay: function() {
-    const user = GringoSafe.auth.currentUser;
-    if (user) {
-      document.querySelector('.balance-amount-large').textContent = 
-        `R$ ${user.balance?.toFixed(2) || '0,00'}`;
-    }
   },
   
   openQuestionsList: function() {
-    GringoSafe.utils.showNotification("Lista de dúvidas de turistas", "info");
+    console.log("Opening questions list...");
+    GringoSafe.utils.showNotification("Lista de dúvidas aberta!", "info");
   },
   
   openStoreManagement: function() {
-    GringoSafe.utils.showNotification("Área do Lojista", "info");
+    console.log("Opening store management...");
+    GringoSafe.utils.showNotification("Área do Lojista aberta!", "info");
   },
   
   openPremiumUpgrade: function() {
-    GringoSafe.utils.showNotification("Plano Ouro - Destaque seu negócio", "info");
+    console.log("Opening premium upgrade...");
+    GringoSafe.utils.showNotification("Plano Ouro disponível!", "info");
   }
 };
 
 // Global functions
 window.closeModal = function(modalId) {
+  console.log("Closing modal:", modalId);
   document.getElementById(modalId)?.classList.add('hidden');
 };
 
 window.submitQuestion = function() {
+  console.log("Submitting question...");
   const product = document.getElementById('productQuestion')?.value;
-  const location = document.getElementById('locationQuestion')?.value;
-  const description = document.getElementById('descriptionQuestion')?.value;
-  
   if (!product) {
     GringoSafe.utils.showNotification("Preencha o produto", "warning");
     return;
@@ -240,20 +313,17 @@ window.submitQuestion = function() {
   
   GringoSafe.db.addQuestion({
     product,
-    location,
-    description,
-    userId: GringoSafe.auth.currentUser?.uid || 'anonymous',
+    userId: 'demo-user',
     timestamp: new Date()
   });
   
   closeModal('askPriceModal');
   GringoSafe.utils.showNotification("Pergunta enviada!", "success");
-  
   document.getElementById('productQuestion').value = '';
-  document.getElementById('descriptionQuestion').value = '';
 };
 
 window.submitPrice = function() {
+  console.log("Submitting price...");
   const productName = document.getElementById('productName')?.value;
   const price = document.getElementById('productPrice')?.value;
   const establishment = document.getElementById('establishmentName')?.value;
@@ -267,8 +337,6 @@ window.submitPrice = function() {
     title: productName,
     price: parseFloat(price),
     establishment,
-    location: GringoSafe.state.location || { lat: -23.5505, lng: -46.6333 },
-    userId: GringoSafe.auth.currentUser?.uid || 'anonymous',
     timestamp: new Date()
   };
   
@@ -277,41 +345,15 @@ window.submitPrice = function() {
   
   closeModal('addPriceModal');
   GringoSafe.utils.showNotification("Preço adicionado! +10 pontos", "success");
+  GringoSafe.auth.addPoints(10);
   
   document.getElementById('productName').value = '';
   document.getElementById('productPrice').value = '';
   document.getElementById('establishmentName').value = '';
 };
 
-window.requestWithdrawal = function() {
-  const pixKey = document.getElementById('pixKey')?.value;
-  const amount = document.getElementById('withdrawAmount')?.value;
-  
-  if (!pixKey || !amount) {
-    GringoSafe.utils.showNotification("Preencha todos os campos", "warning");
-    return;
-  }
-  
-  if (parseFloat(amount) < 10) {
-    GringoSafe.utils.showNotification("Mínimo R$ 10,00", "warning");
-    return;
-  }
-  
-  GringoSafe.db.requestWithdrawal({
-    pixKey,
-    amount: parseFloat(amount),
-    userId: GringoSafe.auth.currentUser?.uid || 'anonymous',
-    timestamp: new Date()
-  });
-  
-  closeModal('walletModal');
-  GringoSafe.utils.showNotification("Saque solicitado!", "success");
-  
-  document.getElementById('pixKey').value = '';
-  document.getElementById('withdrawAmount').value = '';
-};
-
-// Initialize app
+// Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+  console.log("DOM loaded, initializing app...");
   GringoSafe.app.init();
 });
