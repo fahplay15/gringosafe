@@ -73,27 +73,26 @@ GringoSafe.app = {
     // Hide user info by default
     document.querySelector('.user-info')?.classList.add('hidden');
     
+    // Hide wallet button by default
+    document.querySelector('.wallet-btn')?.classList.add('hidden');
+    
     // Show/hide elements based on profile
     switch(profile) {
       case 'turista':
         document.getElementById('touristActions')?.classList.remove('hidden');
-        // Hide wallet button for tourists
-        document.querySelector('[data-page="wallet"]')?.parentElement?.classList.add('hidden');
         break;
         
       case 'avaliador':
         document.getElementById('evaluatorActions')?.classList.remove('hidden');
         document.querySelector('.user-info')?.classList.remove('hidden');
         document.getElementById('notificationBell')?.classList.remove('hidden');
-        // Show wallet button for evaluators
-        document.querySelector('[data-page="wallet"]')?.parentElement?.classList.remove('hidden');
+        document.querySelector('.wallet-btn')?.classList.remove('hidden');
         break;
         
       case 'lojista':
         document.getElementById('storeActions')?.classList.remove('hidden');
         document.querySelector('.user-info')?.classList.remove('hidden');
-        // Show wallet button for store owners
-        document.querySelector('[data-page="wallet"]')?.parentElement?.classList.remove('hidden');
+        document.querySelector('.wallet-btn')?.classList.remove('hidden');
         break;
     }
     
@@ -645,12 +644,44 @@ window.submitPrice = async function() {
     document.getElementById('establishmentName').value = '';
     
   } catch (error) {
-    console.error('Error submitting price:', error);
-    GringoSafe.utils.showNotification("Erro ao adicionar preço", "error");
   }
 };
 
-// Initialize app when DOM is ready
-document.addEventListener("DOMContentLoaded", () => {
+window.requestWithdrawal = function() {
+  const pixKey = document.getElementById('pixKey')?.value;
+  const amount = document.getElementById('withdrawAmount')?.value;
+  
+  if (!pixKey || !amount) {
+    GringoSafe.utils.showNotification("Preencha todos os campos", "warning");
+    return;
+  }
+  
+  if (parseFloat(amount) < 10) {
+    GringoSafe.utils.showNotification("Valor mínimo de saque é R$ 10,00", "warning");
+    return;
+  }
+  
+  // Process withdrawal
+  GringoSafe.db.requestWithdrawal({
+    pixKey,
+    amount: parseFloat(amount),
+    userId: GringoSafe.auth.currentUser?.uid,
+    timestamp: new Date()
+  });
+  
+  closeModal('walletModal');
+  GringoSafe.utils.showNotification("Solicitação de saque enviada!", "success");
+};
+
+// Global functions for modal handling
+window.closeModal = function(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.add('hidden');
+  }
+};
+
+// Initialize app when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
   GringoSafe.app.init();
 });

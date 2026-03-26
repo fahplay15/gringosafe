@@ -13,7 +13,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Mapbox -->
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
@@ -21,142 +21,117 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <title>GringoSafe • Smart Travel Intelligence</title>
+    <title>GringoSafe</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="modo-turista">
-    <!-- Map Container - Background Layer -->
+    <!-- Map Background -->
     <div id="map" class="map-background"></div>
     
-    <!-- Floating Header Island -->
-    <header class="floating-island header-island">
+    <!-- Header -->
+    <header class="header-island">
         <div class="header-content">
-            <!-- Logo and Profile Switcher -->
-            <div class="logo-section">
-                <div class="logo">
-                    <img src="img/logo.svg" alt="GringoSafe Logo" style="width: 32px; height: 32px;">
-                    <span class="logo-text">GringoSafe</span>
-                </div>
-                <div class="profile-switcher">
-                    <button class="profile-btn active" data-profile="turista">
-                        <i class="fas fa-user"></i>
-                        <span>Turista</span>
-                    </button>
-                    <button class="profile-btn" data-profile="avaliador">
-                        <i class="fas fa-star"></i>
-                        <span>Avaliador</span>
-                    </button>
-                    <button class="profile-btn" data-profile="lojista">
-                        <i class="fas fa-store"></i>
-                        <span>Lojista</span>
-                    </button>
-                </div>
+            <div class="logo">
+                <img src="img/logo.svg" alt="GringoSafe">
+                <span>GringoSafe</span>
             </div>
             
-            <!-- User Info (visível apenas para avaliadores/lojistas) -->
+            <div class="profile-switcher">
+                <button class="profile-btn active" data-profile="turista">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="profile-btn" data-profile="avaliador">
+                    <i class="fas fa-star"></i>
+                </button>
+                <button class="profile-btn" data-profile="lojista">
+                    <i class="fas fa-store"></i>
+                </button>
+            </div>
+            
             <div class="user-info hidden">
-                <div class="balance-display">
-                    <i class="fas fa-wallet"></i>
-                    <span class="balance-amount">R$ 0,00</span>
-                </div>
-                <div class="level-display">
-                    <i class="fas fa-trophy"></i>
-                    <span class="level-text">Nível 1</span>
-                </div>
+                <div class="balance">R$ 0,00</div>
+                <div class="level">Nível 1</div>
                 <div class="notification-bell hidden" id="notificationBell">
                     <i class="fas fa-bell"></i>
-                    <span class="notification-badge">3</span>
+                    <span class="badge">3</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Floating Search Island -->
-    <div class="floating-island search-island">
-        <div class="search-content">
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Buscar produtos ou locais..." id="searchInput">
-                <button class="camera-btn" id="cameraBtn">
-                    <i class="fas fa-camera"></i>
-                </button>
-            </div>
-            <div class="search-filters">
-                <button class="filter-btn active" data-filter="all">Todos</button>
-                <button class="filter-btn" data-filter="food">Alimentos</button>
-                <button class="filter-btn" data-filter="transport">Transporte</button>
-                <button class="filter-btn" data-filter="shopping">Compras</button>
-            </div>
+    <!-- Search -->
+    <div class="search-island">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Buscar produtos ou locais..." id="searchInput">
+            <button class="camera-btn" id="cameraBtn">
+                <i class="fas fa-camera"></i>
+            </button>
+        </div>
+        <div class="search-filters">
+            <button class="filter-btn active" data-filter="all">Todos</button>
+            <button class="filter-btn" data-filter="food">Alimentos</button>
+            <button class="filter-btn" data-filter="transport">Transporte</button>
+            <button class="filter-btn" data-filter="shopping">Compras</button>
         </div>
     </div>
 
-    <!-- Profile-based Action Islands -->
-    <!-- Tourist Actions -->
-    <div class="floating-island tourist-actions" id="touristActions">
-        <div class="actions-grid">
-            <button class="action-btn primary-action" id="askPriceBtn">
-                <i class="fas fa-question-circle"></i>
-                <span>Perguntar Preço</span>
-            </button>
-            <button class="action-btn secondary-action" id="safeRouteBtn">
-                <i class="fas fa-route"></i>
-                <span>Roteiro Seguro</span>
-            </button>
-        </div>
+    <!-- Action Buttons -->
+    <div class="actions-island" id="touristActions">
+        <button class="action-btn primary" id="askPriceBtn">
+            <i class="fas fa-question-circle"></i>
+            <span>Perguntar Preço</span>
+        </button>
+        <button class="action-btn secondary" id="safeRouteBtn">
+            <i class="fas fa-route"></i>
+            <span>Roteiro Seguro</span>
+        </button>
     </div>
 
-    <!-- Evaluator Actions -->
-    <div class="floating-island evaluator-actions hidden" id="evaluatorActions">
-        <div class="actions-grid">
-            <button class="action-btn primary-action" id="addPriceBtn">
-                <i class="fas fa-plus-circle"></i>
-                <span>Adicionar Preço</span>
-            </button>
-            <button class="action-btn secondary-action" id="answerQuestionsBtn">
-                <i class="fas fa-comments"></i>
-                <span>Responder Dúvidas</span>
-            </button>
-        </div>
+    <div class="actions-island hidden" id="evaluatorActions">
+        <button class="action-btn primary" id="addPriceBtn">
+            <i class="fas fa-plus-circle"></i>
+            <span>Adicionar Preço</span>
+        </button>
+        <button class="action-btn secondary" id="answerQuestionsBtn">
+            <i class="fas fa-comments"></i>
+            <span>Responder Dúvidas</span>
+        </button>
     </div>
 
-    <!-- Store Owner Actions -->
-    <div class="floating-island store-actions hidden" id="storeActions">
-        <div class="actions-grid">
-            <button class="action-btn primary-action" id="manageStoreBtn">
-                <i class="fas fa-store-alt"></i>
-                <span>Área do Lojista</span>
-            </button>
-            <button class="action-btn secondary-action" id="premiumUpgradeBtn">
-                <i class="fas fa-crown"></i>
-                <span>Plano Ouro</span>
-            </button>
-        </div>
+    <div class="actions-island hidden" id="storeActions">
+        <button class="action-btn primary" id="manageStoreBtn">
+            <i class="fas fa-store-alt"></i>
+            <span>Área do Lojista</span>
+        </button>
+        <button class="action-btn secondary" id="premiumUpgradeBtn">
+            <i class="fas fa-crown"></i>
+            <span>Plano Ouro</span>
+        </button>
     </div>
 
-    <!-- Bottom Navigation Dock -->
-    <nav class="floating-island bottom-nav">
-        <div class="nav-content">
-            <button class="nav-btn active" data-page="map">
-                <i class="fas fa-map"></i>
-                <span>Mapa</span>
-            </button>
-            <button class="nav-btn" data-page="search">
-                <i class="fas fa-search"></i>
-                <span>Buscar</span>
-            </button>
-            <button class="nav-btn" data-page="questions">
-                <i class="fas fa-comments"></i>
-                <span>Dúvidas</span>
-            </button>
-            <button class="nav-btn" data-page="wallet">
-                <i class="fas fa-wallet"></i>
-                <span>Carteira</span>
-            </button>
-            <button class="nav-btn" data-page="profile">
-                <i class="fas fa-user-circle"></i>
-                <span>Perfil</span>
-            </button>
-        </div>
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-btn active" data-page="map">
+            <i class="fas fa-map"></i>
+            <span>Mapa</span>
+        </button>
+        <button class="nav-btn" data-page="search">
+            <i class="fas fa-search"></i>
+            <span>Buscar</span>
+        </button>
+        <button class="nav-btn" data-page="questions">
+            <i class="fas fa-comments"></i>
+            <span>Dúvidas</span>
+        </button>
+        <button class="nav-btn wallet-btn hidden" data-page="wallet">
+            <i class="fas fa-wallet"></i>
+            <span>Carteira</span>
+        </button>
+        <button class="nav-btn" data-page="profile">
+            <i class="fas fa-user-circle"></i>
+            <span>Perfil</span>
+        </button>
     </nav>
 
     <!-- Notification Toast -->
@@ -167,11 +142,11 @@
         </div>
     </div>
 
-    <!-- Modals Container -->
+    <!-- Modals -->
     <div class="modals-container">
         <!-- Ask Price Modal -->
         <div class="modal-overlay hidden" id="askPriceModal">
-            <div class="modal-content floating-island">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h3>Perguntar sobre Preço</h3>
                     <button class="close-btn" onclick="closeModal('askPriceModal')">
@@ -201,7 +176,7 @@
 
         <!-- Add Price Modal -->
         <div class="modal-overlay hidden" id="addPriceModal">
-            <div class="modal-content floating-island">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h3>Adicionar Preço</h3>
                     <button class="close-btn" onclick="closeModal('addPriceModal')">
@@ -240,7 +215,7 @@
 
         <!-- Wallet Modal -->
         <div class="modal-overlay hidden" id="walletModal">
-            <div class="modal-content floating-island">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h3>Minha Carteira</h3>
                     <button class="close-btn" onclick="closeModal('walletModal')">
