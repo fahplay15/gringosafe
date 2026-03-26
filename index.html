@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="description" content="GringoSafe - Smart Travel Intelligence">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Mapbox -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <title>GringoSafe • Smart Travel Intelligence</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="modo-turista">
+    <!-- Floating Island Header -->
+    <header class="floating-island header-island">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span class="logo-text">GringoSafe</span>
+                </div>
+                <div class="profile-switcher">
+                    <button class="profile-btn active" data-profile="turista">
+                        <i class="fas fa-user"></i>
+                        <span>Turista</span>
+                    </button>
+                    <button class="profile-btn" data-profile="avaliador">
+                        <i class="fas fa-star"></i>
+                        <span>Avaliador</span>
+                    </button>
+                    <button class="profile-btn" data-profile="lojista">
+                        <i class="fas fa-store"></i>
+                        <span>Lojista</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- User Info (visível apenas para avaliadores) -->
+            <div class="user-info hidden">
+                <div class="balance-display">
+                    <i class="fas fa-wallet"></i>
+                    <span class="balance-amount">R$ 0,00</span>
+                </div>
+                <div class="level-display">
+                    <i class="fas fa-trophy"></i>
+                    <span class="level-text">Nível 1</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Map Container -->
+    <main class="map-container">
+        <div id="map"></div>
+        
+        <!-- Floating Search Island -->
+        <div class="floating-island search-island">
+            <div class="search-content">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar produtos ou locais..." id="searchInput">
+                    <button class="camera-btn" id="cameraBtn">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                </div>
+                <div class="search-filters">
+                    <button class="filter-btn active" data-filter="all">Todos</button>
+                    <button class="filter-btn" data-filter="food">Alimentos</button>
+                    <button class="filter-btn" data-filter="transport">Transporte</button>
+                    <button class="filter-btn" data-filter="shopping">Compras</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Island -->
+        <div class="floating-island actions-island">
+            <div class="actions-grid">
+                <button class="action-btn" id="askPriceBtn">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Perguntar Preço</span>
+                </button>
+                <button class="action-btn" id="addPriceBtn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Adicionar Preço</span>
+                </button>
+                <button class="action-btn" id="safeRouteBtn">
+                    <i class="fas fa-route"></i>
+                    <span>Roteiro Seguro</span>
+                </button>
+                <button class="action-btn" id="premiumBtn">
+                    <i class="fas fa-crown"></i>
+                    <span>Locais Premium</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Notification Toast -->
+        <div class="notification-toast hidden" id="notificationToast">
+            <div class="toast-content">
+                <i class="fas fa-check-circle"></i>
+                <span class="toast-message">Mensagem de sucesso</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation Island -->
+    <nav class="floating-island bottom-nav">
+        <div class="nav-content">
+            <button class="nav-btn active" data-page="map">
+                <i class="fas fa-map"></i>
+                <span>Mapa</span>
+            </button>
+            <button class="nav-btn" data-page="search">
+                <i class="fas fa-search"></i>
+                <span>Buscar</span>
+            </button>
+            <button class="nav-btn" data-page="questions">
+                <i class="fas fa-comments"></i>
+                <span>Dúvidas</span>
+            </button>
+            <button class="nav-btn" data-page="profile">
+                <i class="fas fa-user-circle"></i>
+                <span>Perfil</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Modals Container -->
+    <div class="modals-container">
+        <!-- Ask Price Modal -->
+        <div class="modal-overlay hidden" id="askPriceModal">
+            <div class="modal-content floating-island">
+                <div class="modal-header">
+                    <h3>Perguntar sobre Preço</h3>
+                    <button class="close-btn" onclick="closeModal('askPriceModal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Produto</label>
+                        <input type="text" id="productQuestion" placeholder="Ex: Água mineral 500ml">
+                    </div>
+                    <div class="form-group">
+                        <label>Localização</label>
+                        <input type="text" id="locationQuestion" placeholder="Onde você está?" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição (opcional)</label>
+                        <textarea id="descriptionQuestion" placeholder="Adicione detalhes..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="closeModal('askPriceModal')">Cancelar</button>
+                    <button class="btn-primary" onclick="submitQuestion()">Enviar Pergunta</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Price Modal -->
+        <div class="modal-overlay hidden" id="addPriceModal">
+            <div class="modal-content floating-island">
+                <div class="modal-header">
+                    <h3>Adicionar Preço</h3>
+                    <button class="close-btn" onclick="closeModal('addPriceModal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Produto</label>
+                        <input type="text" id="productName" placeholder="Nome do produto">
+                    </div>
+                    <div class="form-group">
+                        <label>Preço</label>
+                        <input type="number" id="productPrice" placeholder="R$ 0,00" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Estabelecimento</label>
+                        <input type="text" id="establishmentName" placeholder="Nome do local">
+                    </div>
+                    <div class="form-group">
+                        <label>Foto do produto</label>
+                        <div class="photo-upload">
+                            <button class="upload-btn" id="uploadPhotoBtn">
+                                <i class="fas fa-camera"></i>
+                                <span>Tirar Foto</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="closeModal('addPriceModal')">Cancelar</button>
+                    <button class="btn-primary" onclick="submitPrice()">Adicionar Preço</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
