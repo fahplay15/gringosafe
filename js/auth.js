@@ -120,8 +120,102 @@ GringoSafe.auth = {
     }
   },
   
+  // Switch user profile
+  switchProfile: function(profile) {
+    if (!this.user) {
+      // Create anonymous user for demo
+      this.user = {
+        uid: 'demo-user',
+        displayName: 'Usuário Demo',
+        email: 'demo@gringosafe.com'
+      };
+    }
+    
+    // Update user profile
+    const userProfile = {
+      uid: this.user.uid,
+      profile: profile,
+      balance: this.currentUser?.balance || 0,
+      level: this.currentUser?.level || 1,
+      stats: this.currentUser?.stats || { pricesAdded: 0, questionsAnswered: 0 }
+    };
+    
+    this.currentUser = userProfile;
+    GringoSafe.state.user = this.user;
+    GringoSafe.state.currentUser = userProfile;
+    
+    // Save to localStorage for demo
+    localStorage.setItem('gringosafe-profile', JSON.stringify(userProfile));
+    
+    console.log(`Profile switched to: ${profile}`);
+  },
+  
+  // Add points to user
+  addPoints: function(points) {
+    if (this.currentUser) {
+      this.currentUser.stats = this.currentUser.stats || {};
+      this.currentUser.stats.pricesAdded = (this.currentUser.stats.pricesAdded || 0) + 1;
+      
+      // Update balance for evaluators
+      if (this.currentUser.profile === 'avaliador') {
+        this.currentUser.balance = (this.currentUser.balance || 0) + points;
+      }
+      
+      // Update level
+      const totalActions = this.currentUser.stats.pricesAdded + (this.currentUser.stats.questionsAnswered || 0);
+      this.currentUser.level = Math.floor(totalActions / 10) + 1;
+      
+      // Save to localStorage
+      localStorage.setItem('gringosafe-profile', JSON.stringify(this.currentUser));
+      
+      // Update UI
+      this.updateUserUI();
+      
+      GringoSafe.utils.showNotification(`+${points} pontos!`, "success");
+    }
+  },
+  
+  // Update user balance
+  updateBalance: function(amount) {
+    if (this.currentUser) {
+      this.currentUser.balance = Math.max(0, (this.currentUser.balance || 0) + amount);
+      localStorage.setItem('gringosafe-profile', JSON.stringify(this.currentUser));
+      this.updateUserUI();
+    }
+  },
+  
+  // Update user UI
+  updateUserUI: function() {
+    if (this.currentUser) {
+      // Update balance display
+      const balanceElements = document.querySelectorAll('.balance, .balance-amount');
+      balanceElements.forEach(el => {
+        el.textContent = `R$ ${this.currentUser.balance?.toFixed(2) || '0,00'}`;
+      });
+      
+      // Update level display
+      const levelElements = document.querySelectorAll('.level, .level-text');
+      levelElements.forEach(el => {
+        el.textContent = `Nível ${this.currentUser.level || 1}`;
+      });
+    }
+  },
+  
+  // Load user profile from localStorage
+  loadUserProfile: function(userId) {
+    const savedProfile = localStorage.getItem('gringosafe-profile');
+    if (savedProfile) {
+      this.currentUser = JSON.parse(savedProfile);
+      GringoSafe.state.currentUser = this.currentUser;
+      this.updateUserUI();
+    } else {
+      // Create default profile
+      this.switchProfile('turista');
+    }
+  },
+  
   // Load user profile from Firestore
-  loadUserProfile: async function(userId) {
+  loadUserProfileFromFirestore: async function(userId) {
     try {
       const userDoc = await firebase.firestore()
         .collection('users')
