@@ -51,7 +51,64 @@ GringoSafe.app = {
     // Load saved preferences
     this.loadSavedPreferences();
     
+    // Initialize UI with current profile
+    const currentProfile = GringoSafe.auth.currentUser?.profile || 'turista';
+    this.updateUIForProfile(currentProfile);
+    
     console.log("All components initialized");
+  },
+  
+  // Update UI based on user profile
+  updateUIForProfile: function(profile) {
+    // Remove all profile classes from body
+    document.body.classList.remove('modo-turista', 'modo-avaliador', 'modo-lojista');
+    // Add current profile class
+    document.body.classList.add(`modo-${profile}`);
+    
+    // Hide all action islands
+    document.getElementById('touristActions')?.classList.add('hidden');
+    document.getElementById('evaluatorActions')?.classList.add('hidden');
+    document.getElementById('storeActions')?.classList.add('hidden');
+    
+    // Hide user info by default
+    document.querySelector('.user-info')?.classList.add('hidden');
+    
+    // Show/hide elements based on profile
+    switch(profile) {
+      case 'turista':
+        document.getElementById('touristActions')?.classList.remove('hidden');
+        // Hide wallet button for tourists
+        document.querySelector('[data-page="wallet"]')?.parentElement?.classList.add('hidden');
+        break;
+        
+      case 'avaliador':
+        document.getElementById('evaluatorActions')?.classList.remove('hidden');
+        document.querySelector('.user-info')?.classList.remove('hidden');
+        document.getElementById('notificationBell')?.classList.remove('hidden');
+        // Show wallet button for evaluators
+        document.querySelector('[data-page="wallet"]')?.parentElement?.classList.remove('hidden');
+        break;
+        
+      case 'lojista':
+        document.getElementById('storeActions')?.classList.remove('hidden');
+        document.querySelector('.user-info')?.classList.remove('hidden');
+        // Show wallet button for store owners
+        document.querySelector('[data-page="wallet"]')?.parentElement?.classList.remove('hidden');
+        break;
+    }
+    
+    // Update active profile button
+    document.querySelectorAll('.profile-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    document.querySelector(`[data-profile="${profile}"]`)?.classList.add('active');
+    
+    // Update map markers based on profile
+    if (GringoSafe.map && GringoSafe.map.map) {
+      GringoSafe.map.filterMarkersByProfile(profile);
+    }
+    
+    console.log(`UI updated for profile: ${profile}`);
   },
   
   // Setup event listeners
@@ -61,6 +118,7 @@ GringoSafe.app = {
       btn.addEventListener('click', (e) => {
         const profile = e.currentTarget.dataset.profile;
         GringoSafe.auth.switchProfile(profile);
+        this.updateUIForProfile(profile);
       });
     });
     
@@ -72,21 +130,31 @@ GringoSafe.app = {
       });
     });
     
-    // Action buttons
+    // Tourist Actions
     document.getElementById('askPriceBtn')?.addEventListener('click', () => {
       this.openAskPriceModal();
-    });
-    
-    document.getElementById('addPriceBtn')?.addEventListener('click', () => {
-      this.openAddPriceModal();
     });
     
     document.getElementById('safeRouteBtn')?.addEventListener('click', () => {
       this.generateSafeRoute();
     });
     
-    document.getElementById('premiumBtn')?.addEventListener('click', () => {
-      this.showPremiumLocations();
+    // Evaluator Actions
+    document.getElementById('addPriceBtn')?.addEventListener('click', () => {
+      this.openAddPriceModal();
+    });
+    
+    document.getElementById('answerQuestionsBtn')?.addEventListener('click', () => {
+      this.openQuestionsList();
+    });
+    
+    // Store Owner Actions
+    document.getElementById('manageStoreBtn')?.addEventListener('click', () => {
+      this.openStoreManagement();
+    });
+    
+    document.getElementById('premiumUpgradeBtn')?.addEventListener('click', () => {
+      this.openPremiumUpgrade();
     });
     
     // Camera button
@@ -108,6 +176,11 @@ GringoSafe.app = {
         const filter = e.currentTarget.dataset.filter;
         this.applyFilter(filter);
       });
+    });
+    
+    // Wallet button
+    document.querySelector('[data-page="wallet"]')?.addEventListener('click', () => {
+      this.openWalletModal();
     });
     
     // Modal close buttons
@@ -394,6 +467,52 @@ GringoSafe.app = {
             console.log('ServiceWorker registration failed:', error);
           });
       });
+    }
+  },
+  
+  // Profile-specific functions
+  
+  // Tourist: Open questions list
+  openQuestionsList: function() {
+    // Implementation for evaluators to answer tourist questions
+    GringoSafe.utils.showNotification("Lista de dúvidas de turistas", "info");
+  },
+  
+  // Store Owner: Open store management
+  openStoreManagement: function() {
+    // Implementation for store owners to manage their business
+    GringoSafe.utils.showNotification("Área do Lojista", "info");
+  },
+  
+  // Store Owner: Open premium upgrade
+  openPremiumUpgrade: function() {
+    // Implementation for premium upgrade
+    GringoSafe.utils.showNotification("Plano Ouro - Destaque seu negócio", "info");
+  },
+  
+  // Open wallet modal
+  openWalletModal: function() {
+    const modal = document.getElementById('walletModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      // Update balance display
+      this.updateWalletDisplay();
+    }
+  },
+  
+  // Update wallet display
+  updateWalletDisplay: function() {
+    const user = GringoSafe.auth.currentUser;
+    if (user) {
+      // Update balance
+      document.querySelector('.balance-amount-large').textContent = 
+        `R$ ${user.balance?.toFixed(2) || '0,00'}`;
+      
+      // Update stats
+      document.querySelector('.wallet-stats .stat-item:nth-child(1) .stat-value').textContent = 
+        user.stats?.pricesAdded || '0';
+      document.querySelector('.wallet-stats .stat-item:nth-child(2) .stat-value').textContent = 
+        user.stats?.questionsAnswered || '0';
     }
   },
   

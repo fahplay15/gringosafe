@@ -25,9 +25,13 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="modo-turista">
-    <!-- Floating Island Header -->
+    <!-- Map Container - Background Layer -->
+    <div id="map" class="map-background"></div>
+    
+    <!-- Floating Header Island -->
     <header class="floating-island header-island">
         <div class="header-content">
+            <!-- Logo and Profile Switcher -->
             <div class="logo-section">
                 <div class="logo">
                     <img src="img/logo.svg" alt="GringoSafe Logo" style="width: 32px; height: 32px;">
@@ -49,7 +53,7 @@
                 </div>
             </div>
             
-            <!-- User Info (visível apenas para avaliadores) -->
+            <!-- User Info (visível apenas para avaliadores/lojistas) -->
             <div class="user-info hidden">
                 <div class="balance-display">
                     <i class="fas fa-wallet"></i>
@@ -59,65 +63,77 @@
                     <i class="fas fa-trophy"></i>
                     <span class="level-text">Nível 1</span>
                 </div>
+                <div class="notification-bell hidden" id="notificationBell">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Map Container -->
-    <main class="map-container">
-        <div id="map"></div>
-        
-        <!-- Floating Search Island -->
-        <div class="floating-island search-island">
-            <div class="search-content">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Buscar produtos ou locais..." id="searchInput">
-                    <button class="camera-btn" id="cameraBtn">
-                        <i class="fas fa-camera"></i>
-                    </button>
-                </div>
-                <div class="search-filters">
-                    <button class="filter-btn active" data-filter="all">Todos</button>
-                    <button class="filter-btn" data-filter="food">Alimentos</button>
-                    <button class="filter-btn" data-filter="transport">Transporte</button>
-                    <button class="filter-btn" data-filter="shopping">Compras</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Actions Island -->
-        <div class="floating-island actions-island">
-            <div class="actions-grid">
-                <button class="action-btn" id="askPriceBtn">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Perguntar Preço</span>
-                </button>
-                <button class="action-btn" id="addPriceBtn">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>Adicionar Preço</span>
-                </button>
-                <button class="action-btn" id="safeRouteBtn">
-                    <i class="fas fa-route"></i>
-                    <span>Roteiro Seguro</span>
-                </button>
-                <button class="action-btn" id="premiumBtn">
-                    <i class="fas fa-crown"></i>
-                    <span>Locais Premium</span>
+    <!-- Floating Search Island -->
+    <div class="floating-island search-island">
+        <div class="search-content">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar produtos ou locais..." id="searchInput">
+                <button class="camera-btn" id="cameraBtn">
+                    <i class="fas fa-camera"></i>
                 </button>
             </div>
-        </div>
-
-        <!-- Notification Toast -->
-        <div class="notification-toast hidden" id="notificationToast">
-            <div class="toast-content">
-                <i class="fas fa-check-circle"></i>
-                <span class="toast-message">Mensagem de sucesso</span>
+            <div class="search-filters">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="food">Alimentos</button>
+                <button class="filter-btn" data-filter="transport">Transporte</button>
+                <button class="filter-btn" data-filter="shopping">Compras</button>
             </div>
         </div>
-    </main>
+    </div>
 
-    <!-- Bottom Navigation Island -->
+    <!-- Profile-based Action Islands -->
+    <!-- Tourist Actions -->
+    <div class="floating-island tourist-actions" id="touristActions">
+        <div class="actions-grid">
+            <button class="action-btn primary-action" id="askPriceBtn">
+                <i class="fas fa-question-circle"></i>
+                <span>Perguntar Preço</span>
+            </button>
+            <button class="action-btn secondary-action" id="safeRouteBtn">
+                <i class="fas fa-route"></i>
+                <span>Roteiro Seguro</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Evaluator Actions -->
+    <div class="floating-island evaluator-actions hidden" id="evaluatorActions">
+        <div class="actions-grid">
+            <button class="action-btn primary-action" id="addPriceBtn">
+                <i class="fas fa-plus-circle"></i>
+                <span>Adicionar Preço</span>
+            </button>
+            <button class="action-btn secondary-action" id="answerQuestionsBtn">
+                <i class="fas fa-comments"></i>
+                <span>Responder Dúvidas</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Store Owner Actions -->
+    <div class="floating-island store-actions hidden" id="storeActions">
+        <div class="actions-grid">
+            <button class="action-btn primary-action" id="manageStoreBtn">
+                <i class="fas fa-store-alt"></i>
+                <span>Área do Lojista</span>
+            </button>
+            <button class="action-btn secondary-action" id="premiumUpgradeBtn">
+                <i class="fas fa-crown"></i>
+                <span>Plano Ouro</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Dock -->
     <nav class="floating-island bottom-nav">
         <div class="nav-content">
             <button class="nav-btn active" data-page="map">
@@ -132,12 +148,24 @@
                 <i class="fas fa-comments"></i>
                 <span>Dúvidas</span>
             </button>
+            <button class="nav-btn" data-page="wallet">
+                <i class="fas fa-wallet"></i>
+                <span>Carteira</span>
+            </button>
             <button class="nav-btn" data-page="profile">
                 <i class="fas fa-user-circle"></i>
                 <span>Perfil</span>
             </button>
         </div>
     </nav>
+
+    <!-- Notification Toast -->
+    <div class="notification-toast hidden" id="notificationToast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span class="toast-message">Mensagem de sucesso</span>
+        </div>
+    </div>
 
     <!-- Modals Container -->
     <div class="modals-container">
@@ -209,6 +237,50 @@
                 </div>
             </div>
         </div>
+
+        <!-- Wallet Modal -->
+        <div class="modal-overlay hidden" id="walletModal">
+            <div class="modal-content floating-island">
+                <div class="modal-header">
+                    <h3>Minha Carteira</h3>
+                    <button class="close-btn" onclick="closeModal('walletModal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="wallet-overview">
+                        <div class="balance-card">
+                            <div class="balance-amount-large">R$ 0,00</div>
+                            <div class="balance-label">Saldo disponível</div>
+                        </div>
+                        <div class="wallet-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">0</span>
+                                <span class="stat-label">Preços adicionados</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">0</span>
+                                <span class="stat-label">Dúvidas respondidas</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="withdraw-section">
+                        <div class="form-group">
+                            <label>Chave PIX para saque</label>
+                            <input type="text" id="pixKey" placeholder="CPF, Email ou Telefone">
+                        </div>
+                        <div class="form-group">
+                            <label>Valor do saque</label>
+                            <input type="number" id="withdrawAmount" placeholder="R$ 10,00 mínimo" step="0.01" min="10">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="closeModal('walletModal')">Cancelar</button>
+                    <button class="btn-primary" onclick="requestWithdrawal()">Solicitar Saque</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->
@@ -222,6 +294,7 @@
     <script src="js/auth.js"></script>
     <script src="js/map.js"></script>
     <script src="js/ai.js"></script>
+    <script src="js/db.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
