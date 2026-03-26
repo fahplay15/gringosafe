@@ -2,40 +2,19 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#6366f1">
-    <meta name="description" content="GringoSafe - Smart Travel Intelligence">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Mapbox -->
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
-    
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GringoSafe</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="modo-turista">
-    <!-- Map Background -->
     <div id="map" class="map-background"></div>
     
-    <!-- Header -->
     <header class="header-island">
         <div class="header-content">
             <div class="logo">
-                <img src="img/logo.svg" alt="GringoSafe">
                 <span>GringoSafe</span>
             </div>
-            
             <div class="profile-switcher">
                 <button class="profile-btn active" data-profile="turista">
                     <i class="fas fa-user"></i>
@@ -47,44 +26,17 @@
                     <i class="fas fa-store"></i>
                 </button>
             </div>
-            
             <div class="user-info hidden">
                 <div class="balance">R$ 0,00</div>
                 <div class="level">Nível 1</div>
-                <div class="notification-bell hidden" id="notificationBell">
-                    <i class="fas fa-bell"></i>
-                    <span class="badge">3</span>
-                </div>
             </div>
         </div>
     </header>
 
-    <!-- Search -->
-    <div class="search-island">
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Buscar produtos ou locais..." id="searchInput">
-            <button class="camera-btn" id="cameraBtn">
-                <i class="fas fa-camera"></i>
-            </button>
-        </div>
-        <div class="search-filters">
-            <button class="filter-btn active" data-filter="all">Todos</button>
-            <button class="filter-btn" data-filter="food">Alimentos</button>
-            <button class="filter-btn" data-filter="transport">Transporte</button>
-            <button class="filter-btn" data-filter="shopping">Compras</button>
-        </div>
-    </div>
-
-    <!-- Action Buttons -->
     <div class="actions-island" id="touristActions">
         <button class="action-btn primary" id="askPriceBtn">
             <i class="fas fa-question-circle"></i>
             <span>Perguntar Preço</span>
-        </button>
-        <button class="action-btn secondary" id="safeRouteBtn">
-            <i class="fas fa-route"></i>
-            <span>Roteiro Seguro</span>
         </button>
     </div>
 
@@ -93,48 +45,8 @@
             <i class="fas fa-plus-circle"></i>
             <span>Adicionar Preço</span>
         </button>
-        <button class="action-btn secondary" id="answerQuestionsBtn">
-            <i class="fas fa-comments"></i>
-            <span>Responder Dúvidas</span>
-        </button>
     </div>
 
-    <div class="actions-island hidden" id="storeActions">
-        <button class="action-btn primary" id="manageStoreBtn">
-            <i class="fas fa-store-alt"></i>
-            <span>Área do Lojista</span>
-        </button>
-        <button class="action-btn secondary" id="premiumUpgradeBtn">
-            <i class="fas fa-crown"></i>
-            <span>Plano Ouro</span>
-        </button>
-    </div>
-
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <button class="nav-btn active" data-page="map">
-            <i class="fas fa-map"></i>
-            <span>Mapa</span>
-        </button>
-        <button class="nav-btn" data-page="search">
-            <i class="fas fa-search"></i>
-            <span>Buscar</span>
-        </button>
-        <button class="nav-btn" data-page="questions">
-            <i class="fas fa-comments"></i>
-            <span>Dúvidas</span>
-        </button>
-        <button class="nav-btn wallet-btn hidden" data-page="wallet">
-            <i class="fas fa-wallet"></i>
-            <span>Carteira</span>
-        </button>
-        <button class="nav-btn" data-page="profile">
-            <i class="fas fa-user-circle"></i>
-            <span>Perfil</span>
-        </button>
-    </nav>
-
-    <!-- Notification Toast -->
     <div class="notification-toast hidden" id="notificationToast">
         <div class="toast-content">
             <i class="fas fa-check-circle"></i>
@@ -142,9 +54,7 @@
         </div>
     </div>
 
-    <!-- Modals -->
     <div class="modals-container">
-        <!-- Ask Price Modal -->
         <div class="modal-overlay hidden" id="askPriceModal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -158,23 +68,14 @@
                         <label>Produto</label>
                         <input type="text" id="productQuestion" placeholder="Ex: Água mineral 500ml">
                     </div>
-                    <div class="form-group">
-                        <label>Localização</label>
-                        <input type="text" id="locationQuestion" placeholder="Onde você está?" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label>Descrição (opcional)</label>
-                        <textarea id="descriptionQuestion" placeholder="Adicione detalhes..."></textarea>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn-secondary" onclick="closeModal('askPriceModal')">Cancelar</button>
-                    <button class="btn-primary" onclick="submitQuestion()">Enviar Pergunta</button>
+                    <button class="btn-primary" onclick="submitQuestion()">Enviar</button>
                 </div>
             </div>
         </div>
 
-        <!-- Add Price Modal -->
         <div class="modal-overlay hidden" id="addPriceModal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -190,51 +91,112 @@
                     </div>
                     <div class="form-group">
                         <label>Preço</label>
-                        <input type="number" id="productPrice" placeholder="R$ 0,00" step="0.01">
-                    </div>
-                    <div class="form-group">
-                        <label>Estabelecimento</label>
-                        <input type="text" id="establishmentName" placeholder="Nome do local">
+                        <input type="number" id="productPrice" placeholder="R$ 0,00">
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn-secondary" onclick="closeModal('addPriceModal')">Cancelar</button>
-                    <button class="btn-primary" onclick="submitPrice()">Adicionar Preço</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Wallet Modal -->
-        <div class="modal-overlay hidden" id="walletModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Minha Carteira</h3>
-                    <button class="close-btn" onclick="closeModal('walletModal')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="balance-card">
-                        <div class="balance-amount-large">R$ 0,00</div>
-                        <div class="balance-label">Saldo disponível</div>
-                    </div>
+                    <button class="btn-primary" onclick="submitPrice()">Adicionar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest"></script>
-    <script src="js/config.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/map.js"></script>
-    <script src="js/ai.js"></script>
-    <script src="js/db.js"></script>
-    <script src="js/app.js"></script>
+    <script>
+        console.log("Starting GringoSafe...");
+        
+        window.GringoSafe = {
+            utils: {
+                showNotification: function(msg) {
+                    console.log("Notification:", msg);
+                    const toast = document.getElementById('notificationToast');
+                    document.querySelector('.toast-message').textContent = msg;
+                    toast.classList.remove('hidden');
+                    setTimeout(() => toast.classList.add('hidden'), 3000);
+                }
+            },
+            app: {
+                init: function() {
+                    console.log("Initializing app...");
+                    
+                    // Ask Price Button
+                    const askBtn = document.getElementById('askPriceBtn');
+                    if (askBtn) {
+                        askBtn.onclick = () => {
+                            console.log("Ask Price clicked!");
+                            document.getElementById('askPriceModal').classList.remove('hidden');
+                        };
+                    }
+                    
+                    // Add Price Button
+                    const addBtn = document.getElementById('addPriceBtn');
+                    if (addBtn) {
+                        addBtn.onclick = () => {
+                            console.log("Add Price clicked!");
+                            document.getElementById('addPriceModal').classList.remove('hidden');
+                        };
+                    }
+                    
+                    // Profile Buttons
+                    document.querySelectorAll('.profile-btn').forEach(btn => {
+                        btn.onclick = (e) => {
+                            console.log("Profile clicked:", e.currentTarget.dataset.profile);
+                            const profile = e.currentTarget.dataset.profile;
+                            this.updateUI(profile);
+                        };
+                    });
+                    
+                    console.log("App initialized!");
+                },
+                updateUI: function(profile) {
+                    console.log("Updating UI for:", profile);
+                    document.body.className = `modo-${profile}`;
+                    document.querySelectorAll('.actions-island').forEach(el => el.classList.add('hidden'));
+                    const actionsId = profile === 'turista' ? 'touristActions' : 'evaluatorActions';
+                    document.getElementById(actionsId).classList.remove('hidden');
+                    document.querySelectorAll('.profile-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelector(`[data-profile="${profile}"]`).classList.add('active');
+                }
+            }
+        };
+        
+        window.closeModal = function(id) {
+            console.log("Closing modal:", id);
+            document.getElementById(id).classList.add('hidden');
+        };
+        
+        window.submitQuestion = function() {
+            console.log("Submitting question...");
+            const product = document.getElementById('productQuestion').value;
+            if (product) {
+                GringoSafe.utils.showNotification('Pergunta enviada!');
+                closeModal('askPriceModal');
+                document.getElementById('productQuestion').value = '';
+            } else {
+                GringoSafe.utils.showNotification('Preencha o produto!');
+            }
+        };
+        
+        window.submitPrice = function() {
+            console.log("Submitting price...");
+            const name = document.getElementById('productName').value;
+            const price = document.getElementById('productPrice').value;
+            if (name && price) {
+                GringoSafe.utils.showNotification('Preço adicionado!');
+                closeModal('addPriceModal');
+                document.getElementById('productName').value = '';
+                document.getElementById('productPrice').value = '';
+            } else {
+                GringoSafe.utils.showNotification('Preencha todos os campos!');
+            }
+        };
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => GringoSafe.app.init());
+        } else {
+            GringoSafe.app.init();
+        }
+    </script>
 </body>
 </html>
