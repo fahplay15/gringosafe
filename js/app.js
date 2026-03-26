@@ -1,4 +1,4 @@
-// GringoSafe App Controller - Simplificado
+// GringoSafe App Controller - Versão Completa e Funcional
 window.GringoSafe = window.GringoSafe || {};
 
 // Initialize state
@@ -165,6 +165,10 @@ GringoSafe.app = {
     // Tourist Actions
     document.getElementById('askPriceBtn')?.addEventListener('click', () => {
       console.log("Ask Price button clicked!");
+      if (GringoSafe.state.location) {
+        const locationText = `${GringoSafe.state.location.lat.toFixed(6)}, ${GringoSafe.state.location.lng.toFixed(6)}`;
+        document.getElementById('locationQuestion').value = locationText;
+      }
       document.getElementById('askPriceModal').classList.remove('hidden');
     });
     
@@ -216,6 +220,14 @@ GringoSafe.app = {
       this.openWalletModal();
     });
     
+    // Search input
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', GringoSafe.utils.debounce((e) => {
+        this.handleSearch(e.target.value);
+      }, 300));
+    }
+    
     console.log("Event listeners setup complete!");
   },
   
@@ -259,6 +271,11 @@ GringoSafe.app = {
     GringoSafe.utils.showNotification(`Navegando para ${page}`, 'info');
   },
   
+  handleSearch: function(query) {
+    console.log("Searching for:", query);
+    GringoSafe.map.filterMarkers({ search: query });
+  },
+  
   applyFilter: function(filter) {
     console.log("Applying filter:", filter);
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -273,7 +290,16 @@ GringoSafe.app = {
   
   openCamera: function() {
     console.log("Opening camera...");
-    GringoSafe.utils.showNotification("Câmera aberta!", "info");
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        GringoSafe.utils.showNotification("Foto carregada!", "success");
+      }
+    };
+    input.click();
   },
   
   openWalletModal: function() {
@@ -306,6 +332,8 @@ window.closeModal = function(modalId) {
 window.submitQuestion = function() {
   console.log("Submitting question...");
   const product = document.getElementById('productQuestion')?.value;
+  const description = document.getElementById('descriptionQuestion')?.value;
+  
   if (!product) {
     GringoSafe.utils.showNotification("Preencha o produto", "warning");
     return;
@@ -313,6 +341,7 @@ window.submitQuestion = function() {
   
   GringoSafe.db.addQuestion({
     product,
+    description,
     userId: 'demo-user',
     timestamp: new Date()
   });
@@ -320,6 +349,7 @@ window.submitQuestion = function() {
   closeModal('askPriceModal');
   GringoSafe.utils.showNotification("Pergunta enviada!", "success");
   document.getElementById('productQuestion').value = '';
+  document.getElementById('descriptionQuestion').value = '';
 };
 
 window.submitPrice = function() {
